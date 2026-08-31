@@ -1,5 +1,7 @@
 # opencascade-ts
 
+**[English](README.md)** | [简体中文](README.zh-CN.md)
+
 > **Open CASCADE for the agent era.** A modern OCCT kernel compiled to WebAssembly with first-class
 > TypeScript bindings, STEP/BRep import, hidden-line removal, and a zero-dependency WebGL2 viewer.
 > Runs headless in Node and in the browser. No Qt, no native toolchain.
@@ -154,14 +156,6 @@ API reference: [docs/API.md](docs/API.md).
 │  (no Visualization, no Qt, no Tcl — rendering is WebGL)  │
 └──────────────────────────────────────────────────────────┘
 ```
-
-## 中文说明
-
-opencascade-ts 面向 agent 时代的 CAD 内核：把最新的 OCCT（默认 7.9.3，构建参数可切 8.0）编译为
-WebAssembly，补齐旧版 occt.js 缺失的 HLR（隐藏线消除）、STEP/BRep 模型导入、TypeScript 绑定与
-渲染——不依赖 Qt，浏览器端只用 WebGL2（零依赖查看器），Node 端完全无头运行。仓库根目录的
-AGENTS.md 供 dsh / pi / codex 等 agent 工具直接读取。构建：`npm run build:wasm`（需 Docker，首次
-约 1–2 小时）。
 
 ## Acknowledgements
 
