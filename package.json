@@ -1,0 +1,61 @@
+{
+  "name": "opencascade-ts",
+  "version": "0.1.0",
+  "description": "Open CASCADE for the agent era — a modern OCCT (7.9+) compiled to WebAssembly with first-class TypeScript bindings, STEP/BREP import, hidden-line removal, and a zero-dependency WebGL2 viewer. No Qt, no native build: runs headless in Node and in the browser.",
+  "type": "module",
+  "license": "LGPL-2.1",
+  "keywords": [
+    "opencascade",
+    "occt",
+    "cad",
+    "geometry",
+    "kernel",
+    "wasm",
+    "webassembly",
+    "typescript",
+    "step",
+    "brep",
+    "hlr",
+    "webgl",
+    "engineering-drawing",
+    "agent",
+    "llm",
+    "mcp-friendly"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./viewer": {
+      "types": "./dist/viewer/index.d.ts",
+      "default": "./dist/viewer/index.js"
+    }
+  },
+  "bin": {
+    "opencascade-ts": "./bin/cli.mjs"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "README.md",
+    "LICENSE",
+    "docs"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "build:wasm": "bash etc/build-wasm.sh",
+    "example": "node etc/serve-example.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}

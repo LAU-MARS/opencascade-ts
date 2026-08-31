@@ -1,0 +1,3 @@
+# The OCCT base image is self-contained: it only needs the Dockerfile itself.
+*
+!etc/docker/Dockerfile

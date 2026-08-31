@@ -1,0 +1,92 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+
+jobs:
+  test:
+    name: TypeScript (no wasm)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+
+  build-wasm:
+    name: Build OCCT wasm (Docker)
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build OCCT base image (cached)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: etc/docker/Dockerfile
+          build-args: |
+            OCCT_VERSION=7.9.3
+          tags: opencascade-ts/occt-wasm:7.9.3
+          push: false
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Link glue layer
+        run: |
+          mkdir -p dist/wasm
+          docker run --rm \
+            -v "${GITHUB_WORKSPACE}/src/cpp:/src:ro" \
+            -v "${GITHUB_WORKSPACE}/dist/wasm:/out" \
+            opencascade-ts/occt-wasm:7.9.3 \
+            bash /src/build-glue.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: occt-wasm
+          path: dist/wasm/
+          retention-days: 14
+
+  integration:
+    name: Kernel integration tests
+    needs: [build-wasm]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/download-artifact@v4
+        with:
+          name: occt-wasm
+          path: dist/wasm
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+
+  release:
+    name: Attach wasm artifact to release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [test, integration]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: occt-wasm
+          path: dist/wasm
+      - name: Zip artifact
+        run: |
+          cd dist/wasm && zip -r ../../../occt-wasm.zip . && cd -
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: occt-wasm.zip

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>opencascade-ts — STEP/BRep viewer with hidden-line removal</title>
+  <style>
+    :root { color-scheme: light; font: 13px/1.45 system-ui, sans-serif; }
+    html, body { margin: 0; height: 100%; overflow: hidden; }
+    #app { display: flex; flex-direction: column; height: 100%; }
+    header {
+      display: flex; gap: 8px; align-items: center; padding: 8px 12px;
+      border-bottom: 1px solid #d8d8dc; background: #fafafa; flex-wrap: wrap;
+    }
+    header b { margin-right: 4px; }
+    button {
+      font: inherit; padding: 4px 10px; border: 1px solid #c9c9cf; border-radius: 6px;
+      background: #fff; cursor: pointer;
+    }
+    button:hover { background: #f0f0f4; }
+    button[aria-pressed="true"] { background: #dfdff5; border-color: #8080b0; }
+    #status { margin-left: auto; color: #555; }
+    #drop-overlay {
+      position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+      background: rgba(90, 110, 220, 0.15); border: 3px dashed #6677ee;
+      font-size: 20px; pointer-events: none; z-index: 10;
+    }
+    #drop-overlay.active { display: flex; }
+    canvas { flex: 1; width: 100%; min-height: 0; touch-action: none; }
+    #hint { position: fixed; right: 12px; bottom: 10px; color: #777; pointer-events: none; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <header>
+      <b>opencascade-ts</b>
+      <button id="fit">Fit</button>
+      <button id="wireframe" aria-pressed="false">Wireframe</button>
+      <button id="hidden-lines" aria-pressed="false">Hidden lines</button>
+      <button id="export-svg">Export drawing (SVG)</button>
+      <button id="export-stl">Export mesh (STL)</button>
+      <label style="border:1px solid #c9c9cf;border-radius:6px;padding:4px 10px;cursor:pointer">
+        Open STEP/BRep<input id="file" type="file" accept=".step,.stp,.brep" hidden />
+      </label>
+      <span id="status">loading kernel…</span>
+    </header>
+    <canvas id="canvas"></canvas>
+  </div>
+  <div id="drop-overlay">drop a .step / .stp / .brep file</div>
+  <div id="hint">drag: orbit · right/shift-drag: pan · wheel: zoom</div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+node_modules/
+dist/
+build/
+*.log
+etc/docker-build.log
+.DS_Store
+Thumbs.db
+*.local
