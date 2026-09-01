@@ -18,7 +18,7 @@ import { hiddenLinesToSvg, meshToAsciiStl, meshToObj } from "./exporters.js";
 import { OccSession, type OccShape } from "./occ.js";
 import type { Vec3 } from "./types.js";
 
-const USAGE = `opencascade-ts — Open CASCADE for the agent era
+const USAGE = `occt.ts — Open CASCADE for the agent era
 
 Usage:
   opencascade-ts info <input> [--json]

@@ -1,5 +1,7 @@
 # API reference
 
+npm package: `occt.ts` · repo: `opencascade-ts`
+
 Units: STEP/BRep geometry is in millimeters; angles in the TypeScript API are **degrees**
 (converted to radians at the wasm boundary); tessellation deflection is in model units.
 
@@ -8,7 +10,7 @@ Units: STEP/BRep geometry is in millimeters; angles in the TypeScript API are **
 Created once per process/page. Owns the wasm module and tracks every shape it hands out.
 
 ```ts
-import { OccSession } from "opencascade-ts";
+import { OccSession } from "occt.ts";
 const occ = await OccSession.create(options?);
 ```
 
@@ -84,10 +86,10 @@ Both line arrays use the same segment-pair convention as `MeshData.edges`.
 | `hiddenLinesToSvg(hlr, opts?)` | SVG drawing. `opts`: `width/height/margin`, `showHidden`, `hiddenDash`, `strokeWidth`. |
 | `lineSegmentsToSvg(segments, direction, opts?)` | SVG for arbitrary 3D segments viewed along `direction`. |
 
-## WebGL2 viewer — `opencascade-ts/viewer`
+## WebGL2 viewer — `occt.ts/viewer`
 
 ```ts
-import { WebGLViewer } from "opencascade-ts/viewer";
+import { WebGLViewer } from "occt.ts/viewer";
 
 const viewer = new WebGLViewer(canvas, { background?, antialias? });
 const meshHandle = viewer.addMesh(meshOrMeshWithNormals, { color?, opacity? });
@@ -112,9 +114,9 @@ Line data convention everywhere: **segment pairs**. `addLineSegments(points)` tr
 ## CLI
 
 ```
-opencascade-ts info <input> [--json]
-opencascade-ts convert <input> <output> [--deflection mm] [--view x,y,z] [--up x,y,z] [--hidden]
-opencascade-ts hlr <input> <output.svg> [--view x,y,z] [--up x,y,z] [--hidden]
+occt-ts info <input> [--json]
+occt-ts convert <input> <output> [--deflection mm] [--view x,y,z] [--up x,y,z] [--hidden]
+occt-ts hlr <input> <output.svg> [--view x,y,z] [--up x,y,z] [--hidden]
 ```
 
 Inputs: `.step` `.stp` `.brep`. Outputs: `.step` `.stp` `.brep` `.stl` `.obj` `.svg`.

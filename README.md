@@ -2,6 +2,8 @@
 
 **[English](README.md)** | [简体中文](README.zh-CN.md)
 
+npm package: **`occt.ts`** · repo: `opencascade-ts`
+
 > **Open CASCADE for the agent era.** A modern OCCT kernel compiled to WebAssembly with first-class
 > TypeScript bindings, STEP/BRep import, hidden-line removal, and a zero-dependency WebGL2 viewer.
 > Runs headless in Node and in the browser. No Qt, no native toolchain.
@@ -33,7 +35,7 @@ stack for how software gets written now — by humans **and** by agents:
 ## Install
 
 ```bash
-npm install opencascade-ts
+npm install occt.ts
 ```
 
 The package ships the prebuilt wasm artifact. Building it yourself takes Docker and roughly
@@ -43,7 +45,7 @@ about a minute.
 ## Quickstart — Node (headless, agent-friendly)
 
 ```ts
-import { OccSession, hiddenLinesToSvg, meshToAsciiStl } from "opencascade-ts";
+import { OccSession, hiddenLinesToSvg, meshToAsciiStl } from "occt.ts";
 import { readFile, writeFile } from "node:fs/promises";
 
 const occ = await OccSession.create();
@@ -71,8 +73,8 @@ await writeFile("part.stl", meshToAsciiStl(occ.tessellate(part, { linearDeflecti
 ## Quickstart — browser (WebGL2, no dependencies)
 
 ```ts
-import { OccSession } from "opencascade-ts";
-import { WebGLViewer } from "opencascade-ts/viewer";
+import { OccSession } from "occt.ts";
+import { WebGLViewer } from "occt.ts/viewer";
 
 const occ = await OccSession.create();
 const viewer = new WebGLViewer(canvas);
@@ -91,7 +93,7 @@ Full example with STEP drag & drop, wireframe/HLR toggles and SVG export:
 Made for agent harnesses that live in a terminal:
 
 ```console
-$ opencascade-ts info bracket.step --json
+$ occt-ts info bracket.step --json
 {
   "file": "/work/bracket.step",
   "shapeType": "Solid",
@@ -102,9 +104,9 @@ $ opencascade-ts info bracket.step --json
   "counts": { "solids": 1, "shells": 1, "faces": 10, "wires": 10, "edges": 24, "vertices": 16 }
 }
 
-$ opencascade-ts convert bracket.step drawing.svg --view 1,1,2 --hidden
-$ opencascade-ts convert bracket.step mesh.stl --deflection 0.05
-$ opencascade-ts hlr bracket.step top.svg
+$ occt-ts convert bracket.step drawing.svg --view 1,1,2 --hidden
+$ occt-ts convert bracket.step mesh.stl --deflection 0.05
+$ occt-ts hlr bracket.step top.svg
 ```
 
 ## Built for agent harnesses
@@ -145,7 +147,7 @@ API reference: [docs/API.md](docs/API.md).
 ┌──────────────────────────────────────────────────────────┐
 │  your app / agent harness (Node or browser)              │
 ├──────────────────────────┬───────────────────────────────┤
-│  opencascade-ts (TS)     │  viewer (TS, WebGL2, 0 deps)  │
+│  occt.ts (TS)     │  viewer (TS, WebGL2, 0 deps)  │
 │  OccSession · types      │  orbit camera · mesh+line     │
 │  exporters: STL/OBJ/SVG  │  shaders · dashed HLR edges   │
 ├──────────────────────────┴───────────────────────────────┤

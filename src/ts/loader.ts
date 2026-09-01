@@ -58,6 +58,8 @@ async function loadInNode(options: WasmLocationOptions): Promise<OccWasmModule> 
     path.join(selfDir, "wasm"),
     path.resolve(selfDir, "..", "..", "dist", "wasm"),
     path.resolve(process.cwd(), "dist", "wasm"),
+    path.resolve(process.cwd(), "node_modules", "occt.ts", "dist", "wasm"),
+    // pre-rename installs keep working
     path.resolve(process.cwd(), "node_modules", "opencascade-ts", "dist", "wasm"),
   ];
 

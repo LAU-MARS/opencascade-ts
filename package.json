@@ -1,9 +1,17 @@
 {
-  "name": "opencascade-ts",
+  "name": "occt.ts",
   "version": "0.1.0",
-  "description": "Open CASCADE for the agent era — a modern OCCT (7.9+) compiled to WebAssembly with first-class TypeScript bindings, STEP/BREP import, hidden-line removal, and a zero-dependency WebGL2 viewer. No Qt, no native build: runs headless in Node and in the browser.",
+  "description": "Open CASCADE for the agent era — a modern OCCT (7.9+) compiled to WebAssembly with first-class TypeScript bindings, STEP/BRep import, hidden-line removal, and a zero-dependency WebGL2 viewer. No Qt, no native build: runs headless in Node and in the browser.",
   "type": "module",
   "license": "LGPL-2.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LAU-MARS/opencascade-ts.git"
+  },
+  "homepage": "https://github.com/LAU-MARS/opencascade-ts#readme",
+  "bugs": {
+    "url": "https://github.com/LAU-MARS/opencascade-ts/issues"
+  },
   "keywords": [
     "opencascade",
     "occt",
@@ -33,12 +41,13 @@
     }
   },
   "bin": {
-    "opencascade-ts": "./bin/cli.mjs"
+    "occt-ts": "./bin/cli.mjs"
   },
   "files": [
     "dist",
     "bin",
     "README.md",
+    "README.zh-CN.md",
     "LICENSE",
     "docs"
   ],

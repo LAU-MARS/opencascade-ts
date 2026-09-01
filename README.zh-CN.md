@@ -2,6 +2,8 @@
 
 [English](README.md) | **[简体中文](README.zh-CN.md)**
 
+npm 包名：**`occt.ts`** · 仓库名：`opencascade-ts`
+
 > **面向 Agent 时代的 Open CASCADE。** 将最新的 OCCT 内核编译为 WebAssembly，配一等公民的
 > TypeScript 绑定、STEP/BRep 模型导入、隐藏线消除（HLR）与零依赖 WebGL2 查看器。
 > Node 端完全无头运行，浏览器端开箱即用。不依赖 Qt，不需要本地工具链。
@@ -32,7 +34,7 @@ STEP/BRep 导入，没有 TypeScript 绑定，也不带渲染（或者强行拖�
 ## 安装
 
 ```bash
-npm install opencascade-ts
+npm install occt.ts
 ```
 
 npm 包内置预构建的 wasm 产物。自行构建需要 Docker，首次约 1–2 小时
@@ -41,7 +43,7 @@ npm 包内置预构建的 wasm 产物。自行构建需要 Docker，首次约 1�
 ## 快速上手 —— Node（无头，Agent 友好）
 
 ```ts
-import { OccSession, hiddenLinesToSvg, meshToAsciiStl } from "opencascade-ts";
+import { OccSession, hiddenLinesToSvg, meshToAsciiStl } from "occt.ts";
 import { readFile, writeFile } from "node:fs/promises";
 
 const occ = await OccSession.create();
@@ -69,8 +71,8 @@ await writeFile("part.stl", meshToAsciiStl(occ.tessellate(part, { linearDeflecti
 ## 快速上手 —— 浏览器（WebGL2，零依赖）
 
 ```ts
-import { OccSession } from "opencascade-ts";
-import { WebGLViewer } from "opencascade-ts/viewer";
+import { OccSession } from "occt.ts";
+import { WebGLViewer } from "occt.ts/viewer";
 
 const occ = await OccSession.create();
 const viewer = new WebGLViewer(canvas);
@@ -89,7 +91,7 @@ viewer.fit();
 专为活在终端里的 agent 工具设计：
 
 ```console
-$ opencascade-ts info bracket.step --json
+$ occt-ts info bracket.step --json
 {
   "file": "/work/bracket.step",
   "shapeType": "Solid",
@@ -100,9 +102,9 @@ $ opencascade-ts info bracket.step --json
   "counts": { "solids": 1, "shells": 1, "faces": 7, "wires": 7, "edges": 15, "vertices": 10 }
 }
 
-$ opencascade-ts convert bracket.step drawing.svg --view 1,1,2 --hidden
-$ opencascade-ts convert bracket.step mesh.stl --deflection 0.05
-$ opencascade-ts hlr bracket.step top.svg
+$ occt-ts convert bracket.step drawing.svg --view 1,1,2 --hidden
+$ occt-ts convert bracket.step mesh.stl --deflection 0.05
+$ occt-ts hlr bracket.step top.svg
 ```
 
 ## 为 Agent 工具而生
@@ -142,7 +144,7 @@ API 参考见 [docs/API.md](docs/API.md)（英文）。
 ┌──────────────────────────────────────────────────────────┐
 │  你的应用 / agent harness（Node 或浏览器）                │
 ├──────────────────────────┬───────────────────────────────┤
-│  opencascade-ts (TS)     │  查看器（TS, WebGL2, 零依赖）  │
+│  occt.ts (TS)     │  查看器（TS, WebGL2, 零依赖）  │
 │  OccSession · 类型       │  轨道相机 · 网格+线框          │
 │  导出器: STL/OBJ/SVG     │  着色器 · 虚线隐藏边           │
 ├──────────────────────────┴───────────────────────────────┤
