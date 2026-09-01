@@ -30,8 +30,15 @@ is documented in `src/ts/loader.ts`.
 | `translate(shape, [x,y,z])` | Rigid move. |
 | `rotate(shape, axis, angleDegrees)` | Rotation about `axis` through the origin. |
 | `scale(shape, factor)` | Uniform scaling (negative mirrors). |
-| `readStep(bytes)` / `readBrep(bytes)` | Import from file bytes → shape. Throws with a `STEP`/`BREP`-prefixed message on bad input. |
-| `writeStep(shape)` / `writeBrep(shape, withTriangles?)` | Export → `Uint8Array` (ASCII text). |
+| `readStep(bytes, {unit?})` / `readBrep(bytes)` / `readIges(bytes)` | Import from file bytes → shape. Throws with a `STEP`/`BREP`/`IGES`-prefixed message on bad input. |
+| `readStepDocument(bytes, {unit?})` | Import as an XCAF document: `{ format, tree, shapeCount }` with names, `"#RRGGBB"` colors and 12-number instance transforms. |
+| `documentShape(index)` / `documentShapeCount` | World-positioned leaf shapes from the last `readStepDocument` (valid until the next call). |
+| `writeStep(shape, {unit?})` / `writeIges(shape)` / `writeBrep(shape, withTriangles?)` | Export → `Uint8Array` (ASCII text). |
+| `writeGltf(shape)` | Export → binary glTF `.glb` (pure TypeScript exporter). |
+| `describe(shape)` | Analytic faces/edges + heuristic holes → `PartDescription`. |
+| `distance(a, b)` | `{distance, points: [[onA, onB], …]}` — minimum distance, up to 8 pairs. |
+| `section(a, b)` | Intersection curve(s) of two shapes' surfaces (an edge/compound shape). |
+| `classifyPoint(shape, [x,y,z])` | `"in"` / `"out"` / `"on"` / `"unknown"` against all solids. |
 | `tessellate(shape, opts?)` | → `MeshData`. |
 | `hiddenLines(shape, { direction, up?, deflection? })` | HLR → `HiddenLineResult`. |
 | `dispose()` | Free every shape created by this session. |
@@ -65,6 +72,27 @@ occ.tessellate(shape, {
   (independent of the triangulation).
 - `computeVertexNormals(positions, indices)` — area-weighted vertex normals (pure TS).
 
+## Geometry interrogation — the "agent eyes"
+
+```ts
+const d = occ.describe(part);
+// { shapeType, faces: [...], edges: [...], holes: [...] }
+```
+
+- **faces** — analytic per-face data: `{surface:"plane", origin, normal, area}`,
+  `{surface:"cylinder", axisPoint, axis, radius, area}`, cone/sphere/torus likewise,
+  or generic `{surface:"bspline-surface"|"revolution"|…, area}`.
+- **edges** — `{curve:"line", start, end, direction, length}`,
+  `{curve:"circle", center, axis, radius, uRange, closed, length}` (radians),
+  ellipse/bspline likewise.
+- **holes** — heuristic bore detection (`detectHoles`, pure TS): a cylindrical face
+  bounded by exactly two coaxial full circles of the same radius →
+  `{radius, axis, center (mid-depth), length}`.
+
+The XCAF document tree (`readStepDocument`) nodes are `{name, color, transform,
+shape?, children?}`; `transform` holds 12 row-major numbers (3×4) when an instance
+is not at identity.
+
 ## Hidden-line removal — `HiddenLineResult`
 
 ```ts
@@ -85,6 +113,7 @@ Both line arrays use the same segment-pair convention as `MeshData.edges`.
 | `meshToObj(mesh)` | Wavefront OBJ with wireframe `l` entries. |
 | `hiddenLinesToSvg(hlr, opts?)` | SVG drawing. `opts`: `width/height/margin`, `showHidden`, `hiddenDash`, `strokeWidth`. |
 | `lineSegmentsToSvg(segments, direction, opts?)` | SVG for arbitrary 3D segments viewed along `direction`. |
+| `meshToGlb(mesh, opts?)` | Binary glTF 2.0 `.glb` (single file, wireframe included). |
 
 ## WebGL2 viewer — `occt.ts/viewer`
 
@@ -114,10 +143,12 @@ Line data convention everywhere: **segment pairs**. `addLineSegments(points)` tr
 ## CLI
 
 ```
-occt-ts info <input> [--json]
-occt-ts convert <input> <output> [--deflection mm] [--view x,y,z] [--up x,y,z] [--hidden]
+occt-ts info <input> [--json] [--unit mm]
+occt-ts describe <input> [--json]
+occt-ts tree <input>
+occt-ts convert <input> <output> [--deflection mm] [--view x,y,z] [--up x,y,z] [--unit mm] [--hidden]
 occt-ts hlr <input> <output.svg> [--view x,y,z] [--up x,y,z] [--hidden]
 ```
 
-Inputs: `.step` `.stp` `.brep`. Outputs: `.step` `.stp` `.brep` `.stl` `.obj` `.svg`.
+Inputs: `.step` `.stp` `.brep` `.igs` `.iges`. Outputs: `.step` `.stp` `.brep` `.igs` `.iges` `.stl` `.obj` `.svg` `.glb`.
 Exit code 0 on success, 1 with `error: …` on stderr otherwise — agent-shell friendly.

@@ -138,12 +138,136 @@ describeWasm("opencascade-ts kernel (wasm integration)", () => {
     // From a corner the vertical edges become silhouettes → more visible edges.
     const iso = occ.hiddenLines(box, { direction: [1, 1, 1] });
     expect(iso.visible.length / 6).toBeGreaterThan(top.visible.length / 6);
-    const hlr = top;
 
     // frame sanity: orthonormal, both ⟂ to the view direction
     const dot = (a: readonly number[], b: readonly number[]): number =>
       a[0]! * b[0]! + a[1]! * b[1]! + a[2]! * b[2]!;
-    expect(dot(hlr.xAxis, hlr.yAxis)).toBeCloseTo(0, 6);
-    expect(Math.abs(dot(hlr.xAxis, [0, 0, 1]))).toBeCloseTo(0, 6);
+    expect(dot(top.xAxis, top.yAxis)).toBeCloseTo(0, 6);
+    expect(Math.abs(dot(top.xAxis, [0, 0, 1]))).toBeCloseTo(0, 6);
+  });
+
+  it("describes faces and edges with analytic parameters", () => {
+    const part = occ.cut(
+      occ.makeBox(20, 20, 5),
+      occ.makeCylinder(4, 20, { origin: [10, 10, -5] }),
+    );
+    const d = occ.describe(part);
+
+    const cylinders = d.faces.filter((f) => f.surface === "cylinder");
+    expect(cylinders).toHaveLength(1);
+    expect(cylinders[0]!.radius).toBeCloseTo(4, 6);
+
+    const planes = d.faces.filter((f) => f.surface === "plane");
+    expect(planes.length).toBeGreaterThanOrEqual(6);
+    // the top face's normal is +Z
+    const topFace = planes.find(
+      (f) => f.normal && Math.abs(f.normal[2] - 1) < 1e-9 && Math.abs(f.origin[2] - 5) < 1e-6,
+    );
+    expect(topFace).toBeDefined();
+
+    const circles = d.edges.filter((e) => e.curve === "circle");
+    expect(circles.length).toBeGreaterThanOrEqual(2);
+    const full = circles.filter((c) => c.closed);
+    expect(full.every((c) => Math.abs(c.radius - 4) < 1e-9)).toBe(true);
+    for (const c of full) {
+      expect(Math.hypot(c.center[0] - 10, c.center[1] - 10)).toBeLessThan(1e-6);
+      expect(c.length).toBeCloseTo(2 * Math.PI * 4, 4);
+    }
+  });
+
+  it("detects the bore as a hole candidate", () => {
+    const part = occ.cut(
+      occ.makeBox(20, 20, 5),
+      occ.makeCylinder(4, 20, { origin: [10, 10, -5] }),
+    );
+    const d = occ.describe(part);
+    expect(d.holes).toHaveLength(1);
+    expect(d.holes[0]!.radius).toBeCloseTo(4, 6);
+    expect(d.holes[0]!.length).toBeCloseTo(5, 4);
+    expect(d.holes[0]!.center).toEqual([10, 10, 2.5]);
+  });
+
+  it("measures the minimum distance between shapes", () => {
+    const a = occ.makeBox(10, 10, 10);
+    const b = occ.translate(occ.makeBox(10, 10, 10), [13, 0, 0]);
+    const d = occ.distance(a, b);
+    expect(d.distance).toBeCloseTo(3, 6);
+    expect(d.points.length).toBeGreaterThanOrEqual(1);
+    const [pa, pb] = d.points[0]!;
+    expect(pa[0]).toBeCloseTo(10, 4);
+    expect(pb[0]).toBeCloseTo(13, 4);
+  });
+
+  it("computes section curves between a box and a cylinder", () => {
+    const box = occ.makeBox(10, 10, 10);
+    const cylinder = occ.makeCylinder(2, 20, { origin: [5, 5, -5] });
+    const section = occ.section(box, cylinder);
+    const d = occ.describe(section);
+    const circles = d.edges.filter((e) => e.curve === "circle");
+    // the cylinder crosses the box top and bottom faces: two full circles
+    expect(circles).toHaveLength(2);
+    for (const circle of circles) {
+      expect(circle.radius).toBeCloseTo(2, 6);
+      expect(circle.closed).toBe(true);
+    }
+  });
+
+  it("classifies points in, out and on a solid", () => {
+    const box = occ.makeBox(10, 10, 10);
+    expect(occ.classifyPoint(box, [5, 5, 5])).toBe("in");
+    expect(occ.classifyPoint(box, [50, 5, 5])).toBe("out");
+    expect(occ.classifyPoint(box, [5, 5, 0])).toBe("on");
+    expect(occ.classifyPoint(box, [10, 10, 10])).toBe("on");
+  });
+
+  it("round-trips through IGES", () => {
+    const part = occ.cut(
+      occ.makeBox(20, 20, 5),
+      occ.makeCylinder(4, 20, { origin: [10, 10, -5] }),
+    );
+    const igesBytes = occ.writeIges(part);
+    // fixed-format IGES: section numbers in columns 73-80, "IGES" in the globals
+    expect(igesBytes.length).toBeGreaterThan(100);
+    const restored = occ.readIges(igesBytes);
+    expect(restored.volume()).toBeCloseTo(part.volume(), 1);
+  });
+
+  it("reads STEP as an XCAF document with a shape tree", () => {
+    const part = occ.cut(
+      occ.makeBox(20, 20, 5),
+      occ.makeCylinder(4, 20, { origin: [10, 10, -5] }),
+    );
+    const document = occ.readStepDocument(occ.writeStep(part));
+    expect(document.format).toBe("step");
+    expect(document.tree.length).toBeGreaterThanOrEqual(1);
+    expect(document.shapeCount).toBeGreaterThanOrEqual(1);
+
+    const first = document.tree[0]!;
+    const leaf = first.children?.[0] ?? first;
+    expect(leaf.shape).toBeDefined();
+
+    const shape = occ.documentShape(leaf.shape!);
+    expect(shape.isValid()).toBe(true);
+    expect(shape.volume()).toBeCloseTo(part.volume(), 2);
+  });
+
+  it("exports binary glTF (.glb)", () => {
+    const glb = occ.writeGltf(occ.makeBox(20, 10, 5));
+    expect(glb.length).toBeGreaterThan(500);
+    // glTF binary magic "glTF" little-endian
+    expect(glb[0]).toBe(0x67);
+    expect(glb[1]).toBe(0x6c);
+    expect(glb[2]).toBe(0x54);
+    expect(glb[3]).toBe(0x46);
+  });
+
+  it("exports STEP in a chosen unit", () => {
+    const box = occ.makeBox(1000, 1000, 1000);
+    const mm = new TextDecoder().decode(occ.writeStep(box));
+    expect(mm).toContain("MILLI");
+
+    const metres = new TextDecoder().decode(occ.writeStep(box, { unit: "m" }));
+    expect(metres).toContain("METRE");
+    expect(metres).not.toContain("MILLI");
   });
 });

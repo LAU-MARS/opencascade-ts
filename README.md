@@ -23,14 +23,19 @@ stack for how software gets written now — by humans **and** by agents:
 | TypeScript bindings — hand-written types, ESM, strict mode | ✅ |
 | STEP (AP203/AP214/AP242) and BRep **import** | ✅ |
 | STEP and BRep export (incl. tessellation-in-BRep) | ✅ |
+| IGES import + export | ✅ |
+| XCAF document reading: assembly **tree, names, colors**, instance transforms | ✅ |
+| Unit selection on STEP I/O (`mm/cm/m/km/inch/ft/mi/um`) | ✅ |
 | Modeling: primitives, booleans (fuse/cut/common), transforms, scale | ✅ |
 | Measures: volume, area, bounds, validity, sub-shape counts | ✅ |
+| **Geometry interrogation** — analytic face/edge parameters, min distance + closest points, section curves, point-in-solid | ✅ |
+| **Hole detection** — heuristic bore recognition (radius/axis/depth) from the description | ✅ |
 | **HLR** — hidden-line removal → visible/hidden edge segments → SVG drawings | ✅ |
 | WebGL2 viewer — zero dependencies, orbit/pan/zoom, wireframe, dashed hidden edges | ✅ |
 | Headless in Node 18+ (no GPU, no browser needed) | ✅ |
-| CLI (`info` / `convert` / `hlr`) with JSON output | ✅ |
-| Outputs: STEP, BRep, STL, OBJ, SVG | ✅ |
-| XCAF (names, colors, assemblies), IGES, fillets/chamfers, MCP server | 🚧 roadmap |
+| CLI (`info` / `describe` / `tree` / `convert` / `hlr`) with JSON output | ✅ |
+| Outputs: STEP, BRep, IGES, STL, OBJ, SVG, glTF (.glb) | ✅ |
+| Sketch→solid modeling (extrude/revolve), fillets/chamfers, MCP server, XCAF write-back | 🚧 roadmap |
 
 ## Install
 
@@ -106,7 +111,25 @@ $ occt-ts info bracket.step --json
 
 $ occt-ts convert bracket.step drawing.svg --view 1,1,2 --hidden
 $ occt-ts convert bracket.step mesh.stl --deflection 0.05
+$ occt-ts convert bracket.step model.glb
 $ occt-ts hlr bracket.step top.svg
+```
+
+Interrogate a part — the "agent eyes" (analytic parameters, holes):
+
+```console
+$ occt-ts describe bracket.step
+bracket.step: Solid
+  faces: 7 (6 plane, 1 cylinder)
+  edges: 15 (13 line, 2 circle)
+  holes:
+    r=14  depth=10  axis=[0,0,1]  center=[40,25,5]
+
+$ occt-ts tree assembly.step
+assembly.step: 3 shape(s)
+└─ robot-arm · transformed
+   ├─ base · #0 Solid vol=8421.4
+   └─ gripper · #FF5500 · transformed · #2 Solid vol=315.8
 ```
 
 ## Built for agent harnesses

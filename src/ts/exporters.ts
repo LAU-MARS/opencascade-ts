@@ -3,6 +3,7 @@
  * Everything here runs headless in Node with no wasm required.
  */
 
+import { computeVertexNormals } from "./mesh-utils.js";
 import type { HiddenLineResult, MeshData, Vec3 } from "./types.js";
 
 /** ASCII STL from a tessellated mesh. */
@@ -183,6 +184,167 @@ export function lineSegmentsToSvg(
   const xAxis = normalize(cross3(up, direction));
   const yAxis = normalize(cross3(direction, xAxis));
   return hiddenLinesToSvg({ visible: segments, hidden: new Float32Array(0), xAxis, yAxis }, options);
+}
+
+// --- binary glTF (.glb) ---------------------------------------------------------
+
+export interface GlbExportOptions {
+  name?: string;
+  /** Include the wireframe as LINE primitives. Default `true`. */
+  wireframe?: boolean;
+}
+
+/**
+ * Binary glTF 2.0 (.glb) from a tessellated mesh — single file, no external
+ * buffers. Pure TypeScript: needs no wasm, no OCCT RapidJSON support.
+ */
+export function meshToGlb(mesh: MeshData, options: GlbExportOptions = {}): Uint8Array {
+  const includeWireframe = options.wireframe ?? true;
+  const encoder = new TextEncoder();
+
+  // --- binary section: positions, normals, indices, line indices ---
+  const normals = computeVertexNormals(mesh.positions, mesh.indices);
+  const chunks: ArrayBuffer[] = [];
+  const views: Array<{ buffer: number; byteOffset: number; byteLength: number; target?: number }> = [];
+  const accessors: Record<string, unknown>[] = [];
+
+  let offset = 0;
+  const pushView = (data: ArrayBuffer, target: number | undefined): number => {
+    views.push({ buffer: 0, byteOffset: offset, byteLength: data.byteLength, target });
+    chunks.push(data);
+    offset += data.byteLength;
+    // pad to 4 bytes for the next view
+    const padding = (4 - (offset % 4)) % 4;
+    if (padding > 0) {
+      chunks.push(new ArrayBuffer(padding));
+      offset += padding;
+    }
+    return views.length - 1;
+  };
+
+  if (mesh.positions.length === 0 || mesh.indices.length === 0) {
+    throw new Error("meshToGlb: mesh has no triangles");
+  }
+
+  // POSITION
+  const positionsView = pushView(mesh.positions.slice().buffer, 34962);
+  let min = [Infinity, Infinity, Infinity];
+  let max = [-Infinity, -Infinity, -Infinity];
+  for (let i = 0; i < mesh.positions.length; i += 3) {
+    for (let axis = 0; axis < 3; axis++) {
+      const value = mesh.positions[i + axis]!;
+      min[axis] = Math.min(min[axis]!, value);
+      max[axis] = Math.max(max[axis]!, value);
+    }
+  }
+  accessors.push({
+    bufferView: positionsView,
+    componentType: 5126,
+    count: mesh.positions.length / 3,
+    type: "VEC3",
+    min,
+    max,
+  });
+
+  // NORMAL
+  const normalsView = pushView(normals.slice().buffer, 34962);
+  accessors.push({
+    bufferView: normalsView,
+    componentType: 5126,
+    count: normals.length / 3,
+    type: "VEC3",
+  });
+
+  // indices (triangle indices, then optional wireframe line indices as uint32)
+  const indicesView = pushView(mesh.indices.slice().buffer, 34963);
+  accessors.push({
+    bufferView: indicesView,
+    componentType: 5125,
+    count: mesh.indices.length,
+    type: "SCALAR",
+  });
+
+  const primitives: Record<string, unknown>[] = [
+    { attributes: { POSITION: 0, NORMAL: 1 }, indices: 2, mode: 4 },
+  ];
+
+  if (includeWireframe && mesh.edges.length >= 6) {
+    // wireframe as lines over the edge vertices: reuse edge points as
+    // additional positions is simplest, but they are already in the same
+    // buffer — emit them as their own accessor for clarity.
+    const positionCount = mesh.positions.length / 3;
+    const lineIndices = new Uint32Array(mesh.edges.length / 3);
+    for (let i = 0; i < lineIndices.length; i++) {
+      lineIndices[i] = positionCount + i;
+    }
+    const edgesView = pushView(mesh.edges.slice().buffer, 34962);
+    accessors.push({
+      bufferView: edgesView,
+      componentType: 5126,
+      count: mesh.edges.length / 3,
+      type: "VEC3",
+    });
+    const lineIndicesView = pushView(lineIndices.buffer, 34963);
+    accessors.push({
+      bufferView: lineIndicesView,
+      componentType: 5125,
+      count: lineIndices.length,
+      type: "SCALAR",
+    });
+    primitives.push({
+      attributes: { POSITION: 3 },
+      indices: 4,
+      mode: 1, // LINES
+    });
+  }
+
+  const binaryLength = offset;
+  const gltf = {
+    asset: { version: "2.0", generator: "opencascade-ts" },
+    scene: 0,
+    scenes: [{ nodes: [0], name: options.name ?? "shape" }],
+    nodes: [{ mesh: 0, name: options.name ?? "shape" }],
+    meshes: [{ primitives }],
+    accessors,
+    bufferViews: views,
+    buffers: [{ byteLength: binaryLength }],
+  };
+
+  // --- .glb container: header + JSON chunk (space-padded) + BIN chunk (zero-padded) ---
+  const jsonBytes = encoder.encode(JSON.stringify(gltf));
+  const jsonPadding = (4 - (jsonBytes.length % 4)) % 4;
+  const jsonLength = jsonBytes.length + jsonPadding;
+
+  const binary = new Uint8Array(binaryLength);
+  let cursor = 0;
+  for (const chunk of chunks) {
+    binary.set(new Uint8Array(chunk), cursor);
+    cursor += chunk.byteLength;
+  }
+
+  const totalLength = 12 + 8 + jsonLength + (binaryLength > 0 ? 8 + binaryLength : 0);
+  const glb = new Uint8Array(totalLength);
+  const dataView = new DataView(glb.buffer);
+
+  dataView.setUint32(0, 0x46546c67, true); // "glTF"
+  dataView.setUint32(4, 2, true); // version
+  dataView.setUint32(8, totalLength, true);
+
+  dataView.setUint32(12, jsonLength, true);
+  dataView.setUint32(16, 0x4e4f534a, true); // "JSON"
+  glb.set(jsonBytes, 20);
+  for (let i = 0; i < jsonPadding; i++) {
+    glb[20 + jsonBytes.length + i] = 0x20; // spaces
+  }
+
+  if (binaryLength > 0) {
+    const binHeader = 20 + jsonLength;
+    dataView.setUint32(binHeader, binaryLength, true);
+    dataView.setUint32(binHeader + 4, 0x004e4942, true); // "BIN\0"
+    glb.set(binary, binHeader + 8);
+  }
+
+  return glb;
 }
 
 function cross3(a: Vec3, b: Vec3): Vec3 {

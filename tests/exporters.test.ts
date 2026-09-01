@@ -4,6 +4,7 @@ import {
   hiddenLinesToSvg,
   lineSegmentsToSvg,
   meshToAsciiStl,
+  meshToGlb,
   meshToObj,
 } from "../src/ts/exporters.js";
 import type { MeshData } from "../src/ts/types.js";
@@ -77,6 +78,34 @@ describe("hiddenLinesToSvg", () => {
       yAxis: [0, 1, 0],
     });
     expect(svg).toContain("no edges");
+  });
+});
+
+describe("meshToGlb", () => {
+  it("produces a valid .glb container that parses back", () => {
+    const glb = meshToGlb(triangleMesh);
+    expect(glb[0]).toBe(0x67); // "glTF" magic
+    expect(glb[1]).toBe(0x6c);
+    expect(glb[2]).toBe(0x54);
+    expect(glb[3]).toBe(0x46);
+
+    const view = new DataView(glb.buffer, glb.byteOffset, glb.byteLength);
+    expect(view.getUint32(4, true)).toBe(2); // container version
+    expect(view.getUint32(8, true)).toBe(glb.length); // declared length
+
+    const jsonLength = view.getUint32(12, true);
+    const json = JSON.parse(new TextDecoder().decode(glb.slice(20, 20 + jsonLength)));
+    expect(json.asset.generator).toBe("opencascade-ts");
+    expect(json.accessors[0].count).toBe(3); // POSITION
+    expect(json.accessors[0].min).toEqual([0, 0, 0]);
+    expect(json.accessors[0].max).toEqual([1, 1, 0]);
+    expect(json.meshes[0].primitives[0].mode).toBe(4); // triangles
+    expect(json.meshes[0].primitives[1].mode).toBe(1); // wireframe lines
+    expect(json.buffers[0].byteLength % 4).toBe(0);
+  });
+
+  it("rejects empty meshes", () => {
+    expect(() => meshToGlb({ positions: new Float32Array(0), indices: new Uint32Array(0), edges: new Float32Array(0) })).toThrow();
   });
 });
 

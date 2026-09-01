@@ -17,6 +17,7 @@
 #include <type_traits>
 
 #include "hlr.h"
+#include "interrogate.h"
 #include "io.h"
 #include "mesher.h"
 #include "model.h"
@@ -124,20 +125,55 @@ HlrData hiddenLinesWrap(const OccShape& shape,
       HlrData());
 }
 
-OccShape readStepWrap(unsigned int ptr, int length) {
-  return guarded("readStep: STEP import failed", [&] { return readStepBytes(ptr, length); }, OccShape());
+OccShape readStepWrap(unsigned int ptr, int length, const std::string& unit) {
+  return guarded("readStep: STEP import failed", [&] { return readStepBytes(ptr, length, unit); }, OccShape());
 }
 
 OccShape readBrepWrap(unsigned int ptr, int length) {
   return guarded("readBrep: BREP import failed", [&] { return readBrepBytes(ptr, length); }, OccShape());
 }
 
-std::string writeStepWrap(const OccShape& shape) {
-  return guarded("writeStep", [&] { return writeStep(shape); }, std::string());
+OccShape readIgesWrap(unsigned int ptr, int length) {
+  return guarded("readIges: IGES import failed", [&] { return readIgesBytes(ptr, length); }, OccShape());
+}
+
+std::string readStepDocumentWrap(unsigned int ptr, int length, const std::string& unit) {
+  return guarded("readStepDocument: STEP document import failed",
+                 [&] { return readStepDocumentBytes(ptr, length, unit); }, std::string());
+}
+
+OccShape getDocumentShapeWrap(int index) {
+  return guarded("documentShape", [&] { return getDocumentShape(index); }, OccShape());
+}
+
+std::string writeStepWrap(const OccShape& shape, const std::string& unit) {
+  return guarded("writeStep", [&] { return writeStep(shape, unit); }, std::string());
 }
 
 std::string writeBrepWrap(const OccShape& shape, bool withTriangles) {
   return guarded("writeBrep", [&] { return writeBrep(shape, withTriangles); }, std::string());
+}
+
+std::string writeIgesWrap(const OccShape& shape) {
+  return guarded("writeIges", [&] { return writeIges(shape); }, std::string());
+}
+
+// --- geometry interrogation ----------------------------------------------------
+
+std::string describeWrap(const OccShape& shape) {
+  return guarded("describe", [&] { return describeGeometry(shape); }, std::string());
+}
+
+std::string distanceWrap(const OccShape& a, const OccShape& b) {
+  return guarded("distance", [&] { return distanceBetween(a, b); }, std::string());
+}
+
+OccShape sectionWrap(const OccShape& a, const OccShape& b) {
+  return guarded("section", [&] { return sectionOf(a, b); }, OccShape());
+}
+
+std::string classifyPointWrap(const OccShape& shape, double x, double y, double z) {
+  return guarded("classifyPoint", [&] { return classifyPointIn(shape, x, y, z); }, std::string("unknown"));
 }
 
 } // namespace
@@ -193,6 +229,16 @@ EMSCRIPTEN_BINDINGS(opencascade_ts) {
 
   function("readStep", &readStepWrap);
   function("readBrep", &readBrepWrap);
+  function("readIges", &readIgesWrap);
+  function("readStepDocument", &readStepDocumentWrap);
+  function("documentShapeCount", &documentShapeCount);
+  function("getDocumentShape", &getDocumentShapeWrap);
   function("writeStep", &writeStepWrap);
   function("writeBrep", &writeBrepWrap);
+  function("writeIges", &writeIgesWrap);
+
+  function("describe", &describeWrap);
+  function("distance", &distanceWrap);
+  function("section", &sectionWrap);
+  function("classifyPoint", &classifyPointWrap);
 }

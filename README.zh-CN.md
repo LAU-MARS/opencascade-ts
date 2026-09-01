@@ -22,14 +22,19 @@ STEP/BRep 导入，没有 TypeScript 绑定，也不带渲染（或者强行拖�
 | TypeScript 绑定——手写类型、ESM、strict 模式 | ✅ |
 | STEP（AP203/AP214/AP242）与 BRep **导入** | ✅ |
 | STEP 与 BRep 导出（含带网格的 BRep） | ✅ |
+| IGES 导入 + 导出 | ✅ |
+| XCAF 文档读取：装配**树、名称、颜色**、实例变换 | ✅ |
+| STEP 读写单位制（`mm/cm/m/km/inch/ft/mi/um`） | ✅ |
 | 建模：图元、布尔（fuse/cut/common）、变换、缩放 | ✅ |
 | 测量：体积、表面积、包围盒、有效性、子形状计数 | ✅ |
+| **几何查询**——面/边解析参数、最小距离+最近点、截面线、点在体内判断 | ✅ |
+| **孔检测**——从描述结果启发式识别圆孔（半径/轴向/深度） | ✅ |
 | **HLR**——隐藏线消除 → 可见/隐藏边线段 → SVG 工程图 | ✅ |
 | WebGL2 查看器——零依赖、轨道/平移/缩放、线框、虚线隐藏边 | ✅ |
 | Node 18+ 无头运行（无需 GPU、无需浏览器） | ✅ |
-| CLI（`info` / `convert` / `hlr`），支持 JSON 输出 | ✅ |
-| 输出格式：STEP、BRep、STL、OBJ、SVG | ✅ |
-| XCAF（名称/颜色/装配体）、IGES、圆角/倒角、MCP server | 🚧 路线图 |
+| CLI（`info` / `describe` / `tree` / `convert` / `hlr`），支持 JSON 输出 | ✅ |
+| 输出格式：STEP、BRep、IGES、STL、OBJ、SVG、glTF (.glb) | ✅ |
+| 草图成体（拉伸/旋转）、圆角/倒角、MCP server、XCAF 写回 | 🚧 路线图 |
 
 ## 安装
 
@@ -104,7 +109,25 @@ $ occt-ts info bracket.step --json
 
 $ occt-ts convert bracket.step drawing.svg --view 1,1,2 --hidden
 $ occt-ts convert bracket.step mesh.stl --deflection 0.05
+$ occt-ts convert bracket.step model.glb
 $ occt-ts hlr bracket.step top.svg
+```
+
+零件查询——给 agent 装上"眼睛"（解析参数、孔识别）：
+
+```console
+$ occt-ts describe bracket.step
+bracket.step: Solid
+  faces: 7 (6 plane, 1 cylinder)
+  edges: 15 (13 line, 2 circle)
+  holes:
+    r=14  depth=10  axis=[0,0,1]  center=[40,25,5]
+
+$ occt-ts tree assembly.step
+assembly.step: 3 shape(s)
+└─ robot-arm · transformed
+   ├─ base · #0 Solid vol=8421.4
+   └─ gripper · #FF5500 · transformed · #2 Solid vol=315.8
 ```
 
 ## 为 Agent 工具而生

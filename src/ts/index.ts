@@ -10,20 +10,45 @@ export { loadOccModule } from "./loader.js";
 export type { WasmLocationOptions } from "./loader.js";
 export { computeVertexNormals, withVertexNormals } from "./mesh-utils.js";
 export type { MeshWithNormals } from "./mesh-utils.js";
+export { detectHoles } from "./interrogate.js";
+export type {
+  BSplineEdgeInfo,
+  CircleEdgeInfo,
+  ConeFaceInfo,
+  CylinderFaceInfo,
+  DocumentNode,
+  EdgeInfo,
+  EllipseEdgeInfo,
+  FaceInfo,
+  GenericEdgeInfo,
+  GenericFaceInfo,
+  GeometryDescription,
+  HoleCandidate,
+  LineEdgeInfo,
+  PartDescription,
+  PlaneFaceInfo,
+  ShapeDistance,
+  ShapeDocument,
+  SphereFaceInfo,
+  TorusFaceInfo,
+} from "./interrogate.js";
 export {
   hiddenLinesToSvg,
   lineSegmentsToSvg,
   meshToAsciiStl,
+  meshToGlb,
   meshToObj,
 } from "./exporters.js";
-export type { SvgExportOptions } from "./exporters.js";
+export type { GlbExportOptions, SvgExportOptions } from "./exporters.js";
 export type {
   BoundingBox,
   HiddenLineOptions,
   HiddenLineResult,
   MeshData,
+  PointClassification,
   PrimitiveOptions,
   ShapeTypeName,
   TessellationOptions,
+  UnitOption,
   Vec3,
 } from "./types.js";

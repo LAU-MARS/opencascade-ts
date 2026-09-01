@@ -11,14 +11,24 @@
  */
 
 import { loadOccModule, type WasmLocationOptions } from "./loader.js";
+import { meshToGlb } from "./exporters.js";
+import {
+  detectHoles,
+  type GeometryDescription,
+  type PartDescription,
+  type ShapeDistance,
+  type ShapeDocument,
+} from "./interrogate.js";
 import type {
   BoundingBox,
   HiddenLineOptions,
   HiddenLineResult,
   MeshData,
+  PointClassification,
   PrimitiveOptions,
   ShapeTypeName,
   TessellationOptions,
+  UnitOption,
   Vec3,
 } from "./types.js";
 import type { OccWasmModule, WasmShape } from "./wasm-module.js";
@@ -164,8 +174,39 @@ export class OccSession {
   // --- data exchange ----------------------------------------------------------------
 
   /** Import a STEP file (AP203/AP214/AP242) from raw bytes. */
-  readStep(bytes: Uint8Array): OccShape {
-    return this.adopt(this.withHeapBytes(bytes, (ptr, len) => this.module.readStep(ptr, len)));
+  readStep(bytes: Uint8Array, options: { unit?: UnitOption } = {}): OccShape {
+    return this.adopt(
+      this.withHeapBytes(bytes, (ptr, len) => this.module.readStep(ptr, len, options.unit ?? "")),
+    );
+  }
+
+  /** Import an IGES file from raw bytes. */
+  readIges(bytes: Uint8Array): OccShape {
+    return this.adopt(this.withHeapBytes(bytes, (ptr, len) => this.module.readIges(ptr, len)));
+  }
+
+  /**
+   * Import a STEP file as an XCAF document: assembly tree with names, colors
+   * and instance transforms. Leaf shapes (world-positioned) are available via
+   * `documentShape(index)` until the next `readStepDocument` call.
+   */
+  readStepDocument(bytes: Uint8Array, options: { unit?: UnitOption } = {}): ShapeDocument {
+    const json = this.withHeapBytes(
+      bytes,
+      (ptr, len) => this.module.readStepDocument(ptr, len, options.unit ?? ""),
+    );
+    this.throwIfError();
+    return JSON.parse(json) as ShapeDocument;
+  }
+
+  /** Number of leaf shapes registered by the last `readStepDocument`. */
+  get documentShapeCount(): number {
+    return this.module.documentShapeCount();
+  }
+
+  /** Leaf shape by index from the last `readStepDocument` (world-positioned). */
+  documentShape(index: number): OccShape {
+    return this.adopt(this.module.getDocumentShape(index));
   }
 
   /** Import a BRep file (OCCT's native format) from raw bytes. */
@@ -174,10 +215,26 @@ export class OccSession {
   }
 
   /** Export as STEP text. */
-  writeStep(shape: OccShape): Uint8Array {
-    const text = this.module.writeStep(shape.raw);
+  writeStep(shape: OccShape, options: { unit?: UnitOption } = {}): Uint8Array {
+    const text = this.module.writeStep(shape.raw, options.unit ?? "");
     this.throwIfError();
     return new TextEncoder().encode(text);
+  }
+
+  /** Export as IGES text. */
+  writeIges(shape: OccShape): Uint8Array {
+    const text = this.module.writeIges(shape.raw);
+    this.throwIfError();
+    return new TextEncoder().encode(text);
+  }
+
+  /**
+   * Export as binary glTF (.glb, single file). Pure TypeScript exporter over
+   * `tessellate` — the OCCT RWGltf writer is not compiled into the kernel
+   * (it would require RapidJSON; see docs/BUILDING.md).
+   */
+  writeGltf(shape: OccShape): Uint8Array {
+    return meshToGlb(this.tessellate(shape));
   }
 
   /** Export as BRep text. Set `withTriangles` to carry the tessellation along. */
@@ -185,6 +242,38 @@ export class OccSession {
     const text = this.module.writeBrep(shape.raw, withTriangles);
     this.throwIfError();
     return new TextEncoder().encode(text);
+  }
+
+  // --- geometry interrogation ----------------------------------------------------
+
+  /**
+   * Analytic description of every face and edge (planes, cylinders, circles,
+   * …) plus heuristic hole detection — the "agent eyes" on a part.
+   */
+  describe(shape: OccShape): PartDescription {
+    const json = this.module.describe(shape.raw);
+    this.throwIfError();
+    const description = JSON.parse(json) as GeometryDescription;
+    return { ...description, holes: detectHoles(description.faces, description.edges) };
+  }
+
+  /** Minimum distance between two shapes with up to 8 closest point pairs. */
+  distance(a: OccShape, b: OccShape): ShapeDistance {
+    const json = this.module.distance(a.raw, b.raw);
+    this.throwIfError();
+    return JSON.parse(json) as ShapeDistance;
+  }
+
+  /** Intersection curve(s) of two shapes' surfaces (an edge/compound shape). */
+  section(a: OccShape, b: OccShape): OccShape {
+    return this.adopt(this.module.section(a.raw, b.raw));
+  }
+
+  /** Classify a point against all solids: "in" wins over "on" over "out". */
+  classifyPoint(shape: OccShape, point: Vec3): PointClassification {
+    const result = this.module.classifyPoint(shape.raw, point[0], point[1], point[2]);
+    this.throwIfError();
+    return result as PointClassification;
   }
 
   // --- tessellation & hidden lines ---------------------------------------------------

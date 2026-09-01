@@ -56,7 +56,8 @@ npm run example      # serve repo root on :8787 for examples/browser-viewer
 Example: adding `makeWedge`.
 
 1. **C++** — implement in the right `src/cpp/*.cpp` (`model.cpp` for modeling,
-   `io.cpp` for exchange, `mesher.cpp` for tessellation, `hlr.cpp` for HLR),
+   `io.cpp` for exchange, `mesher.cpp` for tessellation, `hlr.cpp` for HLR,
+   `interrogate.cpp` for geometry queries — JSON answers go through `json.h`),
    declared in the matching header. Wrap in `OCC_TRY`/`OCC_CATCH("makeWedge")`.
 2. **Register** in `src/cpp/glue.cpp`: `function("makeWedge", &makeWedgeWrap);`
 3. **Declare** it in `src/ts/wasm-module.ts` on `OccWasmModule`.

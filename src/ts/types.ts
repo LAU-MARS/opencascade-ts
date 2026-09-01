@@ -2,6 +2,12 @@
 
 export type Vec3 = readonly [number, number, number];
 
+/** Unit keywords for STEP import/export ("mm" is the OCCT default). */
+export type UnitOption = "mm" | "cm" | "m" | "km" | "in" | "inch" | "ft" | "mi" | "um";
+
+/** Result of point-in-solid classification. */
+export type PointClassification = "in" | "out" | "on" | "unknown";
+
 export type ShapeTypeName =
   | "Compound"
   | "CompSolid"
