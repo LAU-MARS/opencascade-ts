@@ -26,8 +26,9 @@ by agents:
 | STEP and BRep export (incl. tessellation-in-BRep) | ✅ |
 | IGES import + export | ✅ |
 | XCAF document reading: assembly **tree, names, colors**, instance transforms | ✅ |
+| XCAF **write-back**: `writeStepDocument` assembly tree with names, colors, placements | ✅ |
 | Unit selection on STEP I/O (`mm/cm/m/km/inch/ft/mi/um`) | ✅ |
-| Modeling: primitives, booleans (fuse/cut/common), transforms, shelling (hollowing), draft, fillets/chamfers (incl. variable radius), sketch→solid (extrude/revolve/loft/sweep) | ✅ |
+| Modeling: primitives, booleans (fuse/cut/common/split), transforms, shelling, draft, fillets/chamfers (incl. variable radius), sketch→solid (extrude/revolve/loft/sweep), solid offsetting | ✅ |
 | Profile authoring: lines, arcs, ellipses, B-splines (control points / through-points), wire assembly, centroids | ✅ |
 | Measures: volume, area, bounds, validity, sub-shape counts | ✅ |
 | **Geometry interrogation** — analytic face/edge parameters, min distance + closest points, section curves, point-in-solid | ✅ |
@@ -37,7 +38,7 @@ by agents:
 | Headless in Node 18+ (no GPU, no browser needed) | ✅ |
 | CLI (`info` / `describe` / `tree` / `convert` / `hlr`) with JSON output | ✅ |
 | Outputs: STEP, BRep, IGES, STL, OBJ, SVG, glTF (.glb) | ✅ |
-| Wire booleans (2D trim/intersect), MCP server, XCAF write-back | 🚧 roadmap |
+| MCP server, deeper 2D authoring (sketch constraints) | 🚧 roadmap |
 
 ## Comparison with opencascade.js
 
@@ -52,7 +53,7 @@ been quiet since Aug 2023. The short scorecard (✅/❌ = first-class, documente
 | Maintenance | last stable 2020 · quiet since 2023 | active |
 | API surface | auto-generated, nearly all of OCCT — thousands of classes | ~50 curated, hand-written calls |
 | STEP · BRep · IGES I/O | ✅ raw XCAF/XSControl classes | ✅ first-class, with unit selection |
-| Fillets · chamfers · sweeps · 2D | ✅ raw classes | ✅ `fillet` / `chamfer` / `variableFillet` / `extrude` / `revolve` / `loft` / `sweep` + line/arc/ellipse/B-spline profiles & wire assembly |
+| Fillets · chamfers · sweeps · 2D | ✅ raw classes | ✅ `fillet` / `chamfer` / `variableFillet` / `extrude` / `revolve` / `loft` / `sweep` / `split` / `offsetSolid` + line/arc/ellipse/B-spline profiles, wire assembly & faces with holes |
 | Shelling (hollowing) · draft angle | ❌ bound as empty stubs | ✅ `shell` / `draft` |
 | HLR drawings · WebGL viewer · JSON CLI · geometry interrogation | ❌ | ✅ |
 | Ecosystem | CascadeStudio · RepliCAD · BitByBit · ArchiYou | young |

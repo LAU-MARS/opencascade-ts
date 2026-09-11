@@ -37,3 +37,18 @@ std::string writeIges(const OccShape& shape);
 std::string readStepDocumentBytes(unsigned int ptr, int length, const std::string& unit);
 OccShape getDocumentShape(int index);
 int documentShapeCount();
+
+// XCAF document writing — the mirror of readStepDocumentBytes. The tree
+// arrives flattened (parents must precede children): `parents[i]` is node i's
+// parent index (-1 = root), `shapeIndices[i]` picks a leaf shape from
+// `shapes` (-1 = an assembly node), `names`/`colors` are per node ("" = skip,
+// colors as "#RRGGBB"), and `transforms` holds 12 row-major 3×4 values per
+// node (NaN first value = identity). Returns STEP text. Throws on malformed
+// trees or kernel failures.
+std::string writeStepDocument(const std::vector<OccShape>& shapes,
+                              const std::vector<int>& parents,
+                              const std::vector<int>& shapeIndices,
+                              const std::vector<std::string>& names,
+                              const std::vector<std::string>& colors,
+                              const std::vector<double>& transforms,
+                              const std::string& unit);

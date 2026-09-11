@@ -8,18 +8,22 @@
 #include <IGESControl_Reader.hxx>
 #include <IGESControl_Writer.hxx>
 #include <Interface_Static.hxx>
+#include <STEPCAFControl_Writer.hxx>
 #include <STEPControl_Reader.hxx>
 #include <STEPControl_StepModelType.hxx>
 #include <STEPControl_Writer.hxx>
 #include <STEPCAFControl_Reader.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TDataStd_Name.hxx>
+#include <TDataStd_UAttribute.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelSequence.hxx>
 #include <TDocStd_Document.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopTools_FormatVersion.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopoDS_Shape.hxx>
+#include <XCAFDoc.hxx>
 #include <XCAFDoc_ColorTool.hxx>
 #include <XCAFDoc_ColorType.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
@@ -28,6 +32,7 @@
 #include <Quantity_Color.hxx>
 
 #include <cctype>
+#include <cmath>
 #include <cstdio>
 #include <filesystem>
 #include <fstream>
@@ -115,10 +120,12 @@ std::string labelColor(const Handle(XCAFDoc_ColorTool)& colorTool, const TDF_Lab
   if (colorTool->GetColor(label, XCAFDoc_ColorGen, color) ||
       colorTool->GetColor(label, XCAFDoc_ColorSurf, color)) {
     char hex[10];
+    // STEP colors travel as sRGB components; Quantity_Color stores linear RGB
+    // internally, so ask for the sRGB view explicitly (same on the write side).
+    double r = 0, g = 0, b = 0;
+    color.Values(r, g, b, Quantity_TOC_sRGB);
     std::snprintf(hex, sizeof(hex), "#%02X%02X%02X",
-                  (int)(color.Red() * 255.0 + 0.5),
-                  (int)(color.Green() * 255.0 + 0.5),
-                  (int)(color.Blue() * 255.0 + 0.5));
+                  (int)(r * 255.0 + 0.5), (int)(g * 255.0 + 0.5), (int)(b * 255.0 + 0.5));
     return std::string(hex);
   }
   return "";
@@ -328,4 +335,139 @@ OccShape getDocumentShape(int index) {
 
 int documentShapeCount() {
   return (int)g_documentShapes.size();
+}
+
+// --- XCAF document writing ------------------------------------------------------
+
+namespace {
+
+int hexDigit(char c) {
+  if (c >= '0' && c <= '9') return c - '0';
+  if (c >= 'a' && c <= 'f') return c - 'a' + 10;
+  if (c >= 'A' && c <= 'F') return c - 'A' + 10;
+  return -1;
+}
+
+// "#RRGGBB" (case-insensitive) → Quantity_Color; empty string → no color.
+// sRGB components — the STEP convention (mirrors labelColor).
+Quantity_Color parseColor(const std::string& hex) {
+  const int r = hexDigit(hex[1]) * 16 + hexDigit(hex[2]);
+  const int g = hexDigit(hex[3]) * 16 + hexDigit(hex[4]);
+  const int b = hexDigit(hex[5]) * 16 + hexDigit(hex[6]);
+  if (hex.length() != 7 || hex[0] != '#' || r < 0 || g < 0 || b < 0) {
+    throw std::runtime_error("color \"" + hex + "\" is not #RRGGBB");
+  }
+  return Quantity_Color(r / 255.0, g / 255.0, b / 255.0, Quantity_TOC_sRGB);
+}
+
+} // namespace
+
+std::string writeStepDocument(const std::vector<OccShape>& shapes,
+                              const std::vector<int>& parents,
+                              const std::vector<int>& shapeIndices,
+                              const std::vector<std::string>& names,
+                              const std::vector<std::string>& colors,
+                              const std::vector<double>& transforms,
+                              const std::string& unit) {
+  ensureMemFs();
+  applyWriteUnit(unit);
+
+  const int nodeCount = (int)parents.size();
+  if (nodeCount == 0) throw std::runtime_error("the document tree is empty");
+  if ((int)shapeIndices.size() != nodeCount || (int)names.size() != nodeCount ||
+      (int)colors.size() != nodeCount || (int)transforms.size() != 12 * nodeCount) {
+    throw std::runtime_error("malformed document tree arrays");
+  }
+
+  Handle(TDocStd_Document) doc = new TDocStd_Document("MDTV-XCAF");
+  Handle(XCAFDoc_ShapeTool) shapeTool = XCAFDoc_DocumentTool::ShapeTool(doc->Main());
+  Handle(XCAFDoc_ColorTool) colorTool = XCAFDoc_DocumentTool::ColorTool(doc->Main());
+
+  // Pass 1 (pre-order): labels for leaf shapes. Parents precede children, so
+  // anything needed later is already available.
+  std::vector<TDF_Label> labels(nodeCount);
+  std::vector<bool> assemblyNodes(nodeCount, false);
+  std::vector<TopoDS_Shape> assembled(nodeCount);
+  for (int i = 0; i < nodeCount; ++i) {
+    if (parents[i] < -1 || parents[i] >= i) {
+      throw std::runtime_error("document tree nodes must list parents before children");
+    }
+    if (shapeIndices[i] >= 0) {
+      if (shapeIndices[i] >= (int)shapes.size()) {
+        throw std::runtime_error("document tree shape index out of range");
+      }
+      labels[i] = shapeTool->AddShape(shapes[shapeIndices[i]].get(), false);
+      assembled[i] = shapes[shapeIndices[i]].get();
+    } else {
+      assemblyNodes[i] = true;
+    }
+  }
+
+  // Pass 2 (post-order): give every assembly node a real compound of its
+  // (positioned) children. STEPCAFControl_Writer only writes assemblies whose
+  // label carries the assembled shape — the same form the reader builds.
+  BRep_Builder builder;
+  for (int i = nodeCount - 1; i >= 0; --i) {
+    if (!assemblyNodes[i]) continue;
+    TopoDS_Compound compound;
+    builder.MakeCompound(compound);
+    for (int j = i + 1; j < nodeCount; ++j) {
+      if (parents[j] != i) continue;
+      TopoDS_Shape child = assembled[j];
+      const double* values = &transforms[12 * (size_t)j];
+      if (!std::isnan(values[0])) {
+        gp_Trsf location;
+        // Row-major 3×4, the same 12 numbers readStepDocument emits.
+        location.SetValues(values[0], values[1], values[2], values[3],
+                           values[4], values[5], values[6], values[7],
+                           values[8], values[9], values[10], values[11]);
+        child = child.Moved(TopLoc_Location(location));
+      }
+      builder.Add(compound, child);
+    }
+    assembled[i] = compound;
+  }
+
+  // Pass 3 (pre-order): labels for assemblies, then names, colors, components.
+  for (int i = 0; i < nodeCount; ++i) {
+    if (!assemblyNodes[i]) continue;
+    labels[i] = shapeTool->AddShape(assembled[i], false);
+    TDataStd_UAttribute::Set(labels[i], XCAFDoc::AssemblyGUID());
+  }
+  for (int i = 0; i < nodeCount; ++i) {
+    if (!names[i].empty()) {
+      TDataStd_Name::Set(labels[i], names[i].c_str());
+    }
+    if (!colors[i].empty()) {
+      colorTool->SetColor(labels[i], parseColor(colors[i]), XCAFDoc_ColorSurf);
+    }
+  }
+  for (int i = 0; i < nodeCount; ++i) {
+    if (parents[i] < 0) continue;
+    gp_Trsf location;
+    const double* values = &transforms[12 * (size_t)i];
+    if (!std::isnan(values[0])) {
+      location.SetValues(values[0], values[1], values[2], values[3],
+                         values[4], values[5], values[6], values[7],
+                         values[8], values[9], values[10], values[11]);
+    }
+    shapeTool->AddComponent(labels[parents[i]], labels[i], TopLoc_Location(location));
+  }
+
+  // Static parameters are snapshotted when the writer is constructed — set
+  // the assembly mode first (0 = off flattens to plain compounds; 2 = force).
+  Interface_Static::SetIVal("write.step.assembly", 2);
+  STEPCAFControl_Writer writer;
+  writer.SetNameMode(true);
+  writer.SetColorMode(true);
+  writer.SetLayerMode(false);
+  // STEPCAFControl_Writer::Transfer returns a bool (unlike STEPControl_Writer).
+  if (!writer.Transfer(doc, STEPControl_AsIs)) {
+    throw std::runtime_error("transfer failed");
+  }
+  IFSelect_ReturnStatus status = writer.Write("/mem/occt_out.step");
+  if (status != IFSelect_RetDone) {
+    throw std::runtime_error("write failed (status " + std::to_string((int)status) + ")");
+  }
+  return readTemp("/mem/occt_out.step");
 }

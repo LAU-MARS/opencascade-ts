@@ -41,6 +41,9 @@ OccShape interpolateBsplineWire(const std::vector<double>& coordinates,
                                 bool periodic, double tolerance);
 // Concatenate connected wires/edges into one wire, in order.
 OccShape assembleWire(const std::vector<OccShape>& parts);
+// Planar face from an outer wire, with optional hole wires inside it (the
+// face-with-holes section for extrude/revolve/loft).
+OccShape makeFaceShape(const OccShape& outer, const std::vector<OccShape>& holes);
 
 // Booleans: op 0 = fuse, 1 = cut, 2 = common. Throws std::runtime_error on failure.
 OccShape booleanOp(int op, const OccShape& a, const OccShape& b);
@@ -92,3 +95,9 @@ OccShape revolveShape(const OccShape& profile,
                       double angleRadians, bool solid);
 OccShape loftShapes(const std::vector<OccShape>& sections, bool ruled, bool solid);
 OccShape sweepShape(const OccShape& profile, const OccShape& spine, bool solid);
+
+// Splitting keeps every piece (unlike cut): the result is a compound of the
+// shape's fragments minus the tool volumes. offsetSolid grows (positive) or
+// shrinks (negative) the whole solid by `distance`. Both throw on failure.
+OccShape splitShape(const OccShape& shape, const std::vector<OccShape>& tools);
+OccShape offsetSolid(const OccShape& shape, double distance);

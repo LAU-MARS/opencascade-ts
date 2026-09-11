@@ -30,6 +30,13 @@ export interface WasmShapeVector {
   delete(): void;
 }
 
+/** register_vector<std::string> handle for writeStepDocument's name/color lists. */
+export interface WasmStringVector {
+  push_back(value: string): void;
+  size(): number;
+  delete(): void;
+}
+
 export interface WasmMeshData {
   positionsPtr(): number;
   positionCount(): number;
@@ -61,6 +68,8 @@ export interface OccWasmModule {
 
   /** register_vector<OccShape> constructor (loft's section list). */
   readonly VectorShape: new () => WasmShapeVector;
+  /** register_vector<std::string> constructor (writeStepDocument's lists). */
+  readonly VectorString: new () => WasmStringVector;
 
   makeBox(dx: number, dy: number, dz: number): WasmShape;
   makeCylinder(
@@ -108,6 +117,12 @@ export interface OccWasmModule {
   ): WasmShape;
   /** Concatenate connected wires/edges, in order. */
   makeWire(parts: WasmShapeVector): WasmShape;
+  /** Planar face from an outer wire with optional hole wires (all planar). */
+  makeFace(outer: WasmShape, holes: WasmShapeVector): WasmShape;
+  /** Split the shape by tools, keeping every piece (compound result). */
+  split(s: WasmShape, tools: WasmShapeVector): WasmShape;
+  /** Grow (positive) / shrink (negative) the whole solid by `distance`. */
+  offsetSolid(s: WasmShape, distance: number): WasmShape;
 
   fuse(a: WasmShape, b: WasmShape): WasmShape;
   cut(a: WasmShape, b: WasmShape): WasmShape;
@@ -164,6 +179,19 @@ export interface OccWasmModule {
   documentShapeCount(): number;
   getDocumentShape(index: number): WasmShape;
   writeStep(s: WasmShape, unit: string): string;
+  /**
+   * XCAF document export, mirror of readStepDocument. Flat tree arrays:
+   * per-node int32 parent index (-1 = root) at `parentsPtr`, int32 leaf-shape
+   * index at `shapeIdxPtr` (-1 = assembly node), names/colors ("" = skip,
+   * "#RRGGBB"), and 12 row-major 3×4 transform doubles per node at
+   * `transformsPtr` (NaN first value = identity).
+   */
+  writeStepDocument(
+    shapes: WasmShapeVector,
+    parentsPtr: number, shapeIdxPtr: number, nodeCount: number,
+    names: WasmStringVector, colors: WasmStringVector,
+    transformsPtr: number, unit: string,
+  ): string;
   writeBrep(s: WasmShape, withTriangles: boolean): string;
   writeIges(s: WasmShape): string;
 

@@ -415,6 +415,141 @@ describeWasm("opencascade-ts kernel (wasm integration)", () => {
     );
   });
 
+  it("makes faces with holes and extrudes them", () => {
+    const annulus = occ.extrude(occ.makeFace(occ.makeCircle(10), [occ.makeCircle(4)]), [0, 0, 5]);
+    expect(annulus.shapeType()).toBe("Solid");
+    expect(annulus.isValid()).toBe(true);
+    // π(R² − r²)·h = π(100 − 16)·5; 4 faces: outer/inner wall + two annular caps
+    expect(annulus.volume()).toBeCloseTo(Math.PI * (100 - 16) * 5, 1);
+    expect(annulus.count("Face")).toBe(4);
+
+    const plate = occ.extrude(
+      occ.makeFace(
+        occ.makePolygon([[0, 0, 0], [10, 0, 0], [10, 10, 0], [0, 10, 0]]),
+        [occ.makeCircle(2, { origin: [5, 5, 0] })],
+      ),
+      [0, 0, 2],
+    );
+    expect(plate.isValid()).toBe(true);
+    expect(plate.volume()).toBeCloseTo((100 - Math.PI * 4) * 2, 1);
+
+    expect(() => occ.makeFace(occ.makeBox(10, 10, 10))).toThrow(/outer boundary must be a Wire/);
+  });
+
+  it("composes 2D trim via makeFace + cut", () => {
+    // two overlapping discs (z = 0): the lens stays, the crescent is trimmed
+    const a = occ.makeFace(occ.makeCircle(5));
+    const b = occ.makeFace(occ.makeCircle(5, { origin: [6, 0, 0] }));
+    const lens = occ.common(a, b);
+    const lensVolume = occ.extrude(lens, [0, 0, 2]).volume();
+    // lens area of two r=5 circles d=6 apart: 2r²·acos(d/2r) − (d/2)·√(4r²−d²)
+    const lensArea = 2 * 25 * Math.acos(6 / 10) - 3 * Math.sqrt(100 - 36);
+    expect(lensVolume).toBeCloseTo(lensArea * 2, 1);
+
+    const crescent = occ.cut(a, b);
+    expect(occ.extrude(crescent, [0, 0, 2]).volume()).toBeCloseTo((25 * Math.PI - lensArea) * 2, 1);
+  });
+
+  it("splits a shape and keeps every piece", () => {
+    const box = occ.makeBox(10, 10, 10);
+    const blade = occ.translate(occ.makeBox(2, 30, 30), [4, -10, -10]); // x ∈ [4, 6]
+    const pieces = occ.split(box, blade);
+    expect(pieces.isValid()).toBe(true);
+    // left 400 + right 400 + the 2-slab under the blade: all fragments
+    // reassemble the original (use cut to discard the tool region instead)
+    expect(pieces.count("Solid")).toBe(3);
+    expect(pieces.volume()).toBeCloseTo(1000, 1);
+
+    // a tool that misses the shape leaves it whole
+    expect(occ.split(box, occ.translate(occ.makeBox(2, 30, 30), [50, 0, 0])).volume())
+      .toBeCloseTo(1000, 1);
+    expect(() => occ.split(box, [])).toThrow(/at least one tool/);
+  });
+
+  it("offsets solids outward and inward", () => {
+    const grown = occ.offsetSolid(occ.makeBox(10, 10, 10), 1);
+    expect(grown.isValid()).toBe(true);
+    expect(grown.volume()).toBeCloseTo(12 * 12 * 12, 1);
+    expectVec3Close(grown.bounds().min, [-1, -1, -1]);
+    expectVec3Close(grown.bounds().max, [11, 11, 11]);
+
+    expect(occ.offsetSolid(occ.makeBox(10, 10, 10), -1).volume()).toBeCloseTo(512, 1);
+    // a sphere offsets to an exact sphere: (4/3)π·12³
+    expect(occ.offsetSolid(occ.makeSphere(10), 2).volume()).toBeCloseTo(
+      (4 / 3) * Math.PI * 1728, 0,
+    );
+    expect(() => occ.offsetSolid(occ.makeBox(10, 10, 10), 0)).toThrow(/non-zero/);
+  });
+
+  it("writes and reads back a named, colored STEP document", () => {
+    const gasket = occ.cut(
+      occ.makeBox(20, 20, 5),
+      occ.makeCylinder(4, 20, { origin: [10, 10, -5] }),
+    );
+    const bytes = occ.writeStepDocument([
+      { name: "gasket", color: "#3388ff", shape: gasket },
+    ]);
+    const document = occ.readStepDocument(bytes);
+    expect(document.format).toBe("step");
+    const root = document.tree[0]!;
+    expect(root.name).toBe("gasket");
+    expect(root.color).toBe("#3388FF");
+    const shape = occ.documentShape(root.shape!);
+    expect(shape.isValid()).toBe(true);
+    expect(shape.volume()).toBeCloseTo(gasket.volume(), 2);
+  });
+
+  it("writes and reads back an assembly with positioned children", () => {
+    const bytes = occ.writeStepDocument([
+      {
+        name: "post-assembly",
+        children: [
+          { name: "base", shape: occ.makeBox(10, 10, 2) },
+          {
+            name: "post",
+            color: "#ff8800",
+            shape: occ.makeCylinder(2, 8),
+            transform: [1, 0, 0, 5, 0, 1, 0, 5, 0, 0, 1, 2],
+          },
+        ],
+      },
+    ]);
+    const document = occ.readStepDocument(bytes);
+    const root = document.tree[0]!;
+    expect(root.name).toBe("post-assembly");
+    expect(root.children).toHaveLength(2);
+
+    const base = root.children![0]!;
+    expect(base.name).toBe("base");
+    expect(occ.documentShape(base.shape!).volume()).toBeCloseTo(200, 1);
+
+    const post = root.children![1]!;
+    expect(post.name).toBe("post");
+    expect(post.color).toBe("#FF8800");
+    // the 12-number placement survives: translate (5, 5, 2)
+    expect(post.transform).toBeDefined();
+    expect(post.transform![3]).toBeCloseTo(5, 4);
+    expect(post.transform![7]).toBeCloseTo(5, 4);
+    expect(post.transform![11]).toBeCloseTo(2, 4);
+    // and the leaf is world-positioned on read-back
+    const placed = occ.documentShape(post.shape!);
+    expectVec3Close(placed.bounds().min, [3, 3, 2]);
+    expectVec3Close(placed.bounds().max, [7, 7, 10]);
+  });
+
+  it("rejects bad document trees with useful errors", () => {
+    expect(() => occ.writeStepDocument([])).toThrow(/tree is empty/);
+    expect(() =>
+      occ.writeStepDocument([{ name: "x", shape: occ.makeBox(1, 1, 1), children: [{ shape: occ.makeBox(1, 1, 1) }] }]),
+    ).toThrow(/both a shape and children/);
+    expect(() =>
+      occ.writeStepDocument([{ name: "x", color: "red", shape: occ.makeBox(1, 1, 1) }]),
+    ).toThrow(/#RRGGBB/);
+    expect(() =>
+      occ.writeStepDocument([{ name: "x", shape: occ.makeBox(1, 1, 1), transform: [1, 2, 3] }]),
+    ).toThrow(/12 finite numbers/);
+  });
+
   it("rejects bad shell/draft input with useful errors", () => {
     const box = occ.makeBox(10, 10, 10);
     expect(() => occ.shell(box, 0)).toThrow(/thickness must be a positive/);

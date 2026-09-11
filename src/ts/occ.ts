@@ -49,6 +49,27 @@ import type { OccWasmModule, WasmShape } from "./wasm-module.js";
 const DEFAULT_LINEAR_DEFLECTION = 0.1;
 const DEFAULT_ANGULAR_DEFLECTION_DEG = 20;
 
+/**
+ * A node of a `writeStepDocument` tree — the mirror of `readStepDocument`'s
+ * output. A node carries either a `shape` (leaf) or `children` (assembly).
+ */
+export interface WriteDocumentNode {
+  /** Part/assembly name written into the STEP file. */
+  name?: string;
+  /** Surface color as `"#RRGGBB"`. */
+  color?: string;
+  /** The node's geometry (leaves only — mutually exclusive with `children`). */
+  shape?: OccShape;
+  /** Sub-nodes (assemblies only). */
+  children?: readonly WriteDocumentNode[];
+  /**
+   * Instance placement as 12 row-major 3×4 numbers
+   * (`[r11,r12,r13,t1, r21,r22,r23,t2, r31,r32,r33,t3]`), matching
+   * `readStepDocument`'s `transform` output. Identity when omitted.
+   */
+  transform?: readonly number[];
+}
+
 export type OccCreateOptions = WasmLocationOptions;
 
 /** A shape owned by a session; call `dispose()` (or `session.dispose()`) to free it. */
@@ -309,6 +330,51 @@ export class OccSession {
     } finally {
       list.delete();
     }
+  }
+
+  /**
+   * Cap a planar outer wire into a face, with optional `holes` inside it —
+   * the section for plates, flanges and gaskets (extrude it, or compose 2D
+   * trim/intersect via `cut`/`common` on faces).
+   */
+  makeFace(outer: OccShape, holes: readonly OccShape[] = []): OccShape {
+    const holeList = new this.module.VectorShape();
+    try {
+      for (const hole of holes) {
+        holeList.push_back(hole.raw);
+      }
+      return this.adopt(this.module.makeFace(outer.raw, holeList));
+    } finally {
+      holeList.delete();
+    }
+  }
+
+  /**
+   * Split `shape` by one or more `tools`, keeping **every** fragment — the
+   * pieces reassemble the original, with the region under a tool becoming
+   * its own piece (use `cut` to discard material instead).
+   */
+  split(shape: OccShape, tools: OccShape | readonly OccShape[]): OccShape {
+    const toolList = Array.isArray(tools) ? tools : [tools];
+    if (toolList.length === 0) throw new Error("split: needs at least one tool");
+    const list = new this.module.VectorShape();
+    try {
+      for (const tool of toolList) {
+        list.push_back(tool.raw);
+      }
+      return this.adopt(this.module.split(shape.raw, list));
+    } finally {
+      list.delete();
+    }
+  }
+
+  /**
+   * Grow (`distance` > 0) or shrink (`distance` < 0) the whole solid by a
+   * uniform offset — the outer skin moves, features roughly keep their shape.
+   */
+  offsetSolid(shape: OccShape, distance: number): OccShape {
+    if (distance === 0) throw new Error("offsetSolid: distance must be non-zero");
+    return this.adopt(this.module.offsetSolid(shape.raw, distance));
   }
 
   // --- booleans ----------------------------------------------------------------
@@ -574,6 +640,88 @@ export class OccSession {
     const text = this.module.writeStep(shape.raw, options.unit ?? "");
     this.throwIfError();
     return new TextEncoder().encode(text);
+  }
+
+  /**
+   * Export an XCAF document — the mirror of `readStepDocument`: an assembly
+   * tree of named, colored, positioned shapes. A node carries either a
+   * `shape` or `children`.
+   */
+  writeStepDocument(tree: readonly WriteDocumentNode[], options: { unit?: UnitOption } = {}): Uint8Array {
+    const shapes: OccShape[] = [];
+    const parents: number[] = [];
+    const shapeIndices: number[] = [];
+    const names: string[] = [];
+    const colors: string[] = [];
+    const transforms: number[] = [];
+
+    const visit = (nodes: readonly WriteDocumentNode[], parent: number): void => {
+      for (const node of nodes) {
+        const index = parents.length;
+        if (node.shape && node.children && node.children.length > 0) {
+          throw new Error("writeStepDocument: a node cannot carry both a shape and children");
+        }
+        if (!node.shape && !node.children?.length) {
+          throw new Error("writeStepDocument: every node needs a shape or children");
+        }
+        parents.push(parent);
+        shapeIndices.push(-1);
+        names.push(node.name ?? "");
+        colors.push("");
+        for (let i = 0; i < 12; i++) transforms.push(NaN);
+        if (node.shape) {
+          shapeIndices[index] = shapes.push(node.shape) - 1;
+        }
+        if (node.color) {
+          if (!/^#[0-9a-fA-F]{6}$/.test(node.color)) {
+            throw new Error(`writeStepDocument: color "${node.color}" is not #RRGGBB`);
+          }
+          colors[index] = node.color.toUpperCase();
+        }
+        if (node.transform) {
+          if (node.transform.length !== 12 || !node.transform.every(Number.isFinite)) {
+            throw new Error("writeStepDocument: transform must be 12 finite numbers (row-major 3×4)");
+          }
+          for (let i = 0; i < 12; i++) transforms[index * 12 + i] = node.transform[i]!;
+        }
+        if (node.children?.length) {
+          visit(node.children, index);
+        }
+      }
+    };
+    visit(tree, -1);
+    if (parents.length === 0) throw new Error("writeStepDocument: the tree is empty");
+
+    const shapeList = new this.module.VectorShape();
+    const nameList = new this.module.VectorString();
+    const colorList = new this.module.VectorString();
+    try {
+      for (const shape of shapes) {
+        shapeList.push_back(shape.raw);
+      }
+      for (const name of names) {
+        nameList.push_back(name);
+      }
+      for (const color of colors) {
+        colorList.push_back(color);
+      }
+      const text = this.withInts(parents, (parentsPtr, count) =>
+        this.withInts(shapeIndices, (shapeIdxPtr, _) =>
+          this.withFloats(transforms, (transformsPtr, __) =>
+            this.module.writeStepDocument(
+              shapeList, parentsPtr, shapeIdxPtr, count,
+              nameList, colorList, transformsPtr, options.unit ?? "",
+            ),
+          ),
+        ),
+      );
+      this.throwIfError();
+      return new TextEncoder().encode(text);
+    } finally {
+      shapeList.delete();
+      nameList.delete();
+      colorList.delete();
+    }
   }
 
   /** Export as IGES text. */

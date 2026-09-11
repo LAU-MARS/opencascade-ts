@@ -5,7 +5,7 @@
  */
 
 export { OccSession, OccShape } from "./occ.js";
-export type { OccCreateOptions } from "./occ.js";
+export type { OccCreateOptions, WriteDocumentNode } from "./occ.js";
 export { loadOccModule } from "./loader.js";
 export type { WasmLocationOptions } from "./loader.js";
 export { computeVertexNormals, withVertexNormals } from "./mesh-utils.js";

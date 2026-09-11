@@ -7,6 +7,7 @@
 #include <BRepAlgoAPI_Common.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
+#include <BRepAlgoAPI_Splitter.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
@@ -18,9 +19,12 @@
 #include <BRepFilletAPI_MakeFillet.hxx>
 #include <BRepGProp.hxx>
 #include <BRepOffsetAPI_DraftAngle.hxx>
+#include <BRepOffsetAPI_MakeOffsetShape.hxx>
 #include <BRepOffsetAPI_MakePipe.hxx>
 #include <BRepOffsetAPI_MakeThickSolid.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
+#include <BRepOffset_Mode.hxx>
+#include <GeomAbs_JoinType.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -335,6 +339,33 @@ OccShape assembleWire(const std::vector<OccShape>& parts) {
     throw std::runtime_error("wire assembly failed");
   }
   return OccShape(maker.Wire());
+}
+
+OccShape makeFaceShape(const OccShape& outer, const std::vector<OccShape>& holes) {
+  if (outer.get().ShapeType() != TopAbs_WIRE) {
+    throw std::runtime_error(
+        "makeFace: the outer boundary must be a Wire (e.g. makeCircle / makeWire output)");
+  }
+  BRepBuilderAPI_MakeFace maker(TopoDS::Wire(outer.get()));
+  if (!maker.IsDone() || maker.Face().IsNull()) {
+    throw std::runtime_error("makeFace: the outer wire is not planar");
+  }
+  for (size_t i = 0; i < holes.size(); ++i) {
+    if (holes[i].get().ShapeType() != TopAbs_WIRE) {
+      throw std::runtime_error("makeFace: holes must be Wires (e.g. makeCircle output)");
+    }
+    // Inner boundaries run opposite to the outer one — circle constructors are
+    // all counterclockwise, so holes are reversed by default.
+    TopoDS_Wire hole = TopoDS::Wire(holes[i].get());
+    hole.Reverse();
+    maker.Add(hole);
+    if (!maker.IsDone()) {
+      std::ostringstream message;
+      message << "makeFace: hole " << (i + 1) << " could not be added (outside the boundary?)";
+      throw std::runtime_error(message.str());
+    }
+  }
+  return OccShape(maker.Face());
 }
 
 // --- booleans ---------------------------------------------------------------
@@ -655,8 +686,11 @@ namespace {
 // Solid sweep ops need a face; the profile constructors hand out wires, so by
 // default planar wires are capped into faces first. Faces pass through
 // untouched; `solid = false` sweeps the bare wire and yields a shell.
+// Compounds (e.g. boolean results) pass through for the sweep algorithms to
+// process element by element.
 TopoDS_Shape prepareProfile(const TopoDS_Shape& profile, bool solid, const char* operation) {
   if (profile.ShapeType() == TopAbs_FACE) return profile;
+  if (profile.ShapeType() == TopAbs_COMPOUND) return profile;
   if (profile.ShapeType() == TopAbs_WIRE) {
     if (!solid) return profile;
     BRepBuilderAPI_MakeFace faceMaker(TopoDS::Wire(profile));
@@ -735,4 +769,44 @@ OccShape sweepShape(const OccShape& profile, const OccShape& spine, bool solid) 
     throw std::runtime_error("sweep failed (profile not planar, or not near the spine start?)");
   }
   return OccShape(pipe.Shape());
+}
+
+// --- splitting & offsetting ------------------------------------------------------
+
+OccShape splitShape(const OccShape& shape, const std::vector<OccShape>& tools) {
+  if (tools.empty()) {
+    throw std::runtime_error("split needs at least one tool");
+  }
+  TopTools_ListOfShape arguments;
+  arguments.Append(shape.get());
+  TopTools_ListOfShape toolList;
+  for (const OccShape& tool : tools) {
+    toolList.Append(tool.get());
+  }
+  // Unlike cut, the splitter keeps every piece of the shape.
+  BRepAlgoAPI_Splitter splitter;
+  splitter.SetArguments(arguments);
+  splitter.SetTools(toolList);
+  splitter.SetRunParallel(false);
+  splitter.Build();
+  if (!splitter.IsDone() || splitter.Shape().IsNull()) {
+    throw std::runtime_error("split failed (no tool intersects the shape?)");
+  }
+  return OccShape(splitter.Shape());
+}
+
+OccShape offsetSolid(const OccShape& shape, double distance) {
+  if (distance == 0) {
+    throw std::runtime_error("offsetSolid: distance must be non-zero");
+  }
+  // The classic skin-offset via join (no openings — unlike MakeThickSolid):
+  // positive grows, negative shrinks. PerformBySimple only expands along some
+  // shell normals and is deliberately not used.
+  BRepOffsetAPI_MakeOffsetShape maker;
+  maker.PerformByJoin(shape.get(), distance, 1e-6, BRepOffset_Skin, false, false,
+                      GeomAbs_Intersection);
+  if (!maker.IsDone() || maker.Shape().IsNull()) {
+    throw std::runtime_error("offset failed (try a smaller |distance|)");
+  }
+  return OccShape(maker.Shape());
 }

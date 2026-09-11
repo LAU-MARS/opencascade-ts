@@ -34,11 +34,14 @@ is documented in `src/ts/loader.ts`.
 | `makeBspline(poles, { degree? })` | B-spline wire from control points — clamped uniform knots, runs from the first pole to the last. |
 | `makeBsplineThrough(points, { periodic?, tolerance? })` | Smooth B-spline interpolated **through** every point. |
 | `makeWire(parts)` | Concatenate connected wires/edges into one wire, in order. |
+| `makeFace(outer, holes?)` | Cap a planar outer wire into a face, with optional hole wires — the section for plates, flanges and gaskets (also the base for 2D trim/intersect via `cut`/`common` on faces). |
 | `fuse(a, b)` / `cut(a, b)` / `common(a, b)` | Boolean union / difference / intersection. |
+| `split(shape, tools)` | Cut into pieces but keep **every** fragment — they reassemble the original (the region under a tool becomes its own piece). |
 | `translate(shape, [x,y,z])` | Rigid move. |
 | `rotate(shape, axis, angleDegrees)` | Rotation about `axis` through the origin. |
 | `scale(shape, factor)` | Uniform scaling (negative mirrors). |
 | `shell(shape, thickness, { openFaces? })` | Hollow into a wall of `thickness` (positive = inward; the outer skin is preserved). `openFaces` — 1-based face indices from `describe()` — become the openings; none = sealed hollow. |
+| `offsetSolid(shape, distance)` | Grow (+) / shrink (−) the whole solid by a uniform offset. |
 | `draft(shape, angleDegrees, { direction?, faces?, neutralPoint? })` | Mold-release tilt. Faces pivot about the neutral plane (default: bounds center, normal to `direction`); positive angles narrow the part towards the pull direction. Default drafted faces: the walls running parallel to `direction`. |
 | `fillet(shape, radius, { edges? })` | Round edges (`BRepFilletAPI`). Default: every edge; `edges` — 1-based indices from `describe()` — selects a subset. |
 | `chamfer(shape, distance, { edges? })` | Bevel edges by `distance` on both sides. Same edge selection as `fillet`. |
@@ -51,6 +54,7 @@ is documented in `src/ts/loader.ts`.
 | `readStepDocument(bytes, {unit?})` | Import as an XCAF document: `{ format, tree, shapeCount }` with names, `"#RRGGBB"` colors and 12-number instance transforms. |
 | `documentShape(index)` / `documentShapeCount` | World-positioned leaf shapes from the last `readStepDocument` (valid until the next call). |
 | `writeStep(shape, {unit?})` / `writeIges(shape)` / `writeBrep(shape, withTriangles?)` | Export → `Uint8Array` (ASCII text). |
+| `writeStepDocument(tree, {unit?})` | XCAF export — the mirror of `readStepDocument`: an assembly tree `[{ name?, color?, shape? \| children?, transform? }]` → named, colored, positioned STEP. |
 | `writeGltf(shape)` | Export → binary glTF `.glb` (pure TypeScript exporter). |
 | `describe(shape)` | Analytic faces/edges + heuristic holes → `PartDescription`. |
 | `distance(a, b)` | `{distance, points: [[onA, onB], …]}` — minimum distance, up to 8 pairs. |
@@ -132,6 +136,28 @@ const loop = occ.makeBsplineThrough(
 - Two positioned specs on one `variableFillet` edge are its start and end
   radius (`at` in the edge's curve parameter — for line edges, distance from
   the start).
+- `makeFace` holes are wires inside the outer boundary — extrude it for
+  plates with bores, or `cut`/`common` two faces for 2D trim/intersect.
+
+## XCAF write-back — `writeStepDocument`
+
+```ts
+const bytes = occ.writeStepDocument([
+  {
+    name: "post-assembly",
+    children: [
+      { name: "base", shape: occ.makeBox(10, 10, 2) },
+      { name: "post", color: "#ff8800", shape: occ.makeCylinder(2, 8),
+        transform: [1,0,0,5, 0,1,0,5, 0,0,1,2] }, // 12 row-major 3×4 numbers
+    ],
+  },
+]);
+// readStepDocument(bytes) round-trips names, colors, the tree and placements
+```
+
+- A node carries either a `shape` or `children`; `transform` matches
+  `readStepDocument`'s output format.
+- Colors travel as sRGB `"#RRGGBB"` — the STEP convention.
 
 ## Sketch → solid — extrude / revolve / loft / sweep
 

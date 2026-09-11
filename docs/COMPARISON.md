@@ -51,7 +51,7 @@ the ❌ from raw calls; the difference is what you get out of the box.
 | Fillets · chamfers · extrude/revolve · 2D | ✅ raw classes | ✅ `fillet` / `chamfer` / `variableFillet` / `extrude` / `revolve` / `loft` / `sweep` + line/arc/ellipse/B-spline profiles & wire assembly |
 | Shelling (thick solid) · draft angle | ❌ bound as empty stubs — no callable methods | ✅ `shell` / `draft` |
 | STEP · BRep · IGES I/O | ✅ raw XCAF/XSControl classes | ✅ first-class, with unit selection |
-| Assembly tree: names · colors · transforms | raw calls | ✅ `readStepDocument` → JSON |
+| Assembly tree: names · colors · transforms | raw calls | ✅ `readStepDocument` → JSON · `writeStepDocument` ← tree |
 | HLR drawings (visible + hidden segments) | ❌ | ✅ one call → SVG |
 | WebGL viewer | ❌ bring your own (three.js…) | ✅ zero-dependency WebGL2 |
 | Headless Node | ✅ | ✅ plus CLI with `--json` |
@@ -178,13 +178,14 @@ In priority order — each item is an OCCT module away, not a research project (
 (`BRepFilletAPI`), sketch→solid (`extrude`/`revolve`), lofts and pipe sweeps
 (`BRepOffsetAPI_ThruSections`/`MakePipe`), full profile authoring — lines, arcs, ellipses,
 B-splines (control points and through-point interpolation) with wire assembly (`makeWire`) —
-and mass centroids landed with the 0.4.0/0.5.0 modeling releases.
+faces with holes (`makeFace`, which also composes 2D trim/intersect with `cut`/`common`),
+splitting and solid offsetting, mass centroids, and XCAF write-back
+(`writeStepDocument`: names, colors, assembly structure, placements) landed with the
+0.4.0–0.7.0 modeling releases.
 
-1. **Wire booleans**: 2D trim/intersection on profiles (`BRepAlgoAPI` on wires), the remaining
-   gap towards full 2D authoring in TypeScript.
-2. **XCAF write-back**: names, colors and assembly structure on STEP export.
-3. **MCP server**: first-class agent access.
-4. **Ecosystem**: examples gallery, integration recipes (a three.js bridge for users who want
+1. **MCP server**: first-class agent access — the flagship next step.
+2. **Sketch constraints**: dimensions and coincidences on 2D profiles.
+3. **Ecosystem**: examples gallery, integration recipes (a three.js bridge for users who want
    it), community docs.
 
 We grow these deliberately as curated API — five steps each per the recipe — rather than

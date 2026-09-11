@@ -160,6 +160,18 @@ OccShape makeWireWrap(const std::vector<OccShape>& parts) {
   return guarded("makeWire", [&] { return assembleWire(parts); }, OccShape());
 }
 
+OccShape makeFaceWrap(const OccShape& outer, const std::vector<OccShape>& holes) {
+  return guarded("makeFace", [&] { return makeFaceShape(outer, holes); }, OccShape());
+}
+
+OccShape splitWrap(const OccShape& shape, const std::vector<OccShape>& tools) {
+  return guarded("split", [&] { return splitShape(shape, tools); }, OccShape());
+}
+
+OccShape offsetSolidWrap(const OccShape& shape, double distance) {
+  return guarded("offsetSolid", [&] { return offsetSolid(shape, distance); }, OccShape());
+}
+
 OccShape fuseWrap(const OccShape& a, const OccShape& b) {
   return guarded("fuse", [&] { return booleanOp(0, a, b); }, OccShape());
 }
@@ -293,6 +305,21 @@ std::string writeStepWrap(const OccShape& shape, const std::string& unit) {
   return guarded("writeStep", [&] { return writeStep(shape, unit); }, std::string());
 }
 
+std::string writeStepDocumentWrap(const std::vector<OccShape>& shapes,
+                                  unsigned int parentsPtr, unsigned int shapeIdxPtr, int nodeCount,
+                                  const std::vector<std::string>& names,
+                                  const std::vector<std::string>& colors,
+                                  unsigned int transformsPtr, const std::string& unit) {
+  return guarded(
+      "writeStepDocument: STEP document export failed",
+      [&] {
+        return writeStepDocument(shapes, indicesFromHeap(parentsPtr, nodeCount),
+                                 indicesFromHeap(shapeIdxPtr, nodeCount), names, colors,
+                                 doublesFromHeap(transformsPtr, nodeCount * 12), unit);
+      },
+      std::string());
+}
+
 std::string writeBrepWrap(const OccShape& shape, bool withTriangles) {
   return guarded("writeBrep", [&] { return writeBrep(shape, withTriangles); }, std::string());
 }
@@ -324,6 +351,7 @@ std::string classifyPointWrap(const OccShape& shape, double x, double y, double 
 EMSCRIPTEN_BINDINGS(opencascade_ts) {
   register_vector<double>("VectorDouble");
   register_vector<OccShape>("VectorShape");
+  register_vector<std::string>("VectorString");
 
   function("hasError", &hasError);
   function("lastError", &lastError);
@@ -368,10 +396,12 @@ EMSCRIPTEN_BINDINGS(opencascade_ts) {
   function("makeBspline", &makeBsplineWrap);
   function("makeBsplineThrough", &makeBsplineThroughWrap);
   function("makeWire", &makeWireWrap);
+  function("makeFace", &makeFaceWrap);
 
   function("fuse", &fuseWrap);
   function("cut", &cutWrap);
   function("common", &commonWrap);
+  function("split", &splitWrap);
 
   function("translate", &translateWrap);
   function("rotate", &rotateWrap);
@@ -387,6 +417,7 @@ EMSCRIPTEN_BINDINGS(opencascade_ts) {
   function("revolve", &revolveWrap);
   function("loft", &loftWrap);
   function("sweep", &sweepWrap);
+  function("offsetSolid", &offsetSolidWrap);
 
   function("tessellate", &tessellateWrap);
   function("hiddenLines", &hiddenLinesWrap);
@@ -398,6 +429,7 @@ EMSCRIPTEN_BINDINGS(opencascade_ts) {
   function("documentShapeCount", &documentShapeCount);
   function("getDocumentShape", &getDocumentShapeWrap);
   function("writeStep", &writeStepWrap);
+  function("writeStepDocument", &writeStepDocumentWrap);
   function("writeBrep", &writeBrepWrap);
   function("writeIges", &writeIgesWrap);
 
