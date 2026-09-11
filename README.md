@@ -27,7 +27,7 @@ by agents:
 | IGES import + export | ✅ |
 | XCAF document reading: assembly **tree, names, colors**, instance transforms | ✅ |
 | Unit selection on STEP I/O (`mm/cm/m/km/inch/ft/mi/um`) | ✅ |
-| Modeling: primitives, booleans (fuse/cut/common), transforms, shelling (hollowing), draft | ✅ |
+| Modeling: primitives, booleans (fuse/cut/common), transforms, shelling (hollowing), draft, fillets/chamfers, sketch→solid (extrude/revolve/loft/sweep) | ✅ |
 | Measures: volume, area, bounds, validity, sub-shape counts | ✅ |
 | **Geometry interrogation** — analytic face/edge parameters, min distance + closest points, section curves, point-in-solid | ✅ |
 | **Hole detection** — heuristic bore recognition (radius/axis/depth) from the description | ✅ |
@@ -36,7 +36,7 @@ by agents:
 | Headless in Node 18+ (no GPU, no browser needed) | ✅ |
 | CLI (`info` / `describe` / `tree` / `convert` / `hlr`) with JSON output | ✅ |
 | Outputs: STEP, BRep, IGES, STL, OBJ, SVG, glTF (.glb) | ✅ |
-| Sketch→solid modeling (extrude/revolve), fillets/chamfers, MCP server, XCAF write-back | 🚧 roadmap |
+| MCP server, XCAF write-back, richer 2D authoring (arcs, wire booleans) | 🚧 roadmap |
 
 ## Comparison with opencascade.js
 
@@ -51,7 +51,7 @@ been quiet since Aug 2023. The short scorecard (✅/❌ = first-class, documente
 | Maintenance | last stable 2020 · quiet since 2023 | active |
 | API surface | auto-generated, nearly all of OCCT — thousands of classes | ~40 curated, hand-written calls |
 | STEP · BRep · IGES I/O | ✅ raw XCAF/XSControl classes | ✅ first-class, with unit selection |
-| Fillets · chamfers · sweeps · 2D | ✅ raw classes | 🚧 roadmap |
+| Fillets · chamfers · sweeps · 2D | ✅ raw classes | ✅ `fillet` / `chamfer` / `extrude` / `revolve` / `loft` / `sweep` + circle/polygon profiles |
 | Shelling (hollowing) · draft angle | ❌ bound as empty stubs | ✅ `shell` / `draft` |
 | HLR drawings · WebGL viewer · JSON CLI · geometry interrogation | ❌ | ✅ |
 | Ecosystem | CascadeStudio · RepliCAD · BitByBit · ArchiYou | young |

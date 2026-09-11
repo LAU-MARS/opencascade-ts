@@ -129,6 +129,140 @@ describeWasm("opencascade-ts kernel (wasm integration)", () => {
     expectVec3Close(part.bounds().max, [20, 20, 50]);
   });
 
+  it("fillets every edge of a box into rounded corners", () => {
+    const part = occ.fillet(occ.makeBox(10, 10, 10), 1);
+    expect(part.isValid()).toBe(true);
+    // 6 shrunk planes + 12 cylindrical fillets + 8 spherical corner patches
+    expect(part.count("Face")).toBe(26);
+    // Each of the 12 edge prisms removes at most (1 - π/4)r² per unit length
+    // (corner overlaps only remove less): 1000 - (4-π)·1·30 < V < 1000.
+    expect(part.volume()).toBeLessThan(1000);
+    expect(part.volume()).toBeGreaterThan(1000 - (4 - Math.PI) * 30);
+  });
+
+  it("fillets selected edges with an exact prism prediction", () => {
+    const box = occ.makeBox(10, 10, 10);
+    const vertical = occ.describe(box).edges
+      .filter((e) => e.curve === "line" && Math.abs(e.direction[2]) > 0.999)
+      .map((e) => e.index);
+    expect(vertical).toHaveLength(4);
+
+    const part = occ.fillet(box, 1, { edges: vertical });
+    expect(part.isValid()).toBe(true);
+    // 4 caps + 4 shrunk side planes + 4 fillet cylinders, and each fillet
+    // removes exactly (1 - π/4)r² × height over the full 10 units.
+    expect(part.count("Face")).toBe(10);
+    expect(part.volume()).toBeCloseTo(1000 - 10 * (4 - Math.PI), 2);
+  });
+
+  it("chamfers every edge of a box by the closed-form volume", () => {
+    const part = occ.chamfer(occ.makeBox(10, 10, 10), 1);
+    expect(part.isValid()).toBe(true);
+    // 6 shrunk planes + 12 chamfer planes + 8 corner triangles.
+    expect(part.count("Face")).toBe(26);
+    // 12 prisms of d²/2, minus the corner overlaps: each corner keeps the
+    // tetrahedron {x+y+z ≤ d} (d³/6), so V = abc - 2d²(a+b+c) + (16/3)d³.
+    expect(part.volume()).toBeCloseTo(1000 - 2 * 1 * 30 + 16 / 3, 1);
+  });
+
+  it("chamfers only the top face loop", () => {
+    const box = occ.makeBox(10, 10, 10);
+    const top = occ.describe(box).edges
+      .filter((e) => e.curve === "line"
+        && Math.abs(e.start[2] - 10) < 1e-6 && Math.abs(e.end[2] - 10) < 1e-6)
+      .map((e) => e.index);
+    expect(top).toHaveLength(4);
+
+    const part = occ.chamfer(box, 1, { edges: top });
+    expect(part.isValid()).toBe(true);
+    // 4 chamfer planes, mitred at the four corners: each edge prism removes
+    // d²/2 × length 10 and each miter overlap adds back d³/3.
+    expect(part.count("Face")).toBe(10);
+    expect(part.volume()).toBeCloseTo(1000 - 4 * 10 * 0.5 + 4 / 3, 1);
+  });
+
+  it("rejects bad fillet/chamfer input with useful errors", () => {
+    const box = occ.makeBox(10, 10, 10);
+    expect(() => occ.fillet(box, 0)).toThrow(/radius must be a positive/);
+    expect(() => occ.fillet(box, 1, { edges: [99] })).toThrow(/1\.\.12/);
+    expect(() => occ.chamfer(box, -1)).toThrow(/distance must be a positive/);
+    expect(() => occ.chamfer(box, 1, { edges: [0] })).toThrow(/1\.\.12/);
+  });
+
+  it("extrudes a circle into a cylinder and a polygon into a box", () => {
+    const cylinder = occ.extrude(occ.makeCircle(5), [0, 0, 10]);
+    expect(cylinder.shapeType()).toBe("Solid");
+    expect(cylinder.isValid()).toBe(true);
+    expect(cylinder.volume()).toBeCloseTo(Math.PI * 25 * 10, 1);
+
+    const square = occ.makePolygon([[0, 0, 0], [10, 0, 0], [10, 10, 0], [0, 10, 0]]);
+    const box = occ.extrude(square, [0, 0, 5]);
+    expect(box.volume()).toBeCloseTo(500, 1);
+    expectVec3Close(box.bounds().max, [10, 10, 5]);
+  });
+
+  it("extrudes a bare wire into a shell with solid: false", () => {
+    const tube = occ.extrude(occ.makeCircle(5), [0, 0, 10], { solid: false });
+    expect(tube.shapeType()).toBe("Shell");
+    // one cylindrical face of area 2πrh
+    expect(tube.count("Face")).toBe(1);
+    expect(tube.area()).toBeCloseTo(2 * Math.PI * 5 * 10, 1);
+  });
+
+  it("revolves a circle into a full and a half torus", () => {
+    const profile = occ.makeCircle(2, { origin: [20, 0, 0], normal: [0, 1, 0] });
+    const torus = occ.revolve(profile, { direction: [0, 0, 1] });
+    expect(torus.shapeType()).toBe("Solid");
+    expect(torus.isValid()).toBe(true);
+    expect(torus.volume()).toBeCloseTo(2 * Math.PI * Math.PI * 20 * 4, 1);
+
+    const half = occ.revolve(profile, { direction: [0, 0, 1], angleDegrees: 180 });
+    expect(half.isValid()).toBe(true);
+    expect(half.volume()).toBeCloseTo(Math.PI * Math.PI * 20 * 4, 1);
+  });
+
+  it("lofts ruled and smoothed between circles", () => {
+    const bottom = occ.makeCircle(5);
+    const top = occ.makeCircle(10, { origin: [0, 0, 20] });
+    const frustum = occ.loft([bottom, top], { ruled: true });
+    expect(frustum.shapeType()).toBe("Solid");
+    expect(frustum.isValid()).toBe(true);
+    // ruled between aligned circles = an exact conical frustum
+    expect(frustum.volume()).toBeCloseTo((Math.PI * 20 / 3) * (25 + 50 + 100), 1);
+
+    const middle = occ.makeCircle(7, { origin: [0, 0, 10] });
+    const smooth = occ.loft([bottom, middle, top]);
+    expect(smooth.isValid()).toBe(true);
+    expect(smooth.count("Solid")).toBe(1);
+    expect(smooth.volume()).toBeGreaterThan(0);
+  });
+
+  it("sweeps a circle along straight and circular spines", () => {
+    const straight = occ.makePolygon([[0, 0, 0], [0, 0, 20]], { close: false });
+    const pipe = occ.sweep(occ.makeCircle(3), straight);
+    expect(pipe.shapeType()).toBe("Solid");
+    expect(pipe.isValid()).toBe(true);
+    expect(pipe.volume()).toBeCloseTo(Math.PI * 9 * 20, 1);
+
+    // profile placed at the spine start, perpendicular to its +Y tangent
+    const spine = occ.makeCircle(20);
+    const profile = occ.makeCircle(2, { origin: [20, 0, 0], normal: [0, 1, 0] });
+    const torus = occ.sweep(profile, spine);
+    expect(torus.isValid()).toBe(true);
+    expect(torus.volume()).toBeCloseTo(2 * Math.PI * Math.PI * 20 * 4, 1);
+  });
+
+  it("rejects bad profile input with useful errors", () => {
+    expect(() => occ.makeCircle(0)).toThrow(/radius must be a positive/);
+    expect(() => occ.makeCircle(1, { normal: [0, 0, 0] })).toThrow(/non-zero vector/);
+    expect(() => occ.makePolygon([[0, 0, 0], [1, 0, 0]])).toThrow(/at least 3 points/);
+    expect(() => occ.makePolygon([[0, 0, 0], [1, 0, 0], [1, 0, 0]])).toThrow(/distinct/);
+    expect(() => occ.makePolygon([[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 0, 0]])).toThrow(/closing point/);
+    expect(() => occ.extrude(occ.makeCircle(1), [0, 0, 0])).toThrow(/non-zero vector/);
+    expect(() => occ.revolve(occ.makeCircle(1), { direction: [0, 0, 0] })).toThrow(/non-zero vector/);
+    expect(() => occ.loft([occ.makeCircle(1)])).toThrow(/at least 2 sections/);
+  });
+
   it("rejects bad shell/draft input with useful errors", () => {
     const box = occ.makeBox(10, 10, 10);
     expect(() => occ.shell(box, 0)).toThrow(/thickness must be a positive/);

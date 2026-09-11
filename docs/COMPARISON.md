@@ -48,7 +48,7 @@ the ❌ from raw calls; the difference is what you get out of the box.
 | Maintenance | last stable 2020 · quiet since Aug 2023 | active |
 | API surface | **auto-generated bindings for nearly all of OCCT** — thousands of classes | ~40 curated, hand-written calls |
 | API style | raw embind: manual `.delete()`, downcasts, machine-generated typings | strict TypeScript, ESM, validated options, errors that teach |
-| Fillets · chamfers · extrude/revolve · 2D | ✅ raw classes | 🚧 roadmap |
+| Fillets · chamfers · extrude/revolve · 2D | ✅ raw classes | ✅ `fillet` / `chamfer` / `extrude` / `revolve` / `loft` / `sweep` + circle/polygon profiles |
 | Shelling (thick solid) · draft angle | ❌ bound as empty stubs — no callable methods | ✅ `shell` / `draft` |
 | STEP · BRep · IGES I/O | ✅ raw XCAF/XSControl classes | ✅ first-class, with unit selection |
 | Assembly tree: names · colors · transforms | raw calls | ✅ `readStepDocument` → JSON |
@@ -174,17 +174,16 @@ are the early moves.
 ## Where occt.ts must catch up
 
 In priority order — each item is an OCCT module away, not a research project (the recipe is in
-[AGENTS.md](../AGENTS.md)):
+[AGENTS.md](../AGENTS.md)). Done since the scorecard above was written: fillets/chamfers
+(`BRepFilletAPI`), sketch→solid (`extrude`/`revolve`), lofts and pipe sweeps
+(`BRepOffsetAPI_ThruSections`/`MakePipe`), and first profile authoring (`makeCircle`,
+`makePolygon`) landed with the 0.4.0 modeling release.
 
-1. **Sketch→solid**: extrude/revolve of 2D profiles (`BRepPrimAPI` sweep family) — the top
-   roadmap item; unlocks "draw a profile, get a part".
-2. **Fillets and chamfers** (`BRepFilletAPI_MakeFillet` / `MakeChamfer`) — the most-requested
-   modeling operations after booleans.
-3. **Sweeps and lofts** (`BRepOffsetAPI_ThruSections`, `MakePipe`, `MakePipeShell`).
-4. **2D authoring**: `Geom2d` curves plus edge/wire construction, so profiles can be built in
-   TypeScript instead of arriving only via imported files.
-5. **XCAF write-back**: names, colors and assembly structure on STEP export.
-6. **Ecosystem**: examples gallery, integration recipes (a three.js bridge for users who want
+1. **2D authoring beyond circles/polygons**: `Geom2d` arcs and splines plus wire booleans, so
+   richer profiles can be built in TypeScript instead of arriving only via imported files.
+2. **XCAF write-back**: names, colors and assembly structure on STEP export.
+3. **MCP server**: first-class agent access.
+4. **Ecosystem**: examples gallery, integration recipes (a three.js bridge for users who want
    it), community docs.
 
 We grow these deliberately as curated API — five steps each per the recipe — rather than

@@ -21,6 +21,13 @@ export interface WasmShape {
   delete(): void;
 }
 
+/** register_vector<OccShape> handle — build one to pass a shape list to `loft`. */
+export interface WasmShapeVector {
+  push_back(shape: WasmShape): void;
+  size(): number;
+  delete(): void;
+}
+
 export interface WasmMeshData {
   positionsPtr(): number;
   positionCount(): number;
@@ -50,6 +57,9 @@ export interface OccWasmModule {
 
   occtVersion(): string;
 
+  /** register_vector<OccShape> constructor (loft's section list). */
+  readonly VectorShape: new () => WasmShapeVector;
+
   makeBox(dx: number, dy: number, dz: number): WasmShape;
   makeCylinder(
     radius: number, height: number,
@@ -67,6 +77,14 @@ export interface OccWasmModule {
     dx: number, dy: number, dz: number,
     ox: number, oy: number, oz: number,
   ): WasmShape;
+  /** Circle wire of `radius` in the plane through (ox, oy, oz) normal to (nx, ny, nz). */
+  makeCircle(
+    radius: number,
+    nx: number, ny: number, nz: number,
+    ox: number, oy: number, oz: number,
+  ): WasmShape;
+  /** `pointCount` triples of float64 at `ptsPtr`; `close` loops back to the first point. */
+  makePolygon(ptsPtr: number, pointCount: number, close: boolean): WasmShape;
 
   fuse(a: WasmShape, b: WasmShape): WasmShape;
   cut(a: WasmShape, b: WasmShape): WasmShape;
@@ -84,6 +102,20 @@ export interface OccWasmModule {
     nx: number, ny: number, nz: number,
     facesPtr: number, faceCount: number, autoSelectWalls: boolean,
   ): WasmShape;
+  /** 1-based edge indices at `edgesPtr` (`edgeCount` × int32; 0 = all edges). */
+  fillet(s: WasmShape, radius: number, edgesPtr: number, edgeCount: number): WasmShape;
+  chamfer(s: WasmShape, distance: number, edgesPtr: number, edgeCount: number): WasmShape;
+
+  /** Straight sweep of a wire/face profile; `solid` caps wire profiles into faces first. */
+  extrude(profile: WasmShape, dx: number, dy: number, dz: number, solid: boolean): WasmShape;
+  revolve(
+    profile: WasmShape,
+    ax: number, ay: number, az: number,
+    ox: number, oy: number, oz: number,
+    angleRadians: number, solid: boolean,
+  ): WasmShape;
+  loft(sections: WasmShapeVector, ruled: boolean, solid: boolean): WasmShape;
+  sweep(profile: WasmShape, spine: WasmShape, solid: boolean): WasmShape;
 
   tessellate(s: WasmShape, linDefl: number, angDeflDegrees: number, relative: boolean): WasmMeshData;
   hiddenLines(

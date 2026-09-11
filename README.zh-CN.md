@@ -26,7 +26,7 @@ OCCT **7.9.3** · Emscripten · TypeScript · LGPL-2.1
 | IGES 导入 + 导出 | ✅ |
 | XCAF 文档读取：装配**树、名称、颜色**、实例变换 | ✅ |
 | STEP 读写单位制（`mm/cm/m/km/inch/ft/mi/um`） | ✅ |
-| 建模：图元、布尔（fuse/cut/common）、变换、抽壳、拔模 | ✅ |
+| 建模：图元、布尔（fuse/cut/common）、变换、抽壳、拔模、圆角/倒角、草图成体（拉伸/旋转/放样/扫掠） | ✅ |
 | 测量：体积、表面积、包围盒、有效性、子形状计数 | ✅ |
 | **几何查询**——面/边解析参数、最小距离+最近点、截面线、点在体内判断 | ✅ |
 | **孔检测**——从描述结果启发式识别圆孔（半径/轴向/深度） | ✅ |
@@ -35,7 +35,7 @@ OCCT **7.9.3** · Emscripten · TypeScript · LGPL-2.1
 | Node 18+ 无头运行（无需 GPU、无需浏览器） | ✅ |
 | CLI（`info` / `describe` / `tree` / `convert` / `hlr`），支持 JSON 输出 | ✅ |
 | 输出格式：STEP、BRep、IGES、STL、OBJ、SVG、glTF (.glb) | ✅ |
-| 草图成体（拉伸/旋转）、圆角/倒角、MCP server、XCAF 写回 | 🚧 路线图 |
+| MCP server、XCAF 写回、更丰富的 2D 草图（圆弧、线框布尔） | 🚧 路线图 |
 
 ## 与 opencascade.js 的对比
 
@@ -50,7 +50,7 @@ OCCT **7.9.3** · Emscripten · TypeScript · LGPL-2.1
 | 维护状态 | 最后稳定版 2020 · 2023 起沉寂 | 活跃开发 |
 | API 覆盖面 | 自动生成、几乎全量 OCCT——数千个类 | 约 40 个精选手写调用 |
 | STEP · BRep · IGES 读写 | ✅ 裸 XCAF/XSControl 类 | ✅ 一等公民，带单位制选择 |
-| 圆角 · 倒角 · 扫掠 · 2D | ✅ 裸类可用 | 🚧 路线图 |
+| 圆角 · 倒角 · 扫掠 · 2D | ✅ 裸类可用 | ✅ `fillet` / `chamfer` / `extrude` / `revolve` / `loft` / `sweep` + 圆/多边形轮廓 |
 | 抽壳 · 拔模 | ❌ 绑定为空壳类 | ✅ `shell` / `draft` |
 | HLR 工程图 · WebGL 查看器 · JSON CLI · 几何查询 | ❌ | ✅ |
 | 生态 | CascadeStudio · RepliCAD · BitByBit · ArchiYou | 起步阶段 |

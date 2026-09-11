@@ -21,14 +21,20 @@ import {
 } from "./interrogate.js";
 import type {
   BoundingBox,
+  CircleOptions,
   DraftOptions,
+  EdgeBlendOptions,
   HiddenLineOptions,
   HiddenLineResult,
+  LoftOptions,
   MeshData,
   PointClassification,
+  PolygonOptions,
   PrimitiveOptions,
+  RevolveOptions,
   ShapeTypeName,
   ShellOptions,
+  SolidProfileOptions,
   TessellationOptions,
   UnitOption,
   Vec3,
@@ -139,6 +145,47 @@ export class OccSession {
     return this.adopt(this.module.makeTorus(majorRadius, minorRadius, dx, dy, dz, ox, oy, oz));
   }
 
+  /** Circle as a closed wire — a section for extrude/revolve/loft or a sweep spine. */
+  makeCircle(radius: number, options: CircleOptions = {}): OccShape {
+    if (!(radius > 0)) throw new Error("makeCircle: radius must be a positive number");
+    const [dx, dy, dz] = options.normal ?? [0, 0, 1];
+    const len = Math.hypot(dx, dy, dz);
+    if (len < 1e-12) throw new Error("makeCircle: normal must be a non-zero vector");
+    const [ox, oy, oz] = options.origin ?? [0, 0, 0];
+    return this.adopt(
+      this.module.makeCircle(radius, dx / len, dy / len, dz / len, ox, oy, oz),
+    );
+  }
+
+  /** Polygon wire through `points` (closed by default) — a section or a sweep spine. */
+  makePolygon(points: readonly Vec3[], options: PolygonOptions = {}): OccShape {
+    const close = options.close ?? true;
+    const minimum = close ? 3 : 2;
+    if (points.length < minimum) {
+      throw new Error(`makePolygon: needs at least ${minimum} points (got ${points.length})`);
+    }
+    const same = (a: Vec3, b: Vec3) =>
+      Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]) < 1e-9;
+    const flat: number[] = [];
+    for (let i = 0; i < points.length; i++) {
+      const point = points[i]!;
+      if (![point[0], point[1], point[2]].every(Number.isFinite)) {
+        throw new Error("makePolygon: points must be finite numbers");
+      }
+      // Zero-length edges make OCCT's wire builder fail without a message.
+      if (i > 0 && same(points[i - 1]!, point)) {
+        throw new Error("makePolygon: consecutive points must be distinct");
+      }
+      flat.push(point[0], point[1], point[2]);
+    }
+    if (close && same(points[0]!, points[points.length - 1]!)) {
+      throw new Error("makePolygon: drop the repeated closing point — close is automatic");
+    }
+    return this.adopt(
+      this.withFloats(flat, (ptr, count) => this.module.makePolygon(ptr, count / 3, close)),
+    );
+  }
+
   // --- booleans ----------------------------------------------------------------
 
   fuse(a: OccShape, b: OccShape): OccShape {
@@ -226,6 +273,101 @@ export class OccSession {
         ),
       ),
     );
+  }
+
+  // --- edge blends: fillets & chamfers ----------------------------------------
+
+  /**
+   * Round edges with `radius`. Default: every edge; pass `edges` (1-based
+   * indices as listed by `describe`) for a specific subset.
+   */
+  fillet(shape: OccShape, radius: number, options: EdgeBlendOptions = {}): OccShape {
+    if (!(radius > 0)) {
+      throw new Error("fillet: radius must be a positive number");
+    }
+    const edges = options.edges ?? [];
+    this.validateEdgeIndices("fillet", shape, edges);
+    return this.adopt(
+      this.withInts(edges, (ptr, count) => this.module.fillet(shape.raw, radius, ptr, count)),
+    );
+  }
+
+  /** Bevel edges by `distance` (equal on both sides). Same edge selection as `fillet`. */
+  chamfer(shape: OccShape, distance: number, options: EdgeBlendOptions = {}): OccShape {
+    if (!(distance > 0)) {
+      throw new Error("chamfer: distance must be a positive number");
+    }
+    const edges = options.edges ?? [];
+    this.validateEdgeIndices("chamfer", shape, edges);
+    return this.adopt(
+      this.withInts(edges, (ptr, count) => this.module.chamfer(shape.raw, distance, ptr, count)),
+    );
+  }
+
+  // --- sketch → solid: extrude / revolve / loft / sweep --------------------------
+
+  /**
+   * Sweep a planar profile (wire or face) along a straight vector, e.g.
+   * `extrude(makeCircle(5), [0, 0, 10])`. Wires become solids by default;
+   * `solid: false` returns the extruded shell.
+   */
+  extrude(profile: OccShape, vector: Vec3, options: SolidProfileOptions = {}): OccShape {
+    const len = Math.hypot(vector[0], vector[1], vector[2]);
+    if (len < 1e-12) throw new Error("extrude: vector must be a non-zero vector");
+    return this.adopt(
+      this.module.extrude(profile.raw, vector[0], vector[1], vector[2], options.solid ?? true),
+    );
+  }
+
+  /**
+   * Revolve a planar profile about the axis through `origin` along
+   * `direction`, by `angleDegrees` (default: a full turn). The profile must
+   * not cross the axis.
+   */
+  revolve(profile: OccShape, options: RevolveOptions): OccShape {
+    const [dx, dy, dz] = options.direction;
+    const len = Math.hypot(dx, dy, dz);
+    if (len < 1e-12) throw new Error("revolve: direction must be a non-zero vector");
+    const angleDegrees = options.angleDegrees ?? 360;
+    if (!(angleDegrees > 0)) throw new Error("revolve: angleDegrees must be positive");
+    const radians = Math.min((angleDegrees * Math.PI) / 180, 2 * Math.PI);
+    const [ox, oy, oz] = options.origin ?? [0, 0, 0];
+    return this.adopt(
+      this.module.revolve(
+        profile.raw, dx / len, dy / len, dz / len, ox, oy, oz, radians, options.solid ?? true,
+      ),
+    );
+  }
+
+  /**
+   * Skin two or more sections (wires or faces) into one solid — default is a
+   * smoothed B-spline surface; `ruled: true` rules straight sections between
+   * neighbors (e.g. two circles become an exact frustum).
+   */
+  loft(sections: readonly OccShape[], options: LoftOptions = {}): OccShape {
+    if (sections.length < 2) throw new Error("loft: needs at least 2 sections");
+    // register_vector handles cannot be built from a plain JS array — fill
+    // one per section and free it in one shot afterwards.
+    const list = new this.module.VectorShape();
+    try {
+      for (const section of sections) {
+        list.push_back(section.raw);
+      }
+      return this.adopt(
+        this.module.loft(list, options.ruled ?? false, options.solid ?? true),
+      );
+    } finally {
+      list.delete();
+    }
+  }
+
+  /**
+   * Sweep a planar profile along a spine wire. The profile is transported
+   * from the spine's start — place it there, perpendicular to the spine's
+   * tangent (a circle on a circular spine becomes a torus).
+   */
+  sweep(profile: OccShape, spine: OccShape, options: SolidProfileOptions = {}): OccShape {
+    return this.adopt(this.module.sweep(profile.raw, spine.raw, options.solid ?? true));
   }
 
   // --- data exchange ----------------------------------------------------------------
@@ -425,6 +567,18 @@ export class OccSession {
     }
   }
 
+  /** Edge indices are 1-based and match `describe()` output. */
+  private validateEdgeIndices(operation: string, shape: OccShape, indices: number[]): void {
+    const edgeCount = shape.count("Edge");
+    for (const index of indices) {
+      if (!Number.isInteger(index) || index < 1 || index > edgeCount) {
+        throw new Error(
+          `${operation}: edge index ${index} is out of range — describe(shape) lists edges 1..${edgeCount}`,
+        );
+      }
+    }
+  }
+
   private adopt(raw: WasmShape): OccShape {
     if (this.module.hasError()) {
       const message = this.module.lastError();
@@ -461,6 +615,17 @@ export class OccSession {
     const ptr = this.module._malloc(values.length * 4);
     try {
       new Uint32Array(this.module.HEAPU8.buffer, ptr, values.length).set(values);
+      return fn(ptr, values.length);
+    } finally {
+      this.module._free(ptr);
+    }
+  }
+
+  private withFloats<T>(values: number[], fn: (ptr: number, doubleCount: number) => T): T {
+    if (values.length === 0) return fn(0, 0);
+    const ptr = this.module._malloc(values.length * 8);
+    try {
+      new Float64Array(this.module.HEAPU8.buffer, ptr, values.length).set(values);
       return fn(ptr, values.length);
     } finally {
       this.module._free(ptr);

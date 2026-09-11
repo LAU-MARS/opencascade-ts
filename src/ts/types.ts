@@ -59,6 +59,53 @@ export interface ShellOptions {
   openFaces?: number[];
 }
 
+/** Shared by `fillet` / `chamfer`: which edges to blend. */
+export interface EdgeBlendOptions {
+  /**
+   * 1-based edge indices (as listed by `describe`) to blend.
+   * Default: every edge of the shape.
+   */
+  edges?: number[];
+}
+
+export interface CircleOptions {
+  /** Center. Default `[0, 0, 0]`. */
+  origin?: Vec3;
+  /** Plane normal. Default `[0, 0, 1]`. */
+  normal?: Vec3;
+}
+
+export interface PolygonOptions {
+  /** Loop the wire back to the first point. Default `true`. */
+  close?: boolean;
+}
+
+/** Shared by `extrude` / `revolve` / `sweep`: cap wire profiles into solids. */
+export interface SolidProfileOptions {
+  /**
+   * Build a solid (default): planar wire sections are capped into faces
+   * before sweeping. `false` sweeps the bare wire and returns a shell.
+   */
+  solid?: boolean;
+}
+
+export interface RevolveOptions extends SolidProfileOptions {
+  /** Revolution axis direction. Required. */
+  direction: Vec3;
+  /** A point on the axis. Default `[0, 0, 0]`. */
+  origin?: Vec3;
+  /** Sweep angle in degrees; `360` (default) makes a full revolution. */
+  angleDegrees?: number;
+}
+
+export interface LoftOptions extends SolidProfileOptions {
+  /**
+   * Rule straight sections between consecutive profiles instead of
+   * smoothing a B-spline skin across all of them. Default `false`.
+   */
+  ruled?: boolean;
+}
+
 export interface DraftOptions {
   /** Pull direction. Default `[0, 0, 1]`. */
   direction?: Vec3;

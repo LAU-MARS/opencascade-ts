@@ -64,6 +64,17 @@ std::vector<int> indicesFromHeap(unsigned int ptr, int count) {
   return indices;
 }
 
+// Polygon point lists cross the same way, as 64-bit coordinate triples.
+std::vector<double> doublesFromHeap(unsigned int ptr, int count) {
+  std::vector<double> values;
+  values.reserve(count > 0 ? count : 0);
+  const double* doubles = reinterpret_cast<const double*>(ptr);
+  for (int i = 0; i < count; ++i) {
+    values.push_back(doubles[i]);
+  }
+  return values;
+}
+
 // --- wrapped entry points ----------------------------------------------------
 
 OccShape makeBoxWrap(double dx, double dy, double dz) {
@@ -95,6 +106,19 @@ OccShape makeTorusWrap(double majorRadius, double minorRadius,
                        double ox, double oy, double oz) {
   return guarded(
       "makeTorus", [&] { return makeTorus(majorRadius, minorRadius, dx, dy, dz, ox, oy, oz); },
+      OccShape());
+}
+
+OccShape makeCircleWrap(double radius,
+                        double nx, double ny, double nz,
+                        double ox, double oy, double oz) {
+  return guarded(
+      "makeCircle", [&] { return makeCircleWire(radius, nx, ny, nz, ox, oy, oz); }, OccShape());
+}
+
+OccShape makePolygonWrap(unsigned int ptr, int pointCount, bool close) {
+  return guarded(
+      "makePolygon", [&] { return makePolygonWire(doublesFromHeap(ptr, pointCount * 3), close); },
       OccShape());
 }
 
@@ -139,6 +163,42 @@ OccShape draftWrap(const OccShape& shape, double angleRadians,
                           indicesFromHeap(facesPtr, faceCount), autoSelectWalls);
       },
       OccShape());
+}
+
+OccShape filletWrap(const OccShape& shape, double radius, unsigned int edgesPtr, int edgeCount) {
+  return guarded(
+      "fillet", [&] { return filletShape(shape, radius, indicesFromHeap(edgesPtr, edgeCount)); },
+      OccShape());
+}
+
+OccShape chamferWrap(const OccShape& shape, double distance, unsigned int edgesPtr, int edgeCount) {
+  return guarded(
+      "chamfer",
+      [&] { return chamferShape(shape, distance, indicesFromHeap(edgesPtr, edgeCount)); },
+      OccShape());
+}
+
+OccShape extrudeWrap(const OccShape& profile, double dx, double dy, double dz, bool solid) {
+  return guarded(
+      "extrude", [&] { return extrudeShape(profile, dx, dy, dz, solid); }, OccShape());
+}
+
+OccShape revolveWrap(const OccShape& profile,
+                     double ax, double ay, double az,
+                     double ox, double oy, double oz,
+                     double angleRadians, bool solid) {
+  return guarded(
+      "revolve",
+      [&] { return revolveShape(profile, ax, ay, az, ox, oy, oz, angleRadians, solid); },
+      OccShape());
+}
+
+OccShape loftWrap(const std::vector<OccShape>& sections, bool ruled, bool solid) {
+  return guarded("loft", [&] { return loftShapes(sections, ruled, solid); }, OccShape());
+}
+
+OccShape sweepWrap(const OccShape& profile, const OccShape& spine, bool solid) {
+  return guarded("sweep", [&] { return sweepShape(profile, spine, solid); }, OccShape());
 }
 
 MeshData tessellateWrap(const OccShape& shape, double linDefl, double angDeflDeg, bool relative) {
@@ -212,6 +272,7 @@ std::string classifyPointWrap(const OccShape& shape, double x, double y, double 
 
 EMSCRIPTEN_BINDINGS(opencascade_ts) {
   register_vector<double>("VectorDouble");
+  register_vector<OccShape>("VectorShape");
 
   function("hasError", &hasError);
   function("lastError", &lastError);
@@ -247,6 +308,8 @@ EMSCRIPTEN_BINDINGS(opencascade_ts) {
   function("makeSphere", &makeSphereWrap);
   function("makeCone", &makeConeWrap);
   function("makeTorus", &makeTorusWrap);
+  function("makeCircle", &makeCircleWrap);
+  function("makePolygon", &makePolygonWrap);
 
   function("fuse", &fuseWrap);
   function("cut", &cutWrap);
@@ -258,6 +321,13 @@ EMSCRIPTEN_BINDINGS(opencascade_ts) {
 
   function("shell", &shellWrap);
   function("draft", &draftWrap);
+  function("fillet", &filletWrap);
+  function("chamfer", &chamferWrap);
+
+  function("extrude", &extrudeWrap);
+  function("revolve", &revolveWrap);
+  function("loft", &loftWrap);
+  function("sweep", &sweepWrap);
 
   function("tessellate", &tessellateWrap);
   function("hiddenLines", &hiddenLinesWrap);

@@ -26,12 +26,20 @@ is documented in `src/ts/loader.ts`.
 | `makeSphere(r, origin?)` | Sphere. |
 | `makeCone(rBottom, rTop, h, opts?)` | Cone/frustum (`rTop = 0` for a pointed cone). |
 | `makeTorus(majorR, minorR, opts?)` | Torus about `direction`. |
+| `makeCircle(radius, { origin?, normal? })` | Circle as a closed **wire** — a section for `extrude`/`revolve`/`loft` or a sweep spine. |
+| `makePolygon(points, { close? })` | Polygon wire through `points` (`[[x,y,z], …]`); closed by default. |
 | `fuse(a, b)` / `cut(a, b)` / `common(a, b)` | Boolean union / difference / intersection. |
 | `translate(shape, [x,y,z])` | Rigid move. |
 | `rotate(shape, axis, angleDegrees)` | Rotation about `axis` through the origin. |
 | `scale(shape, factor)` | Uniform scaling (negative mirrors). |
 | `shell(shape, thickness, { openFaces? })` | Hollow into a wall of `thickness` (positive = inward; the outer skin is preserved). `openFaces` — 1-based face indices from `describe()` — become the openings; none = sealed hollow. |
 | `draft(shape, angleDegrees, { direction?, faces?, neutralPoint? })` | Mold-release tilt. Faces pivot about the neutral plane (default: bounds center, normal to `direction`); positive angles narrow the part towards the pull direction. Default drafted faces: the walls running parallel to `direction`. |
+| `fillet(shape, radius, { edges? })` | Round edges (`BRepFilletAPI`). Default: every edge; `edges` — 1-based indices from `describe()` — selects a subset. |
+| `chamfer(shape, distance, { edges? })` | Bevel edges by `distance` on both sides. Same edge selection as `fillet`. |
+| `extrude(profile, vector, { solid? })` | Sweep a planar wire/face along a straight vector. Wires become solids by default; `solid: false` → shell. |
+| `revolve(profile, { direction, origin?, angleDegrees?, solid? })` | Revolve a planar profile about the axis; `angleDegrees` defaults to a full turn. |
+| `loft(sections, { ruled?, solid? })` | Skin ≥2 wire/face sections into one solid; `ruled: true` rules straight sections (two circles → an exact frustum). |
+| `sweep(profile, spine, { solid? })` | Transport a planar profile along a spine wire from its start, perpendicular to the tangent. |
 | `readStep(bytes, {unit?})` / `readBrep(bytes)` / `readIges(bytes)` | Import from file bytes → shape. Throws with a `STEP`/`BREP`/`IGES`-prefixed message on bad input. |
 | `readStepDocument(bytes, {unit?})` | Import as an XCAF document: `{ format, tree, shapeCount }` with names, `"#RRGGBB"` colors and 12-number instance transforms. |
 | `documentShape(index)` / `documentShapeCount` | World-positioned leaf shapes from the last `readStepDocument` (valid until the next call). |
@@ -73,6 +81,51 @@ const molded = occ.draft(part, 3, { direction: [0, 0, 1] });
   `d` along the pull direction. Positive angles narrow towards the pull
   direction (mold release).
 - Face indices are 1-based and match `describe()`'s `faces[].index`.
+
+## Edge blends — fillets & chamfers
+
+```ts
+const rounded = occ.fillet(part, 2);                          // every edge
+const frontLoop = occ.describe(part).edges
+  .filter((e) => /* e.g. lines at z = 10 */).map((e) => e.index);
+const beveled = occ.chamfer(part, 1.5, { edges: frontLoop }); // a selected subset
+```
+
+- `fillet` / `chamfer` blend **all** edges by default — for a box that means
+  12 cylinders + 8 spherical/tetrahedral corners. Pass `edges` (1-based,
+  `describe()`'s `edges[].index`) to blend a loop or a single edge.
+- Edge indices line up with `describe()`'s `edges[].index`, like face
+  indices do for `shell`/`draft`.
+- A radius that is too large for the local geometry fails with the kernel's
+  message — shrink it or select fewer edges.
+
+## Sketch → solid — extrude / revolve / loft / sweep
+
+```ts
+const cylinder = occ.extrude(occ.makeCircle(5), [0, 0, 10]);            // π·5²·10
+const torus = occ.revolve(
+  occ.makeCircle(2, { origin: [20, 0, 0], normal: [0, 1, 0] }),         // XZ-plane circle
+  { direction: [0, 0, 1] },                                             // about +Z
+);
+const frustum = occ.loft(
+  [occ.makeCircle(5), occ.makeCircle(10, { origin: [0, 0, 20] })],
+  { ruled: true },
+);
+const pipe = occ.sweep(
+  occ.makeCircle(3, { normal: [0, 0, 1] }),                             // at the spine start
+  occ.makePolygon([[0, 0, 0], [0, 0, 20]], { close: false }),
+);
+```
+
+- Profiles are planar wires (`makeCircle` / `makePolygon`) or faces; wires are
+  capped into solids by default, `solid: false` sweeps the bare wire into a
+  shell.
+- `revolve` takes degrees (default 360); the profile must not cross the axis.
+- `loft` smooths a B-spline skin across all sections by default; `ruled: true`
+  interpolates linearly between neighbors.
+- `sweep` transports the profile along the spine from its **start** — place
+  the profile there, perpendicular to the tangent (a circle on a circular
+  spine yields an exact torus).
 
 ## Tessellation — `MeshData`
 
