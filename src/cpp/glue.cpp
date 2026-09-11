@@ -51,6 +51,19 @@ std::string lastError() { return g_lastError; }
 
 std::string occtVersionString() { return OCC_VERSION_COMPLETE; }
 
+// Face-index lists cross the boundary as a heap buffer (mirrors how file
+// payloads reach readStep): TypeScript mallocs, writes 32-bit indices, and
+// passes pointer + count. Null pointer with count 0 means "empty".
+std::vector<int> indicesFromHeap(unsigned int ptr, int count) {
+  std::vector<int> indices;
+  indices.reserve(count);
+  const int* values = reinterpret_cast<const int*>(ptr);
+  for (int i = 0; i < count; ++i) {
+    indices.push_back(values[i]);
+  }
+  return indices;
+}
+
 // --- wrapped entry points ----------------------------------------------------
 
 OccShape makeBoxWrap(double dx, double dy, double dz) {
@@ -107,6 +120,25 @@ OccShape rotateWrap(const OccShape& shape, double ax, double ay, double az, doub
 
 OccShape scaleWrap(const OccShape& shape, double factor) {
   return guarded("scale", [&] { return scaleShape(shape, factor); }, OccShape());
+}
+
+OccShape shellWrap(const OccShape& shape, double thickness, unsigned int facesPtr, int faceCount) {
+  return guarded(
+      "shell", [&] { return shellShape(shape, thickness, indicesFromHeap(facesPtr, faceCount)); },
+      OccShape());
+}
+
+OccShape draftWrap(const OccShape& shape, double angleRadians,
+                   double dx, double dy, double dz,
+                   double nx, double ny, double nz,
+                   unsigned int facesPtr, int faceCount, bool autoSelectWalls) {
+  return guarded(
+      "draft",
+      [&] {
+        return draftShape(shape, angleRadians, dx, dy, dz, nx, ny, nz,
+                          indicesFromHeap(facesPtr, faceCount), autoSelectWalls);
+      },
+      OccShape());
 }
 
 MeshData tessellateWrap(const OccShape& shape, double linDefl, double angDeflDeg, bool relative) {
@@ -223,6 +255,9 @@ EMSCRIPTEN_BINDINGS(opencascade_ts) {
   function("translate", &translateWrap);
   function("rotate", &rotateWrap);
   function("scale", &scaleWrap);
+
+  function("shell", &shellWrap);
+  function("draft", &draftWrap);
 
   function("tessellate", &tessellateWrap);
   function("hiddenLines", &hiddenLinesWrap);

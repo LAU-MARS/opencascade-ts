@@ -80,6 +80,64 @@ describeWasm("opencascade-ts kernel (wasm integration)", () => {
     expect(occ.scale(box, 2).volume()).toBeCloseTo(8, 6);
   });
 
+  it("hollows a box into an open-top shell", () => {
+    const box = occ.makeBox(20, 20, 10);
+    const top = occ.describe(box).faces.find(
+      (f) => f.surface === "plane" && f.normal && Math.abs(f.normal[2] - 1) < 1e-9 && Math.abs(f.origin[2] - 10) < 1e-6,
+    );
+    expect(top).toBeDefined();
+    const part = occ.shell(box, 2, { openFaces: [top!.index] });
+    expect(part.isValid()).toBe(true);
+    // 20×20×10 outer minus the 16×16×8 cavity: 2-thick floor, open at the top
+    expect(part.volume()).toBeCloseTo(20 * 20 * 10 - 16 * 16 * 8, 1);
+    expectVec3Close(part.bounds().min, [0, 0, 0]);
+    expectVec3Close(part.bounds().max, [20, 20, 10]);
+  });
+
+  it("hollows a box on all sides (sealed)", () => {
+    const part = occ.shell(occ.makeBox(20, 20, 10), 2);
+    expect(part.isValid()).toBe(true);
+    // sealed cavity 16×16×6; one solid carrying the outer shell and the void
+    expect(part.volume()).toBeCloseTo(20 * 20 * 10 - 16 * 16 * 6, 1);
+    expect(part.count("Solid")).toBe(1);
+    expect(part.count("Shell")).toBe(2);
+  });
+
+  it("drafts box walls into a symmetric frustum", () => {
+    const part = occ.draft(occ.makeBox(20, 20, 50), 10, { direction: [0, 0, 1] });
+    expect(part.isValid()).toBe(true);
+    // The neutral plane defaults to the bounds center (z = 25): the
+    // cross-section stays 20×20 there and tapers by 2·25·tan(10°) per side.
+    const taper = 2 * 25 * Math.tan((10 * Math.PI) / 180);
+    const a = 20 - taper;
+    const b = 20 + taper;
+    const expected = (50 / 3) * (a * a + a * b + b * b);
+    expect(part.volume()).toBeCloseTo(expected, 0);
+  });
+
+  it("drafts walls narrower along the pull direction", () => {
+    // Neutral plane pinned to the floor: the bottom stays 20×20 and the top
+    // narrows by 2·50·tan(10°) per side — the mold-release convention.
+    const part = occ.draft(occ.makeBox(20, 20, 50), 10, {
+      direction: [0, 0, 1],
+      neutralPoint: [10, 10, 0],
+    });
+    expect(part.isValid()).toBe(true);
+    const top = 20 - 2 * 50 * Math.tan((10 * Math.PI) / 180);
+    expect(part.volume()).toBeCloseTo((50 / 3) * (20 * 20 + 20 * top + top * top), 0);
+    expectVec3Close(part.bounds().min, [0, 0, 0]);
+    expectVec3Close(part.bounds().max, [20, 20, 50]);
+  });
+
+  it("rejects bad shell/draft input with useful errors", () => {
+    const box = occ.makeBox(10, 10, 10);
+    expect(() => occ.shell(box, 0)).toThrow(/thickness must be a positive/);
+    expect(() => occ.shell(box, 2, { openFaces: [0] })).toThrow(/1\.\.6/);
+    expect(() => occ.draft(box, 0)).toThrow(/non-zero/);
+    expect(() => occ.draft(box, 5, { faces: [99] })).toThrow(/1\.\.6/);
+    expect(() => occ.draft(box, 5, { direction: [0, 0, 0] })).toThrow(/non-zero vector/);
+  });
+
   it("round-trips through STEP", () => {
     const part = occ.cut(
       occ.makeBox(20, 20, 5),

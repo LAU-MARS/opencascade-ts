@@ -22,3 +22,17 @@ OccShape booleanOp(int op, const OccShape& a, const OccShape& b);
 OccShape translateShape(const OccShape& shape, double dx, double dy, double dz);
 OccShape rotateShape(const OccShape& shape, double ax, double ay, double az, double angleRadians);
 OccShape scaleShape(const OccShape& shape, double factor);
+
+// Shelling: hollow the solid with an inward wall of `thickness`; the 1-based
+// face indices (as emitted by describeGeometry) in `openFaces` are removed.
+// Throws std::runtime_error on failure or bad indices.
+OccShape shellShape(const OccShape& shape, double thickness, const std::vector<int>& openFaces);
+
+// Drafting: tilt faces by `angleRadians` (signed) for mold release. Faces
+// pivot about the neutral plane through (nx, ny, nz) normal to (dx, dy, dz).
+// With autoSelectWalls the faces drafted are the ones running parallel to the
+// direction; otherwise the 1-based `faceIndices` are used. Throws on failure.
+OccShape draftShape(const OccShape& shape, double angleRadians,
+                    double dx, double dy, double dz,
+                    double nx, double ny, double nz,
+                    const std::vector<int>& faceIndices, bool autoSelectWalls);

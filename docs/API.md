@@ -30,6 +30,8 @@ is documented in `src/ts/loader.ts`.
 | `translate(shape, [x,y,z])` | Rigid move. |
 | `rotate(shape, axis, angleDegrees)` | Rotation about `axis` through the origin. |
 | `scale(shape, factor)` | Uniform scaling (negative mirrors). |
+| `shell(shape, thickness, { openFaces? })` | Hollow into a wall of `thickness` (positive = inward; the outer skin is preserved). `openFaces` — 1-based face indices from `describe()` — become the openings; none = sealed hollow. |
+| `draft(shape, angleDegrees, { direction?, faces?, neutralPoint? })` | Mold-release tilt. Faces pivot about the neutral plane (default: bounds center, normal to `direction`); positive angles narrow the part towards the pull direction. Default drafted faces: the walls running parallel to `direction`. |
 | `readStep(bytes, {unit?})` / `readBrep(bytes)` / `readIges(bytes)` | Import from file bytes → shape. Throws with a `STEP`/`BREP`/`IGES`-prefixed message on bad input. |
 | `readStepDocument(bytes, {unit?})` | Import as an XCAF document: `{ format, tree, shapeCount }` with names, `"#RRGGBB"` colors and 12-number instance transforms. |
 | `documentShape(index)` / `documentShapeCount` | World-positioned leaf shapes from the last `readStepDocument` (valid until the next call). |
@@ -54,6 +56,23 @@ is documented in `src/ts/loader.ts`.
 | `isValid()` | `BRepCheck_Analyzer` result. |
 | `count(type)` | Sub-shape count, e.g. `count("Face")`, `count("Edge")`. |
 | `dispose()` | Free this shape early (otherwise freed by `session.dispose()`). |
+
+## Shelling & drafting
+
+```ts
+const topFaceIndex = occ.describe(part).faces.find((f) => /* … */)?.index;
+const cup = occ.shell(part, 2, { openFaces: [topFaceIndex] });
+const molded = occ.draft(part, 3, { direction: [0, 0, 1] });
+```
+
+- `shell` — positive `thickness` grows the wall inward; the outer surface is
+  preserved. With no `openFaces` the hollow is sealed (one solid carrying an
+  inner void shell).
+- `draft` — faces pivot about the **neutral plane**: dimensions on that plane
+  are unchanged, and the part narrows by `2·d·tan(angle)` per side at distance
+  `d` along the pull direction. Positive angles narrow towards the pull
+  direction (mold release).
+- Face indices are 1-based and match `describe()`'s `faces[].index`.
 
 ## Tessellation — `MeshData`
 

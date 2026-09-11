@@ -51,6 +51,29 @@ export interface PrimitiveOptions {
   origin?: Vec3;
 }
 
+export interface ShellOptions {
+  /**
+   * 1-based face indices (as listed by `describe`) that become openings.
+   * Default: none — a sealed hollow.
+   */
+  openFaces?: number[];
+}
+
+export interface DraftOptions {
+  /** Pull direction. Default `[0, 0, 1]`. */
+  direction?: Vec3;
+  /**
+   * 1-based face indices (as listed by `describe`) to draft.
+   * Default: the faces running parallel to `direction` (the walls).
+   */
+  faces?: number[];
+  /**
+   * A point on the neutral plane — faces pivot about it and dimensions there
+   * are unchanged. Default: the center of the bounding box.
+   */
+  neutralPoint?: Vec3;
+}
+
 export interface HiddenLineOptions {
   /** Viewing direction (points from the model towards the viewer). Required. */
   direction: Vec3;

@@ -2,6 +2,7 @@
 
 #include "occ.h"
 
+#include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgoAPI_Common.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
@@ -9,6 +10,8 @@
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepGProp.hxx>
+#include <BRepOffsetAPI_DraftAngle.hxx>
+#include <BRepOffsetAPI_MakeThickSolid.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
@@ -16,18 +19,26 @@
 #include <BRepPrimAPI_MakeTorus.hxx>
 #include <Bnd_Box.hxx>
 #include <GProp_GProps.hxx>
+#include <GeomAbs_SurfaceType.hxx>
 #include <Standard_Version.hxx>
-#include <stdexcept>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ListOfShape.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
+
+#include <cmath>
+#include <sstream>
+#include <stdexcept>
 
 std::string shapeTypeName(const TopoDS_Shape& shape) {
   switch (shape.ShapeType()) {
@@ -176,4 +187,110 @@ OccShape scaleShape(const OccShape& shape, double factor) {
   gp_Trsf trsf;
   trsf.SetScaleFactor(factor);
   return OccShape(BRepBuilderAPI_Transform(shape.get(), trsf, true).Shape());
+}
+
+// --- shelling & drafting ------------------------------------------------------
+
+namespace {
+
+// Face indices are 1-based and follow describeGeometry's numbering
+// (TopExp::MapShapes over an indexed map), so `describe()` output feeds
+// straight back into shell/draft.
+TopoDS_Face faceByIndex(const TopoDS_Shape& shape, int index) {
+  TopTools_IndexedMapOfShape faceMap;
+  TopExp::MapShapes(shape, TopAbs_FACE, faceMap);
+  if (index < 1 || index > faceMap.Extent()) {
+    std::ostringstream message;
+    message << "face index " << index << " out of range (1.." << faceMap.Extent() << ")";
+    throw std::runtime_error(message.str());
+  }
+  return TopoDS::Face(faceMap(index));
+}
+
+// Walls worth drafting by default: planes parallel to the direction (normal
+// perpendicular to it) and cylinders running along it. Cones and free-form
+// surfaces are skipped — already drafted or ambiguous.
+bool runsAlongDirection(const TopoDS_Face& face, const gp_Dir& direction) {
+  BRepAdaptor_Surface surface(face);
+  const GeomAbs_SurfaceType type = surface.GetType();
+  if (type == GeomAbs_Plane) {
+    return std::fabs(surface.Plane().Axis().Direction().Dot(direction)) < 1e-6;
+  }
+  if (type == GeomAbs_Cylinder) {
+    return std::fabs(surface.Cylinder().Axis().Direction().Dot(direction)) > 1.0 - 1e-6;
+  }
+  return false;
+}
+
+} // namespace
+
+OccShape shellShape(const OccShape& shape, double thickness, const std::vector<int>& openFaces) {
+  TopTools_ListOfShape closingFaces;
+  for (int index : openFaces) {
+    closingFaces.Append(faceByIndex(shape.get(), index));
+  }
+  // Negative offset = hollow inward: the outer skin stays, the inner wall
+  // sits `thickness` inside it (locked by the integration test).
+  BRepOffsetAPI_MakeThickSolid maker;
+  maker.MakeThickSolidByJoin(shape.get(), closingFaces, -thickness, 1e-3);
+  if (!maker.IsDone() || maker.Shape().IsNull()) {
+    throw std::runtime_error("thick solid failed (try a smaller thickness or fewer open faces)");
+  }
+  // With nothing opened, the kernel's thick solid degenerates to the inner
+  // offset solid — the sealed hollow is that region cut out of the original.
+  if (openFaces.empty()) {
+    BRepAlgoAPI_Cut cut(shape.get(), maker.Shape());
+    cut.SetRunParallel(false);
+    cut.Build();
+    if (!cut.IsDone() || cut.Shape().IsNull()) {
+      throw std::runtime_error("sealed thick solid failed");
+    }
+    return OccShape(cut.Shape());
+  }
+  return OccShape(maker.Shape());
+}
+
+OccShape draftShape(const OccShape& shape, double angleRadians,
+                    double dx, double dy, double dz,
+                    double nx, double ny, double nz,
+                    const std::vector<int>& faceIndices, bool autoSelectWalls) {
+  const gp_Dir direction(dx, dy, dz);
+  const gp_Pln neutralPlane(gp_Pnt(nx, ny, nz), direction);
+
+  BRepOffsetAPI_DraftAngle maker(shape.get());
+  if (autoSelectWalls) {
+    TopTools_IndexedMapOfShape faceMap;
+    TopExp::MapShapes(shape.get(), TopAbs_FACE, faceMap);
+    bool any = false;
+    for (int i = 1; i <= faceMap.Extent(); ++i) {
+      const TopoDS_Face face = TopoDS::Face(faceMap(i));
+      if (!runsAlongDirection(face, direction)) continue;
+      maker.Add(face, direction, angleRadians, neutralPlane);
+      if (!maker.AddDone()) {
+        throw std::runtime_error("a wall could not be drafted — pass explicit face indices");
+      }
+      any = true;
+    }
+    if (!any) {
+      throw std::runtime_error("no face runs parallel to the draft direction — pass explicit face indices");
+    }
+  } else {
+    if (faceIndices.empty()) {
+      throw std::runtime_error("faceIndices must not be empty (or set autoSelectWalls)");
+    }
+    for (int index : faceIndices) {
+      const TopoDS_Face face = faceByIndex(shape.get(), index);
+      maker.Add(face, direction, angleRadians, neutralPlane);
+      if (!maker.AddDone()) {
+        std::ostringstream message;
+        message << "face " << index << " could not be drafted (perpendicular to the direction?)";
+        throw std::runtime_error(message.str());
+      }
+    }
+  }
+  maker.Build();
+  if (!maker.IsDone() || maker.Shape().IsNull()) {
+    throw std::runtime_error("draft failed");
+  }
+  return OccShape(maker.Shape());
 }

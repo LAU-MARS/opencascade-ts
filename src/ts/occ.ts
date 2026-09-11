@@ -21,12 +21,14 @@ import {
 } from "./interrogate.js";
 import type {
   BoundingBox,
+  DraftOptions,
   HiddenLineOptions,
   HiddenLineResult,
   MeshData,
   PointClassification,
   PrimitiveOptions,
   ShapeTypeName,
+  ShellOptions,
   TessellationOptions,
   UnitOption,
   Vec3,
@@ -169,6 +171,61 @@ export class OccSession {
 
   scale(shape: OccShape, factor: number): OccShape {
     return this.adopt(this.module.scale(shape.raw, factor));
+  }
+
+  // --- shelling & drafting ----------------------------------------------------
+
+  /**
+   * Hollow a solid into a shell of wall `thickness` — the wall grows inward,
+   * the outer skin is preserved. `openFaces` (1-based indices as listed by
+   * `describe`) are removed and become the openings; with no `openFaces` the
+   * hollow is sealed.
+   */
+  shell(shape: OccShape, thickness: number, options: ShellOptions = {}): OccShape {
+    if (!(thickness > 0)) {
+      throw new Error("shell: thickness must be a positive number (the wall thickness)");
+    }
+    const openFaces = options.openFaces ?? [];
+    this.validateFaceIndices("shell", shape, openFaces);
+    return this.adopt(
+      this.withInts(openFaces, (ptr, count) => this.module.shell(shape.raw, thickness, ptr, count)),
+    );
+  }
+
+  /**
+   * Tilt faces by `angleDegrees` for mold release. Faces pivot about the
+   * neutral plane — dimensions there are unchanged. By default the plane
+   * passes through the bounds center (normal to `direction`) and the faces
+   * drafted are the ones running parallel to `direction` (the walls); pass
+   * `faces` (1-based, as listed by `describe`) for a specific subset.
+   */
+  draft(shape: OccShape, angleDegrees: number, options: DraftOptions = {}): OccShape {
+    const [dx, dy, dz] = options.direction ?? [0, 0, 1];
+    const len = Math.hypot(dx, dy, dz);
+    if (len < 1e-12) throw new Error("draft: direction must be a non-zero vector");
+    if (angleDegrees === 0) throw new Error("draft: angleDegrees must be non-zero");
+
+    const bounds = shape.bounds();
+    const [nx, ny, nz] = options.neutralPoint ?? [
+      (bounds.min[0] + bounds.max[0]) / 2,
+      (bounds.min[1] + bounds.max[1]) / 2,
+      (bounds.min[2] + bounds.max[2]) / 2,
+    ];
+
+    const faces = options.faces ?? [];
+    this.validateFaceIndices("draft", shape, faces);
+
+    const radians = (angleDegrees * Math.PI) / 180;
+    return this.adopt(
+      this.withInts(faces, (ptr, count) =>
+        this.module.draft(
+          shape.raw, radians,
+          dx / len, dy / len, dz / len,
+          nx, ny, nz,
+          ptr, count, faces.length === 0,
+        ),
+      ),
+    );
   }
 
   // --- data exchange ----------------------------------------------------------------
@@ -356,6 +413,18 @@ export class OccSession {
     }
   }
 
+  /** Face indices are 1-based and match `describe()` output. */
+  private validateFaceIndices(operation: string, shape: OccShape, indices: number[]): void {
+    const faceCount = shape.count("Face");
+    for (const index of indices) {
+      if (!Number.isInteger(index) || index < 1 || index > faceCount) {
+        throw new Error(
+          `${operation}: face index ${index} is out of range — describe(shape) lists faces 1..${faceCount}`,
+        );
+      }
+    }
+  }
+
   private adopt(raw: WasmShape): OccShape {
     if (this.module.hasError()) {
       const message = this.module.lastError();
@@ -382,6 +451,17 @@ export class OccSession {
     try {
       this.module.HEAPU8.set(bytes, ptr);
       return fn(ptr, bytes.length);
+    } finally {
+      this.module._free(ptr);
+    }
+  }
+
+  private withInts<T>(values: number[], fn: (ptr: number, count: number) => T): T {
+    if (values.length === 0) return fn(0, 0);
+    const ptr = this.module._malloc(values.length * 4);
+    try {
+      new Uint32Array(this.module.HEAPU8.buffer, ptr, values.length).set(values);
+      return fn(ptr, values.length);
     } finally {
       this.module._free(ptr);
     }

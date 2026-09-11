@@ -76,6 +76,15 @@ export interface OccWasmModule {
   rotate(s: WasmShape, ax: number, ay: number, az: number, angleRadians: number): WasmShape;
   scale(s: WasmShape, factor: number): WasmShape;
 
+  /** 1-based face indices at `facesPtr` (`faceCount` × int32; 0 = none). */
+  shell(s: WasmShape, thickness: number, facesPtr: number, faceCount: number): WasmShape;
+  draft(
+    s: WasmShape, angleRadians: number,
+    dx: number, dy: number, dz: number,
+    nx: number, ny: number, nz: number,
+    facesPtr: number, faceCount: number, autoSelectWalls: boolean,
+  ): WasmShape;
+
   tessellate(s: WasmShape, linDefl: number, angDeflDegrees: number, relative: boolean): WasmMeshData;
   hiddenLines(
     s: WasmShape,
