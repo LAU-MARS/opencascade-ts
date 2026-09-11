@@ -17,11 +17,30 @@ OccShape makeTorus(double majorRadius, double minorRadius,
 
 // Profile wires: the sections/spines for extrude/revolve/loft/sweep.
 // makePolygonWire takes flat [x0,y0,z0, x1,y1,z1, …]; `close` loops the wire
-// back to the first point. Both throw std::runtime_error on failure.
+// back to the first point. All throw std::runtime_error on failure.
 OccShape makeCircleWire(double radius,
                         double nx, double ny, double nz,
                         double ox, double oy, double oz);
 OccShape makePolygonWire(const std::vector<double>& coordinates, bool close);
+OccShape makeLineWire(double x1, double y1, double z1, double x2, double y2, double z2);
+// Arc on the circle (radius, center, plane normal) between circle parameters
+// u1 < u2 (radians, counterclockwise around the normal); span must be < 2π.
+OccShape makeArcWire(double radius,
+                     double nx, double ny, double nz,
+                     double ox, double oy, double oz,
+                     double u1, double u2);
+// Ellipse: major radius along the axis system's in-plane X, minor along Y.
+OccShape makeEllipseWire(double majorRadius, double minorRadius,
+                         double nx, double ny, double nz,
+                         double ox, double oy, double oz);
+// B-spline from control points (flat coordinates) with clamped uniform
+// knots; degree must satisfy degree < poleCount.
+OccShape makeBsplineWire(const std::vector<double>& coordinates, int degree);
+// B-spline interpolated through every point (flat coordinates).
+OccShape interpolateBsplineWire(const std::vector<double>& coordinates,
+                                bool periodic, double tolerance);
+// Concatenate connected wires/edges into one wire, in order.
+OccShape assembleWire(const std::vector<OccShape>& parts);
 
 // Booleans: op 0 = fuse, 1 = cut, 2 = common. Throws std::runtime_error on failure.
 OccShape booleanOp(int op, const OccShape& a, const OccShape& b);
@@ -51,6 +70,14 @@ OccShape draftShape(const OccShape& shape, double angleRadians,
 // Throws std::runtime_error on failure or bad indices.
 OccShape filletShape(const OccShape& shape, double radius, const std::vector<int>& edgeIndices);
 OccShape chamferShape(const OccShape& shape, double distance, const std::vector<int>& edgeIndices);
+// Per-edge (and per-position) fillet radii: parallel arrays of 1-based edge
+// indices, radii, and positions (NaN = constant radius on that edge; two
+// finite positions on one edge blend linearly between them, in the edge's
+// curve parameter). Throws std::runtime_error on failure or bad indices.
+OccShape variableFilletShape(const OccShape& shape,
+                             const std::vector<int>& edgeIndices,
+                             const std::vector<double>& radii,
+                             const std::vector<double>& positions);
 
 // Sketch → solid. Profiles are planar wires (or faces); wires are capped into
 // faces unless `solid` is false, which sweeps the bare wire into a shell.

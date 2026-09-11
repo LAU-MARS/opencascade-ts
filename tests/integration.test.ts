@@ -263,6 +263,158 @@ describeWasm("opencascade-ts kernel (wasm integration)", () => {
     expect(() => occ.loft([occ.makeCircle(1)])).toThrow(/at least 2 sections/);
   });
 
+  it("makes lines, arcs and ellipses as wires", () => {
+    const line = occ.makeLine([0, 0, 0], [10, 0, 0]);
+    expect(line.shapeType()).toBe("Wire");
+    expect(occ.describe(line).edges[0]!.length).toBeCloseTo(10, 6);
+
+    const quarter = occ.makeArc(5, { startDegrees: 0, endDegrees: 90 });
+    const arcEdge = occ.describe(quarter).edges[0]!;
+    if (arcEdge.curve !== "circle") throw new Error("expected a circle edge");
+    expect(arcEdge.length).toBeCloseTo((2 * Math.PI * 5) / 4, 4);
+    expectVec3Close(arcEdge.center, [0, 0, 0]);
+
+    const ellipse = occ.makeEllipse(10, 4);
+    const ellipseEdge = occ.describe(ellipse).edges[0]!;
+    expect(ellipseEdge.curve).toBe("ellipse");
+    const solid = occ.extrude(ellipse, [0, 0, 5]);
+    expect(solid.volume()).toBeCloseTo(Math.PI * 10 * 4 * 5, 1);
+    expectVec3Close(solid.bounds().min, [-10, -4, 0]);
+    expectVec3Close(solid.bounds().max, [10, 4, 5]);
+  });
+
+  it("assembles arcs and lines into a slot profile and extrudes it", () => {
+    const left = occ.makeArc(5, { startDegrees: 90, endDegrees: 270 }); // (0,5) → (0,-5)
+    const bottom = occ.makeLine([0, -5, 0], [20, -5, 0]);
+    const right = occ.makeArc(5, { origin: [20, 0, 0], startDegrees: -90, endDegrees: 90 });
+    const top = occ.makeLine([20, 5, 0], [0, 5, 0]);
+    const slot = occ.makeWire([left, bottom, right, top]);
+    expect(slot.shapeType()).toBe("Wire");
+
+    const part = occ.extrude(slot, [0, 0, 10]);
+    expect(part.shapeType()).toBe("Solid");
+    expect(part.isValid()).toBe(true);
+    // stadium cross-section πr² + 2rL = 25π + 200, extruded 10 tall
+    expect(part.volume()).toBeCloseTo((25 * Math.PI + 200) * 10, 1);
+    expectVec3Close(part.bounds().min, [-5, -5, 0]);
+    expectVec3Close(part.bounds().max, [25, 5, 10]);
+
+    expect(() => occ.makeWire([left, occ.makeLine([1, 1, 0], [2, 2, 0])])).toThrow(
+      /does not connect/,
+    );
+  });
+
+  it("extrudes a pie-slice profile (arc + two lines to the center)", () => {
+    const arc = occ.makeArc(5, { startDegrees: 0, endDegrees: 90 }); // (5,0) → (0,5)
+    const toCenter = occ.makeLine([0, 5, 0], [0, 0, 0]);
+    const fromCenter = occ.makeLine([0, 0, 0], [5, 0, 0]);
+    const sector = occ.extrude(occ.makeWire([arc, toCenter, fromCenter]), [0, 0, 2]);
+    expect(sector.isValid()).toBe(true);
+    // quarter disc of radius 5, thickness 2: (π/4)r² · 2
+    expect(sector.volume()).toBeCloseTo((Math.PI / 4) * 25 * 2, 1);
+  });
+
+  it("builds B-spline wires from control points", () => {
+    // degree 1 passes through every pole: two straight segments
+    const polyline = occ.makeBspline([[0, 0, 0], [10, 0, 0], [10, 10, 0]], { degree: 1 });
+    const d = occ.describe(polyline);
+    expect(d.edges).toHaveLength(1);
+    expect(d.edges[0]!.curve).toBe("bspline");
+    expect(d.edges[0]!.length).toBeCloseTo(20, 3);
+
+    // degree 3 with collinear poles collapses to the straight span [0, 10]
+    // (clamped knots: the curve still runs first pole → last pole)
+    const flat = occ.makeBspline([[0, 0, 0], [3, 0, 0], [7, 0, 0], [10, 0, 0]]);
+    expect(occ.describe(flat).edges[0]!.length).toBeCloseTo(10, 3);
+  });
+
+  it("interpolates a B-spline through points", () => {
+    const through = occ.makeBsplineThrough([[0, 0, 0], [10, 0, 0], [20, 0, 0]]);
+    expect(occ.describe(through).edges[0]!.length).toBeCloseTo(20, 3);
+    // passes through (10, 0, 0): a crossing line there touches it
+    const crossing = occ.makeLine([10, 0, -5], [10, 0, 5]);
+    expect(occ.distance(through, crossing).distance).toBeCloseTo(0, 6);
+
+    // periodic interpolation closes smoothly — extrudes into a valid solid
+    const loop = occ.makeBsplineThrough(
+      [[-5, -5, 0], [5, -5, 0], [5, 5, 0], [-5, 5, 0]],
+      { periodic: true },
+    );
+    const solid = occ.extrude(loop, [0, 0, 3]);
+    expect(solid.shapeType()).toBe("Solid");
+    expect(solid.isValid()).toBe(true);
+    expect(solid.volume()).toBeGreaterThan(0);
+    expect(solid.volume()).toBeLessThan(500); // stays near the 10×10 hull
+  });
+
+  it("fillets with variable radii along an edge", () => {
+    const box = occ.makeBox(10, 10, 10);
+    const vertical = occ.describe(box).edges
+      .filter((e) => e.curve === "line" && Math.abs(e.direction[2]) > 0.999)
+      .map((e) => e.index);
+    const edge = vertical[0]!;
+    // the vertical edges' line parameters run 0..10 with the edge
+
+    // two equal radii at both ends = the constant fillet on that one edge
+    const constant = occ.variableFillet(box, [
+      { edge, radius: 1, at: 0 },
+      { edge, radius: 1, at: 10 },
+    ]);
+    expect(constant.isValid()).toBe(true);
+    expect(constant.volume()).toBeCloseTo(1000 - 10 * (1 - Math.PI / 4), 2);
+
+    // tapering 1 → 2 must land between the constant-1 and constant-2 fillets
+    const tapered = occ.variableFillet(box, [
+      { edge, radius: 1, at: 0 },
+      { edge, radius: 2, at: 10 },
+    ]);
+    expect(tapered.isValid()).toBe(true);
+    const v1 = 1000 - 10 * (1 - Math.PI / 4);
+    const v2 = 1000 - 10 * 4 * (1 - Math.PI / 4);
+    expect(tapered.volume()).toBeGreaterThan(v2);
+    expect(tapered.volume()).toBeLessThan(v1);
+
+    // more than two positions per edge is not supported
+    expect(() =>
+      occ.variableFillet(box, [
+        { edge, radius: 1, at: 0 },
+        { edge, radius: 2, at: 5 },
+        { edge, radius: 1, at: 10 },
+      ]),
+    ).toThrow(/only two are supported/);
+  });
+
+  it("computes centroids of solids, shells and wires", () => {
+    expectVec3Close(occ.makeBox(10, 10, 10).centroid(), [5, 5, 5]);
+    expectVec3Close(occ.translate(occ.makeBox(10, 10, 10), [10, 0, 0]).centroid(), [15, 5, 5]);
+
+    // a symmetric plate with a central bore keeps its center
+    const plate = occ.cut(
+      occ.makeBox(20, 20, 5),
+      occ.makeCylinder(4, 20, { origin: [10, 10, -5] }),
+    );
+    expectVec3Close(plate.centroid(), [10, 10, 2.5]);
+
+    // no solids → the curve integral: a circle's centroid is its center
+    expectVec3Close(occ.makeCircle(5, { origin: [3, 4, 0] }).centroid(), [3, 4, 0]);
+  });
+
+  it("rejects bad curve/wire/fillet input with useful errors", () => {
+    expect(() => occ.makeLine([0, 0, 0], [0, 0, 0])).toThrow(/distinct/);
+    expect(() => occ.makeArc(5, { startDegrees: 90, endDegrees: 90 })).toThrow(/greater than/);
+    expect(() => occ.makeArc(5, { startDegrees: 0, endDegrees: 360 })).toThrow(/360/);
+    expect(() => occ.makeArc(0, { startDegrees: 0, endDegrees: 90 })).toThrow(/positive/);
+    expect(() => occ.makeEllipse(4, 10)).toThrow(/majorRadius/);
+    expect(() => occ.makeBspline([[0, 0, 0]])).toThrow(/at least 2 poles/);
+    expect(() => occ.makeBspline([[0, 0, 0], [1, 0, 0]], { degree: 5 })).toThrow(/degree \+ 1/);
+    expect(() => occ.makeBsplineThrough([[0, 0, 0]])).toThrow(/at least 2 points/);
+    expect(() => occ.makeWire([occ.makeCircle(5)])).toThrow(/at least 2/);
+    expect(() => occ.variableFillet(occ.makeBox(10, 10, 10), [])).toThrow(/at least one/);
+    expect(() => occ.variableFillet(occ.makeBox(10, 10, 10), [{ edge: 99, radius: 1 }])).toThrow(
+      /1\.\.12/,
+    );
+  });
+
   it("rejects bad shell/draft input with useful errors", () => {
     const box = occ.makeBox(10, 10, 10);
     expect(() => occ.shell(box, 0)).toThrow(/thickness must be a positive/);

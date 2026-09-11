@@ -20,12 +20,16 @@ import {
   type ShapeDocument,
 } from "./interrogate.js";
 import type {
+  ArcOptions,
   BoundingBox,
+  BsplineOptions,
   CircleOptions,
   DraftOptions,
   EdgeBlendOptions,
+  EllipseOptions,
   HiddenLineOptions,
   HiddenLineResult,
+  InterpolateOptions,
   LoftOptions,
   MeshData,
   PointClassification,
@@ -38,6 +42,7 @@ import type {
   TessellationOptions,
   UnitOption,
   Vec3,
+  VariableFilletSpec,
 } from "./types.js";
 import type { OccWasmModule, WasmShape } from "./wasm-module.js";
 
@@ -79,6 +84,15 @@ export class OccShape {
       min: [b[0]!, b[1]!, b[2]!],
       max: [b[3]!, b[4]!, b[5]!],
     };
+  }
+
+  /**
+   * Center of mass: volume-weighted for solids, otherwise the surface/curve
+   * integral (open shells, wires — a circle's centroid is its center).
+   */
+  centroid(): Vec3 {
+    const c = vectorToArray(this.raw.centroid());
+    return [c[0]!, c[1]!, c[2]!];
   }
 
   /** BRepCheck_Analyzer result — catch corrupt imports before modeling. */
@@ -164,8 +178,6 @@ export class OccSession {
     if (points.length < minimum) {
       throw new Error(`makePolygon: needs at least ${minimum} points (got ${points.length})`);
     }
-    const same = (a: Vec3, b: Vec3) =>
-      Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]) < 1e-9;
     const flat: number[] = [];
     for (let i = 0; i < points.length; i++) {
       const point = points[i]!;
@@ -173,17 +185,130 @@ export class OccSession {
         throw new Error("makePolygon: points must be finite numbers");
       }
       // Zero-length edges make OCCT's wire builder fail without a message.
-      if (i > 0 && same(points[i - 1]!, point)) {
+      if (i > 0 && coincides(points[i - 1]!, point)) {
         throw new Error("makePolygon: consecutive points must be distinct");
       }
       flat.push(point[0], point[1], point[2]);
     }
-    if (close && same(points[0]!, points[points.length - 1]!)) {
+    if (close && coincides(points[0]!, points[points.length - 1]!)) {
       throw new Error("makePolygon: drop the repeated closing point — close is automatic");
     }
     return this.adopt(
       this.withFloats(flat, (ptr, count) => this.module.makePolygon(ptr, count / 3, close)),
     );
+  }
+
+  /** Line-segment wire from `start` to `end`. */
+  makeLine(start: Vec3, end: Vec3): OccShape {
+    if (!allFinite([start, end])) throw new Error("makeLine: points must be finite numbers");
+    if (coincides(start, end)) throw new Error("makeLine: start and end must be distinct");
+    return this.adopt(
+      this.module.makeLine(start[0], start[1], start[2], end[0], end[1], end[2]),
+    );
+  }
+
+  /**
+   * Circular arc wire from `startDegrees` to `endDegrees`, counterclockwise
+   * around `normal` (right-hand rule). The span must be under 360° — use
+   * `makeCircle` for the full turn.
+   */
+  makeArc(radius: number, options: ArcOptions): OccShape {
+    if (!(radius > 0)) throw new Error("makeArc: radius must be a positive number");
+    const [dx, dy, dz] = options.normal ?? [0, 0, 1];
+    const len = Math.hypot(dx, dy, dz);
+    if (len < 1e-12) throw new Error("makeArc: normal must be a non-zero vector");
+    const span = options.endDegrees - options.startDegrees;
+    if (!(span > 0)) throw new Error("makeArc: endDegrees must be greater than startDegrees");
+    if (span >= 360) {
+      throw new Error("makeArc: span must be under 360° — use makeCircle for a full circle");
+    }
+    const [ox, oy, oz] = options.origin ?? [0, 0, 0];
+    const radians = (degrees: number) => (degrees * Math.PI) / 180;
+    return this.adopt(
+      this.module.makeArc(
+        radius, dx / len, dy / len, dz / len, ox, oy, oz,
+        radians(options.startDegrees), radians(options.endDegrees),
+      ),
+    );
+  }
+
+  /**
+   * Ellipse wire — `majorRadius` along the plane's in-plane X axis (world +X
+   * for the default +Z normal), `minorRadius` along Y.
+   */
+  makeEllipse(majorRadius: number, minorRadius: number, options: EllipseOptions = {}): OccShape {
+    if (!(minorRadius > 0)) throw new Error("makeEllipse: minorRadius must be a positive number");
+    if (majorRadius < minorRadius) {
+      throw new Error("makeEllipse: majorRadius must be at least minorRadius (swap them?)");
+    }
+    const [dx, dy, dz] = options.normal ?? [0, 0, 1];
+    const len = Math.hypot(dx, dy, dz);
+    if (len < 1e-12) throw new Error("makeEllipse: normal must be a non-zero vector");
+    const [ox, oy, oz] = options.origin ?? [0, 0, 0];
+    return this.adopt(
+      this.module.makeEllipse(
+        majorRadius, minorRadius, dx / len, dy / len, dz / len, ox, oy, oz,
+      ),
+    );
+  }
+
+  /**
+   * B-spline wire from control points (`poles`), with clamped uniform knots:
+   * the curve starts at the first pole and ends at the last, approaching the
+   * others. `degree` defaults to 3.
+   */
+  makeBspline(poles: readonly Vec3[], options: BsplineOptions = {}): OccShape {
+    const degree = options.degree ?? 3;
+    if (poles.length < 2) throw new Error("makeBspline: needs at least 2 poles");
+    if (!Number.isInteger(degree) || degree < 1) {
+      throw new Error("makeBspline: degree must be a positive integer");
+    }
+    if (poles.length < degree + 1) {
+      throw new Error(
+        `makeBspline: ${poles.length} poles cannot support degree ${degree} — need at least degree + 1 (${degree + 1})`,
+      );
+    }
+    if (!allFinite(poles)) throw new Error("makeBspline: poles must be finite numbers");
+    return this.adopt(
+      this.withFloats(flatten(poles), (ptr, count) =>
+        this.module.makeBspline(ptr, count / 3, degree),
+      ),
+    );
+  }
+
+  /**
+   * Smooth B-spline wire interpolated THROUGH every point — the "curve
+   * through points" primitive. `periodic: true` closes it smoothly.
+   */
+  makeBsplineThrough(points: readonly Vec3[], options: InterpolateOptions = {}): OccShape {
+    const periodic = options.periodic ?? false;
+    const minimum = periodic ? 3 : 2;
+    if (points.length < minimum) {
+      throw new Error(`makeBsplineThrough: needs at least ${minimum} points (got ${points.length})`);
+    }
+    if (!allFinite(points)) throw new Error("makeBsplineThrough: points must be finite numbers");
+    return this.adopt(
+      this.withFloats(flatten(points), (ptr, count) =>
+        this.module.makeBsplineThrough(ptr, count / 3, periodic, options.tolerance ?? 1e-6),
+      ),
+    );
+  }
+
+  /**
+   * Concatenate connected wires/edges (arcs, lines, B-splines, circles…) into
+   * one wire, in order — how profiles with mixed segments are authored.
+   */
+  makeWire(parts: readonly OccShape[]): OccShape {
+    if (parts.length < 2) throw new Error("makeWire: needs at least 2 parts");
+    const list = new this.module.VectorShape();
+    try {
+      for (const part of parts) {
+        list.push_back(part.raw);
+      }
+      return this.adopt(this.module.makeWire(list));
+    } finally {
+      list.delete();
+    }
   }
 
   // --- booleans ----------------------------------------------------------------
@@ -301,6 +426,37 @@ export class OccSession {
     this.validateEdgeIndices("chamfer", shape, edges);
     return this.adopt(
       this.withInts(edges, (ptr, count) => this.module.chamfer(shape.raw, distance, ptr, count)),
+    );
+  }
+
+  /**
+   * Fillet with per-edge (and per-position) radii: `[{ edge, radius, at? }]`
+   * with 1-based edge indices from `describe`. Two specs on one edge with
+   * different `at` positions blend the radius between them — `at` is the
+   * edge's curve parameter (for line edges: distance from the start).
+   */
+  variableFillet(shape: OccShape, specs: readonly VariableFilletSpec[]): OccShape {
+    if (specs.length === 0) {
+      throw new Error("variableFillet: needs at least one {edge, radius} spec");
+    }
+    const edges = specs.map((spec) => spec.edge);
+    this.validateEdgeIndices("variableFillet", shape, edges);
+    for (const spec of specs) {
+      if (!(spec.radius > 0)) {
+        throw new Error("variableFillet: radius must be a positive number");
+      }
+    }
+    const radii = specs.map((spec) => spec.radius);
+    // NaN in the positions array means "constant radius" on that edge.
+    const positions = specs.map((spec) => spec.at ?? NaN);
+    return this.adopt(
+      this.withInts(edges, (edgePtr, count) =>
+        this.withFloats(radii, (radiiPtr, _) =>
+          this.withFloats(positions, (positionsPtr, __) =>
+            this.module.variableFillet(shape.raw, edgePtr, count, radiiPtr, positionsPtr),
+          ),
+        ),
+      ),
     );
   }
 
@@ -651,6 +807,24 @@ function normalize(v: Vec3): Vec3 {
   const len = Math.hypot(v[0], v[1], v[2]);
   if (len < 1e-12) throw new Error("direction must be a non-zero vector");
   return [v[0] / len, v[1] / len, v[2] / len];
+}
+
+function allFinite(points: readonly Vec3[]): boolean {
+  return points.every(
+    (p) => Number.isFinite(p[0]) && Number.isFinite(p[1]) && Number.isFinite(p[2]),
+  );
+}
+
+function coincides(a: Vec3, b: Vec3): boolean {
+  return Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]) < 1e-9;
+}
+
+function flatten(points: readonly Vec3[]): number[] {
+  const out: number[] = [];
+  for (const p of points) {
+    out.push(p[0], p[1], p[2]);
+  }
+  return out;
 }
 
 function cross(a: Vec3, b: Vec3): Vec3 {

@@ -2,6 +2,7 @@
 
 #include "occ.h"
 
+#include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgoAPI_Common.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
@@ -27,12 +28,19 @@
 #include <BRepPrimAPI_MakeRevol.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepPrimAPI_MakeTorus.hxx>
+#include <BRepLib_MakeWire.hxx>
 #include <BRepTools.hxx>
 #include <BRep_Tool.hxx>
 #include <Bnd_Box.hxx>
 #include <GProp_GProps.hxx>
 #include <GeomAbs_SurfaceType.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <GeomAPI_Interpolate.hxx>
 #include <Standard_Version.hxx>
+#include <TColStd_Array1OfInteger.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -46,14 +54,18 @@
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Dir.hxx>
+#include <gp_Elips.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 
 #include <cmath>
+#include <algorithm>
+#include <map>
 #include <sstream>
 #include <stdexcept>
+#include <utility>
 
 std::string shapeTypeName(const TopoDS_Shape& shape) {
   switch (shape.ShapeType()) {
@@ -89,6 +101,21 @@ std::vector<double> OccShape::bounds() const {
     box.Get(out[0], out[1], out[2], out[3], out[4], out[5]);
   }
   return out;
+}
+
+std::vector<double> OccShape::centroid() const {
+  GProp_GProps props;
+  // Volume-weighted for solids, the surface integral for shells, the curve
+  // integral for bare wires (a circle's centroid is its center).
+  if (countSubShapes("Solid") > 0) {
+    BRepGProp::VolumeProperties(myShape, props);
+  } else if (countSubShapes("Face") > 0) {
+    BRepGProp::SurfaceProperties(myShape, props);
+  } else {
+    BRepGProp::LinearProperties(myShape, props);
+  }
+  const gp_Pnt& center = props.CentreOfMass();
+  return {center.X(), center.Y(), center.Z()};
 }
 
 bool OccShape::isValid() const {
@@ -182,6 +209,130 @@ OccShape makePolygonWire(const std::vector<double>& coordinates, bool close) {
   if (!maker.IsDone() || maker.Wire().IsNull()) {
     throw std::runtime_error(
         "polygon construction failed (needs at least 2 distinct points, 3 when closed)");
+  }
+  return OccShape(maker.Wire());
+}
+
+OccShape makeLineWire(double x1, double y1, double z1, double x2, double y2, double z2) {
+  BRepBuilderAPI_MakeEdge edge(gp_Pnt(x1, y1, z1), gp_Pnt(x2, y2, z2));
+  BRepBuilderAPI_MakeWire maker(edge.Edge());
+  if (!edge.IsDone() || !maker.IsDone() || maker.Wire().IsNull()) {
+    throw std::runtime_error("line construction failed (points must be distinct)");
+  }
+  return OccShape(maker.Wire());
+}
+
+OccShape makeArcWire(double radius,
+                     double nx, double ny, double nz,
+                     double ox, double oy, double oz,
+                     double u1, double u2) {
+  // Circle parameters run counterclockwise around the axis (right-hand rule).
+  BRepBuilderAPI_MakeEdge edge(gp_Circ(makeAxis(ox, oy, oz, nx, ny, nz), radius), u1, u2);
+  BRepBuilderAPI_MakeWire maker(edge.Edge());
+  if (!edge.IsDone() || !maker.IsDone() || maker.Wire().IsNull()) {
+    throw std::runtime_error("arc construction failed (span must be under 360°)");
+  }
+  return OccShape(maker.Wire());
+}
+
+OccShape makeEllipseWire(double majorRadius, double minorRadius,
+                         double nx, double ny, double nz,
+                         double ox, double oy, double oz) {
+  // gp_Elips puts the major radius along the axis system's X direction.
+  gp_Elips ellipse(makeAxis(ox, oy, oz, nx, ny, nz), majorRadius, minorRadius);
+  BRepBuilderAPI_MakeEdge edge(ellipse);
+  BRepBuilderAPI_MakeWire maker(edge.Edge());
+  if (!edge.IsDone() || !maker.IsDone() || maker.Wire().IsNull()) {
+    throw std::runtime_error("ellipse construction failed");
+  }
+  return OccShape(maker.Wire());
+}
+
+OccShape makeBsplineWire(const std::vector<double>& coordinates, int degree) {
+  const int poleCount = static_cast<int>(coordinates.size() / 3);
+  if (poleCount < 2) throw std::runtime_error("bspline needs at least 2 poles");
+  if (degree < 1) throw std::runtime_error("bspline degree must be at least 1");
+  if (poleCount <= degree) {
+    std::ostringstream message;
+    message << "bspline needs at least degree + 1 poles (" << degree + 1 << ") — lower the degree";
+    throw std::runtime_error(message.str());
+  }
+  TColgp_Array1OfPnt poles(1, poleCount);
+  for (int i = 0; i < poleCount; ++i) {
+    poles.SetValue(i + 1, gp_Pnt(coordinates[i * 3], coordinates[i * 3 + 1], coordinates[i * 3 + 2]));
+  }
+  // Clamped uniform knots [0, 1, …, n-d]: ends at multiplicity degree + 1 so
+  // the curve passes through the first and last pole.
+  const int knotCount = poleCount - degree + 1;
+  TColStd_Array1OfReal knots(1, knotCount);
+  TColStd_Array1OfInteger multiplicities(1, knotCount);
+  for (int k = 1; k <= knotCount; ++k) {
+    knots.SetValue(k, k - 1);
+    multiplicities.SetValue(k, 1);
+  }
+  multiplicities.SetValue(1, degree + 1);
+  multiplicities.SetValue(knotCount, degree + 1);
+  Handle(Geom_BSplineCurve) curve =
+      new Geom_BSplineCurve(poles, knots, multiplicities, degree, false);
+  BRepBuilderAPI_MakeEdge edge(curve);
+  BRepBuilderAPI_MakeWire maker(edge.Edge());
+  if (!edge.IsDone() || !maker.IsDone() || maker.Wire().IsNull()) {
+    throw std::runtime_error("bspline construction failed");
+  }
+  return OccShape(maker.Wire());
+}
+
+OccShape interpolateBsplineWire(const std::vector<double>& coordinates,
+                                bool periodic, double tolerance) {
+  const int pointCount = static_cast<int>(coordinates.size() / 3);
+  if (pointCount < 2) throw std::runtime_error("interpolation needs at least 2 points");
+  if (periodic && pointCount < 3) {
+    throw std::runtime_error("periodic interpolation needs at least 3 points");
+  }
+  Handle(TColgp_HArray1OfPnt) points = new TColgp_HArray1OfPnt(1, pointCount);
+  for (int i = 0; i < pointCount; ++i) {
+    points->SetValue(i + 1, gp_Pnt(coordinates[i * 3], coordinates[i * 3 + 1], coordinates[i * 3 + 2]));
+  }
+  GeomAPI_Interpolate interpolator(points, periodic, tolerance);
+  // The constructors only stage constraints; Perform computes the curve (and
+  // Curve() before Perform throws an empty-message failure).
+  interpolator.Perform();
+  if (!interpolator.IsDone()) throw std::runtime_error("interpolation failed");
+  Handle(Geom_BSplineCurve) curve = interpolator.Curve();
+  if (curve.IsNull()) throw std::runtime_error("interpolation failed");
+  BRepBuilderAPI_MakeEdge edge(curve);
+  BRepBuilderAPI_MakeWire maker(edge.Edge());
+  if (!edge.IsDone() || !maker.IsDone() || maker.Wire().IsNull()) {
+    throw std::runtime_error("interpolation failed");
+  }
+  return OccShape(maker.Wire());
+}
+
+OccShape assembleWire(const std::vector<OccShape>& parts) {
+  if (parts.size() < 2) {
+    throw std::runtime_error("wire assembly needs at least 2 parts");
+  }
+  // BRepLib (not BuilderAPI) MakeWire reports per-part connectivity: a
+  // disconnected Add leaves the maker in the DisconnectedWire error state.
+  BRepLib_MakeWire maker;
+  for (size_t i = 0; i < parts.size(); ++i) {
+    const TopoDS_Shape& part = parts[i].get();
+    if (part.ShapeType() == TopAbs_WIRE) {
+      maker.Add(TopoDS::Wire(part));
+    } else if (part.ShapeType() == TopAbs_EDGE) {
+      maker.Add(TopoDS::Edge(part));
+    } else {
+      throw std::runtime_error(
+          "wire assembly: parts must be Wires or Edges (e.g. makeArc / makeLine output)");
+    }
+    if (!maker.IsDone()) {
+      std::ostringstream message;
+      message << "wire assembly: part " << (i + 1) << " does not connect to the chain";
+      throw std::runtime_error(message.str());
+    }
+  }
+  if (!maker.IsDone() || maker.Wire().IsNull()) {
+    throw std::runtime_error("wire assembly failed");
   }
   return OccShape(maker.Wire());
 }
@@ -404,6 +555,95 @@ OccShape chamferShape(const OccShape& shape, double distance, const std::vector<
   maker.Build();
   if (!maker.IsDone() || maker.Shape().IsNull()) {
     throw std::runtime_error("chamfer failed (try a smaller distance or fewer edges)");
+  }
+  return OccShape(maker.Shape());
+}
+
+// specs arrive as parallel arrays; positions[i] = NaN means "constant radius
+// on that edge". Positioned specs (finite `at`) are grouped per edge into an
+// explicit Law (linear for two positions, interpolated for more) — the
+// Add(radius, u, edge) overload builds its law in a different parameter
+// space and produces out-of-bounds blends, so it is not used.
+OccShape variableFilletShape(const OccShape& shape,
+                             const std::vector<int>& edgeIndices,
+                             const std::vector<double>& radii,
+                             const std::vector<double>& positions) {
+  if (edgeIndices.empty()) {
+    throw std::runtime_error("variable fillet needs at least one {edge, radius} spec");
+  }
+  for (size_t i = 0; i < edgeIndices.size(); ++i) {
+    if (!(radii[i] > 0)) {
+      std::ostringstream message;
+      message << "variable fillet: spec " << (i + 1) << " radius must be positive";
+      throw std::runtime_error(message.str());
+    }
+  }
+  std::map<int, std::vector<std::pair<double, double>>> byEdge;
+  for (size_t i = 0; i < edgeIndices.size(); ++i) {
+    byEdge[edgeIndices[i]].emplace_back(positions[i], radii[i]);
+  }
+  BRepFilletAPI_MakeFillet maker(shape.get());
+  for (const auto& entry : byEdge) {
+    const int edgeIndex = entry.first;
+    const std::vector<std::pair<double, double>>& constraints = entry.second;
+    const TopoDS_Edge edge = edgeByIndex(shape.get(), edgeIndex);
+    bool anyPositioned = false;
+    for (const auto& constraint : constraints) {
+      anyPositioned = anyPositioned || !std::isnan(constraint.first);
+    }
+    if (!anyPositioned) {
+      maker.Add(constraints.front().second, edge);
+      continue;
+    }
+    BRepAdaptor_Curve curve(edge);
+    std::vector<std::pair<double, double>> law;
+    for (const auto& constraint : constraints) {
+      if (std::isnan(constraint.first)) {
+        std::ostringstream message;
+        message << "variable fillet: edge " << edgeIndex
+                << " mixes positioned and constant specs — give every spec an `at`";
+        throw std::runtime_error(message.str());
+      }
+      if (constraint.first < curve.FirstParameter() - 1e-9 ||
+          constraint.first > curve.LastParameter() + 1e-9) {
+        std::ostringstream message;
+        message << "variable fillet: edge " << edgeIndex << " position " << constraint.first
+                << " is outside its parameter range [" << curve.FirstParameter() << ", "
+                << curve.LastParameter() << "]";
+        throw std::runtime_error(message.str());
+      }
+      law.push_back(constraint);
+    }
+    if (law.size() < 2) {
+      std::ostringstream message;
+      message << "variable fillet: edge " << edgeIndex
+              << " needs at least two positioned specs to vary the radius";
+      throw std::runtime_error(message.str());
+    }
+    std::sort(law.begin(), law.end());
+    for (size_t i = 1; i < law.size(); ++i) {
+      if (law[i].first - law[i - 1].first < 1e-9) {
+        std::ostringstream message;
+        message << "variable fillet: edge " << edgeIndex << " has duplicate positions";
+        throw std::runtime_error(message.str());
+      }
+    }
+    if (law.size() > 2) {
+      std::ostringstream message;
+      message << "variable fillet: edge " << edgeIndex << " has " << law.size()
+              << " positioned specs — only two are supported (the radius blends linearly "
+                 "from the edge's start to its end)";
+      throw std::runtime_error(message.str());
+    }
+    // OCCT's own two-radius overload: a linear law between the edge's first
+    // and last vertex — the engine maps the parameter range itself. (Hand-
+    // built Law_Function handles make ChFi3d fail the build, so they are
+    // deliberately not used.)
+    maker.Add(law.front().second, law.back().second, edge);
+  }
+  maker.Build();
+  if (!maker.IsDone() || maker.Shape().IsNull()) {
+    throw std::runtime_error("variable fillet failed (try smaller radii or fewer edges)");
   }
   return OccShape(maker.Shape());
 }

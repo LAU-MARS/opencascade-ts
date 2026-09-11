@@ -28,6 +28,12 @@ is documented in `src/ts/loader.ts`.
 | `makeTorus(majorR, minorR, opts?)` | Torus about `direction`. |
 | `makeCircle(radius, { origin?, normal? })` | Circle as a closed **wire** — a section for `extrude`/`revolve`/`loft` or a sweep spine. |
 | `makePolygon(points, { close? })` | Polygon wire through `points` (`[[x,y,z], …]`); closed by default. |
+| `makeLine(start, end)` | Line-segment wire. |
+| `makeArc(radius, { startDegrees, endDegrees, origin?, normal? })` | Circular arc wire, counterclockwise around `normal`; span < 360°. |
+| `makeEllipse(majorR, minorR, { origin?, normal? })` | Ellipse wire (major axis along the plane's in-plane X). |
+| `makeBspline(poles, { degree? })` | B-spline wire from control points — clamped uniform knots, runs from the first pole to the last. |
+| `makeBsplineThrough(points, { periodic?, tolerance? })` | Smooth B-spline interpolated **through** every point. |
+| `makeWire(parts)` | Concatenate connected wires/edges into one wire, in order. |
 | `fuse(a, b)` / `cut(a, b)` / `common(a, b)` | Boolean union / difference / intersection. |
 | `translate(shape, [x,y,z])` | Rigid move. |
 | `rotate(shape, axis, angleDegrees)` | Rotation about `axis` through the origin. |
@@ -36,6 +42,7 @@ is documented in `src/ts/loader.ts`.
 | `draft(shape, angleDegrees, { direction?, faces?, neutralPoint? })` | Mold-release tilt. Faces pivot about the neutral plane (default: bounds center, normal to `direction`); positive angles narrow the part towards the pull direction. Default drafted faces: the walls running parallel to `direction`. |
 | `fillet(shape, radius, { edges? })` | Round edges (`BRepFilletAPI`). Default: every edge; `edges` — 1-based indices from `describe()` — selects a subset. |
 | `chamfer(shape, distance, { edges? })` | Bevel edges by `distance` on both sides. Same edge selection as `fillet`. |
+| `variableFillet(shape, specs)` | Per-edge radii: `[{ edge, radius, at? }]`. Two positioned specs on one edge give its start and end radius — the blend between them is linear. |
 | `extrude(profile, vector, { solid? })` | Sweep a planar wire/face along a straight vector. Wires become solids by default; `solid: false` → shell. |
 | `revolve(profile, { direction, origin?, angleDegrees?, solid? })` | Revolve a planar profile about the axis; `angleDegrees` defaults to a full turn. |
 | `loft(sections, { ruled?, solid? })` | Skin ≥2 wire/face sections into one solid; `ruled: true` rules straight sections (two circles → an exact frustum). |
@@ -61,6 +68,7 @@ is documented in `src/ts/loader.ts`.
 | `volume()` | Enclosed volume of solids (mm³). |
 | `area()` | Total surface area (mm²). |
 | `bounds()` | `{ min: [x,y,z], max: [x,y,z] }`. |
+| `centroid()` | Center of mass: volume-weighted for solids, else surface/curve-weighted (a circle's is its center). |
 | `isValid()` | `BRepCheck_Analyzer` result. |
 | `count(type)` | Sub-shape count, e.g. `count("Face")`, `count("Edge")`. |
 | `dispose()` | Free this shape early (otherwise freed by `session.dispose()`). |
@@ -98,6 +106,32 @@ const beveled = occ.chamfer(part, 1.5, { edges: frontLoop }); // a selected subs
   indices do for `shell`/`draft`.
 - A radius that is too large for the local geometry fails with the kernel's
   message — shrink it or select fewer edges.
+
+## Curves & wire assembly — profile authoring
+
+```ts
+// a slot (stadium) profile: two semicircular ends, two straight sides
+const left = occ.makeArc(5, { startDegrees: 90, endDegrees: 270 });    // (0,5) → (0,-5)
+const bottom = occ.makeLine([0, -5, 0], [20, -5, 0]);
+const right = occ.makeArc(5, { origin: [20, 0, 0], startDegrees: -90, endDegrees: 90 });
+const top = occ.makeLine([20, 5, 0], [0, 5, 0]);
+const part = occ.extrude(occ.makeWire([left, bottom, right, top]), [0, 0, 10]);
+
+// a smooth freeform loop through measured points
+const loop = occ.makeBsplineThrough(
+  [[-5, -5, 0], [5, -5, 0], [5, 5, 0], [-5, 5, 0]],
+  { periodic: true },
+);
+```
+
+- Every constructor returns a **wire**; `makeWire` chains them in order and
+  refuses parts that do not share endpoints.
+- Angles are degrees, arcs sweep counterclockwise around `normal`.
+- `makeBspline` takes control points (the curve approaches them, touching
+  only the first and last); `makeBsplineThrough` passes through every point.
+- Two positioned specs on one `variableFillet` edge are its start and end
+  radius (`at` in the edge's curve parameter — for line edges, distance from
+  the start).
 
 ## Sketch → solid — extrude / revolve / loft / sweep
 

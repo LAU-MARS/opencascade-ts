@@ -75,6 +75,55 @@ export interface CircleOptions {
   normal?: Vec3;
 }
 
+export interface ArcOptions {
+  /** Center. Default `[0, 0, 0]`. */
+  origin?: Vec3;
+  /** Plane normal — the arc sweeps counterclockwise around it. Default `[0, 0, 1]`. */
+  normal?: Vec3;
+  /** Start angle in degrees. Required. */
+  startDegrees: number;
+  /** End angle in degrees; must satisfy `start < end < start + 360`. Required. */
+  endDegrees: number;
+}
+
+export interface EllipseOptions {
+  /** Center. Default `[0, 0, 0]`. */
+  origin?: Vec3;
+  /** Plane normal; the major axis lands along the plane's in-plane X. Default `[0, 0, 1]`. */
+  normal?: Vec3;
+}
+
+export interface BsplineOptions {
+  /**
+   * Polynomial degree. Default `3`. Knots are clamped and uniform: the curve
+   * starts at the first pole and ends at the last.
+   */
+  degree?: number;
+}
+
+export interface InterpolateOptions {
+  /** Close the curve smoothly through the last point back to the first. Default `false`. */
+  periodic?: boolean;
+  /** Point-coincidence tolerance. Default `1e-6`. */
+  tolerance?: number;
+}
+
+/** One radius assignment for `variableFillet`. */
+export interface VariableFilletSpec {
+  /** 1-based edge index (as listed by `describe`). */
+  edge: number;
+  /** Fillet radius on this edge (constant unless paired with a second spec). */
+  radius: number;
+  /**
+   * Position along the edge where `radius` applies, in the edge's curve
+   * parameter (for line edges: distance from the start). Two specs on one
+   * edge give the start and end radius — the kernel blends the radius
+   * linearly between the edge's first and last vertex. Omit for a constant
+   * radius.
+   */
+  at?: number;
+}
+
 export interface PolygonOptions {
   /** Loop the wire back to the first point. Default `true`. */
   close?: boolean;

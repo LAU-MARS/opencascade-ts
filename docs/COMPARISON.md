@@ -46,9 +46,9 @@ the ❌ from raw calls; the difference is what you get out of the box.
 | OCCT kernel | 7.4.0p1 (2019) stable · 7.6.2 (2022) beta/master | **7.9.3 (2025)**; 8.0 experimental |
 | Emscripten | 3.1.14 | 3.1.74 |
 | Maintenance | last stable 2020 · quiet since Aug 2023 | active |
-| API surface | **auto-generated bindings for nearly all of OCCT** — thousands of classes | ~40 curated, hand-written calls |
+| API surface | **auto-generated bindings for nearly all of OCCT** — thousands of classes | ~50 curated, hand-written calls |
 | API style | raw embind: manual `.delete()`, downcasts, machine-generated typings | strict TypeScript, ESM, validated options, errors that teach |
-| Fillets · chamfers · extrude/revolve · 2D | ✅ raw classes | ✅ `fillet` / `chamfer` / `extrude` / `revolve` / `loft` / `sweep` + circle/polygon profiles |
+| Fillets · chamfers · extrude/revolve · 2D | ✅ raw classes | ✅ `fillet` / `chamfer` / `variableFillet` / `extrude` / `revolve` / `loft` / `sweep` + line/arc/ellipse/B-spline profiles & wire assembly |
 | Shelling (thick solid) · draft angle | ❌ bound as empty stubs — no callable methods | ✅ `shell` / `draft` |
 | STEP · BRep · IGES I/O | ✅ raw XCAF/XSControl classes | ✅ first-class, with unit selection |
 | Assembly tree: names · colors · transforms | raw calls | ✅ `readStepDocument` → JSON |
@@ -174,13 +174,14 @@ are the early moves.
 ## Where occt.ts must catch up
 
 In priority order — each item is an OCCT module away, not a research project (the recipe is in
-[AGENTS.md](../AGENTS.md)). Done since the scorecard above was written: fillets/chamfers
+[AGENTS.md](../AGENTS.md)). Done since the scorecard above was written: fillets/chamfers incl. variable radius
 (`BRepFilletAPI`), sketch→solid (`extrude`/`revolve`), lofts and pipe sweeps
-(`BRepOffsetAPI_ThruSections`/`MakePipe`), and first profile authoring (`makeCircle`,
-`makePolygon`) landed with the 0.4.0 modeling release.
+(`BRepOffsetAPI_ThruSections`/`MakePipe`), full profile authoring — lines, arcs, ellipses,
+B-splines (control points and through-point interpolation) with wire assembly (`makeWire`) —
+and mass centroids landed with the 0.4.0/0.5.0 modeling releases.
 
-1. **2D authoring beyond circles/polygons**: `Geom2d` arcs and splines plus wire booleans, so
-   richer profiles can be built in TypeScript instead of arriving only via imported files.
+1. **Wire booleans**: 2D trim/intersection on profiles (`BRepAlgoAPI` on wires), the remaining
+   gap towards full 2D authoring in TypeScript.
 2. **XCAF write-back**: names, colors and assembly structure on STEP export.
 3. **MCP server**: first-class agent access.
 4. **Ecosystem**: examples gallery, integration recipes (a three.js bridge for users who want

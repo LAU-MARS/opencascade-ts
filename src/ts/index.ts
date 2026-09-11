@@ -41,12 +41,16 @@ export {
 } from "./exporters.js";
 export type { GlbExportOptions, SvgExportOptions } from "./exporters.js";
 export type {
+  ArcOptions,
   BoundingBox,
+  BsplineOptions,
   CircleOptions,
   DraftOptions,
   EdgeBlendOptions,
+  EllipseOptions,
   HiddenLineOptions,
   HiddenLineResult,
+  InterpolateOptions,
   LoftOptions,
   MeshData,
   PointClassification,
@@ -59,4 +63,5 @@ export type {
   TessellationOptions,
   UnitOption,
   Vec3,
+  VariableFilletSpec,
 } from "./types.js";

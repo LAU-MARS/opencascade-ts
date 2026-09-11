@@ -122,6 +122,44 @@ OccShape makePolygonWrap(unsigned int ptr, int pointCount, bool close) {
       OccShape());
 }
 
+OccShape makeLineWrap(double x1, double y1, double z1, double x2, double y2, double z2) {
+  return guarded("makeLine", [&] { return makeLineWire(x1, y1, z1, x2, y2, z2); }, OccShape());
+}
+
+OccShape makeArcWrap(double radius,
+                     double nx, double ny, double nz,
+                     double ox, double oy, double oz,
+                     double u1, double u2) {
+  return guarded(
+      "makeArc", [&] { return makeArcWire(radius, nx, ny, nz, ox, oy, oz, u1, u2); }, OccShape());
+}
+
+OccShape makeEllipseWrap(double majorRadius, double minorRadius,
+                         double nx, double ny, double nz,
+                         double ox, double oy, double oz) {
+  return guarded(
+      "makeEllipse",
+      [&] { return makeEllipseWire(majorRadius, minorRadius, nx, ny, nz, ox, oy, oz); },
+      OccShape());
+}
+
+OccShape makeBsplineWrap(unsigned int ptr, int poleCount, int degree) {
+  return guarded(
+      "makeBspline", [&] { return makeBsplineWire(doublesFromHeap(ptr, poleCount * 3), degree); },
+      OccShape());
+}
+
+OccShape makeBsplineThroughWrap(unsigned int ptr, int pointCount, bool periodic, double tolerance) {
+  return guarded(
+      "makeBsplineThrough",
+      [&] { return interpolateBsplineWire(doublesFromHeap(ptr, pointCount * 3), periodic, tolerance); },
+      OccShape());
+}
+
+OccShape makeWireWrap(const std::vector<OccShape>& parts) {
+  return guarded("makeWire", [&] { return assembleWire(parts); }, OccShape());
+}
+
 OccShape fuseWrap(const OccShape& a, const OccShape& b) {
   return guarded("fuse", [&] { return booleanOp(0, a, b); }, OccShape());
 }
@@ -175,6 +213,19 @@ OccShape chamferWrap(const OccShape& shape, double distance, unsigned int edgesP
   return guarded(
       "chamfer",
       [&] { return chamferShape(shape, distance, indicesFromHeap(edgesPtr, edgeCount)); },
+      OccShape());
+}
+
+OccShape variableFilletWrap(const OccShape& shape,
+                            unsigned int edgesPtr, int edgeCount,
+                            unsigned int radiiPtr, unsigned int positionsPtr) {
+  return guarded(
+      "variableFillet",
+      [&] {
+        return variableFilletShape(shape, indicesFromHeap(edgesPtr, edgeCount),
+                                   doublesFromHeap(radiiPtr, edgeCount),
+                                   doublesFromHeap(positionsPtr, edgeCount));
+      },
       OccShape());
 }
 
@@ -284,6 +335,7 @@ EMSCRIPTEN_BINDINGS(opencascade_ts) {
       .function("volume", &OccShape::volume)
       .function("area", &OccShape::area)
       .function("bounds", &OccShape::bounds)
+      .function("centroid", &OccShape::centroid)
       .function("isValid", &OccShape::isValid)
       .function("countSubShapes", &OccShape::countSubShapes);
 
@@ -310,6 +362,12 @@ EMSCRIPTEN_BINDINGS(opencascade_ts) {
   function("makeTorus", &makeTorusWrap);
   function("makeCircle", &makeCircleWrap);
   function("makePolygon", &makePolygonWrap);
+  function("makeLine", &makeLineWrap);
+  function("makeArc", &makeArcWrap);
+  function("makeEllipse", &makeEllipseWrap);
+  function("makeBspline", &makeBsplineWrap);
+  function("makeBsplineThrough", &makeBsplineThroughWrap);
+  function("makeWire", &makeWireWrap);
 
   function("fuse", &fuseWrap);
   function("cut", &cutWrap);
@@ -323,6 +381,7 @@ EMSCRIPTEN_BINDINGS(opencascade_ts) {
   function("draft", &draftWrap);
   function("fillet", &filletWrap);
   function("chamfer", &chamferWrap);
+  function("variableFillet", &variableFilletWrap);
 
   function("extrude", &extrudeWrap);
   function("revolve", &revolveWrap);

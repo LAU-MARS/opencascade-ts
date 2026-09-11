@@ -16,6 +16,8 @@ export interface WasmShape {
   area(): number;
   /** [xmin, ymin, zmin, xmax, ymax, zmax] */
   bounds(): number[];
+  /** [x, y, z] center of mass (volume-weighted for solids, else surface/curve). */
+  centroid(): number[];
   isValid(): boolean;
   countSubShapes(typeName: string): number;
   delete(): void;
@@ -85,6 +87,27 @@ export interface OccWasmModule {
   ): WasmShape;
   /** `pointCount` triples of float64 at `ptsPtr`; `close` loops back to the first point. */
   makePolygon(ptsPtr: number, pointCount: number, close: boolean): WasmShape;
+  makeLine(x1: number, y1: number, z1: number, x2: number, y2: number, z2: number): WasmShape;
+  /** Arc on the circle (radius, center, plane normal) between circle parameters u1 < u2 (radians). */
+  makeArc(
+    radius: number,
+    nx: number, ny: number, nz: number,
+    ox: number, oy: number, oz: number,
+    u1: number, u2: number,
+  ): WasmShape;
+  makeEllipse(
+    majorRadius: number, minorRadius: number,
+    nx: number, ny: number, nz: number,
+    ox: number, oy: number, oz: number,
+  ): WasmShape;
+  /** `poleCount` control-point triples (float64) at `polesPtr`; clamped uniform knots. */
+  makeBspline(polesPtr: number, poleCount: number, degree: number): WasmShape;
+  /** B-spline interpolated through `pointCount` triples (float64) at `ptsPtr`. */
+  makeBsplineThrough(
+    ptsPtr: number, pointCount: number, periodic: boolean, tolerance: number,
+  ): WasmShape;
+  /** Concatenate connected wires/edges, in order. */
+  makeWire(parts: WasmShapeVector): WasmShape;
 
   fuse(a: WasmShape, b: WasmShape): WasmShape;
   cut(a: WasmShape, b: WasmShape): WasmShape;
@@ -105,6 +128,14 @@ export interface OccWasmModule {
   /** 1-based edge indices at `edgesPtr` (`edgeCount` × int32; 0 = all edges). */
   fillet(s: WasmShape, radius: number, edgesPtr: number, edgeCount: number): WasmShape;
   chamfer(s: WasmShape, distance: number, edgesPtr: number, edgeCount: number): WasmShape;
+  /**
+   * Per-edge/per-position fillet radii as parallel arrays: int32 edge indices
+   * at `edgesPtr`, float64 radii at `radiiPtr`, float64 positions at
+   * `positionsPtr` (NaN = constant radius on that edge).
+   */
+  variableFillet(
+    s: WasmShape, edgesPtr: number, edgeCount: number, radiiPtr: number, positionsPtr: number,
+  ): WasmShape;
 
   /** Straight sweep of a wire/face profile; `solid` caps wire profiles into faces first. */
   extrude(profile: WasmShape, dx: number, dy: number, dz: number, solid: boolean): WasmShape;

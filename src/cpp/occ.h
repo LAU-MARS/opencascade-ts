@@ -31,6 +31,9 @@ public:
   double area() const;
   // [xmin, ymin, zmin, xmax, ymax, zmax].
   std::vector<double> bounds() const;
+  // Center of mass: volume-weighted for solids, otherwise the surface/curve
+  // integral (open shells, wires).
+  std::vector<double> centroid() const;
   bool isValid() const;
   // Number of direct sub-shapes of the given type name
   // ("Solid", "Face", "Edge", "Vertex", "Shell", "Wire", "Compound").
