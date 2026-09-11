@@ -12,10 +12,11 @@ OCCT **7.9.3** · Emscripten · TypeScript · LGPL-2.1
 
 ## Why
 
-The existing WebAssembly builds of OCCT are roughly five years old, ship without hidden-line
-removal, without usable STEP/BRep import in the default bundle, without TypeScript bindings, and
-without rendering (or they drag a Qt-based windowing stack along). This project rebuilds that
-stack for how software gets written now — by humans **and** by agents:
+The existing WebAssembly builds of OCCT have stalled — the last stable one shipped in 2020 on a
+2019-era kernel, with no hidden-line removal, no rendering, and TypeScript support limited to
+machine-generated typings over a raw embind surface (or they drag a Qt-based windowing stack
+along). This project rebuilds that stack for how software gets written now — by humans **and**
+by agents:
 
 | Capability | Status |
 |---|---|
@@ -26,7 +27,7 @@ stack for how software gets written now — by humans **and** by agents:
 | IGES import + export | ✅ |
 | XCAF document reading: assembly **tree, names, colors**, instance transforms | ✅ |
 | Unit selection on STEP I/O (`mm/cm/m/km/inch/ft/mi/um`) | ✅ |
-| Modeling: primitives, booleans (fuse/cut/common), transforms, scale | ✅ |
+| Modeling: primitives, booleans (fuse/cut/common), transforms, shelling (hollowing), draft | ✅ |
 | Measures: volume, area, bounds, validity, sub-shape counts | ✅ |
 | **Geometry interrogation** — analytic face/edge parameters, min distance + closest points, section curves, point-in-solid | ✅ |
 | **Hole detection** — heuristic bore recognition (radius/axis/depth) from the description | ✅ |
@@ -36,6 +37,27 @@ stack for how software gets written now — by humans **and** by agents:
 | CLI (`info` / `describe` / `tree` / `convert` / `hlr`) with JSON output | ✅ |
 | Outputs: STEP, BRep, IGES, STL, OBJ, SVG, glTF (.glb) | ✅ |
 | Sketch→solid modeling (extrude/revolve), fillets/chamfers, MCP server, XCAF write-back | 🚧 roadmap |
+
+## Comparison with opencascade.js
+
+[opencascade.js](https://github.com/donalffons/opencascade.js) pioneered OCCT-on-WebAssembly and
+still has the widest API surface around. Its stable release (`1.1.1`, Sep 2020) wraps OCCT
+**7.4.0p1** (2019), its beta (`2.0.0`, Mar 2023) wraps **7.6.2** (2022), and the repository has
+been quiet since Aug 2023. The short scorecard (✅/❌ = first-class, documented API):
+
+| | opencascade.js | occt.ts |
+|---|---|---|
+| OCCT kernel | 7.4.0p1 (2019) · 7.6.2 (2022, beta) | **7.9.3 (2025)**; 8.0 experimental |
+| Maintenance | last stable 2020 · quiet since 2023 | active |
+| API surface | auto-generated, nearly all of OCCT — thousands of classes | ~40 curated, hand-written calls |
+| STEP · BRep · IGES I/O | ✅ raw XCAF/XSControl classes | ✅ first-class, with unit selection |
+| Fillets · chamfers · sweeps · 2D | ✅ raw classes | 🚧 roadmap |
+| Shelling (hollowing) · draft angle | ❌ bound as empty stubs | ✅ `shell` / `draft` |
+| HLR drawings · WebGL viewer · JSON CLI · geometry interrogation | ❌ | ✅ |
+| Ecosystem | CascadeStudio · RepliCAD · BitByBit · ArchiYou | young |
+
+Full dimension-by-dimension scorecard, evidence and the catch-up plan:
+**[docs/COMPARISON.md](docs/COMPARISON.md)**.
 
 ## Install
 
@@ -60,7 +82,7 @@ const plate = occ.makeBox(80, 50, 10);
 const bore = occ.makeCylinder(14, 30, { origin: [40, 25, -10] });
 const part = occ.cut(plate, bore);
 
-console.log(part.volume());      // 36675.9...
+console.log(part.volume());      // 33842.48...
 console.log(part.bounds());      // { min: [0,0,0], max: [80,50,10] }
 console.log(part.isValid());     // true
 
@@ -103,10 +125,10 @@ $ occt-ts info bracket.step --json
   "file": "/work/bracket.step",
   "shapeType": "Solid",
   "isValid": true,
-  "volume": 36675.917,
-  "area": 12479.08,
+  "volume": 33842.478,
+  "area": 10248.142,
   "bounds": { "min": [0,0,0], "max": [80,50,10], "size": [80,50,10] },
-  "counts": { "solids": 1, "shells": 1, "faces": 10, "wires": 10, "edges": 24, "vertices": 16 }
+  "counts": { "solids": 1, "shells": 1, "faces": 7, "wires": 9, "edges": 15, "vertices": 10 }
 }
 
 $ occt-ts convert bracket.step drawing.svg --view 1,1,2 --hidden

@@ -12,9 +12,10 @@ OCCT **7.9.3** · Emscripten · TypeScript · LGPL-2.1
 
 ## 为什么做这个项目
 
-现有的 OCCT WebAssembly 构建已经停滞了大约五年：没有隐藏线消除，默认产物里没有可用的
-STEP/BRep 导入，没有 TypeScript 绑定，也不带渲染（或者强行拖上 Qt 窗口栈）。本项目为当下的
-软件生产方式——**人 AND Agent 协作**——重建了整套技术栈：
+现有的 OCCT WebAssembly 构建已经停滞——最后一个稳定版发布于 2020 年，内核停留在 2019 年：
+没有隐藏线消除、没有渲染，TypeScript 侧只剩机器生成的类型声明盖在裸 embind 接口上（或者
+强行拖上 Qt 窗口栈）。本项目为当下的软件生产方式——**人 AND Agent 协作**——重建了整套
+技术栈：
 
 | 能力 | 状态 |
 |---|---|
@@ -25,7 +26,7 @@ STEP/BRep 导入，没有 TypeScript 绑定，也不带渲染（或者强行拖�
 | IGES 导入 + 导出 | ✅ |
 | XCAF 文档读取：装配**树、名称、颜色**、实例变换 | ✅ |
 | STEP 读写单位制（`mm/cm/m/km/inch/ft/mi/um`） | ✅ |
-| 建模：图元、布尔（fuse/cut/common）、变换、缩放 | ✅ |
+| 建模：图元、布尔（fuse/cut/common）、变换、抽壳、拔模 | ✅ |
 | 测量：体积、表面积、包围盒、有效性、子形状计数 | ✅ |
 | **几何查询**——面/边解析参数、最小距离+最近点、截面线、点在体内判断 | ✅ |
 | **孔检测**——从描述结果启发式识别圆孔（半径/轴向/深度） | ✅ |
@@ -35,6 +36,26 @@ STEP/BRep 导入，没有 TypeScript 绑定，也不带渲染（或者强行拖�
 | CLI（`info` / `describe` / `tree` / `convert` / `hlr`），支持 JSON 输出 | ✅ |
 | 输出格式：STEP、BRep、IGES、STL、OBJ、SVG、glTF (.glb) | ✅ |
 | 草图成体（拉伸/旋转）、圆角/倒角、MCP server、XCAF 写回 | 🚧 路线图 |
+
+## 与 opencascade.js 的对比
+
+[opencascade.js](https://github.com/donalffons/opencascade.js) 开创了 OCCT→WebAssembly 的路线，
+至今仍拥有最宽的 API 覆盖面。其稳定版（`1.1.1`，2020-09）绑定 OCCT **7.4.0p1**（2019），beta
+（`2.0.0`，2023-03）为 **7.6.2**（2022），仓库自 2023-08 起沉寂。简版记分卡（✅/❌ 指一等公民、
+有文档的 API）：
+
+| | opencascade.js | occt.ts |
+|---|---|---|
+| OCCT 内核 | 7.4.0p1（2019）· 7.6.2（2022，beta） | **7.9.3（2025）**；可实验性切 8.0 |
+| 维护状态 | 最后稳定版 2020 · 2023 起沉寂 | 活跃开发 |
+| API 覆盖面 | 自动生成、几乎全量 OCCT——数千个类 | 约 40 个精选手写调用 |
+| STEP · BRep · IGES 读写 | ✅ 裸 XCAF/XSControl 类 | ✅ 一等公民，带单位制选择 |
+| 圆角 · 倒角 · 扫掠 · 2D | ✅ 裸类可用 | 🚧 路线图 |
+| 抽壳 · 拔模 | ❌ 绑定为空壳类 | ✅ `shell` / `draft` |
+| HLR 工程图 · WebGL 查看器 · JSON CLI · 几何查询 | ❌ | ✅ |
+| 生态 | CascadeStudio · RepliCAD · BitByBit · ArchiYou | 起步阶段 |
+
+逐维度对照、依据与补足计划详见 **[docs/COMPARISON.md](docs/COMPARISON.md)**（英文）。
 
 ## 安装
 
@@ -104,7 +125,7 @@ $ occt-ts info bracket.step --json
   "volume": 33842.4784,
   "area": 10248.14162,
   "bounds": { "min": [0,0,0], "max": [80,50,10], "size": [80,50,10] },
-  "counts": { "solids": 1, "shells": 1, "faces": 7, "wires": 7, "edges": 15, "vertices": 10 }
+  "counts": { "solids": 1, "shells": 1, "faces": 7, "wires": 9, "edges": 15, "vertices": 10 }
 }
 
 $ occt-ts convert bracket.step drawing.svg --view 1,1,2 --hidden
