@@ -11,8 +11,11 @@
 
 struct OccShape;
 
-// Full analytic description of a shape's faces and edges.
-// Faces: {surface, area, ...params}; edges: {curve, length, ...params}.
+// Full analytic description of a shape's faces, edges and vertices.
+// Faces: {surface, area, center, ...params}; edges: {curve, length, center,
+// ...params}; vertices: {index, position}. `center` is the area/curve
+// integral centroid on every entry (build123d's Shape.center()); conic and
+// quadric placement points appear as axisPoint/origin instead.
 std::string describeGeometry(const OccShape& shape);
 
 // {"distance": d, "points": [[[x,y,z],[x,y,z]], ...]} — up to 8 solutions.

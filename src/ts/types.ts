@@ -81,6 +81,26 @@ export interface EdgeBlendOptions {
   edges?: readonly (number | OccShape)[];
 }
 
+/** Options of `chamfer` beyond the shared edge selection. */
+export interface ChamferOptions extends EdgeBlendOptions {
+  /**
+   * Second leg length for an asymmetric chamfer: `distance` is measured on
+   * the first face adjacent to the edge (as ordered by `describe`), `length2`
+   * on the other one. Omit for the symmetric `distance`/`distance` bevel.
+   */
+  length2?: number;
+}
+
+/** Shared by `fuse` / `cut` / `common`. */
+export interface BooleanOptions {
+  /**
+   * Merge the coplanar faces and collinear edges booleans leave behind
+   * (UnifySameDomain — build123d/CadQuery call this "clean"). Default `true`;
+   * `false` keeps the raw fragment topology. Geometry is unchanged either way.
+   */
+  clean?: boolean;
+}
+
 export interface CircleOptions {
   /** Center. Default `[0, 0, 0]`. */
   origin?: Vec3;

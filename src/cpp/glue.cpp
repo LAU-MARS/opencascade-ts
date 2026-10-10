@@ -10,12 +10,15 @@
 
 #include <emscripten/bind.h>
 
-#include <Standard_Failure.hxx>
+#include <Message.hxx>
+#include <Message_Messenger.hxx>
+#include <Message_PrinterOStream.hxx>
 #include <Standard_Version.hxx>
 
 #include <string>
 #include <type_traits>
 
+#include "error.h"
 #include "hlr.h"
 #include "interrogate.h"
 #include "io.h"
@@ -24,33 +27,35 @@
 #include "occ.h"
 
 using namespace emscripten;
+using occ_ts::guarded;
+using occ_ts::hasError;
+using occ_ts::lastError;
 
 namespace {
 
-std::string g_lastError;
+std::string occtVersionString() { return OCC_VERSION_COMPLETE; }
 
-// Run `fn`, convert any exception into g_lastError and return `errorValue`.
-template <typename T, typename Fn>
-T guarded(const char* operation, Fn fn, T errorValue) {
-  g_lastError.clear();
-  try {
-    return fn();
-  } catch (const Standard_Failure& failure) {
-    const char* what = failure.GetMessageString();
-    g_lastError = std::string(operation) + ": " +
-                  ((what && *what) ? what : "unknown OCCT error");
-  } catch (const std::exception& error) {
-    g_lastError = std::string(operation) + ": " + error.what();
-  } catch (...) {
-    g_lastError = std::string(operation) + ": unknown error";
+// OCCT's default messenger carries a Message_PrinterOStream to std::cout —
+// every STEP/IGES transfer banner ("Statistics on Transfer", "Write Done")
+// lands on stdout and corrupts protocols that treat it as structured output
+// (MCP stdio transport, captured agent output). Silence it by default;
+// `verbose` re-enables the console printer for diagnostics. This runs as a
+// static initializer: the messenger is a lazy function-local static, so it
+// is constructed-and-muted on first touch, whenever this module loads.
+void configureMessages(bool verbose) {
+  const Handle(Message_Messenger) messenger = Message::DefaultMessenger();
+  messenger->RemovePrinters(Message_PrinterOStream::get_type_descriptor());
+  if (verbose) {
+    messenger->AddPrinter(new Message_PrinterOStream());
   }
-  return errorValue;
 }
 
-bool hasError() { return !g_lastError.empty(); }
-std::string lastError() { return g_lastError; }
-
-std::string occtVersionString() { return OCC_VERSION_COMPLETE; }
+namespace {
+const bool g_messagesSilenced = [] {
+  configureMessages(false);
+  return true;
+}();
+} // namespace
 
 // Face-index lists cross the boundary as a heap buffer (mirrors how file
 // payloads reach readStep): TypeScript mallocs, writes 32-bit indices, and
@@ -173,16 +178,28 @@ OccShape offsetSolidWrap(const OccShape& shape, double distance) {
   return guarded("offsetSolid", [&] { return offsetSolid(shape, distance); }, OccShape());
 }
 
-OccShape fuseWrap(const OccShape& a, const OccShape& b) {
-  return guarded("fuse", [&] { return booleanOp(0, a, b); }, OccShape());
+OccShape fuseWrap(const OccShape& a, const OccShape& b, bool clean) {
+  return guarded("fuse", [&] { return booleanOp(0, a, b, clean); }, OccShape());
 }
 
-OccShape cutWrap(const OccShape& a, const OccShape& b) {
-  return guarded("cut", [&] { return booleanOp(1, a, b); }, OccShape());
+OccShape cutWrap(const OccShape& a, const OccShape& b, bool clean) {
+  return guarded("cut", [&] { return booleanOp(1, a, b, clean); }, OccShape());
 }
 
-OccShape commonWrap(const OccShape& a, const OccShape& b) {
-  return guarded("common", [&] { return booleanOp(2, a, b); }, OccShape());
+OccShape commonWrap(const OccShape& a, const OccShape& b, bool clean) {
+  return guarded("common", [&] { return booleanOp(2, a, b, clean); }, OccShape());
+}
+
+OccShape unifyWrap(const OccShape& shape) {
+  return guarded("unify", [&] { return unifySameDomain(shape); }, OccShape());
+}
+
+OccShape makeCompoundWrap(const std::vector<OccShape>& shapes) {
+  return guarded("compound", [&] { return makeCompoundShape(shapes); }, OccShape());
+}
+
+OccShape outerWireWrap(const OccShape& face) {
+  return guarded("faceWires", [&] { return outerWireOf(face); }, OccShape());
 }
 
 OccShape translateWrap(const OccShape& shape, double dx, double dy, double dz) {
@@ -222,10 +239,11 @@ OccShape filletWrap(const OccShape& shape, double radius, unsigned int edgesPtr,
       OccShape());
 }
 
-OccShape chamferWrap(const OccShape& shape, double distance, unsigned int edgesPtr, int edgeCount) {
+OccShape chamferWrap(const OccShape& shape, double distance, double distance2,
+                     unsigned int edgesPtr, int edgeCount) {
   return guarded(
       "chamfer",
-      [&] { return chamferShape(shape, distance, indicesFromHeap(edgesPtr, edgeCount)); },
+      [&] { return chamferShape(shape, distance, distance2, indicesFromHeap(edgesPtr, edgeCount)); },
       OccShape());
 }
 
@@ -247,9 +265,10 @@ OccShape filletEdgesWrap(const OccShape& shape, double radius,
   return guarded("fillet", [&] { return filletEdges(shape, radius, edges); }, OccShape());
 }
 
-OccShape chamferEdgesWrap(const OccShape& shape, double distance,
+OccShape chamferEdgesWrap(const OccShape& shape, double distance, double distance2,
                           const std::vector<OccShape>& edges) {
-  return guarded("chamfer", [&] { return chamferEdges(shape, distance, edges); }, OccShape());
+  return guarded(
+      "chamfer", [&] { return chamferEdges(shape, distance, distance2, edges); }, OccShape());
 }
 
 OccShape variableFilletEdgesWrap(const OccShape& shape,
@@ -473,6 +492,10 @@ EMSCRIPTEN_BINDINGS(opencascade_ts) {
   function("hasError", &hasError);
   function("lastError", &lastError);
 
+  // Re-enable (true) or re-silence (false) OCCT's console diagnostics.
+  // Silenced by default at module load — see configureMessages above.
+  function("setVerbose", &configureMessages);
+
   class_<OccShape>("Shape")
       .constructor()
       .function("isNull", &OccShape::isNull)
@@ -520,6 +543,9 @@ EMSCRIPTEN_BINDINGS(opencascade_ts) {
   function("cut", &cutWrap);
   function("common", &commonWrap);
   function("split", &splitWrap);
+  function("unify", &unifyWrap);
+  function("compound", &makeCompoundWrap);
+  function("outerWire", &outerWireWrap);
 
   function("translate", &translateWrap);
   function("rotate", &rotateWrap);

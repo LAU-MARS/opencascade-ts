@@ -59,3 +59,9 @@ RUN emcmake cmake -S /opt/occt-src -B /tmp/occt-build -G Ninja \
 
 # Ship the resource files (units definitions etc.) for data exchange run time.
 ENV OCCT_ROOT=/opt/occt
+
+# Codegen stage deps: libclang (python bindings + bundled native library) for
+# tools/codegen/generate.py — the raw binding generator. Appended AFTER the
+# expensive OCCT layers on purpose: adding or changing it never invalidates
+# the kernel build cache.
+RUN pip3 install --no-cache-dir libclang==16.0.6

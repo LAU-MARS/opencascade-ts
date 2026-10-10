@@ -59,7 +59,14 @@ export interface WasmHlrData {
   delete(): void;
 }
 
-export interface OccWasmModule {
+import type { RawBindings } from "./raw.generated.js";
+
+/**
+ * The raw OCCT escape hatch rides the same module object as the curated
+ * surface — generated declarations only (see tools/codegen). Manual `.delete()`
+ * discipline applies there.
+ */
+export interface OccWasmModule extends RawBindings {
   /** Uint8Array view over the wasm heap (detaches on memory growth — copy early). */
   readonly HEAPU8: Uint8Array;
   _malloc(bytes: number): number;
@@ -67,6 +74,14 @@ export interface OccWasmModule {
 
   hasError(): boolean;
   lastError(): string;
+
+  /**
+   * Re-enable (true) or re-silence (false) OCCT's console output (STEP/IGES
+   * transfer banners and friends). Silent by default — the module mutes the
+   * default messenger's std::cout printer at load; verbose routes OCCT
+   * diagnostics back to stdout, so keep it off when stdout is a protocol.
+   */
+  setVerbose(verbose: boolean): void;
 
   occtVersion(): string;
 
@@ -143,9 +158,15 @@ export interface OccWasmModule {
   /** Grow (positive) / shrink (negative) the whole solid by `distance`. */
   offsetSolid(s: WasmShape, distance: number): WasmShape;
 
-  fuse(a: WasmShape, b: WasmShape): WasmShape;
-  cut(a: WasmShape, b: WasmShape): WasmShape;
-  common(a: WasmShape, b: WasmShape): WasmShape;
+  fuse(a: WasmShape, b: WasmShape, clean: boolean): WasmShape;
+  cut(a: WasmShape, b: WasmShape, clean: boolean): WasmShape;
+  common(a: WasmShape, b: WasmShape, clean: boolean): WasmShape;
+  /** Merge same-domain faces/edges (the boolean `clean` pass, on demand). */
+  unify(s: WasmShape): WasmShape;
+  /** Compound of one or more shapes (copies share the inputs' geometry). */
+  compound(shapes: WasmShapeVector): WasmShape;
+  /** The outer boundary wire of a Face. */
+  outerWire(s: WasmShape): WasmShape;
 
   translate(s: WasmShape, dx: number, dy: number, dz: number): WasmShape;
   rotate(s: WasmShape, ax: number, ay: number, az: number, angleRadians: number): WasmShape;
@@ -176,7 +197,13 @@ export interface OccWasmModule {
   ): WasmShape;
   /** 1-based edge indices at `edgesPtr` (`edgeCount` × int32; 0 = all edges). */
   fillet(s: WasmShape, radius: number, edgesPtr: number, edgeCount: number): WasmShape;
-  chamfer(s: WasmShape, distance: number, edgesPtr: number, edgeCount: number): WasmShape;
+  /**
+   * Bevel by `distance` (NaN `distance2` = equal legs) — `distance` is
+   * measured on the first face adjacent to each edge (indexed-map order).
+   */
+  chamfer(
+    s: WasmShape, distance: number, distance2: number, edgesPtr: number, edgeCount: number,
+  ): WasmShape;
   /**
    * Per-edge/per-position fillet radii as parallel arrays: int32 edge indices
    * at `edgesPtr`, float64 radii at `radiiPtr`, float64 positions at
@@ -187,7 +214,9 @@ export interface OccWasmModule {
   ): WasmShape;
   /** The same blends driven by edge handles (e.g. from `subShapes`). */
   filletEdges(s: WasmShape, radius: number, edges: WasmShapeVector): WasmShape;
-  chamferEdges(s: WasmShape, distance: number, edges: WasmShapeVector): WasmShape;
+  chamferEdges(
+    s: WasmShape, distance: number, distance2: number, edges: WasmShapeVector,
+  ): WasmShape;
   /**
    * Variable fillet by edge handles: float64 radii at `radiiPtr` and
    * positions at `positionsPtr`, parallel to the `edges` list (NaN position =
@@ -265,4 +294,6 @@ export interface OccWasmModule {
 
 export type OccModuleFactory = (config: {
   wasmBinary: ArrayBuffer | Uint8Array;
+  /** Receives every line the wasm module writes to stdout. */
+  print?: (text: string) => void;
 }) => Promise<OccWasmModule>;

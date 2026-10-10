@@ -37,6 +37,7 @@ by agents:
 | **Healing** — sewing (stitch faces, assemble shapes) + ShapeFix (faces, wires, orientation, tolerances) | ✅ |
 | Measures: volume, area, bounds, validity, sub-shape counts | ✅ |
 | **Sub-shape handles** — edges/faces/vertices as first-class values: `subShapes`/`edges`/`faces`, pass back into blends, `isSame` identity | ✅ |
+| **Raw OCCT escape hatch** — generated bindings (libclang codegen) for ~70 build123d-core classes, OCP naming, same error contract | ✅ |
 | **Geometry interrogation** — analytic face/edge parameters, min distance + closest points, section curves, point-in-solid | ✅ |
 | **Hole detection** — heuristic bore recognition (radius/axis/depth) from the description | ✅ |
 | **HLR** — hidden-line removal → visible/hidden edge segments → SVG drawings | ✅ |

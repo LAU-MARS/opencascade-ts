@@ -31,6 +31,7 @@ export type {
   ShapeDocument,
   SphereFaceInfo,
   TorusFaceInfo,
+  VertexInfo,
 } from "./interrogate.js";
 export {
   hiddenLinesToSvg,
@@ -42,10 +43,12 @@ export {
 export type { GlbExportOptions, SvgExportOptions } from "./exporters.js";
 export type {
   ArcOptions,
+  BooleanOptions,
   BoundingBox,
   BsplineOptions,
   BsplineSurfaceInfo,
   BsplineSurfaceOptions,
+  ChamferOptions,
   CircleOptions,
   CircularPatternOptions,
   DraftOptions,

@@ -3,12 +3,12 @@ import { describe, expect, it } from "vitest";
 import { detectHoles, type CircleEdgeInfo, type CylinderFaceInfo } from "../src/ts/interrogate.js";
 
 function cylinderFace(radius: number, axisPoint: [number, number, number] = [0, 0, 0]): CylinderFaceInfo {
-  return { index: 1, surface: "cylinder", area: 1, axisPoint, axis: [0, 0, 1], radius };
+  return { index: 1, surface: "cylinder", area: 1, center: axisPoint, axisPoint, axis: [0, 0, 1], radius };
 }
 
 function circleEdge(
   radius: number,
-  center: [number, number, number],
+  axisPoint: [number, number, number],
   axis: [number, number, number] = [0, 0, 1],
   index = 1,
 ): CircleEdgeInfo {
@@ -16,7 +16,9 @@ function circleEdge(
     index,
     curve: "circle",
     length: 2 * Math.PI * radius,
-    center,
+    // full circles: centroid and circle center coincide
+    center: axisPoint,
+    axisPoint,
     axis,
     radius,
     uRange: [0, 2 * Math.PI],

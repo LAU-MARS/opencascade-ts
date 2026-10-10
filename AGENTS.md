@@ -19,6 +19,8 @@ src/ts/viewer/  WebGL2 viewer (viewer.ts, camera.ts, mat4.ts, shaders.ts).
 bin/cli.mjs     CLI entry; src/ts/cli.ts = implementation.
 etc/docker/     Dockerfile: emsdk + OCCT static wasm libs (the slow stage, cached).
 etc/build-wasm.sh  Two-stage build: docker image → link glue → dist/wasm/.
+etc/reference/  ocp-oracle.py: measures test scenarios on desktop OCCT (OCP)
+                → tests/fixtures/ocp-reference.json (committed).
 tests/          vitest. Integration tests auto-skip until dist/wasm/occtjs.wasm exists.
 examples/       Browser demo (plain ESM, no bundler).
 docs/           BUILDING.md, API.md.
@@ -31,6 +33,7 @@ npm install          # dev deps (typescript, vitest)
 npm run build        # tsc → dist/ (pure TS, always works)
 npm test             # vitest; wasm integration tests skip unless the artifact exists
 npm run build:wasm   # dist/wasm/occtjs.{js,wasm} — needs Docker, first run 1–2 h
+npm run reference    # regenerate the OCP fixture via conda-forge ocp (see below)
 npm run example      # serve repo root on :8787 for examples/browser-viewer
 ```
 
@@ -64,7 +67,11 @@ Example: adding `makeWedge`.
 4. **Wrap** it in `src/ts/occ.ts` on `OccSession` with typed options and TS-side
    validation (e.g. zero-length axis vectors → `Error` with a clear message).
 5. **Test** in `tests/integration.test.ts` with an analytic expectation
-   (a volume/area/count you can compute by hand).
+   (a volume/area/count you can compute by hand). When the scenario is hard to
+   hand-compute, add it to `etc/reference/ocp-oracle.py` **and** a same-named
+   builder in `tests/reference.test.ts`, then `npm run reference` — desktop
+   OCCT supplies the expected values, `tests/fixtures/ocp-reference.json`
+   (committed) carries them, and CI needs no Python.
 6. If it produces buffers: expose `xxxPtr()` + `xxxCount()` accessors and copy via
    `copyF32`/`copyU32` **before** `raw.delete()` — the wasm heap detaches on growth.
 

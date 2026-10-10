@@ -40,6 +40,15 @@ for f in "${SRC}"/*.cpp; do
   em++ $CXXFLAGS -c "$f" -o "$(basename "${f%.cpp}").o"
 done
 
+# The generated raw OCCT layer (npm run codegen regenerates it). Compile only
+# when present — the curated-only build stays valid without it.
+if compgen -G "${SRC}/generated/*.cpp" > /dev/null; then
+  echo "[build-glue] compiling generated raw bindings..."
+  for f in "${SRC}"/generated/*.cpp; do
+    em++ $CXXFLAGS -I"${SRC}" -c "$f" -o "$(basename "${f%.cpp}").o"
+  done
+fi
+
 echo "[build-glue] linking against OCCT static libraries..."
 ls "${OCCT}"/lib/*.a >/dev/null
 em++ "${LINKFLAGS[@]}" ./*.o "${OCCT}"/lib/*.a -o "${OUT}/occtjs.js"

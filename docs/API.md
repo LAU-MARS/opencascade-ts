@@ -14,9 +14,12 @@ import { OccSession } from "occt.ts";
 const occ = await OccSession.create(options?);
 ```
 
-`OccCreateOptions` = `WasmLocationOptions`: `{ moduleUrl?, wasmUrl? }` to point at the
-embind factory / wasm binary explicitly (useful under bundlers). Default resolution order
-is documented in `src/ts/loader.ts`.
+`OccCreateOptions` = `WasmLocationOptions & { verbose? }`: `{ moduleUrl?, wasmUrl? }` to
+point at the embind factory / wasm binary explicitly (useful under bundlers; default
+resolution order in `src/ts/loader.ts`). `{ verbose: true }` re-enables OCCT's console
+diagnostics — the kernel is **silent on stdout by default** (STEP/IGES transfer banners
+and legacy kernel prints would otherwise corrupt anything treating stdout as structured
+output, e.g. an MCP stdio transport). Toggle at runtime with `session.setVerbose(bool)`.
 
 | Method | Description |
 |---|---|
@@ -35,7 +38,9 @@ is documented in `src/ts/loader.ts`.
 | `makeBsplineThrough(points, { periodic?, tolerance? })` | Smooth B-spline interpolated **through** every point. |
 | `makeWire(parts)` | Concatenate connected wires/edges into one wire, in order. |
 | `makeFace(outer, holes?)` | Cap a planar outer wire into a face, with optional hole wires — the section for plates, flanges and gaskets (also the base for 2D trim/intersect via `cut`/`common` on faces). |
-| `fuse(a, b)` / `cut(a, b)` / `common(a, b)` | Boolean union / difference / intersection. |
+| `fuse(a, b, { clean? })` / `cut(a, b, { clean? })` / `common(a, b, { clean? })` | Boolean union / difference / intersection. Results are **cleaned** by default (`clean: true`): coplanar faces merge and collinear edges join (UnifySameDomain — build123d/CadQuery's "clean"). `clean: false` keeps the raw fragment topology. |
+| `unify(shape)` | Same cleaning pass on demand — for sloppy imports, `split` fragments, patterns. |
+| `compound(shapes)` | A compound holding several shapes side by side — the multi-body container for disjoint parts. `describe`/`tessellate`/measurements walk the whole tree. |
 | `split(shape, tools)` | Cut into pieces but keep **every** fragment — they reassemble the original (the region under a tool becomes its own piece). |
 | `translate(shape, [x,y,z])` | Rigid move. |
 | `rotate(shape, axis, angleDegrees)` | Rotation about `axis` through the origin. |
@@ -44,7 +49,7 @@ is documented in `src/ts/loader.ts`.
 | `offsetSolid(shape, distance)` | Grow (+) / shrink (−) the whole solid by a uniform offset. |
 | `draft(shape, angleDegrees, { direction?, faces?, neutralPoint? })` | Mold-release tilt. Faces pivot about the neutral plane (default: bounds center, normal to `direction`); positive angles narrow the part towards the pull direction. Default drafted faces: the walls running parallel to `direction`. |
 | `fillet(shape, radius, { edges? })` | Round edges (`BRepFilletAPI`). Default: every edge; `edges` — 1-based indices from `describe()` — selects a subset. |
-| `chamfer(shape, distance, { edges? })` | Bevel edges by `distance` on both sides. Same edge selection as `fillet`. |
+| `chamfer(shape, distance, { edges?, length2? })` | Bevel edges by `distance` on both sides; `length2` gives asymmetric legs — `distance` is measured on the first face adjacent to the edge (as ordered by `describe`). Same edge selection as `fillet`. |
 | `variableFillet(shape, specs)` | Per-edge radii: `[{ edge, radius, at? }]`. Two positioned specs on one edge give its start and end radius — the blend between them is linear. |
 | `extrude(profile, vector, { solid? })` | Sweep a planar wire/face along a straight vector. Wires become solids by default; `solid: false` → shell. |
 | `revolve(profile, { direction, origin?, angleDegrees?, solid? })` | Revolve a planar profile about the axis; `angleDegrees` defaults to a full turn. |
@@ -81,7 +86,7 @@ is documented in `src/ts/loader.ts`.
 | `shapeType()` | `"Solid"`, `"Shell"`, `"Face"`, `"Wire"`, `"Edge"`, `"Vertex"`, `"Compound"`, `"CompSolid"`, `"Shape"`. |
 | `volume()` | Enclosed volume of solids (mm³). |
 | `area()` | Total surface area (mm²). |
-| `bounds()` | `{ min: [x,y,z], max: [x,y,z] }`. |
+| `bounds()` | `{ min: [x,y,z], max: [x,y,z] }` — **optimal** (tight) box, measured on the underlying geometry: a torus (20, 5) reports ±25, not the ±27.06 control-point envelope. Ignoring triangulations keeps it deterministic; it can be slower than a padded box on very large shapes. |
 | `centroid()` | Center of mass: volume-weighted for solids, else surface/curve-weighted (a circle's is its center). |
 | `isValid()` | `BRepCheck_Analyzer` result. |
 | `count(type)` | Sub-shape count, e.g. `count("Face")`, `count("Edge")`. |
@@ -109,7 +114,18 @@ edges(box)[3]!.isSame(edges(box)[3]!);            // → true
 - Handles are real shapes: measure them, transform them, boolean them, feed
   them to `fillet`/`chamfer`/`variableFillet` (`edges: [handle, …]`,
   `{ edge: handle, radius }`), or interrogate with `describe`.
+- `faceWires(face)` — a face's boundary structure: `{ outer, inners }` wire
+  handles. Sketch-on-face starts from `outer` and treats every `inners` entry
+  as a hole to avoid (or pocket).
 - The session owns every handle — `session.dispose()` frees them all.
+
+**Counting rule** — `count(type)`, `subShapes(shape, type)` and `describe()`'s
+numbering all enumerate via `TopExp::MapShapes` over an indexed map: deduplicated
+by TShape + location (orientation-insensitive — the same edge shared by two faces
+counts once), in a stable depth-first order. Vertex `i` in `describe().vertices`
+is `subShapes(shape, "Vertex")[i - 1]`. The one asymmetry: `describe().edges` skips
+degenerated edges (sphere poles) from its list while `count("Edge")` still counts
+them — edge indices stay aligned with the map's index space either way.
 
 ## Shelling & drafting
 
@@ -311,18 +327,28 @@ occ.tessellate(shape, {
 
 ```ts
 const d = occ.describe(part);
-// { shapeType, faces: [...], edges: [...], holes: [...] }
+// { shapeType, faces: [...], edges: [...], vertices: [...], holes: [...] }
 ```
 
-- **faces** — analytic per-face data: `{surface:"plane", origin, normal, area}`,
-  `{surface:"cylinder", axisPoint, axis, radius, area}`, cone/sphere/torus likewise,
-  or generic `{surface:"bspline-surface"|"revolution"|…, area}`.
-- **edges** — `{curve:"line", start, end, direction, length}`,
-  `{curve:"circle", center, axis, radius, uRange, closed, length}` (radians),
+- **faces** — analytic per-face data: `{surface:"plane", origin, normal, center, area}`,
+  `{surface:"cylinder", axisPoint, axis, radius, center, area}`, cone/sphere/torus likewise,
+  or generic `{surface:"bspline-surface"|"revolution"|…, center, area}`.
+- **edges** — `{curve:"line", start, end, direction, center, length}`,
+  `{curve:"circle", axisPoint, axis, radius, uRange, closed, center, length}` (radians),
   ellipse/bspline likewise.
+- **vertices** — `{index, position}` corner points, same enumeration order as
+  `subShapes(shape, "Vertex")`.
 - **holes** — heuristic bore detection (`detectHoles`, pure TS): a cylindrical face
   bounded by exactly two coaxial full circles of the same radius →
   `{radius, axis, center (mid-depth), length}`.
+
+Every face and edge carries `center` — the area/curve-integral centroid
+(build123d's `Shape.center()` semantics: the middle of the material the
+sub-shape actually covers). It is **not** the surface's placement point: a
+plane's `origin` can sit in a corner, and a trimmed spherical face's balance
+point differs from the sphere's center. The placement points of conics and
+quadrics (circle/ellipse edges, sphere/torus faces) are exposed as
+`axisPoint` — for arcs and trimmed faces, `center ≠ axisPoint` by design.
 
 The XCAF document tree (`readStepDocument`) nodes are `{name, color, transform,
 shape?, children?}`; `transform` holds 12 row-major numbers (3×4) when an instance
@@ -339,6 +365,48 @@ const hlr = occ.hiddenLines(shape, { direction: [0, 0, 1], up?: [0,0,1], deflect
 projection frame (x = right, y = up, z ≈ depth); `xAxis`/`yAxis` are that frame's world-space
 basis, so `hiddenLinesToSvg` (and your own exporters) can project without recomputation.
 Both line arrays use the same segment-pair convention as `MeshData.edges`.
+
+## Raw OCCT bindings — the generated escape hatch
+
+The curated `OccSession` API covers the common path; the raw layer beneath it
+exposes ~70 OCCT classes verbatim (OCP-style naming) for everything else. It is
+**generated** from a whitelist (`tools/codegen/classes.json`) by parsing the
+OCCT headers with libclang — `npm run codegen` regenerates, the outputs are
+checked in and diff-reviewable, and every member that could not be mapped is
+listed in `tools/codegen/SKIPPED.md` (nothing is dropped silently).
+
+```ts
+const raw = occ.module;                    // same module object as the curated API
+const maker = new raw.BRepPrimAPI_MakeBox(3, 4, 5);
+const shape = maker.Shape();               // TopoDS_Shape, JS-owned
+const props = new raw.GProp_GProps();
+raw.BRepGProp.VolumeProperties(shape, props);
+props.Mass();                              // 60 — matches occ.makeBox(3, 4, 5).volume()
+shape.delete(); props.delete(); maker.delete();
+```
+
+What's in the whitelist (build123d core set): `gp_*` (Pnt/Vec/Dir/Ax1/Ax2/Ax3/
+Trsf/GTrsf/Pln/Circ/Lin), the `TopoDS_*` family + `TopoDS_Edge_s`-style downcasts,
+`TopExp`/`TopExp_Explorer`, `BRep_Tool`/`BRep_Builder`, `BRepAdaptor_*`,
+`BRepPrimAPI_*`, `BRepAlgoAPI_*`, `BRepFilletAPI_*`, `BRepBuilderAPI_*`,
+`BRepOffsetAPI_ThruSections`/`MakePipe`/`MakePipeShell`, `GeomAPI_Interpolate`/
+`PointsToBSpline`, `GC_MakeSegment`/`MakeArcOfCircle`, `Geom_BSplineCurve`/
+`Surface`, `BRepGProp`/`GProp_GProps`, `BRepCheck_Analyzer`, `STEPControl_Reader`/
+`Writer`, `Interface_Static`.
+
+Discipline (same as OCP / opencascade.js):
+
+- **Manual memory**: every object you construct or receive by value/pointer owns
+  a C++ instance — `.delete()` it (the session does not track raw objects).
+- **Errors**: raw calls run inside the same `guarded()` contract — a failure
+  returns a default value and `module.hasError()/lastError()` carries the
+  message. Check after calls that can fail.
+- **Enums cross as ints** (`TopAbs_SOLID === 2`); enumerators are exported as
+  module constants (`module.IFSelect_RetDone`).
+- **`handle<C>`** results come back as `Handle_C` wrappers (`Get()` borrows the
+  pointee; `delete()` drops the refcount; `Handle_C_adopt(pointee)` wraps one).
+- embind resolves overloads **by parameter count only** — the generator keeps
+  one registration per (name, count), noted in SKIPPED.md.
 
 ## Exporters (pure TS, headless-safe)
 

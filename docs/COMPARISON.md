@@ -53,6 +53,7 @@ the ❌ from raw calls; the difference is what you get out of the box.
 | Healing (sew + shape repair) · mirror · patterns | ✅ raw classes | ✅ `heal` / `mirror` / `rectangularPattern` / `circularPattern` |
 | Freeform surfaces | ✅ raw classes | ✅ B-spline surfaces from poles / through points, `describeSurface` + `setBsplinePoles` editing |
 | Sub-shape handles | ✅ raw `TopoDS` classes | ✅ `subShapes` / `edges` / `faces` / … + `isSame` identity, pass-back into blends |
+| Raw OCCT escape hatch | ✅ the whole point | ✅ **generated** raw layer: ~70 build123d-core classes, libclang codegen, OCP naming (`tools/codegen`) |
 | Shelling (thick solid) · draft angle | ❌ bound as empty stubs — no callable methods | ✅ `shell` / `draft` |
 | STEP · BRep · IGES I/O | ✅ raw XCAF/XSControl classes | ✅ first-class, with unit selection |
 | Assembly tree: names · colors · transforms | raw calls | ✅ `readStepDocument` → JSON · `writeStepDocument` ← tree |
@@ -201,12 +202,16 @@ as "memory access out of bounds" on deep OCCT call chains.
    it), community docs.
 
 We grow these deliberately as curated API — five steps each per the recipe — rather than
-regenerating 10,000 raw classes. If you need one of them today, opencascade.js reaches it via
-raw classes; that is the gap, and it closes one binding at a time.
+regenerating 10,000 raw classes. When curation is too slow, the generated raw layer
+(0.10.0: libclang codegen from a whitelist, `tools/codegen`) covers the long tail today —
+whitelist classes bind verbatim with OCP naming, so most build123d-flavored code translates
+mechanically; unmapped members are reported, never silently dropped.
 
-Migration note: there is no drop-in compatibility, by design. Code written against
-opencascade.js's raw classes does not port, and code that needs raw-class power is not served
-by occt.ts yet.
+Migration note: there is no drop-in compatibility for the *curated* API, by design. But the
+generated raw layer now speaks OCP names (`BRepPrimAPI_MakeBox`, `TopoDS_Edge_s`, …) with
+embind semantics — code written against opencascade.js's raw classes translates almost
+verbatim; what changes is the module loader and the `guarded()` error contract instead of
+raw exceptions.
 
 ## Where occt.ts already leads
 

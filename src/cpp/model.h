@@ -52,8 +52,21 @@ OccShape assembleWire(const std::vector<OccShape>& parts);
 // face-with-holes section for extrude/revolve/loft).
 OccShape makeFaceShape(const OccShape& outer, const std::vector<OccShape>& holes);
 
-// Booleans: op 0 = fuse, 1 = cut, 2 = common. Throws std::runtime_error on failure.
-OccShape booleanOp(int op, const OccShape& a, const OccShape& b);
+// Booleans: op 0 = fuse, 1 = cut, 2 = common. With `clean` the result is
+// passed through UnifySameDomain (coplanar faces merge, collinear edges join)
+// — what build123d/CadQuery call "clean". Throws std::runtime_error on failure.
+OccShape booleanOp(int op, const OccShape& a, const OccShape& b, bool clean);
+
+// Explicit UnifySameDomain pass over any shape (imports, splits, patterns).
+OccShape unifySameDomain(const OccShape& shape);
+
+// Compound of one or more shapes — the multi-body container. Copies share the
+// inputs' geometry. Throws on empty input.
+OccShape makeCompoundShape(const std::vector<OccShape>& shapes);
+
+// Outer boundary wire of a Face (the wire that contains all the others).
+// Throws std::runtime_error for non-Face input.
+OccShape outerWireOf(const OccShape& face);
 
 // Transforms
 OccShape translateShape(const OccShape& shape, double dx, double dy, double dz);
@@ -96,10 +109,13 @@ OccShape draftShape(const OccShape& shape, double angleRadians,
 
 // Edge blends. With an empty `edgeIndices` every edge is blended; otherwise
 // the 1-based indices (as emitted by describeGeometry) select the subset.
-// fillet rounds with `radius`, chamfer bevels `distance` on both sides.
+// fillet rounds with `radius`; chamfer bevels `distance` on both sides, or
+// `distance`/`distance2` legs (NaN distance2 = symmetric) where `distance` is
+// measured on the first face adjacent to the edge (indexed-map order).
 // Throws std::runtime_error on failure or bad indices.
 OccShape filletShape(const OccShape& shape, double radius, const std::vector<int>& edgeIndices);
-OccShape chamferShape(const OccShape& shape, double distance, const std::vector<int>& edgeIndices);
+OccShape chamferShape(const OccShape& shape, double distance, double distance2,
+                      const std::vector<int>& edgeIndices);
 // Per-edge (and per-position) fillet radii: parallel arrays of 1-based edge
 // indices, radii, and positions (NaN = constant radius on that edge; two
 // finite positions on one edge blend linearly between them, in the edge's
@@ -112,7 +128,8 @@ OccShape variableFilletShape(const OccShape& shape,
 // round-trip, so handles from any extraction path work. Degenerated edges
 // are skipped like the "every edge" index path.
 OccShape filletEdges(const OccShape& shape, double radius, const std::vector<OccShape>& edges);
-OccShape chamferEdges(const OccShape& shape, double distance, const std::vector<OccShape>& edges);
+OccShape chamferEdges(const OccShape& shape, double distance, double distance2,
+                      const std::vector<OccShape>& edges);
 OccShape variableFilletEdges(const OccShape& shape,
                              const std::vector<OccShape>& edges,
                              const std::vector<double>& radii,

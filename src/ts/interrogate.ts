@@ -9,11 +9,17 @@
 import type { ShapeTypeName, Vec3 } from "./types.js";
 
 // --- edges ----------------------------------------------------------------------
+//
+// Every edge carries `center`: the curve-integral midpoint (an arc's balance
+// point — for a full circle it coincides with the circle's center, for an arc
+// it does not). The conic's own placement point is `axisPoint`, mirroring the
+// cylinder/cone faces.
 
 export interface LineEdgeInfo {
   index: number;
   curve: "line";
   length: number;
+  center: Vec3;
   start: Vec3;
   end: Vec3;
   direction: Vec3;
@@ -25,6 +31,8 @@ export interface CircleEdgeInfo {
   curve: "circle";
   length: number;
   center: Vec3;
+  /** Center of the underlying circle (the arc's axis-system origin). */
+  axisPoint: Vec3;
   axis: Vec3;
   radius: number;
   uRange: [number, number];
@@ -36,6 +44,8 @@ export interface EllipseEdgeInfo {
   curve: "ellipse";
   length: number;
   center: Vec3;
+  /** Center of the underlying ellipse. */
+  axisPoint: Vec3;
   axis: Vec3;
   majorRadius: number;
   minorRadius: number;
@@ -45,6 +55,7 @@ export interface BSplineEdgeInfo {
   index: number;
   curve: "bspline";
   length: number;
+  center: Vec3;
   degree?: number;
   poles?: number;
 }
@@ -53,6 +64,7 @@ export interface GenericEdgeInfo {
   index: number;
   curve: "bezier" | "offset" | "other";
   length: number;
+  center: Vec3;
 }
 
 export type EdgeInfo =
@@ -63,11 +75,16 @@ export type EdgeInfo =
   | GenericEdgeInfo;
 
 // --- faces ----------------------------------------------------------------------
+//
+// Every face carries `center`: the area-integral centroid (build123d's
+// Shape.center() semantics — the middle of the material the face covers,
+// NOT the surface's parameter origin, which can sit in a corner).
 
 export interface PlaneFaceInfo {
   index: number;
   surface: "plane";
   area: number;
+  center: Vec3;
   origin: Vec3;
   normal: Vec3;
 }
@@ -76,6 +93,7 @@ export interface CylinderFaceInfo {
   index: number;
   surface: "cylinder";
   area: number;
+  center: Vec3;
   axisPoint: Vec3;
   axis: Vec3;
   radius: number;
@@ -86,6 +104,7 @@ export interface ConeFaceInfo {
   index: number;
   surface: "cone";
   area: number;
+  center: Vec3;
   axisPoint: Vec3;
   axis: Vec3;
   refRadius: number;
@@ -97,6 +116,8 @@ export interface SphereFaceInfo {
   surface: "sphere";
   area: number;
   center: Vec3;
+  /** Center of the underlying sphere. */
+  axisPoint: Vec3;
   radius: number;
 }
 
@@ -105,6 +126,8 @@ export interface TorusFaceInfo {
   surface: "torus";
   area: number;
   center: Vec3;
+  /** Center of the underlying torus (on its axis). */
+  axisPoint: Vec3;
   axis: Vec3;
   majorRadius: number;
   minorRadius: number;
@@ -114,6 +137,7 @@ export interface GenericFaceInfo {
   index: number;
   surface: "bspline-surface" | "revolution" | "extrusion" | "offset-surface" | "other";
   area: number;
+  center: Vec3;
 }
 
 export type FaceInfo =
@@ -124,12 +148,25 @@ export type FaceInfo =
   | TorusFaceInfo
   | GenericFaceInfo;
 
+// --- vertices ---------------------------------------------------------------------
+
+export interface VertexInfo {
+  index: number;
+  position: Vec3;
+}
+
 // --- composite results ------------------------------------------------------------
 
 export interface GeometryDescription {
   shapeType: ShapeTypeName;
   faces: FaceInfo[];
   edges: EdgeInfo[];
+  /**
+   * Corner points in indexed-map order — vertex `i` is
+   * `subShapes(shape, "Vertex")[i - 1]`. Sketch endpoints and
+   * `.vertices()`-style selection read from here.
+   */
+  vertices: VertexInfo[];
 }
 
 /** A full-circle cylindrical feature: radius, axis, center (mid-height), length. */
@@ -189,7 +226,7 @@ export function detectHoles(faces: FaceInfo[], edges: EdgeInfo[]): HoleCandidate
       (circle) =>
         Math.abs(circle.radius - cylinder.radius) <= 1e-6 * Math.max(1, cylinder.radius) &&
         Math.abs(dot(circle.axis, cylinder.axis)) >= 1 - 1e-9 &&
-        distanceToLine(circle.center, cylinder.axisPoint, cylinder.axis) <= 1e-6,
+        distanceToLine(circle.axisPoint, cylinder.axisPoint, cylinder.axis) <= 1e-6,
     );
     if (matches.length !== 2) continue;
 
@@ -197,8 +234,12 @@ export function detectHoles(faces: FaceInfo[], edges: EdgeInfo[]): HoleCandidate
     holes.push({
       radius: cylinder.radius,
       axis: cylinder.axis,
-      center: mid(a.center, b.center),
-      length: Math.hypot(a.center[0] - b.center[0], a.center[1] - b.center[1], a.center[2] - b.center[2]),
+      center: mid(a.axisPoint, b.axisPoint),
+      length: Math.hypot(
+        a.axisPoint[0] - b.axisPoint[0],
+        a.axisPoint[1] - b.axisPoint[1],
+        a.axisPoint[2] - b.axisPoint[2],
+      ),
     });
   }
 

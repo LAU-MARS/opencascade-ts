@@ -72,6 +72,25 @@ in `src/cpp/*` (the glue uses long-stable OCCT APIs on purpose).
   MEMFS; OCCT unit tables are compiled in for STEP. If a future OCCT version moves to
   runtime resource files, mount `OCCT_ROOT/src/Resources` and preload it.
 
+## OCP reference oracle
+
+`tests/reference.test.ts` compares the wasm kernel against **desktop OCCT**
+instead of hand-derived formulas: `etc/reference/ocp-oracle.py` rebuilds each
+test scenario through the local [OCP](https://github.com/CadQuery/OCP) bindings
+and writes the measured volume/area/topology counts/bounds to
+`tests/fixtures/ocp-reference.json` (committed — CI needs no Python).
+
+```bash
+conda install -c conda-forge ocp   # one-time; any 7.x is close enough
+npm run reference                  # regenerate the fixture
+npm test                           # wasm asserts against the fresh values
+```
+
+To add a scenario: write it once in `ocp-oracle.py` and once as a same-named
+builder in `tests/reference.test.ts`, then regenerate. The fixture records the
+OCP version it came from; OCCT and OCP minor versions need not match exactly —
+the scenarios are exact-analytic geometry, which is stable across 7.x releases.
+
 ## CI
 
 `.github/workflows/ci.yml` runs three jobs: `test` (TypeScript-only), `build-wasm`

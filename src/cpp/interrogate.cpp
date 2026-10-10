@@ -21,6 +21,7 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Circ.hxx>
@@ -83,6 +84,22 @@ double faceArea(const TopoDS_Face& face) {
   return props.Mass();
 }
 
+// Area-integral centroid — build123d's Shape.center() semantics. Unlike the
+// surface's own placement point (a plane's origin can sit in a corner), this
+// is the middle of the material the face actually covers.
+gp_Pnt faceCentroid(const TopoDS_Face& face) {
+  GProp_GProps props;
+  BRepGProp::SurfaceProperties(face, props);
+  return props.CentreOfMass();
+}
+
+// Curve-integral midpoint of an edge (an arc's centroid, not its circle's center).
+gp_Pnt edgeCentroid(const TopoDS_Edge& edge) {
+  GProp_GProps props;
+  BRepGProp::LinearProperties(edge, props);
+  return props.CentreOfMass();
+}
+
 // Analytic where cheap, discretized otherwise — avoids version-fragile
 // GCPnts_AbscissaPoint overload sets.
 double edgeLength(const BRepAdaptor_Curve& curve, GeomAbs_CurveType type) {
@@ -114,7 +131,9 @@ void emitEdge(std::ostringstream& out, const TopoDS_Edge& edge, int index) {
   const double u2 = curve.LastParameter();
 
   out << "{\"index\":" << index << ",\"curve\":\"" << curveTypeName(type)
-      << "\",\"length\":" << jsonNumber(edgeLength(curve, type));
+      << "\",\"length\":" << jsonNumber(edgeLength(curve, type))
+      << ",\"center\":";
+  putPoint(out, edgeCentroid(edge));
 
   switch (type) {
     case GeomAbs_Line: {
@@ -129,7 +148,7 @@ void emitEdge(std::ostringstream& out, const TopoDS_Edge& edge, int index) {
     }
     case GeomAbs_Circle: {
       const gp_Circ circle = curve.Circle();
-      out << ",\"center\":";
+      out << ",\"axisPoint\":";
       putPoint(out, circle.Location());
       out << ",\"axis\":";
       putDirection(out, circle.Axis().Direction());
@@ -140,7 +159,7 @@ void emitEdge(std::ostringstream& out, const TopoDS_Edge& edge, int index) {
     }
     case GeomAbs_Ellipse: {
       const gp_Elips ellipse = curve.Ellipse();
-      out << ",\"center\":";
+      out << ",\"axisPoint\":";
       putPoint(out, ellipse.Location());
       out << ",\"axis\":";
       putDirection(out, ellipse.Axis().Direction());
@@ -166,7 +185,9 @@ void emitFace(std::ostringstream& out, const TopoDS_Face& face, int index) {
   const GeomAbs_SurfaceType type = surface.GetType();
 
   out << "{\"index\":" << index << ",\"surface\":\"" << surfaceTypeName(type)
-      << "\",\"area\":" << jsonNumber(faceArea(face));
+      << "\",\"area\":" << jsonNumber(faceArea(face))
+      << ",\"center\":";
+  putPoint(out, faceCentroid(face));
 
   switch (type) {
     case GeomAbs_Plane: {
@@ -198,14 +219,14 @@ void emitFace(std::ostringstream& out, const TopoDS_Face& face, int index) {
     }
     case GeomAbs_Sphere: {
       const gp_Sphere sphere = surface.Sphere();
-      out << ",\"center\":";
+      out << ",\"axisPoint\":";
       putPoint(out, sphere.Location());
       out << ",\"radius\":" << jsonNumber(sphere.Radius());
       break;
     }
     case GeomAbs_Torus: {
       const gp_Torus torus = surface.Torus();
-      out << ",\"center\":";
+      out << ",\"axisPoint\":";
       putPoint(out, torus.Location());
       out << ",\"axis\":";
       putDirection(out, torus.Axis().Direction());
@@ -245,6 +266,19 @@ std::string describeGeometry(const OccShape& shape) {
     if (BRep_Tool::Degenerated(edge)) continue;
     if (emitted++ > 0) out << ',';
     emitEdge(out, edge, i);
+  }
+  out << "],\"vertices\":[";
+
+  // Same indexed-map enumeration as the faces and edges (and subShapes), so
+  // vertex i is subShapes(shape, "Vertex")[i-1] and the indices stay stable.
+  TopTools_IndexedMapOfShape vertexMap;
+  TopExp::MapShapes(shape.get(), TopAbs_VERTEX, vertexMap);
+  for (int i = 1; i <= vertexMap.Extent(); ++i) {
+    if (i > 1) out << ',';
+    const gp_Pnt point = BRep_Tool::Pnt(TopoDS::Vertex(vertexMap(i)));
+    out << "{\"index\":" << i << ",\"position\":";
+    putPoint(out, point);
+    out << '}';
   }
   out << "]}";
   return out.str();

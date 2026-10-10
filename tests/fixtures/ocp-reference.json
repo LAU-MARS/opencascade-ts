@@ -1,0 +1,526 @@
+{
+  "generator": "etc/reference/ocp-oracle.py",
+  "ocpVersion": "7.7.2.1",
+  "generatedAt": "2026-10-10T04:08:01+00:00",
+  "cases": [
+    {
+      "name": "box_10_20_3",
+      "volume": 599.9999999999999,
+      "digits": 6,
+      "area": 580.0,
+      "solids": 1,
+      "shells": 1,
+      "faces": 6,
+      "edges": 12,
+      "vertices": 8,
+      "bboxMin": [
+        -1e-07,
+        -1e-07,
+        -1e-07
+      ],
+      "bboxMax": [
+        10.0000001,
+        20.0000001,
+        3.0000001
+      ]
+    },
+    {
+      "name": "cylinder_r5_h10",
+      "volume": 785.3981633974482,
+      "digits": 6,
+      "area": 471.238898038469,
+      "solids": 1,
+      "shells": 1,
+      "faces": 3,
+      "edges": 3,
+      "vertices": 2,
+      "bboxMin": [
+        -5.0000001,
+        -5.0000001,
+        -1e-07
+      ],
+      "bboxMax": [
+        5.0000001,
+        5.0000001,
+        10.0000001
+      ]
+    },
+    {
+      "name": "sphere_r10",
+      "volume": 4188.790204786392,
+      "digits": 6,
+      "area": 1256.6370614359173,
+      "solids": 1,
+      "shells": 1,
+      "faces": 1,
+      "edges": 3,
+      "vertices": 2
+    },
+    {
+      "name": "torus_20_5",
+      "volume": 9869.604401089357,
+      "digits": 6,
+      "area": 3947.841760435744,
+      "solids": 1,
+      "shells": 1,
+      "faces": 1,
+      "edges": 2,
+      "vertices": 1
+    },
+    {
+      "name": "cut_box_cylinder",
+      "volume": 874.336293856408,
+      "digits": 6,
+      "area": 700.5309649148733,
+      "solids": 1,
+      "shells": 1,
+      "faces": 7,
+      "edges": 15,
+      "vertices": 10
+    },
+    {
+      "name": "fuse_disjoint",
+      "volume": 1999.999999999999,
+      "digits": 6,
+      "area": 1199.9999999999998,
+      "solids": 2,
+      "shells": 2,
+      "faces": 12,
+      "edges": 24,
+      "vertices": 16
+    },
+    {
+      "name": "common_overlap",
+      "volume": 499.9999999999999,
+      "digits": 6,
+      "area": 399.99999999999994,
+      "solids": 1,
+      "shells": 1,
+      "faces": 6,
+      "edges": 12,
+      "vertices": 8
+    },
+    {
+      "name": "shell_open_top",
+      "volume": 1952.0000000000002,
+      "digits": 6,
+      "area": 2112.0,
+      "solids": 1,
+      "shells": 1,
+      "faces": 11,
+      "edges": 24,
+      "vertices": 16,
+      "bboxMin": [
+        -1e-07,
+        -1e-07,
+        -1e-07
+      ],
+      "bboxMax": [
+        20.0000001,
+        20.0000001,
+        10.0000001
+      ]
+    },
+    {
+      "name": "shell_sealed",
+      "volume": 2463.999999999999,
+      "digits": 6,
+      "area": 2496.0,
+      "solids": 1,
+      "shells": 2,
+      "faces": 12,
+      "edges": 24,
+      "vertices": 16
+    },
+    {
+      "name": "draft_symmetric",
+      "volume": 21295.466838573473,
+      "digits": 6,
+      "area": 5017.162468171797,
+      "solids": 1,
+      "shells": 1,
+      "faces": 6,
+      "edges": 12,
+      "vertices": 8
+    },
+    {
+      "name": "draft_floor_neutral",
+      "volume": 7549.169283447399,
+      "digits": 6,
+      "area": 2676.8394799183566,
+      "solids": 1,
+      "shells": 1,
+      "faces": 6,
+      "edges": 12,
+      "vertices": 8,
+      "bboxMin": [
+        -1e-07,
+        -1e-07,
+        -1.0000000088817842e-07
+      ],
+      "bboxMax": [
+        20.000000100000005,
+        20.000000100000005,
+        50.00000010000001
+      ]
+    },
+    {
+      "name": "fillet_all_r1",
+      "volume": 975.5870138909415,
+      "digits": 6,
+      "area": 547.3628179866694,
+      "solids": 1,
+      "shells": 1,
+      "faces": 26,
+      "edges": 56,
+      "vertices": 24
+    },
+    {
+      "name": "fillet_vertical_r1",
+      "volume": 991.4159265358978,
+      "digits": 6,
+      "area": 581.1150383789754,
+      "solids": 1,
+      "shells": 1,
+      "faces": 10,
+      "edges": 24,
+      "vertices": 16
+    },
+    {
+      "name": "chamfer_all_d1",
+      "volume": 945.333333333333,
+      "digits": 6,
+      "area": 526.6927052180923,
+      "solids": 1,
+      "shells": 1,
+      "faces": 26,
+      "edges": 48,
+      "vertices": 24
+    },
+    {
+      "name": "chamfer_top_d1",
+      "volume": 981.3333333333335,
+      "digits": 6,
+      "area": 574.9116882454314,
+      "solids": 1,
+      "shells": 1,
+      "faces": 10,
+      "edges": 20,
+      "vertices": 12
+    },
+    {
+      "name": "variable_fillet_equal_radii",
+      "volume": 997.8539816339743,
+      "digits": 6,
+      "area": 595.2787595947437,
+      "solids": 1,
+      "shells": 1,
+      "faces": 7,
+      "edges": 15,
+      "vertices": 10
+    },
+    {
+      "name": "extrude_circle_solid",
+      "volume": 785.3981633974482,
+      "digits": 6,
+      "area": 471.23889803846896,
+      "solids": 1,
+      "shells": 1,
+      "faces": 3,
+      "edges": 3,
+      "vertices": 2
+    },
+    {
+      "name": "extrude_polygon_solid",
+      "volume": 499.9999999999999,
+      "digits": 6,
+      "area": 399.99999999999994,
+      "solids": 1,
+      "shells": 1,
+      "faces": 6,
+      "edges": 12,
+      "vertices": 8,
+      "bboxMin": [
+        -1.0000000000000002e-07,
+        -1.0000000000000002e-07,
+        -1.0000000000000002e-07
+      ],
+      "bboxMax": [
+        10.0000001,
+        10.0000001,
+        5.0000001
+      ]
+    },
+    {
+      "name": "extrude_wire_shell",
+      "volume": -523.5987755982989,
+      "digits": 6,
+      "area": 314.1592653589793,
+      "solids": 0,
+      "shells": 1,
+      "faces": 1,
+      "edges": 3,
+      "vertices": 2
+    },
+    {
+      "name": "revolve_full_torus",
+      "volume": 1579.1367041742976,
+      "digits": 6,
+      "area": 1579.1367041742972,
+      "solids": 1,
+      "shells": 1,
+      "faces": 1,
+      "edges": 2,
+      "vertices": 1
+    },
+    {
+      "name": "revolve_half_torus",
+      "volume": 789.5683520871486,
+      "digits": 6,
+      "area": 814.7010933158668,
+      "solids": 1,
+      "shells": 1,
+      "faces": 3,
+      "edges": 3,
+      "vertices": 2
+    },
+    {
+      "name": "loft_ruled_frustum",
+      "volume": 3665.1914291880917,
+      "digits": 6,
+      "area": 1364.1829574548635,
+      "solids": 1,
+      "shells": 1,
+      "faces": 3,
+      "edges": 3,
+      "vertices": 2
+    },
+    {
+      "name": "sweep_straight_pipe",
+      "volume": 565.4866776461628,
+      "digits": 6,
+      "area": 433.53978619539146,
+      "solids": 1,
+      "shells": 1,
+      "faces": 3,
+      "edges": 3,
+      "vertices": 2
+    },
+    {
+      "name": "sweep_ring_torus",
+      "volume": 1579.1367041742974,
+      "digits": 6,
+      "area": 1579.1367041742976,
+      "solids": 1,
+      "shells": 1,
+      "faces": 1,
+      "edges": 2,
+      "vertices": 1
+    },
+    {
+      "name": "split_box_blade",
+      "volume": 999.9999999999998,
+      "digits": 6,
+      "area": 1000.0,
+      "solids": 3,
+      "shells": 3,
+      "faces": 16,
+      "edges": 28,
+      "vertices": 16
+    },
+    {
+      "name": "offset_box_out",
+      "volume": 1728.0,
+      "digits": 6,
+      "area": 864.0,
+      "solids": 1,
+      "shells": 1,
+      "faces": 6,
+      "edges": 12,
+      "vertices": 8,
+      "bboxMin": [
+        -1.0000001,
+        -1.0000001,
+        -1.0000001
+      ],
+      "bboxMax": [
+        11.0000001,
+        11.0000001,
+        11.0000001
+      ]
+    },
+    {
+      "name": "offset_box_in",
+      "volume": 511.9999999999999,
+      "digits": 6,
+      "area": 384.0,
+      "solids": 1,
+      "shells": 1,
+      "faces": 6,
+      "edges": 12,
+      "vertices": 8
+    },
+    {
+      "name": "offset_sphere_plus2",
+      "volume": 7238.2294738708815,
+      "digits": 6,
+      "area": 1809.5573684677208,
+      "solids": 1,
+      "shells": 1,
+      "faces": 1,
+      "edges": 3,
+      "vertices": 2
+    },
+    {
+      "name": "annulus_extrude",
+      "volume": 1319.468914507713,
+      "digits": 6,
+      "area": 967.6105373056562,
+      "solids": 1,
+      "shells": 1,
+      "faces": 4,
+      "edges": 6,
+      "vertices": 4
+    },
+    {
+      "name": "extrude_ellipse_solid",
+      "volume": 628.3185307179588,
+      "digits": 6,
+      "area": 481.4888199559276,
+      "solids": 1,
+      "shells": 1,
+      "faces": 3,
+      "edges": 3,
+      "vertices": 2,
+      "bboxMin": [
+        -10.0000001,
+        -4.0000001,
+        -1e-07
+      ],
+      "bboxMax": [
+        10.0000001,
+        4.0000001,
+        5.0000001
+      ]
+    },
+    {
+      "name": "extrude_slot",
+      "volume": 2785.398163397448,
+      "digits": 6,
+      "area": 1271.238898038469,
+      "solids": 1,
+      "shells": 1,
+      "faces": 6,
+      "edges": 12,
+      "vertices": 8,
+      "bboxMin": [
+        -5.0000001,
+        -5.0000001,
+        -1.0000000045924255e-07
+      ],
+      "bboxMax": [
+        25.0000001,
+        5.0000001,
+        10.000000100000001
+      ]
+    },
+    {
+      "name": "extrude_pie_sector",
+      "volume": 39.269908169872416,
+      "digits": 6,
+      "area": 74.97787143782138,
+      "solids": 1,
+      "shells": 1,
+      "faces": 5,
+      "edges": 9,
+      "vertices": 6
+    },
+    {
+      "name": "rectangular_pattern_3x2",
+      "volume": 6.0,
+      "digits": 6,
+      "area": 36.0,
+      "solids": 6,
+      "shells": 6,
+      "faces": 36,
+      "edges": 72,
+      "vertices": 48,
+      "bboxMin": [
+        -1e-07,
+        -1e-07,
+        -1e-07
+      ],
+      "bboxMax": [
+        5.0000001,
+        4.0000001,
+        1.0000001
+      ]
+    },
+    {
+      "name": "circular_pattern_4",
+      "volume": 3.999999999999999,
+      "digits": 6,
+      "area": 24.0,
+      "solids": 4,
+      "shells": 4,
+      "faces": 24,
+      "edges": 48,
+      "vertices": 32,
+      "bboxMin": [
+        -2.0000001,
+        -2.0000001,
+        -1e-07
+      ],
+      "bboxMax": [
+        2.0000001,
+        2.0000001,
+        1.0000001
+      ]
+    },
+    {
+      "name": "mirror_plane",
+      "volume": 48.0,
+      "digits": 6,
+      "area": 88.0,
+      "solids": 1,
+      "shells": 1,
+      "faces": 6,
+      "edges": 12,
+      "vertices": 8,
+      "bboxMin": [
+        0.9999999,
+        -1e-07,
+        -6.0000001
+      ],
+      "bboxMax": [
+        3.0000001,
+        4.0000001,
+        1e-07
+      ]
+    },
+    {
+      "name": "centroid_box",
+      "centroid": [
+        5.0,
+        5.0,
+        5.0
+      ]
+    },
+    {
+      "name": "centroid_plate_with_bore",
+      "centroid": [
+        10.0,
+        10.0,
+        2.5
+      ]
+    },
+    {
+      "name": "centroid_circle_wire",
+      "centroid": [
+        3.000000000000023,
+        4.0,
+        0.0
+      ]
+    }
+  ]
+}

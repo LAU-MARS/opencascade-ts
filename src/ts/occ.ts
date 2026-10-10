@@ -21,10 +21,12 @@ import {
 } from "./interrogate.js";
 import type {
   ArcOptions,
+  BooleanOptions,
   BoundingBox,
   BsplineOptions,
   BsplineSurfaceInfo,
   BsplineSurfaceOptions,
+  ChamferOptions,
   CircleOptions,
   CircularPatternOptions,
   DraftOptions,
@@ -79,7 +81,16 @@ export interface WriteDocumentNode {
   transform?: readonly number[];
 }
 
-export type OccCreateOptions = WasmLocationOptions;
+export type OccCreateOptions = WasmLocationOptions & {
+  /**
+   * Re-enable OCCT's console diagnostics (STEP/IGES transfer banners). The
+   * kernel is silent by default: OCCT prints those to stdout, which corrupts
+   * anything treating stdout as structured output (MCP stdio transport,
+   * captured agent logs). Verbose output also goes to stdout — opt in only
+   * for interactive debugging. Default `false`.
+   */
+  verbose?: boolean;
+};
 
 /** A shape owned by a session; call `dispose()` (or `session.dispose()`) to free it. */
 export class OccShape {
@@ -154,6 +165,8 @@ export class OccSession {
   readonly module: OccWasmModule;
 
   #owned = new Set<WasmShape>();
+  // Flips the stdout gate installed in create() — see #installStdoutGate.
+  #setStdoutGate: (open: boolean) => void = () => {};
 
   private constructor(module: OccWasmModule) {
     this.module = module;
@@ -161,8 +174,35 @@ export class OccSession {
 
   /** Load the wasm kernel (Node or browser; see loader.ts for search paths). */
   static async create(options: OccCreateOptions = {}): Promise<OccSession> {
-    const module = await loadOccModule(options);
-    return new OccSession(module);
+    let stdoutOpen = false;
+    // Belt-and-braces stdout gate. Mutating the OCCT default messenger
+    // silences the STEP/IGES banners, but a few legacy OCCT paths print
+    // straight to std::cout (the BRep reader's version warning) — Emscripten
+    // funnels those through Module.print, so everything passes this gate.
+    // It opens only in verbose mode: stdout is a protocol, not a log.
+    const module = await loadOccModule({
+      ...options,
+      print: (text: string) => {
+        if (stdoutOpen) console.log(text);
+      },
+    });
+    const session = new OccSession(module);
+    session.#setStdoutGate = (open: boolean) => {
+      stdoutOpen = open;
+    };
+    if (options.verbose) session.setVerbose(true);
+    return session;
+  }
+
+  /**
+   * Toggle OCCT console diagnostics at runtime (the `verbose` create option,
+   * mutable). Restores the STEP/IGES transfer banners and legacy kernel
+   * prints on stdout — keep it off whenever stdout is captured as structured
+   * output (MCP stdio transport, agent logs).
+   */
+  setVerbose(verbose: boolean): void {
+    this.#setStdoutGate(verbose);
+    this.module.setVerbose(verbose);
   }
 
   /** OCCT version string, e.g. `"7.9.3"`. */
@@ -515,16 +555,42 @@ export class OccSession {
 
   // --- booleans ----------------------------------------------------------------
 
-  fuse(a: OccShape, b: OccShape): OccShape {
-    return this.adopt(this.module.fuse(a.raw, b.raw));
+  /**
+   * Union of two shapes. The result is cleaned by default: coplanar faces
+   * merge and collinear edges join, so `faces(">Z")`-style selection sees the
+   * fused part, not the fragments ({@link BooleanOptions}.clean controls it).
+   */
+  fuse(a: OccShape, b: OccShape, options: BooleanOptions = {}): OccShape {
+    return this.adopt(this.module.fuse(a.raw, b.raw, options.clean ?? true));
   }
 
-  cut(a: OccShape, b: OccShape): OccShape {
-    return this.adopt(this.module.cut(a.raw, b.raw));
+  /** Difference `a − b`; cleaned like `fuse`. */
+  cut(a: OccShape, b: OccShape, options: BooleanOptions = {}): OccShape {
+    return this.adopt(this.module.cut(a.raw, b.raw, options.clean ?? true));
   }
 
-  common(a: OccShape, b: OccShape): OccShape {
-    return this.adopt(this.module.common(a.raw, b.raw));
+  /** Intersection `a ∩ b`; cleaned like `fuse`. */
+  common(a: OccShape, b: OccShape, options: BooleanOptions = {}): OccShape {
+    return this.adopt(this.module.common(a.raw, b.raw, options.clean ?? true));
+  }
+
+  /**
+   * Merge same-domain faces and collinear edges of any shape — the same pass
+   * booleans run by default, applied on demand (sloppy imports, `split`
+   * fragments, tessellation-heavy patterns).
+   */
+  unify(shape: OccShape): OccShape {
+    return this.adopt(this.module.unify(shape.raw));
+  }
+
+  /**
+   * A compound holding several shapes side by side — the multi-body
+   * container for disjoint parts that must not fuse. `describe`,
+   * `tessellate` and the measurements walk the whole tree.
+   */
+  compound(shapes: readonly OccShape[]): OccShape {
+    if (shapes.length === 0) throw new Error("compound: needs at least one shape");
+    return this.adopt(this.withShapes(shapes, (list) => this.module.compound(list)));
   }
 
   // --- transforms ----------------------------------------------------------------
@@ -713,19 +779,32 @@ export class OccSession {
     );
   }
 
-  /** Bevel edges by `distance` (equal on both sides). Same edge selection as `fillet`. */
-  chamfer(shape: OccShape, distance: number, options: EdgeBlendOptions = {}): OccShape {
+  /**
+   * Bevel edges by `distance` (equal on both sides). Same edge selection as
+   * `fillet`; `length2` gives an asymmetric chamfer — `distance` is measured
+   * on the first face adjacent to the edge (as ordered by `describe`),
+   * `length2` on the other one.
+   */
+  chamfer(shape: OccShape, distance: number, options: ChamferOptions = {}): OccShape {
     if (!(distance > 0)) {
       throw new Error("chamfer: distance must be a positive number");
+    }
+    const length2 = options.length2;
+    if (length2 !== undefined && !(length2 > 0)) {
+      throw new Error("chamfer: length2 must be a positive number");
     }
     const { indices, handles } = this.edgeSelection("chamfer", shape, options.edges ?? []);
     if (handles.length > 0) {
       return this.adopt(
-        this.withShapes(handles, (list) => this.module.chamferEdges(shape.raw, distance, list)),
+        this.withShapes(handles, (list) =>
+          this.module.chamferEdges(shape.raw, distance, length2 ?? NaN, list),
+        ),
       );
     }
     return this.adopt(
-      this.withInts(indices, (ptr, count) => this.module.chamfer(shape.raw, distance, ptr, count)),
+      this.withInts(indices, (ptr, count) =>
+        this.module.chamfer(shape.raw, distance, length2 ?? NaN, ptr, count),
+      ),
     );
   }
 
@@ -828,6 +907,20 @@ export class OccSession {
   /** Every compound of `shape` as a handle — `subShapes(shape, "Compound")`. */
   compounds(shape: OccShape): OccShape[] {
     return this.subShapes(shape, "Compound");
+  }
+
+  /**
+   * The boundary wires of a Face: `outer` is the containing loop, `inners`
+   * are the holes inside it (sketch regions to avoid — or to pocket). The
+   * face comes from `faces(shape)`, a boolean result or `makeFace`.
+   */
+  faceWires(face: OccShape): { outer: OccShape; inners: OccShape[] } {
+    if (face.shapeType() !== "Face") {
+      throw new Error('faceWires: expected a Face — get one via faces(shape) or subShapes(shape, "Face")');
+    }
+    const outer = this.adopt(this.module.outerWire(face.raw));
+    const inners = this.wires(face).filter((wire) => !wire.isSame(outer));
+    return { outer, inners };
   }
 
   // --- sketch → solid: extrude / revolve / loft / sweep --------------------------

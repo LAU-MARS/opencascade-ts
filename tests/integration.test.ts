@@ -1,4 +1,4 @@
-import { beforeAll, afterAll, describe, expect, it } from "vitest";
+import { beforeAll, afterAll, describe, expect, it, vi } from "vitest";
 
 import { OccSession } from "../src/ts/occ.js";
 import { computeVertexNormals } from "../src/ts/mesh-utils.js";
@@ -13,13 +13,19 @@ function expectVec3Close(actual: readonly number[], expected: readonly number[])
 
 describeWasm("opencascade-ts kernel (wasm integration)", () => {
   let occ: OccSession;
+  // Emscripten binds console.log while the factory initializes the module,
+  // so the spy must be in place before create() — and it doubles as a
+  // suite-wide guard: nothing below may write to stdout.
+  let stdout: ReturnType<typeof vi.spyOn>;
 
   beforeAll(async () => {
+    stdout = vi.spyOn(console, "log").mockImplementation(() => {});
     occ = await OccSession.create();
   });
 
   afterAll(() => {
     occ?.dispose();
+    stdout?.mockRestore();
   });
 
   it("reports a modern OCCT version", () => {
@@ -256,7 +262,7 @@ describeWasm("opencascade-ts kernel (wasm integration)", () => {
     // a cylinder's top circle, picked by handle and rounded
     const cyl = occ.makeCylinder(5, 10);
     const rimEdges = occ.describe(cyl).edges
-      .filter((e) => e.curve === "circle" && Math.abs(e.center[2] - 10) < 1e-6);
+      .filter((e) => e.curve === "circle" && Math.abs(e.axisPoint[2] - 10) < 1e-6);
     expect(rimEdges).toHaveLength(1);
     const rim = rimEdges.map((e) => occ.edges(cyl)[e.index - 1]!);
     const rimFillet = occ.fillet(cyl, 1, { edges: rim });
@@ -294,6 +300,32 @@ describeWasm("opencascade-ts kernel (wasm integration)", () => {
     expect(() =>
       occ.fillet(box, 1, { edges: [1, vertical[0]!] }),
     ).toThrow(/all 1-based indices or all shape handles/);
+  });
+
+  it("raw generated bindings answer like the curated API", () => {
+    // The raw escape hatch (tools/codegen): verbatim OCCT classes, manual
+    // delete() discipline, same guarded() error contract.
+    const raw = occ.module;
+    const maker = new raw.BRepPrimAPI_MakeBox(3, 4, 5);
+    try {
+      const shape = maker.Shape();
+      try {
+        // enums cross as ints; TopAbs_ShapeEnum: COMPOUND=0 … SOLID=2
+        expect(shape.ShapeType()).toBe(2);
+        const props = new raw.GProp_GProps();
+        try {
+          raw.BRepGProp.VolumeProperties(shape, props);
+          expect(props.Mass()).toBeCloseTo(60, 6);
+        } finally {
+          props.delete();
+        }
+        expect(occ.makeBox(3, 4, 5).volume()).toBeCloseTo(60, 6);
+      } finally {
+        shape.delete();
+      }
+    } finally {
+      maker.delete();
+    }
   });
 
   it("extrudes a circle into a cylinder and a polygon into a box", () => {
@@ -379,7 +411,7 @@ describeWasm("opencascade-ts kernel (wasm integration)", () => {
     const arcEdge = occ.describe(quarter).edges[0]!;
     if (arcEdge.curve !== "circle") throw new Error("expected a circle edge");
     expect(arcEdge.length).toBeCloseTo((2 * Math.PI * 5) / 4, 4);
-    expectVec3Close(arcEdge.center, [0, 0, 0]);
+    expectVec3Close(arcEdge.axisPoint, [0, 0, 0]);
 
     const ellipse = occ.makeEllipse(10, 4);
     const ellipseEdge = occ.describe(ellipse).edges[0]!;
@@ -756,7 +788,7 @@ describeWasm("opencascade-ts kernel (wasm integration)", () => {
     const full = circles.filter((c) => c.closed);
     expect(full.every((c) => Math.abs(c.radius - 4) < 1e-9)).toBe(true);
     for (const c of full) {
-      expect(Math.hypot(c.center[0] - 10, c.center[1] - 10)).toBeLessThan(1e-6);
+      expect(Math.hypot(c.axisPoint[0] - 10, c.axisPoint[1] - 10)).toBeLessThan(1e-6);
       expect(c.length).toBeCloseTo(2 * Math.PI * 4, 4);
     }
   });
@@ -935,8 +967,8 @@ describeWasm("opencascade-ts kernel (wasm integration)", () => {
     const helix = occ.makeHelix(5, 2, 2); // one full turn: radius 5, pitch 2
     expect(helix.shapeType()).toBe("Wire");
     expect(helix.count("Edge")).toBe(1);
-    // the helix walks on the r=5 cylinder — B-spline bounds pad by its
-    // control points, so allow slack on x/y, none on the exact z range
+    // the helix walks on the r=5 cylinder — bounds are optimal (geometry, not
+    // control points) but allow a hair of slack on x/y, none on the exact z range
     const bounds = helix.bounds();
     for (const value of [bounds.min[0], bounds.min[1], bounds.max[0], bounds.max[1]]) {
       expect(Math.abs(Math.abs(value) - 5)).toBeLessThan(0.3);
@@ -967,7 +999,8 @@ describeWasm("opencascade-ts kernel (wasm integration)", () => {
     expect(torus.shapeType()).toBe("Solid");
     expect(torus.isValid()).toBe(true);
     expect(torus.volume()).toBeCloseTo(2 * Math.PI * Math.PI * 4, 1);
-    // the swept surface is a B-spline; its bounds pad by control points
+    // the swept surface is a B-spline — optimal bounds hug the geometry,
+    // with a little slack for the surface's internal tolerance
     const bounds = torus.bounds();
     for (const value of [bounds.min[0], bounds.min[1], bounds.max[0], bounds.max[1]]) {
       expect(Math.abs(Math.abs(value) - 5)).toBeLessThan(0.5);
@@ -1086,5 +1119,229 @@ describeWasm("opencascade-ts kernel (wasm integration)", () => {
     ).toThrow(/pole grid/);
     expect(() => occ.describeSurface(occ.makeBox(1, 1, 1))).toThrow(/Face/);
     expect(() => occ.describeSurface(occ.makeFace(occ.makeCircle(1)))).toThrow(/not a B-spline/);
+  });
+
+  // --- cadorange contract wave (P0 + P1 gaps) -----------------------------------
+
+  it("keeps stdout silent during STEP export, verbose re-enables diagnostics", () => {
+    const gasket = occ.cut(
+      occ.makeBox(20, 20, 5),
+      occ.makeCylinder(4, 20, { origin: [10, 10, -5] }),
+    );
+    occ.writeStep(gasket);
+    // OCCT used to print "Statistics on Transfer" + "Write Done" banners
+    // here — stdout is a protocol (MCP stdio transport), not a log.
+    expect(stdout).not.toHaveBeenCalled();
+
+    occ.setVerbose(true);
+    try {
+      occ.writeStep(gasket);
+      expect(
+        stdout.mock.calls.some((args) => /Statistics on Transfer/.test(args.join(" "))),
+      ).toBe(true);
+    } finally {
+      occ.setVerbose(false);
+    }
+    stdout.mockClear();
+    occ.writeStep(gasket);
+    expect(stdout).not.toHaveBeenCalled();
+  });
+
+  it("describes face and edge centroids (build123d Shape.center() semantics)", () => {
+    const box = occ.makeBox(10, 20, 3);
+    const d = occ.describe(box);
+
+    // every face and edge carries the integral centroid, not the surface's
+    // parameter origin. The top face (highest centroid) is centered at
+    // (5, 10, 3) even though its plane's parameter origin sits in a corner —
+    // that gap is why `center` exists. (The plane `normal` field is the
+    // surface axis direction, which need not match the face's outward
+    // orientation, so pick by centroid, not by normal.)
+    const top = d.faces.reduce((a, b) => (a.center[2] >= b.center[2] ? a : b));
+    expectVec3Close(top.center, [5, 10, 3]);
+
+    for (const face of d.faces) expect(face.center).toBeDefined();
+    for (const edge of d.edges) expect(edge.center).toBeDefined();
+
+    // a line edge's centroid is its midpoint
+    const anEdge = d.edges.find((e) => e.curve === "line");
+    if (!anEdge || anEdge.curve !== "line") throw new Error("expected a line edge");
+    expectVec3Close(anEdge.center, [
+      (anEdge.start[0] + anEdge.end[0]) / 2,
+      (anEdge.start[1] + anEdge.end[1]) / 2,
+      (anEdge.start[2] + anEdge.end[2]) / 2,
+    ]);
+
+    // a quarter arc's centroid sits on the bisector at 2R·sin(θ/2)/θ from the
+    // center — NOT at the circle center (that is axisPoint now)
+    const arc = occ.describe(occ.makeArc(5, { startDegrees: 0, endDegrees: 90 })).edges[0]!;
+    if (arc.curve !== "circle") throw new Error("expected a circle edge");
+    const bisector = (5 * Math.sin(Math.PI / 4)) / (Math.PI / 4) / Math.SQRT2;
+    expectVec3Close(arc.center, [bisector, bisector, 0]);
+    expectVec3Close(arc.axisPoint, [0, 0, 0]);
+
+    // sphere/torus faces renamed the same way: centroid under center,
+    // surface placement under axisPoint
+    const torusFace = occ.describe(occ.makeTorus(20, 5)).faces[0]!;
+    if (torusFace.surface !== "torus") throw new Error("expected a torus face");
+    expectVec3Close(torusFace.center, [0, 0, 0]);
+    expectVec3Close(torusFace.axisPoint, [0, 0, 0]);
+  });
+
+  it("describes vertices in subShapes order", () => {
+    const box = occ.makeBox(10, 20, 3);
+    const d = occ.describe(box);
+    expect(d.vertices).toHaveLength(8);
+    expect(d.vertices.map((v) => v.index)).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
+    const positions = d.vertices.map((v) => v.position.join(",")).sort();
+    for (const corner of ["0,0,0", "10,0,0", "0,20,0", "0,0,3", "10,20,3", "0,20,3", "10,0,3", "10,20,0"]) {
+      expect(positions).toContain(corner);
+    }
+    // vertex i is subShapes(shape, "Vertex")[i - 1]
+    const handles = occ.vertices(box);
+    expect(handles).toHaveLength(d.vertices.length);
+    for (let i = 0; i < handles.length; i++) {
+      expectVec3Close(
+        occ.describe(handles[i]!).vertices[0]!.position,
+        d.vertices[i]!.position,
+      );
+    }
+
+    // an open arc carries exactly its two endpoints
+    const arc = occ.describe(occ.makeArc(5, { startDegrees: 0, endDegrees: 90 }));
+    expect(arc.vertices).toHaveLength(2);
+  });
+
+  it("cleans boolean results by default and keeps raw topology on demand", () => {
+    // two overlapping boxes fuse into one clean box: 6 faces, 12 edges
+    // (the raw BOP result carries the imprinted intersection edges)
+    const a = occ.makeBox(10, 10, 10);
+    const b = occ.translate(occ.makeBox(10, 10, 10), [5, 0, 0]);
+    const fused = occ.fuse(a, b);
+    expect(fused.isValid()).toBe(true);
+    expect(fused.volume()).toBeCloseTo(1500, 1);
+    expect(fused.count("Face")).toBe(6);
+    expect(fused.count("Edge")).toBe(12);
+
+    const raw = occ.fuse(a, b, { clean: false });
+    expect(raw.volume()).toBeCloseTo(1500, 1);
+    expect(raw.count("Face")).toBeGreaterThan(6);
+
+    // the cleaned result is what describe/subShapes index into
+    expect(occ.describe(fused).faces).toHaveLength(6);
+    expect(occ.faces(fused)).toHaveLength(6);
+
+    // cut keeps parity with build123d on a plate-with-bore: 7 faces, 15 edges
+    const plate = occ.cut(
+      occ.makeBox(20, 20, 5),
+      occ.makeCylinder(4, 20, { origin: [10, 10, -5] }),
+    );
+    expect(plate.count("Face")).toBe(7);
+    expect(plate.count("Edge")).toBe(15);
+  });
+
+  it("unifies same-domain faces on demand", () => {
+    const a = occ.makeBox(10, 10, 10);
+    const b = occ.translate(occ.makeBox(10, 10, 10), [5, 0, 0]);
+    const raw = occ.fuse(a, b, { clean: false });
+    expect(raw.count("Face")).toBeGreaterThan(6);
+    const cleaned = occ.unify(raw);
+    expect(cleaned.isValid()).toBe(true);
+    expect(cleaned.volume()).toBeCloseTo(raw.volume(), 6);
+    expect(cleaned.count("Face")).toBe(6);
+    expect(cleaned.count("Edge")).toBe(12);
+  });
+
+  it("chamfers asymmetric legs (length + length2)", () => {
+    const box = occ.makeBox(10, 10, 10);
+    const vertical = occ.describe(box).edges
+      .filter((e) => e.curve === "line" && Math.abs(e.direction[2]) > 0.999)
+      .map((e) => e.index);
+
+    // one vertical edge, legs 2 × 3: the removed wedge is d1·d2/2 × height
+    const part = occ.chamfer(box, 2, { length2: 3, edges: [vertical[0]!] });
+    expect(part.isValid()).toBe(true);
+    expect(part.volume()).toBeCloseTo(1000 - (2 * 3 / 2) * 10, 1);
+    expect(part.count("Face")).toBe(7);
+
+    // by handle, same result
+    const box2 = occ.makeBox(10, 10, 10);
+    const handle = occ.edges(box2)[vertical[0]! - 1]!;
+    const byHandle = occ.chamfer(box2, 2, { length2: 3, edges: [handle] });
+    expect(byHandle.volume()).toBeCloseTo(part.volume(), 6);
+
+    // asymmetric > symmetric wedge of the same max leg: 2×3 removes more
+    // than 2×2 but less than 3×3
+    const small = occ.chamfer(occ.makeBox(10, 10, 10), 2, { edges: [vertical[0]!] }).volume();
+    const big = occ.chamfer(occ.makeBox(10, 10, 10), 3, { edges: [vertical[0]!] }).volume();
+    expect(part.volume()).toBeLessThan(small);
+    expect(part.volume()).toBeGreaterThan(big);
+
+    expect(() => occ.chamfer(box, 2, { length2: -1 })).toThrow(/length2 must be a positive/);
+  });
+
+  it("builds compounds of independent bodies", () => {
+    const left = occ.makeBox(10, 10, 10);
+    const right = occ.translate(occ.makeBox(5, 5, 5), [30, 0, 0]);
+    const both = occ.compound([left, right]);
+    expect(both.shapeType()).toBe("Compound");
+    expect(both.count("Solid")).toBe(2);
+    expect(both.volume()).toBeCloseTo(1125, 6);
+    expectVec3Close(both.bounds().min, [0, 0, 0]);
+    expectVec3Close(both.bounds().max, [35, 10, 10]);
+    // describe and subShapes walk the whole tree (6 + 6 faces)
+    expect(occ.describe(both).faces).toHaveLength(12);
+    expect(occ.faces(both)).toHaveLength(12);
+    expect(() => occ.compound([])).toThrow(/at least one/);
+  });
+
+  it("separates a face's outer wire from its inner (hole) wires", () => {
+    // any box face: exactly one boundary wire, no holes
+    const anyFace = occ.faces(occ.makeBox(10, 10, 10))[0]!;
+    const solidOuter = occ.faceWires(anyFace);
+    expect(solidOuter.outer.shapeType()).toBe("Wire");
+    expect(solidOuter.inners).toHaveLength(0);
+
+    const annulus = occ.makeFace(occ.makeCircle(10), [occ.makeCircle(4)]);
+    const rings = occ.faceWires(annulus);
+    expect(rings.inners).toHaveLength(1);
+    expect(rings.inners[0]!.isSame(rings.outer)).toBe(false);
+    // sketch-on-face wants the inner boundary as the hole to avoid
+    expect(occ.describe(rings.outer).edges[0]!.curve).toBe("circle");
+
+    expect(() => occ.faceWires(occ.makeBox(1, 1, 1))).toThrow(/expected a Face/);
+  });
+
+  it("bounds are optimal — torus reports the true ±(R + r)", () => {
+    const torus = occ.makeTorus(20, 5);
+    const bounds = torus.bounds();
+    // the control-point envelope would say ±27.0598; the geometry says ±25
+    expectVec3Close(bounds.min, [-25, -25, -5]);
+    expectVec3Close(bounds.max, [25, 25, 5]);
+
+    // analytic primitives stay exact
+    const box = occ.makeBox(1, 2, 3);
+    expectVec3Close(box.bounds().min, [0, 0, 0]);
+    expectVec3Close(box.bounds().max, [1, 2, 3]);
+  });
+
+  it("enumerates count / subShapes / describe in the same indexed-map order", () => {
+    // the counting rule (R11): every path enumerates via TopExp::MapShapes
+    // over an indexed map — deduplicated by TShape + location, orientation
+    // insensitive — so indices are interchangeable across the three.
+    const part = occ.cut(
+      occ.makeBox(20, 20, 5),
+      occ.makeCylinder(4, 20, { origin: [10, 10, -5] }),
+    );
+    for (const type of ["Face", "Edge", "Vertex"] as const) {
+      expect(part.count(type)).toBe(occ.subShapes(part, type).length);
+    }
+    expect(part.count("Face")).toBe(occ.describe(part).faces.length);
+    // describe skips degenerated edges (sphere poles) from its list but keeps
+    // their index space — count("Edge") is the index range, the list can be
+    // shorter; vertices have no degenerate cases and match exactly
+    expect(part.count("Vertex")).toBe(occ.describe(part).vertices.length);
+    const sphere = occ.describe(occ.makeSphere(5));
+    expect(sphere.edges.every((e) => e.curve === "circle")).toBe(true);
   });
 });

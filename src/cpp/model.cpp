@@ -50,6 +50,7 @@
 #include <GeomAPI_PointsToBSplineSurface.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <ShapeFix_Shape.hxx>
+#include <ShapeUpgrade_UnifySameDomain.hxx>
 #include <Standard_Version.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -65,6 +66,7 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Wire.hxx>
 #include <gp_Circ.hxx>
+#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <gp_Ax1.hxx>
@@ -112,7 +114,11 @@ double OccShape::area() const {
 
 std::vector<double> OccShape::bounds() const {
   Bnd_Box box;
-  BRepBndLib::Add(myShape, box);
+  // AddOptimal measures the underlying geometry (Add would pad by the
+  // control-point envelope: a torus (20, 5) would report ±27.06, not ±25).
+  // Triangulations are ignored so bounds stay deterministic regardless of
+  // tessellation history.
+  BRepBndLib::AddOptimal(myShape, box, false, false);
   std::vector<double> out(6, 0.0);
   if (!box.IsVoid()) {
     box.Get(out[0], out[1], out[2], out[3], out[4], out[5]);
@@ -449,7 +455,21 @@ OccShape makeFaceShape(const OccShape& outer, const std::vector<OccShape>& holes
 
 // --- booleans ---------------------------------------------------------------
 
-OccShape booleanOp(int op, const OccShape& a, const OccShape& b) {
+namespace {
+
+// Merge the coplanar faces and collinear edges booleans leave behind —
+// what build123d/CadQuery call "clean". A null result falls back to the raw
+// shape: unification must never lose geometry.
+TopoDS_Shape unifyCleaned(const TopoDS_Shape& shape) {
+  ShapeUpgrade_UnifySameDomain unifier(shape, true, true, false);
+  unifier.Build();
+  const TopoDS_Shape unified = unifier.Shape();
+  return unified.IsNull() ? shape : unified;
+}
+
+} // namespace
+
+OccShape booleanOp(int op, const OccShape& a, const OccShape& b, bool clean) {
   // op: 0 = fuse (union), 1 = cut (difference), 2 = common (intersection)
   TopoDS_Shape result;
   if (op == 0) {
@@ -472,7 +492,36 @@ OccShape booleanOp(int op, const OccShape& a, const OccShape& b) {
     result = algo.Shape();
   }
   if (result.IsNull()) throw std::runtime_error("boolean operation produced an empty result");
+  if (clean) result = unifyCleaned(result);
   return OccShape(result);
+}
+
+OccShape unifySameDomain(const OccShape& shape) {
+  if (shape.get().IsNull()) throw std::runtime_error("unify: null shape");
+  return OccShape(unifyCleaned(shape.get()));
+}
+
+// --- compound ------------------------------------------------------------------
+
+OccShape makeCompoundShape(const std::vector<OccShape>& shapes) {
+  if (shapes.empty()) {
+    throw std::runtime_error("compound: needs at least one shape");
+  }
+  TopoDS_Compound compound;
+  BRep_Builder builder;
+  builder.MakeCompound(compound);
+  for (const OccShape& shape : shapes) {
+    builder.Add(compound, shape.get());
+  }
+  return OccShape(compound);
+}
+
+OccShape outerWireOf(const OccShape& face) {
+  if (face.get().ShapeType() != TopAbs_FACE) {
+    throw std::runtime_error(
+        "faceWires: expected a Face (e.g. from faces(shape) or makeFace)");
+  }
+  return OccShape(BRepTools::OuterWire(TopoDS::Face(face.get())));
 }
 
 // --- transforms -------------------------------------------------------------
@@ -750,11 +799,27 @@ OccShape buildFillet(const TopoDS_Shape& shape, double radius,
   return OccShape(maker.Shape());
 }
 
-OccShape buildChamfer(const TopoDS_Shape& shape, double distance,
+OccShape buildChamfer(const TopoDS_Shape& shape, double distance, double distance2,
                       const std::vector<TopoDS_Edge>& edges) {
   BRepFilletAPI_MakeChamfer maker(shape);
+  // Asymmetric chamfers name the face `distance` is measured on (the other
+  // leg gets distance2). The first adjacent face in indexed-map order plays
+  // that role — deterministic, and it matches describe()'s face numbering.
+  const bool asymmetric = !std::isnan(distance2);
+  TopTools_IndexedDataMapOfShapeListOfShape ancestors;
+  if (asymmetric) {
+    TopExp::MapShapesAndAncestors(shape, TopAbs_EDGE, TopAbs_FACE, ancestors);
+  }
   for (const TopoDS_Edge& edge : edges) {
-    maker.Add(distance, edge);
+    if (!asymmetric) {
+      maker.Add(distance, edge);
+      continue;
+    }
+    const TopTools_ListOfShape& faces = ancestors.FindFromKey(edge);
+    if (faces.IsEmpty()) {
+      throw std::runtime_error("chamfer: edge has no adjacent face to measure the legs on");
+    }
+    maker.Add(distance, distance2, edge, TopoDS::Face(faces.First()));
   }
   maker.Build();
   if (!maker.IsDone() || maker.Shape().IsNull()) {
@@ -769,16 +834,18 @@ OccShape filletShape(const OccShape& shape, double radius, const std::vector<int
   return buildFillet(shape.get(), radius, selectEdges(shape.get(), edgeIndices));
 }
 
-OccShape chamferShape(const OccShape& shape, double distance, const std::vector<int>& edgeIndices) {
-  return buildChamfer(shape.get(), distance, selectEdges(shape.get(), edgeIndices));
+OccShape chamferShape(const OccShape& shape, double distance, double distance2,
+                      const std::vector<int>& edgeIndices) {
+  return buildChamfer(shape.get(), distance, distance2, selectEdges(shape.get(), edgeIndices));
 }
 
 OccShape filletEdges(const OccShape& shape, double radius, const std::vector<OccShape>& edges) {
   return buildFillet(shape.get(), radius, edgesFromHandles(edges));
 }
 
-OccShape chamferEdges(const OccShape& shape, double distance, const std::vector<OccShape>& edges) {
-  return buildChamfer(shape.get(), distance, edgesFromHandles(edges));
+OccShape chamferEdges(const OccShape& shape, double distance, double distance2,
+                      const std::vector<OccShape>& edges) {
+  return buildChamfer(shape.get(), distance, distance2, edgesFromHandles(edges));
 }
 
 namespace {

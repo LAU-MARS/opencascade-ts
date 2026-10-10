@@ -23,6 +23,12 @@ export interface WasmLocationOptions {
   moduleUrl?: string | URL;
   /** URL (browser) or path/URL (Node) of the binary `occtjs.wasm`. */
   wasmUrl?: string | URL;
+  /**
+   * Receives every line the module writes to stdout. `OccSession` installs a
+   * gate here — OCCT has a few legacy direct std::cout writes (e.g. the BRep
+   * reader's version warning) that Message-level muting cannot intercept.
+   */
+  print?: (text: string) => void;
 }
 
 function isNode(): boolean {
@@ -96,7 +102,7 @@ async function loadInNode(options: WasmLocationOptions): Promise<OccWasmModule> 
   }
 
   const wasmBinary = fs.readFileSync(wasmPath);
-  return factory({ wasmBinary });
+  return factory({ wasmBinary, print: options.print });
 }
 
 // --- Browser ------------------------------------------------------------------
@@ -120,5 +126,5 @@ async function loadInBrowser(options: WasmLocationOptions): Promise<OccWasmModul
         `When bundling, copy dist/wasm/* to your public dir or pass explicit { moduleUrl, wasmUrl }.`,
     );
   }
-  return factory({ wasmBinary: await response.arrayBuffer() });
+  return factory({ wasmBinary: await response.arrayBuffer(), print: options.print });
 }
