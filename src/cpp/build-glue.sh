@@ -22,6 +22,11 @@ LINKFLAGS=(
   -sENVIRONMENT=web,node
   -sALLOW_MEMORY_GROWTH=1
   -sMAXIMUM_MEMORY=4GB
+  # OCCT's modeling algorithms recurse deeply; the 64 KB default stack
+  # traps as "memory access out of bounds" (the stack probe hits its guard
+  # page) on deep call chains — e.g. variable-fillet error paths after a
+  # two-radius blend. The stack does NOT grow with ALLOW_MEMORY_GROWTH.
+  -sSTACK_SIZE=1048576
   # TypeScript reads mesh buffers straight out of the wasm heap.
   -sEXPORTED_RUNTIME_METHODS=HEAPU8
   -sEXPORTED_FUNCTIONS=_malloc,_free

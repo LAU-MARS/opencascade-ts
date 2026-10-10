@@ -85,7 +85,31 @@ is documented in `src/ts/loader.ts`.
 | `centroid()` | Center of mass: volume-weighted for solids, else surface/curve-weighted (a circle's is its center). |
 | `isValid()` | `BRepCheck_Analyzer` result. |
 | `count(type)` | Sub-shape count, e.g. `count("Face")`, `count("Edge")`. |
+| `isSame(other)` | Identity test — same underlying sub-shape (how build123d/OCP compare picked edges and faces). |
 | `dispose()` | Free this shape early (otherwise freed by `session.dispose()`). |
+
+## Sub-shape handles — first-class edges & faces
+
+```ts
+const box = occ.makeBox(10, 10, 10);
+const rims = occ.edges(cyl)                       // every edge as a handle
+  .filter((e) => e.shapeType() === "Edge");       // handles ARE shapes
+const part = occ.fillet(box, 1, { edges: verticalHandles });  // pass them back in
+const face = occ.faces(box)[0];                   // describe() works on handles too
+occ.describe(face).faces[0].surface;              // → "plane"
+edges(box)[3]!.isSame(edges(box)[3]!);            // → true
+```
+
+- `subShapes(shape, type)` — handles for one type (`"Vertex"`, `"Edge"`, `"Face"`,
+  `"Wire"`, `"Shell"`, `"Solid"`, `"Compound"`, `"CompSolid"`); convenience:
+  `edges()`, `faces()`, `vertices()`, `wires()`, `shells()`, `solids()`,
+  `compounds()`.
+- Handles order 1:1 with `describe()`'s numbering: `subShapes(shape, "Edge")[i]`
+  **is** edge `i + 1` — indices and handles select the same edge.
+- Handles are real shapes: measure them, transform them, boolean them, feed
+  them to `fillet`/`chamfer`/`variableFillet` (`edges: [handle, …]`,
+  `{ edge: handle, radius }`), or interrogate with `describe`.
+- The session owns every handle — `session.dispose()` frees them all.
 
 ## Shelling & drafting
 
@@ -114,8 +138,9 @@ const beveled = occ.chamfer(part, 1.5, { edges: frontLoop }); // a selected subs
 ```
 
 - `fillet` / `chamfer` blend **all** edges by default — for a box that means
-  12 cylinders + 8 spherical/tetrahedral corners. Pass `edges` (1-based,
-  `describe()`'s `edges[].index`) to blend a loop or a single edge.
+  12 cylinders + 8 spherical/tetrahedral corners. Pass `edges` (1-based
+  `describe()` indices **or** handles from `occ.edges(shape)`) to blend a loop
+  or a single edge; don't mix the two kinds in one call.
 - Edge indices line up with `describe()`'s `edges[].index`, like face
   indices do for `shell`/`draft`.
 - A radius that is too large for the local geometry fails with the kernel's

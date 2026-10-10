@@ -38,6 +38,9 @@ public:
   // Number of direct sub-shapes of the given type name
   // ("Solid", "Face", "Edge", "Vertex", "Shell", "Wire", "Compound").
   int countSubShapes(const std::string& typeName) const;
+  // True when both handles wrap the same TShape at the same location
+  // (TopoDS_Shape::IsSame — orientation is ignored).
+  bool isSame(const OccShape& other) const;
 
 private:
   TopoDS_Shape myShape;

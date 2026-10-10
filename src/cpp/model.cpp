@@ -140,23 +140,56 @@ bool OccShape::isValid() const {
   return BRepCheck_Analyzer(myShape).IsValid();
 }
 
+namespace {
+
+// Shared name → enum mapping for countSubShapes / subShapes.
+bool shapeEnumFromName(const std::string& typeName, TopAbs_ShapeEnum& type) {
+  if      (typeName == "Compound")  { type = TopAbs_COMPOUND;  return true; }
+  else if (typeName == "CompSolid") { type = TopAbs_COMPSOLID; return true; }
+  else if (typeName == "Solid")     { type = TopAbs_SOLID;     return true; }
+  else if (typeName == "Shell")     { type = TopAbs_SHELL;     return true; }
+  else if (typeName == "Face")      { type = TopAbs_FACE;      return true; }
+  else if (typeName == "Wire")      { type = TopAbs_WIRE;      return true; }
+  else if (typeName == "Edge")      { type = TopAbs_EDGE;      return true; }
+  else if (typeName == "Vertex")    { type = TopAbs_VERTEX;    return true; }
+  return false;
+}
+
+} // namespace
+
 int OccShape::countSubShapes(const std::string& typeName) const {
   TopAbs_ShapeEnum type;
-  if      (typeName == "Compound")  type = TopAbs_COMPOUND;
-  else if (typeName == "CompSolid") type = TopAbs_COMPSOLID;
-  else if (typeName == "Solid")     type = TopAbs_SOLID;
-  else if (typeName == "Shell")     type = TopAbs_SHELL;
-    else if (typeName == "Face")   type = TopAbs_FACE;
-  else if (typeName == "Wire")      type = TopAbs_WIRE;
-  else if (typeName == "Edge")      type = TopAbs_EDGE;
-  else if (typeName == "Vertex")    type = TopAbs_VERTEX;
-  else return 0;
+  if (!shapeEnumFromName(typeName, type)) return 0;
 
   // TopExp_Explorer visits shared edges/vertices once per adjacent parent;
   // the indexed map deduplicates (the 12-edges-of-a-box test).
   TopTools_IndexedMapOfShape map;
   TopExp::MapShapes(myShape, type, map);
   return map.Extent();
+}
+
+bool OccShape::isSame(const OccShape& other) const {
+  return myShape.IsSame(other.myShape);
+}
+
+std::vector<OccShape> subShapes(const OccShape& shape, const std::string& typeName) {
+  TopAbs_ShapeEnum type;
+  if (!shapeEnumFromName(typeName, type)) {
+    throw std::runtime_error(
+        "subShapes: unknown type \"" + typeName +
+        "\" — expected Compound, CompSolid, Solid, Shell, Face, Wire, Edge or Vertex");
+  }
+  // The same indexed map countSubShapes uses, so the handles come out in the
+  // exact order describeGeometry numbers them and the blend indices select
+  // them — subShapes(box, "Edge")[i] IS edge i+1.
+  TopTools_IndexedMapOfShape map;
+  TopExp::MapShapes(shape.get(), type, map);
+  std::vector<OccShape> out;
+  out.reserve(map.Extent());
+  for (int i = 1; i <= map.Extent(); ++i) {
+    out.push_back(OccShape(map(i)));
+  }
+  return out;
 }
 
 // --- primitives -------------------------------------------------------------
@@ -686,11 +719,28 @@ std::vector<TopoDS_Edge> selectEdges(const TopoDS_Shape& shape,
   return edges;
 }
 
-} // namespace
+// Handle-driven selection (subShapes edges): degenerated edges are skipped
+// like the "every edge" path above; non-edge handles are rejected.
+std::vector<TopoDS_Edge> edgesFromHandles(const std::vector<OccShape>& edges) {
+  std::vector<TopoDS_Edge> out;
+  for (const OccShape& handle : edges) {
+    if (handle.get().ShapeType() != TopAbs_EDGE) {
+      throw std::runtime_error("expected Edge handles from subShapes, got " +
+                               shapeTypeName(handle.get()));
+    }
+    const TopoDS_Edge edge = TopoDS::Edge(handle.get());
+    if (!BRep_Tool::Degenerated(edge)) out.push_back(edge);
+  }
+  if (out.empty()) {
+    throw std::runtime_error("shape has no edges to blend");
+  }
+  return out;
+}
 
-OccShape filletShape(const OccShape& shape, double radius, const std::vector<int>& edgeIndices) {
-  BRepFilletAPI_MakeFillet maker(shape.get());
-  for (const TopoDS_Edge& edge : selectEdges(shape.get(), edgeIndices)) {
+OccShape buildFillet(const TopoDS_Shape& shape, double radius,
+                     const std::vector<TopoDS_Edge>& edges) {
+  BRepFilletAPI_MakeFillet maker(shape);
+  for (const TopoDS_Edge& edge : edges) {
     maker.Add(radius, edge);
   }
   maker.Build();
@@ -700,9 +750,10 @@ OccShape filletShape(const OccShape& shape, double radius, const std::vector<int
   return OccShape(maker.Shape());
 }
 
-OccShape chamferShape(const OccShape& shape, double distance, const std::vector<int>& edgeIndices) {
-  BRepFilletAPI_MakeChamfer maker(shape.get());
-  for (const TopoDS_Edge& edge : selectEdges(shape.get(), edgeIndices)) {
+OccShape buildChamfer(const TopoDS_Shape& shape, double distance,
+                      const std::vector<TopoDS_Edge>& edges) {
+  BRepFilletAPI_MakeChamfer maker(shape);
+  for (const TopoDS_Edge& edge : edges) {
     maker.Add(distance, edge);
   }
   maker.Build();
@@ -712,11 +763,104 @@ OccShape chamferShape(const OccShape& shape, double distance, const std::vector<
   return OccShape(maker.Shape());
 }
 
+} // namespace
+
+OccShape filletShape(const OccShape& shape, double radius, const std::vector<int>& edgeIndices) {
+  return buildFillet(shape.get(), radius, selectEdges(shape.get(), edgeIndices));
+}
+
+OccShape chamferShape(const OccShape& shape, double distance, const std::vector<int>& edgeIndices) {
+  return buildChamfer(shape.get(), distance, selectEdges(shape.get(), edgeIndices));
+}
+
+OccShape filletEdges(const OccShape& shape, double radius, const std::vector<OccShape>& edges) {
+  return buildFillet(shape.get(), radius, edgesFromHandles(edges));
+}
+
+OccShape chamferEdges(const OccShape& shape, double distance, const std::vector<OccShape>& edges) {
+  return buildChamfer(shape.get(), distance, edgesFromHandles(edges));
+}
+
+namespace {
+
+// Apply one edge's constraints to the maker. NaN positions mean a constant
+// radius; positioned specs (finite `at`) form an explicit law — the OCCT
+// two-radius overload maps a linear law between the edge's first and last
+// vertex itself (hand-built Law_Function handles make ChFi3d fail the build,
+// so they are deliberately not used; the Add(radius, u, edge) overload builds
+// its law in a different parameter space and is not used either). `label`
+// names the edge in error messages ("edge 3" or "spec 2").
+void addVariableRadius(BRepFilletAPI_MakeFillet& maker, const TopoDS_Edge& edge,
+                       const std::vector<std::pair<double, double>>& constraints,
+                       const std::string& label) {
+  bool anyPositioned = false;
+  for (const auto& constraint : constraints) {
+    anyPositioned = anyPositioned || !std::isnan(constraint.first);
+  }
+  if (!anyPositioned) {
+    maker.Add(constraints.front().second, edge);
+    return;
+  }
+  BRepAdaptor_Curve curve(edge);
+  std::vector<std::pair<double, double>> law;
+  for (const auto& constraint : constraints) {
+    if (std::isnan(constraint.first)) {
+      throw std::runtime_error(
+          "variable fillet: " + label +
+          " mixes positioned and constant specs — give every spec an `at`");
+    }
+    if (constraint.first < curve.FirstParameter() - 1e-9 ||
+        constraint.first > curve.LastParameter() + 1e-9) {
+      std::ostringstream message;
+      message << "variable fillet: " << label << " position " << constraint.first
+              << " is outside its parameter range [" << curve.FirstParameter() << ", "
+              << curve.LastParameter() << "]";
+      throw std::runtime_error(message.str());
+    }
+    law.push_back(constraint);
+  }
+  if (law.size() < 2) {
+    throw std::runtime_error("variable fillet: " + label +
+                             " needs at least two positioned specs to vary the radius");
+  }
+  std::sort(law.begin(), law.end());
+  for (size_t i = 1; i < law.size(); ++i) {
+    if (law[i].first - law[i - 1].first < 1e-9) {
+      throw std::runtime_error("variable fillet: " + label + " has duplicate positions");
+    }
+  }
+  if (law.size() > 2) {
+    std::ostringstream message;
+    message << "variable fillet: " << label << " has " << law.size()
+            << " positioned specs — only two are supported (the radius blends linearly "
+               "from the edge's start to its end)";
+    throw std::runtime_error(message.str());
+  }
+  maker.Add(law.front().second, law.back().second, edge);
+}
+
+void validateRadii(const std::vector<double>& radii) {
+  for (size_t i = 0; i < radii.size(); ++i) {
+    if (!(radii[i] > 0)) {
+      std::ostringstream message;
+      message << "variable fillet: spec " << (i + 1) << " radius must be positive";
+      throw std::runtime_error(message.str());
+    }
+  }
+}
+
+OccShape buildVariableFillet(const TopoDS_Shape& shape, BRepFilletAPI_MakeFillet& maker) {
+  maker.Build();
+  if (!maker.IsDone() || maker.Shape().IsNull()) {
+    throw std::runtime_error("variable fillet failed (try smaller radii or fewer edges)");
+  }
+  return OccShape(maker.Shape());
+}
+
+} // namespace
+
 // specs arrive as parallel arrays; positions[i] = NaN means "constant radius
-// on that edge". Positioned specs (finite `at`) are grouped per edge into an
-// explicit Law (linear for two positions, interpolated for more) — the
-// Add(radius, u, edge) overload builds its law in a different parameter
-// space and produces out-of-bounds blends, so it is not used.
+// on that edge".
 OccShape variableFilletShape(const OccShape& shape,
                              const std::vector<int>& edgeIndices,
                              const std::vector<double>& radii,
@@ -724,81 +868,52 @@ OccShape variableFilletShape(const OccShape& shape,
   if (edgeIndices.empty()) {
     throw std::runtime_error("variable fillet needs at least one {edge, radius} spec");
   }
-  for (size_t i = 0; i < edgeIndices.size(); ++i) {
-    if (!(radii[i] > 0)) {
-      std::ostringstream message;
-      message << "variable fillet: spec " << (i + 1) << " radius must be positive";
-      throw std::runtime_error(message.str());
-    }
-  }
+  validateRadii(radii);
   std::map<int, std::vector<std::pair<double, double>>> byEdge;
   for (size_t i = 0; i < edgeIndices.size(); ++i) {
     byEdge[edgeIndices[i]].emplace_back(positions[i], radii[i]);
   }
   BRepFilletAPI_MakeFillet maker(shape.get());
   for (const auto& entry : byEdge) {
-    const int edgeIndex = entry.first;
-    const std::vector<std::pair<double, double>>& constraints = entry.second;
-    const TopoDS_Edge edge = edgeByIndex(shape.get(), edgeIndex);
-    bool anyPositioned = false;
-    for (const auto& constraint : constraints) {
-      anyPositioned = anyPositioned || !std::isnan(constraint.first);
-    }
-    if (!anyPositioned) {
-      maker.Add(constraints.front().second, edge);
-      continue;
-    }
-    BRepAdaptor_Curve curve(edge);
-    std::vector<std::pair<double, double>> law;
-    for (const auto& constraint : constraints) {
-      if (std::isnan(constraint.first)) {
-        std::ostringstream message;
-        message << "variable fillet: edge " << edgeIndex
-                << " mixes positioned and constant specs — give every spec an `at`";
-        throw std::runtime_error(message.str());
-      }
-      if (constraint.first < curve.FirstParameter() - 1e-9 ||
-          constraint.first > curve.LastParameter() + 1e-9) {
-        std::ostringstream message;
-        message << "variable fillet: edge " << edgeIndex << " position " << constraint.first
-                << " is outside its parameter range [" << curve.FirstParameter() << ", "
-                << curve.LastParameter() << "]";
-        throw std::runtime_error(message.str());
-      }
-      law.push_back(constraint);
-    }
-    if (law.size() < 2) {
-      std::ostringstream message;
-      message << "variable fillet: edge " << edgeIndex
-              << " needs at least two positioned specs to vary the radius";
-      throw std::runtime_error(message.str());
-    }
-    std::sort(law.begin(), law.end());
-    for (size_t i = 1; i < law.size(); ++i) {
-      if (law[i].first - law[i - 1].first < 1e-9) {
-        std::ostringstream message;
-        message << "variable fillet: edge " << edgeIndex << " has duplicate positions";
-        throw std::runtime_error(message.str());
-      }
-    }
-    if (law.size() > 2) {
-      std::ostringstream message;
-      message << "variable fillet: edge " << edgeIndex << " has " << law.size()
-              << " positioned specs — only two are supported (the radius blends linearly "
-                 "from the edge's start to its end)";
-      throw std::runtime_error(message.str());
-    }
-    // OCCT's own two-radius overload: a linear law between the edge's first
-    // and last vertex — the engine maps the parameter range itself. (Hand-
-    // built Law_Function handles make ChFi3d fail the build, so they are
-    // deliberately not used.)
-    maker.Add(law.front().second, law.back().second, edge);
+    addVariableRadius(maker, edgeByIndex(shape.get(), entry.first), entry.second,
+                      "edge " + std::to_string(entry.first));
   }
-  maker.Build();
-  if (!maker.IsDone() || maker.Shape().IsNull()) {
-    throw std::runtime_error("variable fillet failed (try smaller radii or fewer edges)");
+  return buildVariableFillet(shape.get(), maker);
+}
+
+OccShape variableFilletEdges(const OccShape& shape,
+                             const std::vector<OccShape>& edges,
+                             const std::vector<double>& radii,
+                             const std::vector<double>& positions) {
+  if (edges.empty()) {
+    throw std::runtime_error("variable fillet needs at least one {edge, radius} spec");
   }
-  return OccShape(maker.Shape());
+  validateRadii(radii);
+  // Specs group by TShape identity — the handle-path equivalent of grouping
+  // by edge index, so two positioned specs on one handle blend.
+  struct EdgeSpecs {
+    TopoDS_Edge edge;
+    std::vector<std::pair<double, double>> constraints;
+    std::string label;
+  };
+  std::map<const void*, EdgeSpecs> byEdge;
+  for (size_t i = 0; i < edges.size(); ++i) {
+    if (edges[i].get().ShapeType() != TopAbs_EDGE) {
+      throw std::runtime_error("variable fillet: spec " + std::to_string(i + 1) +
+                               " must be an Edge handle, got " + shapeTypeName(edges[i].get()));
+    }
+    EdgeSpecs& entry = byEdge[edges[i].get().TShape().get()];
+    if (entry.constraints.empty()) {
+      entry.edge = TopoDS::Edge(edges[i].get());
+      entry.label = "spec " + std::to_string(i + 1);
+    }
+    entry.constraints.emplace_back(positions[i], radii[i]);
+  }
+  BRepFilletAPI_MakeFillet maker(shape.get());
+  for (const auto& entry : byEdge) {
+    addVariableRadius(maker, entry.second.edge, entry.second.constraints, entry.second.label);
+  }
+  return buildVariableFillet(shape.get(), maker);
 }
 
 // --- sketch → solid: extrude / revolve / loft / sweep ---------------------------

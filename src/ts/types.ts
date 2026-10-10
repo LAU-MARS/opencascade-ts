@@ -1,5 +1,7 @@
 /** Public shared types of opencascade-ts. */
 
+import type { OccShape } from "./occ.js";
+
 export type Vec3 = readonly [number, number, number];
 
 /** Unit keywords for STEP import/export ("mm" is the OCCT default). */
@@ -18,6 +20,17 @@ export type ShapeTypeName =
   | "Edge"
   | "Vertex"
   | "Shape";
+
+/** Sub-shape type names accepted by `subShapes` (and `OccShape.count`). */
+export type SubShapeType =
+  | "Compound"
+  | "CompSolid"
+  | "Solid"
+  | "Shell"
+  | "Face"
+  | "Wire"
+  | "Edge"
+  | "Vertex";
 
 export interface BoundingBox {
   readonly min: Vec3;
@@ -62,10 +75,10 @@ export interface ShellOptions {
 /** Shared by `fillet` / `chamfer`: which edges to blend. */
 export interface EdgeBlendOptions {
   /**
-   * 1-based edge indices (as listed by `describe`) to blend.
-   * Default: every edge of the shape.
+   * Edges to blend: 1-based indices (as listed by `describe`) or edge handles
+   * from `subShapes`/`edges`. Default: every edge of the shape.
    */
-  edges?: number[];
+  edges?: readonly (number | OccShape)[];
 }
 
 export interface CircleOptions {
@@ -141,8 +154,8 @@ export interface InterpolateOptions {
 
 /** One radius assignment for `variableFillet`. */
 export interface VariableFilletSpec {
-  /** 1-based edge index (as listed by `describe`). */
-  edge: number;
+  /** The edge to blend: a 1-based index (as listed by `describe`) or an edge handle. */
+  edge: number | OccShape;
   /** Fillet radius on this edge (constant unless paired with a second spec). */
   radius: number;
   /**

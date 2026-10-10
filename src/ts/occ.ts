@@ -47,12 +47,13 @@ import type {
   ShapeTypeName,
   ShellOptions,
   SolidProfileOptions,
+  SubShapeType,
   TessellationOptions,
   UnitOption,
   Vec3,
   VariableFilletSpec,
 } from "./types.js";
-import type { OccWasmModule, WasmShape } from "./wasm-module.js";
+import type { OccWasmModule, WasmShape, WasmShapeVector } from "./wasm-module.js";
 
 const DEFAULT_LINEAR_DEFLECTION = 0.1;
 const DEFAULT_ANGULAR_DEFLECTION_DEG = 20;
@@ -130,8 +131,17 @@ export class OccShape {
   }
 
   /** Count sub-shapes: `count("Face")`, `count("Edge")`, ... */
-  count(typeName: "Solid" | "Shell" | "Face" | "Wire" | "Edge" | "Vertex" | "Compound" | "CompSolid"): number {
+  count(typeName: SubShapeType): number {
     return this.raw.countSubShapes(typeName);
+  }
+
+  /**
+   * Identity test: true when both handles wrap the same underlying sub-shape
+   * (same TShape at the same location — how build123d/OCP compare the edges
+   * and faces they pick out of a solid).
+   */
+  isSame(other: OccShape): boolean {
+    return this.raw.isSame(other.raw);
   }
 
   dispose(): void {
@@ -684,17 +694,22 @@ export class OccSession {
   // --- edge blends: fillets & chamfers ----------------------------------------
 
   /**
-   * Round edges with `radius`. Default: every edge; pass `edges` (1-based
-   * indices as listed by `describe`) for a specific subset.
+   * Round edges with `radius`. Default: every edge; pass `edges` — 1-based
+   * indices (as listed by `describe`) or handles from `edges(shape)` — for a
+   * specific subset.
    */
   fillet(shape: OccShape, radius: number, options: EdgeBlendOptions = {}): OccShape {
     if (!(radius > 0)) {
       throw new Error("fillet: radius must be a positive number");
     }
-    const edges = options.edges ?? [];
-    this.validateEdgeIndices("fillet", shape, edges);
+    const { indices, handles } = this.edgeSelection("fillet", shape, options.edges ?? []);
+    if (handles.length > 0) {
+      return this.adopt(
+        this.withShapes(handles, (list) => this.module.filletEdges(shape.raw, radius, list)),
+      );
+    }
     return this.adopt(
-      this.withInts(edges, (ptr, count) => this.module.fillet(shape.raw, radius, ptr, count)),
+      this.withInts(indices, (ptr, count) => this.module.fillet(shape.raw, radius, ptr, count)),
     );
   }
 
@@ -703,35 +718,52 @@ export class OccSession {
     if (!(distance > 0)) {
       throw new Error("chamfer: distance must be a positive number");
     }
-    const edges = options.edges ?? [];
-    this.validateEdgeIndices("chamfer", shape, edges);
+    const { indices, handles } = this.edgeSelection("chamfer", shape, options.edges ?? []);
+    if (handles.length > 0) {
+      return this.adopt(
+        this.withShapes(handles, (list) => this.module.chamferEdges(shape.raw, distance, list)),
+      );
+    }
     return this.adopt(
-      this.withInts(edges, (ptr, count) => this.module.chamfer(shape.raw, distance, ptr, count)),
+      this.withInts(indices, (ptr, count) => this.module.chamfer(shape.raw, distance, ptr, count)),
     );
   }
 
   /**
    * Fillet with per-edge (and per-position) radii: `[{ edge, radius, at? }]`
-   * with 1-based edge indices from `describe`. Two specs on one edge with
-   * different `at` positions blend the radius between them — `at` is the
-   * edge's curve parameter (for line edges: distance from the start).
+   * where `edge` is a 1-based index from `describe` or a handle from
+   * `edges(shape)`. Two specs on one edge with different `at` positions blend
+   * the radius between them — `at` is the edge's curve parameter (for line
+   * edges: distance from the start).
    */
   variableFillet(shape: OccShape, specs: readonly VariableFilletSpec[]): OccShape {
     if (specs.length === 0) {
       throw new Error("variableFillet: needs at least one {edge, radius} spec");
     }
-    const edges = specs.map((spec) => spec.edge);
-    this.validateEdgeIndices("variableFillet", shape, edges);
     for (const spec of specs) {
       if (!(spec.radius > 0)) {
         throw new Error("variableFillet: radius must be a positive number");
       }
     }
+    const { indices, handles } = this.edgeSelection(
+      "variableFillet", shape, specs.map((spec) => spec.edge),
+    );
     const radii = specs.map((spec) => spec.radius);
     // NaN in the positions array means "constant radius" on that edge.
     const positions = specs.map((spec) => spec.at ?? NaN);
+    if (handles.length > 0) {
+      return this.adopt(
+        this.withFloats(radii, (radiiPtr, _) =>
+          this.withFloats(positions, (positionsPtr, __) =>
+            this.withShapes(handles, (list) =>
+              this.module.variableFilletEdges(shape.raw, list, radiiPtr, positionsPtr),
+            ),
+          ),
+        ),
+      );
+    }
     return this.adopt(
-      this.withInts(edges, (edgePtr, count) =>
+      this.withInts(indices, (edgePtr, count) =>
         this.withFloats(radii, (radiiPtr, _) =>
           this.withFloats(positions, (positionsPtr, __) =>
             this.module.variableFillet(shape.raw, edgePtr, count, radiiPtr, positionsPtr),
@@ -739,6 +771,63 @@ export class OccSession {
         ),
       ),
     );
+  }
+
+  // --- sub-shape access -----------------------------------------------------------
+
+  /**
+   * Sub-shape handles of one type — first-class edges/faces/... that pass
+   * back into operations (`fillet`, `chamfer`, transforms, booleans) and can
+   * be interrogated (`describe` works on a handle). Order matches `describe`
+   * and `count`: `subShapes(shape, "Edge")[i]` is edge `i + 1`.
+   */
+  subShapes(shape: OccShape, typeName: SubShapeType): OccShape[] {
+    const list = this.module.subShapes(shape.raw, typeName);
+    try {
+      this.throwIfError();
+      const out: OccShape[] = [];
+      for (let i = 0; i < list.size(); i++) {
+        out.push(this.adopt(list.get(i)));
+      }
+      return out;
+    } finally {
+      list.delete();
+    }
+  }
+
+  /** Every edge of `shape` as a handle — `subShapes(shape, "Edge")`. */
+  edges(shape: OccShape): OccShape[] {
+    return this.subShapes(shape, "Edge");
+  }
+
+  /** Every face of `shape` as a handle — `subShapes(shape, "Face")`. */
+  faces(shape: OccShape): OccShape[] {
+    return this.subShapes(shape, "Face");
+  }
+
+  /** Every vertex of `shape` as a handle — `subShapes(shape, "Vertex")`. */
+  vertices(shape: OccShape): OccShape[] {
+    return this.subShapes(shape, "Vertex");
+  }
+
+  /** Every wire of `shape` as a handle — `subShapes(shape, "Wire")`. */
+  wires(shape: OccShape): OccShape[] {
+    return this.subShapes(shape, "Wire");
+  }
+
+  /** Every shell of `shape` as a handle — `subShapes(shape, "Shell")`. */
+  shells(shape: OccShape): OccShape[] {
+    return this.subShapes(shape, "Shell");
+  }
+
+  /** Every solid of `shape` as a handle — `subShapes(shape, "Solid")`. */
+  solids(shape: OccShape): OccShape[] {
+    return this.subShapes(shape, "Solid");
+  }
+
+  /** Every compound of `shape` as a handle — `subShapes(shape, "Compound")`. */
+  compounds(shape: OccShape): OccShape[] {
+    return this.subShapes(shape, "Compound");
   }
 
   // --- sketch → solid: extrude / revolve / loft / sweep --------------------------
@@ -1128,6 +1217,30 @@ export class OccSession {
     }
   }
 
+  /**
+   * Split an edge selection into all-indices or all-handles (mixing the two
+   * would silently drop one kind). Handles are validated on the C++ side.
+   */
+  private edgeSelection(
+    operation: string,
+    shape: OccShape,
+    edges: readonly (number | OccShape)[],
+  ): { indices: number[]; handles: OccShape[] } {
+    const indices: number[] = [];
+    const handles: OccShape[] = [];
+    for (const edge of edges) {
+      if (typeof edge === "number") indices.push(edge);
+      else handles.push(edge);
+    }
+    if (indices.length > 0 && handles.length > 0) {
+      throw new Error(`${operation}: edges must be all 1-based indices or all shape handles`);
+    }
+    if (handles.length === 0) {
+      this.validateEdgeIndices(operation, shape, indices);
+    }
+    return { indices, handles };
+  }
+
   private adopt(raw: WasmShape): OccShape {
     if (this.module.hasError()) {
       const message = this.module.lastError();
@@ -1167,6 +1280,19 @@ export class OccSession {
       return fn(ptr, values.length);
     } finally {
       this.module._free(ptr);
+    }
+  }
+
+  /** register_vector handle around a shape list, freed after `fn` returns. */
+  private withShapes<T>(shapes: readonly OccShape[], fn: (list: WasmShapeVector) => T): T {
+    const list = new this.module.VectorShape();
+    try {
+      for (const shape of shapes) {
+        list.push_back(shape.raw);
+      }
+      return fn(list);
+    } finally {
+      list.delete();
     }
   }
 

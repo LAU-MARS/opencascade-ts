@@ -242,6 +242,34 @@ OccShape variableFilletWrap(const OccShape& shape,
       OccShape());
 }
 
+OccShape filletEdgesWrap(const OccShape& shape, double radius,
+                         const std::vector<OccShape>& edges) {
+  return guarded("fillet", [&] { return filletEdges(shape, radius, edges); }, OccShape());
+}
+
+OccShape chamferEdgesWrap(const OccShape& shape, double distance,
+                          const std::vector<OccShape>& edges) {
+  return guarded("chamfer", [&] { return chamferEdges(shape, distance, edges); }, OccShape());
+}
+
+OccShape variableFilletEdgesWrap(const OccShape& shape,
+                                 const std::vector<OccShape>& edges,
+                                 unsigned int radiiPtr, unsigned int positionsPtr) {
+  return guarded(
+      "variableFillet",
+      [&] {
+        return variableFilletEdges(shape, edges,
+                                   doublesFromHeap(radiiPtr, static_cast<int>(edges.size())),
+                                   doublesFromHeap(positionsPtr, static_cast<int>(edges.size())));
+      },
+      OccShape());
+}
+
+std::vector<OccShape> subShapesWrap(const OccShape& shape, const std::string& typeName) {
+  return guarded("subShapes", [&] { return subShapes(shape, typeName); },
+                 std::vector<OccShape>());
+}
+
 OccShape extrudeWrap(const OccShape& profile, double dx, double dy, double dz, bool solid) {
   return guarded(
       "extrude", [&] { return extrudeShape(profile, dx, dy, dz, solid); }, OccShape());
@@ -454,7 +482,8 @@ EMSCRIPTEN_BINDINGS(opencascade_ts) {
       .function("bounds", &OccShape::bounds)
       .function("centroid", &OccShape::centroid)
       .function("isValid", &OccShape::isValid)
-      .function("countSubShapes", &OccShape::countSubShapes);
+      .function("countSubShapes", &OccShape::countSubShapes)
+      .function("isSame", &OccShape::isSame);
 
   class_<MeshData>("MeshData")
       .function("positionsPtr", &MeshData::positionsPtr)
@@ -501,6 +530,10 @@ EMSCRIPTEN_BINDINGS(opencascade_ts) {
   function("fillet", &filletWrap);
   function("chamfer", &chamferWrap);
   function("variableFillet", &variableFilletWrap);
+  function("filletEdges", &filletEdgesWrap);
+  function("chamferEdges", &chamferEdgesWrap);
+  function("variableFilletEdges", &variableFilletEdgesWrap);
+  function("subShapes", &subShapesWrap);
 
   function("extrude", &extrudeWrap);
   function("revolve", &revolveWrap);

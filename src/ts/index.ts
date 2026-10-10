@@ -68,6 +68,7 @@ export type {
   ShapeTypeName,
   ShellOptions,
   SolidProfileOptions,
+  SubShapeType,
   TessellationOptions,
   UnitOption,
   Vec3,

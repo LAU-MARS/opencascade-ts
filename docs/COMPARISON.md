@@ -46,12 +46,13 @@ the ❌ from raw calls; the difference is what you get out of the box.
 | OCCT kernel | 7.4.0p1 (2019) stable · 7.6.2 (2022) beta/master | **7.9.3 (2025)**; 8.0 experimental |
 | Emscripten | 3.1.14 | 3.1.74 |
 | Maintenance | last stable 2020 · quiet since Aug 2023 | active |
-| API surface | **auto-generated bindings for nearly all of OCCT** — thousands of classes | ~70 curated, hand-written calls |
+| API surface | **auto-generated bindings for nearly all of OCCT** — thousands of classes | ~80 curated, hand-written calls |
 | API style | raw embind: manual `.delete()`, downcasts, machine-generated typings | strict TypeScript, ESM, validated options, errors that teach |
 | Fillets · chamfers · extrude/revolve · 2D | ✅ raw classes | ✅ `fillet` / `chamfer` / `variableFillet` / `extrude` / `revolve` / `loft` / `sweep` + line/arc/ellipse/B-spline profiles & wire assembly |
 | Pipe sweeps w/ frame control · helices | ✅ raw classes | ✅ `pipeShell` (Frenet/binormal, corner modes) + `makeHelix` |
 | Healing (sew + shape repair) · mirror · patterns | ✅ raw classes | ✅ `heal` / `mirror` / `rectangularPattern` / `circularPattern` |
 | Freeform surfaces | ✅ raw classes | ✅ B-spline surfaces from poles / through points, `describeSurface` + `setBsplinePoles` editing |
+| Sub-shape handles | ✅ raw `TopoDS` classes | ✅ `subShapes` / `edges` / `faces` / … + `isSame` identity, pass-back into blends |
 | Shelling (thick solid) · draft angle | ❌ bound as empty stubs — no callable methods | ✅ `shell` / `draft` |
 | STEP · BRep · IGES I/O | ✅ raw XCAF/XSControl classes | ✅ first-class, with unit selection |
 | Assembly tree: names · colors · transforms | raw calls | ✅ `readStepDocument` → JSON · `writeStepDocument` ← tree |
@@ -86,7 +87,7 @@ of classes with machine-generated TypeScript definitions — if OCCT has it, you
 cost is the raw embind experience: manual `.delete()` on every handle, downcasts to move between
 `TopoDS` levels, C++-shaped signatures, and documentation that is OCCT's, not the wrapper's.
 
-occt.ts's answer: curate. ~40 hand-written calls with strict types, options objects, ESM, and
+occt.ts's answer: curate. ~80 hand-written calls with strict types, options objects, ESM, and
 validation at the boundary (a zero-length axis is rejected with a clear message, not a kernel
 exception). `OccSession` tracks every shape it hands out and frees them on `dispose()` — the
 common path never touches manual memory management. Errors follow the house style: what failed,
@@ -188,7 +189,11 @@ splitting and solid offsetting, mass centroids, and XCAF write-back
 0.4.0–0.7.0 modeling releases; healing (`heal`: sewing + ShapeFix), `mirror`,
 rectangular/circular patterns, `makeHelix` + `pipeShell` (frame-controlled sweeps) and B-spline
 surfaces (`makeBsplineSurface` / `makeBsplineSurfaceThrough` / `describeSurface` /
-`setBsplinePoles`) landed with 0.8.0.
+`setBsplinePoles`) landed with 0.8.0; sub-shape handles became first-class with 0.9.0 —
+`subShapes` / `edges` / `faces` / `vertices` / `isSame`, and `fillet` / `chamfer` /
+`variableFillet` accept edge handles, not just indices (the OCP porting pattern: extract →
+filter → pass back). The 0.9.0 wasm also raised the stack to 1 MB — the 64 KB default trapped
+as "memory access out of bounds" on deep OCCT call chains.
 
 1. **MCP server**: first-class agent access — the flagship next step.
 2. **Sketch constraints**: dimensions and coincidences on 2D profiles.

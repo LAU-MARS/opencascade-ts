@@ -20,12 +20,16 @@ export interface WasmShape {
   centroid(): number[];
   isValid(): boolean;
   countSubShapes(typeName: string): number;
+  /** TopoDS_Shape::IsSame — same TShape at the same location (orientation ignored). */
+  isSame(other: WasmShape): boolean;
   delete(): void;
 }
 
 /** register_vector<OccShape> handle — build one to pass a shape list to `loft`. */
 export interface WasmShapeVector {
   push_back(shape: WasmShape): void;
+  /** Element copies (each owns its C++ instance — delete via the session). */
+  get(index: number): WasmShape;
   size(): number;
   delete(): void;
 }
@@ -181,6 +185,19 @@ export interface OccWasmModule {
   variableFillet(
     s: WasmShape, edgesPtr: number, edgeCount: number, radiiPtr: number, positionsPtr: number,
   ): WasmShape;
+  /** The same blends driven by edge handles (e.g. from `subShapes`). */
+  filletEdges(s: WasmShape, radius: number, edges: WasmShapeVector): WasmShape;
+  chamferEdges(s: WasmShape, distance: number, edges: WasmShapeVector): WasmShape;
+  /**
+   * Variable fillet by edge handles: float64 radii at `radiiPtr` and
+   * positions at `positionsPtr`, parallel to the `edges` list (NaN position =
+   * constant radius).
+   */
+  variableFilletEdges(
+    s: WasmShape, edges: WasmShapeVector, radiiPtr: number, positionsPtr: number,
+  ): WasmShape;
+  /** Sub-shape handles of one type, indexed-map order (element copies). */
+  subShapes(s: WasmShape, typeName: string): WasmShapeVector;
 
   /** Straight sweep of a wire/face profile; `solid` caps wire profiles into faces first. */
   extrude(profile: WasmShape, dx: number, dy: number, dz: number, solid: boolean): WasmShape;

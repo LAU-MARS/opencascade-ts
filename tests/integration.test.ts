@@ -189,6 +189,113 @@ describeWasm("opencascade-ts kernel (wasm integration)", () => {
     expect(() => occ.chamfer(box, 1, { edges: [0] })).toThrow(/1\.\.12/);
   });
 
+  it("extracts sub-shape handles that match describe's numbering", () => {
+    const box = occ.makeBox(10, 10, 10);
+    expect(occ.faces(box)).toHaveLength(6);
+    expect(occ.edges(box)).toHaveLength(12);
+    expect(occ.vertices(box)).toHaveLength(8);
+    expect(occ.wires(box)).toHaveLength(6);
+    expect(occ.shells(box)).toHaveLength(1);
+    expect(occ.solids(box)).toHaveLength(1);
+    expect(occ.compounds(box)).toHaveLength(0);
+    expect(occ.faces(box).every((f) => f.shapeType() === "Face")).toBe(true);
+
+    // subShapes(shape, "Edge")[i] IS edge i+1: each handle interrogates as the
+    // same curve describe() numbered at i+1.
+    const described = occ.describe(box).edges;
+    const handles = occ.edges(box);
+    for (let i = 0; i < handles.length; i++) {
+      const own = occ.describe(handles[i]!).edges[0]!;
+      expect(own.curve).toBe(described[i]!.curve);
+      expect(own.length).toBeCloseTo(described[i]!.length, 6);
+    }
+    // counts and handle lists stay in lockstep for every type
+    for (const type of ["Compound", "Solid", "Shell", "Face", "Wire", "Edge", "Vertex"] as const) {
+      expect(box.count(type)).toBe(occ.subShapes(box, type).length);
+    }
+    expect(() => occ.subShapes(box, "Plumbus" as never)).toThrow(/unknown type/);
+  });
+
+  it("compares sub-shape identity with isSame", () => {
+    const box = occ.makeBox(10, 10, 10);
+    const a = occ.edges(box)[3]!;
+    expect(a.isSame(occ.edges(box)[3]!)).toBe(true);
+    expect(a.isSame(occ.edges(box)[4]!)).toBe(false);
+    // a modeling result is a fresh shape tree, and another box shares nothing
+    expect(occ.fillet(box, 1).isSame(box)).toBe(false);
+    expect(a.isSame(occ.edges(occ.makeBox(10, 10, 10))[3]!)).toBe(false);
+  });
+
+  it("fillets and chamfers by edge handle exactly like by index", () => {
+    const box = occ.makeBox(10, 10, 10);
+    const edges = occ.edges(box);
+    const verticalHandles = occ.describe(box).edges
+      .filter((e) => e.curve === "line" && Math.abs(e.direction[2]) > 0.999)
+      .map((e) => edges[e.index - 1]!);
+    const verticalIndices = occ.describe(box).edges
+      .filter((e) => e.curve === "line" && Math.abs(e.direction[2]) > 0.999)
+      .map((e) => e.index);
+    expect(verticalHandles).toHaveLength(4);
+
+    const byHandle = occ.fillet(box, 1, { edges: verticalHandles });
+    const byIndex = occ.fillet(box, 1, { edges: verticalIndices });
+    expect(byHandle.isValid()).toBe(true);
+    expect(byHandle.count("Face")).toBe(10);
+    expect(byHandle.volume()).toBeCloseTo(byIndex.volume(), 6);
+    expect(byHandle.volume()).toBeCloseTo(1000 - 10 * (4 - Math.PI), 2);
+
+    const box2 = occ.makeBox(10, 10, 10);
+    const topHandles = occ.describe(box2).edges
+      .filter((e) => e.curve === "line"
+        && Math.abs(e.start[2] - 10) < 1e-6 && Math.abs(e.end[2] - 10) < 1e-6)
+      .map((e) => occ.edges(box2)[e.index - 1]!);
+    const bevel = occ.chamfer(box2, 1, { edges: topHandles });
+    expect(bevel.count("Face")).toBe(10);
+    expect(bevel.volume()).toBeCloseTo(1000 - 4 * 10 * 0.5 + 4 / 3, 1);
+
+    // a cylinder's top circle, picked by handle and rounded
+    const cyl = occ.makeCylinder(5, 10);
+    const rimEdges = occ.describe(cyl).edges
+      .filter((e) => e.curve === "circle" && Math.abs(e.center[2] - 10) < 1e-6);
+    expect(rimEdges).toHaveLength(1);
+    const rim = rimEdges.map((e) => occ.edges(cyl)[e.index - 1]!);
+    const rimFillet = occ.fillet(cyl, 1, { edges: rim });
+    expect(rimFillet.isValid()).toBe(true);
+    // bottom + side + shrunk top + the torus fillet face
+    expect(rimFillet.count("Face")).toBe(4);
+    expect(rimFillet.volume()).toBeCloseTo(
+      occ.fillet(cyl, 1, { edges: [rimEdges[0]!.index] }).volume(), 6,
+    );
+  });
+
+  it("variable-fillets by edge handle", () => {
+    const box = occ.makeBox(10, 10, 10);
+    const vertical = occ.describe(box).edges
+      .filter((e) => e.curve === "line" && Math.abs(e.direction[2]) > 0.999)
+      .map((e) => occ.edges(box)[e.index - 1]!);
+    const edge = vertical[0]!;
+
+    // two equal radii at both ends = the constant fillet on that one edge
+    const constant = occ.variableFillet(box, [
+      { edge, radius: 1, at: 0 },
+      { edge, radius: 1, at: 10 },
+    ]);
+    expect(constant.isValid()).toBe(true);
+    expect(constant.volume()).toBeCloseTo(1000 - 10 * (1 - Math.PI / 4), 2);
+
+    // one constant spec + two positioned specs on another handle, mixed
+    const mixed = occ.variableFillet(box, [
+      { edge: vertical[1]!, radius: 1 },
+      { edge: vertical[2]!, radius: 1, at: 0 },
+      { edge: vertical[2]!, radius: 2, at: 10 },
+    ]);
+    expect(mixed.isValid()).toBe(true);
+
+    expect(() =>
+      occ.fillet(box, 1, { edges: [1, vertical[0]!] }),
+    ).toThrow(/all 1-based indices or all shape handles/);
+  });
+
   it("extrudes a circle into a cylinder and a polygon into a box", () => {
     const cylinder = occ.extrude(occ.makeCircle(5), [0, 0, 10]);
     expect(cylinder.shapeType()).toBe("Solid");

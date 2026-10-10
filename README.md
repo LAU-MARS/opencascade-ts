@@ -36,6 +36,7 @@ by agents:
 | Profile & surface authoring: lines, arcs, ellipses, helices, B-splines (control points / through-points), wire assembly, B-spline surfaces (control points / through-points / pole editing), centroids | ✅ |
 | **Healing** — sewing (stitch faces, assemble shapes) + ShapeFix (faces, wires, orientation, tolerances) | ✅ |
 | Measures: volume, area, bounds, validity, sub-shape counts | ✅ |
+| **Sub-shape handles** — edges/faces/vertices as first-class values: `subShapes`/`edges`/`faces`, pass back into blends, `isSame` identity | ✅ |
 | **Geometry interrogation** — analytic face/edge parameters, min distance + closest points, section curves, point-in-solid | ✅ |
 | **Hole detection** — heuristic bore recognition (radius/axis/depth) from the description | ✅ |
 | **HLR** — hidden-line removal → visible/hidden edge segments → SVG drawings | ✅ |
@@ -56,7 +57,7 @@ been quiet since Aug 2023. The short scorecard (✅/❌ = first-class, documente
 |---|---|---|
 | OCCT kernel | 7.4.0p1 (2019) · 7.6.2 (2022, beta) | **7.9.3 (2025)**; 8.0 experimental |
 | Maintenance | last stable 2020 · quiet since 2023 | active |
-| API surface | auto-generated, nearly all of OCCT — thousands of classes | ~70 curated, hand-written calls |
+| API surface | auto-generated, nearly all of OCCT — thousands of classes | ~80 curated, hand-written calls |
 | STEP · BRep · IGES I/O | ✅ raw XCAF/XSControl classes | ✅ first-class, with unit selection |
 | Fillets · chamfers · sweeps · 2D | ✅ raw classes | ✅ `fillet` / `chamfer` / `variableFillet` / `extrude` / `revolve` / `loft` / `sweep` / `split` / `offsetSolid` + line/arc/ellipse/B-spline profiles, wire assembly & faces with holes |
 | Pipe sweeps w/ frame control · helices | ✅ raw classes | ✅ `pipeShell` (Frenet/binormal, corner modes) + `makeHelix` |
@@ -225,6 +226,13 @@ API reference: [docs/API.md](docs/API.md).
   OCCT usable in the open-source world through years when upstream was hard to reach.
 - **[tpaviot/pythonocc-core](https://github.com/tpaviot/pythonocc-core)** — the reference for
   wrapping OCCT in a high-level language; our API conventions borrow from it heavily.
+- **[CadQuery/OCP](https://github.com/CadQuery/OCP)** — exhaustive pybind11-generated OCCT
+  bindings; our go-to reference for how to expose OCCT types and naming faithfully.
+- **[pybind11](https://github.com/pybind/pybind11)** — embind is a direct descendant of its
+  design; our C++ glue follows the same conventions.
+- **[sgenoud/replicad](https://github.com/sgenoud/replicad)** — proved that a small, friendly
+  TypeScript API over wasm OCCT is what people actually want; our shape-first API style owes
+  much to it.
 
 ## License
 

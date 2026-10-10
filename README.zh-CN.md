@@ -35,6 +35,7 @@ OCCT **7.9.3** · Emscripten · TypeScript · LGPL-2.1
 | 轮廓与曲面创作：直线、圆弧、椭圆、螺旋线、B 样条（控制点/过点插值）、线框拼装、B 样条曲面（控制点/过点插值/极点编辑）、质心 | ✅ |
 | **修复（healing）**——缝合（stitch 面、拼装多个形状）+ ShapeFix（面、线框、朝向、容差） | ✅ |
 | 测量：体积、表面积、包围盒、有效性、子形状计数 | ✅ |
+| **子形状句柄**——边/面/顶点一等公民：`subShapes`/`edges`/`faces` 提取、回传倒角、`isSame` 同一性 | ✅ |
 | **几何查询**——面/边解析参数、最小距离+最近点、截面线、点在体内判断 | ✅ |
 | **孔检测**——从描述结果启发式识别圆孔（半径/轴向/深度） | ✅ |
 | **HLR**——隐藏线消除 → 可见/隐藏边线段 → SVG 工程图 | ✅ |
@@ -55,7 +56,7 @@ OCCT **7.9.3** · Emscripten · TypeScript · LGPL-2.1
 |---|---|---|
 | OCCT 内核 | 7.4.0p1（2019）· 7.6.2（2022，beta） | **7.9.3（2025）**；可实验性切 8.0 |
 | 维护状态 | 最后稳定版 2020 · 2023 起沉寂 | 活跃开发 |
-| API 覆盖面 | 自动生成、几乎全量 OCCT——数千个类 | 约 70 个精选手写调用 |
+| API 覆盖面 | 自动生成、几乎全量 OCCT——数千个类 | 约 80 个精选手写调用 |
 | STEP · BRep · IGES 读写 | ✅ 裸 XCAF/XSControl 类 | ✅ 一等公民，带单位制选择 |
 | 圆角 · 倒角 · 扫掠 · 2D | ✅ 裸类可用 | ✅ `fillet` / `chamfer` / `variableFillet` / `extrude` / `revolve` / `loft` / `sweep` / `split` / `offsetSolid` + 直线/圆弧/椭圆/B 样条轮廓、线框拼装与带孔截面 |
 | 可控扫掠（标架控制）· 螺旋线 | ✅ 裸类可用 | ✅ `pipeShell`（Frenet/固定副法向、拐角模式）+ `makeHelix` |
@@ -214,13 +215,19 @@ API 参考见 [docs/API.md](docs/API.md)（英文）。
 
 - **[Open CASCADE SAS 与 OCCT 社区](https://github.com/Open-Cascade-SAS/OCCT)** —— 本项目立足的
   几何内核。
-- **[donalffions/opencascade.js](https://github.com/donalffons/opencascade.js)** —— 开创了
+- **[donalffons/opencascade.js](https://github.com/donalffons/opencascade.js)** —— 开创了
   OCCT→WebAssembly + embind 的路线。我们的构建管线与绑定策略沿袭了它趟出的路；本项目之所以
   存在，正是因为那条路线已停滞多年。
 - **[tpaviot/oce](https://github.com/tpaviot/oce)** —— OpenCASCADE 社区版在上游难以触及的岁月里，
   让 OCCT 在开源世界保持可用。
 - **[tpaviot/pythonocc-core](https://github.com/tpaviot/pythonocc-core)** —— 用高级语言封装 OCCT
   的标杆；我们的 API 约定大量借鉴于此。
+- **[CadQuery/OCP](https://github.com/CadQuery/OCP)** —— 用 pybind11 生成的全量 OCCT Python
+  绑定；如何忠实地暴露 OCCT 的类型与命名，它是我们随查随用的参考。
+- **[pybind11](https://github.com/pybind/pybind11)** —— embind 的设计直接脱胎于它；我们的
+  C++ 胶水层沿用了同一套约定。
+- **[sgenoud/replicad](https://github.com/sgenoud/replicad)** —— 证明了“小而友好的
+  TypeScript API + wasm 版 OCCT”正是大家想要的；本项目的 shape-first API 风格深受其影响。
 
 ## 许可证
 

@@ -108,6 +108,20 @@ OccShape variableFilletShape(const OccShape& shape,
                              const std::vector<int>& edgeIndices,
                              const std::vector<double>& radii,
                              const std::vector<double>& positions);
+// The same blends driven by edge handles (e.g. from subShapes) — no index
+// round-trip, so handles from any extraction path work. Degenerated edges
+// are skipped like the "every edge" index path.
+OccShape filletEdges(const OccShape& shape, double radius, const std::vector<OccShape>& edges);
+OccShape chamferEdges(const OccShape& shape, double distance, const std::vector<OccShape>& edges);
+OccShape variableFilletEdges(const OccShape& shape,
+                             const std::vector<OccShape>& edges,
+                             const std::vector<double>& radii,
+                             const std::vector<double>& positions);
+
+// Sub-shape handles of one type, in the same deduplicated indexed-map order
+// as describeGeometry / countSubShapes / the blend edge indices. Unknown type
+// names throw std::runtime_error.
+std::vector<OccShape> subShapes(const OccShape& shape, const std::string& typeName);
 
 // Sketch → solid. Profiles are planar wires (or faces); wires are capped into
 // faces unless `solid` is false, which sweeps the bare wire into a shell.
