@@ -2,6 +2,10 @@
 
 [English](README.md) | **[简体中文](README.zh-CN.md)**
 
+[![npm version](https://img.shields.io/npm/v/occt.ts)](https://www.npmjs.com/package/occt.ts)
+[![npm downloads](https://img.shields.io/npm/dm/occt.ts)](https://www.npmjs.com/package/occt.ts)
+[![License: LGPL-2.1](https://img.shields.io/badge/License-LGPL--2.1-informational)](LICENSE)
+
 npm 包名：**`occt.ts`** · 仓库名：`opencascade-ts`
 
 > **面向 Agent 时代的 Open CASCADE。** 将最新的 OCCT 内核编译为 WebAssembly，配一等公民的
@@ -27,8 +31,9 @@ OCCT **7.9.3** · Emscripten · TypeScript · LGPL-2.1
 | XCAF 文档读取：装配**树、名称、颜色**、实例变换 | ✅ |
 | XCAF **写回**：`writeStepDocument` 装配树带名称、颜色、定位 | ✅ |
 | STEP 读写单位制（`mm/cm/m/km/inch/ft/mi/um`） | ✅ |
-| 建模：图元、布尔（fuse/cut/common/split）、变换、抽壳、拔模、圆角/倒角（含变半径）、草图成体（拉伸/旋转/放样/扫掠）、实体偏置 | ✅ |
-| 轮廓创作：直线、圆弧、椭圆、B 样条（控制点/过点插值）、线框拼装、质心 | ✅ |
+| 建模：图元、布尔（fuse/cut/common/split）、变换（平移/旋转/缩放/镜像）、阵列（矩形/圆形）、抽壳、拔模、圆角/倒角（含变半径）、草图成体（拉伸/旋转/放样/扫掠/可控扫掠 pipe-shell）、实体偏置 | ✅ |
+| 轮廓与曲面创作：直线、圆弧、椭圆、螺旋线、B 样条（控制点/过点插值）、线框拼装、B 样条曲面（控制点/过点插值/极点编辑）、质心 | ✅ |
+| **修复（healing）**——缝合（stitch 面、拼装多个形状）+ ShapeFix（面、线框、朝向、容差） | ✅ |
 | 测量：体积、表面积、包围盒、有效性、子形状计数 | ✅ |
 | **几何查询**——面/边解析参数、最小距离+最近点、截面线、点在体内判断 | ✅ |
 | **孔检测**——从描述结果启发式识别圆孔（半径/轴向/深度） | ✅ |
@@ -50,9 +55,12 @@ OCCT **7.9.3** · Emscripten · TypeScript · LGPL-2.1
 |---|---|---|
 | OCCT 内核 | 7.4.0p1（2019）· 7.6.2（2022，beta） | **7.9.3（2025）**；可实验性切 8.0 |
 | 维护状态 | 最后稳定版 2020 · 2023 起沉寂 | 活跃开发 |
-| API 覆盖面 | 自动生成、几乎全量 OCCT——数千个类 | 约 50 个精选手写调用 |
+| API 覆盖面 | 自动生成、几乎全量 OCCT——数千个类 | 约 70 个精选手写调用 |
 | STEP · BRep · IGES 读写 | ✅ 裸 XCAF/XSControl 类 | ✅ 一等公民，带单位制选择 |
 | 圆角 · 倒角 · 扫掠 · 2D | ✅ 裸类可用 | ✅ `fillet` / `chamfer` / `variableFillet` / `extrude` / `revolve` / `loft` / `sweep` / `split` / `offsetSolid` + 直线/圆弧/椭圆/B 样条轮廓、线框拼装与带孔截面 |
+| 可控扫掠（标架控制）· 螺旋线 | ✅ 裸类可用 | ✅ `pipeShell`（Frenet/固定副法向、拐角模式）+ `makeHelix` |
+| 修复（缝合+整形）· 镜像 · 阵列 | ✅ 裸类可用 | ✅ `heal` / `mirror` / `rectangularPattern` / `circularPattern` |
+| 自由曲面 | ✅ 裸类可用 | ✅ 控制点/过点插值 B 样条曲面、`describeSurface` + `setBsplinePoles` 编辑 |
 | 抽壳 · 拔模 | ❌ 绑定为空壳类 | ✅ `shell` / `draft` |
 | HLR 工程图 · WebGL 查看器 · JSON CLI · 几何查询 | ❌ | ✅ |
 | 生态 | CascadeStudio · RepliCAD · BitByBit · ArchiYou | 起步阶段 |

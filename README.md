@@ -2,6 +2,10 @@
 
 **[English](README.md)** | [简体中文](README.zh-CN.md)
 
+[![npm version](https://img.shields.io/npm/v/occt.ts)](https://www.npmjs.com/package/occt.ts)
+[![npm downloads](https://img.shields.io/npm/dm/occt.ts)](https://www.npmjs.com/package/occt.ts)
+[![License: LGPL-2.1](https://img.shields.io/badge/License-LGPL--2.1-informational)](LICENSE)
+
 npm package: **`occt.ts`** · repo: `opencascade-ts`
 
 > **Open CASCADE for the agent era.** A modern OCCT kernel compiled to WebAssembly with first-class
@@ -28,8 +32,9 @@ by agents:
 | XCAF document reading: assembly **tree, names, colors**, instance transforms | ✅ |
 | XCAF **write-back**: `writeStepDocument` assembly tree with names, colors, placements | ✅ |
 | Unit selection on STEP I/O (`mm/cm/m/km/inch/ft/mi/um`) | ✅ |
-| Modeling: primitives, booleans (fuse/cut/common/split), transforms, shelling, draft, fillets/chamfers (incl. variable radius), sketch→solid (extrude/revolve/loft/sweep), solid offsetting | ✅ |
-| Profile authoring: lines, arcs, ellipses, B-splines (control points / through-points), wire assembly, centroids | ✅ |
+| Modeling: primitives, booleans (fuse/cut/common/split), transforms (translate/rotate/scale/mirror), patterns (rectangular/circular), shelling, draft, fillets/chamfers (incl. variable radius), sketch→solid (extrude/revolve/loft/sweep/pipe-shell), solid offsetting | ✅ |
+| Profile & surface authoring: lines, arcs, ellipses, helices, B-splines (control points / through-points), wire assembly, B-spline surfaces (control points / through-points / pole editing), centroids | ✅ |
+| **Healing** — sewing (stitch faces, assemble shapes) + ShapeFix (faces, wires, orientation, tolerances) | ✅ |
 | Measures: volume, area, bounds, validity, sub-shape counts | ✅ |
 | **Geometry interrogation** — analytic face/edge parameters, min distance + closest points, section curves, point-in-solid | ✅ |
 | **Hole detection** — heuristic bore recognition (radius/axis/depth) from the description | ✅ |
@@ -51,9 +56,12 @@ been quiet since Aug 2023. The short scorecard (✅/❌ = first-class, documente
 |---|---|---|
 | OCCT kernel | 7.4.0p1 (2019) · 7.6.2 (2022, beta) | **7.9.3 (2025)**; 8.0 experimental |
 | Maintenance | last stable 2020 · quiet since 2023 | active |
-| API surface | auto-generated, nearly all of OCCT — thousands of classes | ~50 curated, hand-written calls |
+| API surface | auto-generated, nearly all of OCCT — thousands of classes | ~70 curated, hand-written calls |
 | STEP · BRep · IGES I/O | ✅ raw XCAF/XSControl classes | ✅ first-class, with unit selection |
 | Fillets · chamfers · sweeps · 2D | ✅ raw classes | ✅ `fillet` / `chamfer` / `variableFillet` / `extrude` / `revolve` / `loft` / `sweep` / `split` / `offsetSolid` + line/arc/ellipse/B-spline profiles, wire assembly & faces with holes |
+| Pipe sweeps w/ frame control · helices | ✅ raw classes | ✅ `pipeShell` (Frenet/binormal, corner modes) + `makeHelix` |
+| Healing (sew + shape repair) · mirror · patterns | ✅ raw classes | ✅ `heal` / `mirror` / `rectangularPattern` / `circularPattern` |
+| Freeform surfaces | ✅ raw classes | ✅ B-spline surfaces from poles / through points, `describeSurface` + `setBsplinePoles` editing |
 | Shelling (hollowing) · draft angle | ❌ bound as empty stubs | ✅ `shell` / `draft` |
 | HLR drawings · WebGL viewer · JSON CLI · geometry interrogation | ❌ | ✅ |
 | Ecosystem | CascadeStudio · RepliCAD · BitByBit · ArchiYou | young |
