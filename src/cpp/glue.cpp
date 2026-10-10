@@ -37,7 +37,8 @@ T guarded(const char* operation, Fn fn, T errorValue) {
     return fn();
   } catch (const Standard_Failure& failure) {
     const char* what = failure.GetMessageString();
-    g_lastError = std::string(operation) + ": " + (what ? what : "unknown OCCT error");
+    g_lastError = std::string(operation) + ": " +
+                  ((what && *what) ? what : "unknown OCCT error");
   } catch (const std::exception& error) {
     g_lastError = std::string(operation) + ": " + error.what();
   } catch (...) {
@@ -264,6 +265,90 @@ OccShape sweepWrap(const OccShape& profile, const OccShape& spine, bool solid) {
   return guarded("sweep", [&] { return sweepShape(profile, spine, solid); }, OccShape());
 }
 
+OccShape makeHelixWrap(double radius, double pitch, double height,
+                       double ax, double ay, double az,
+                       double ox, double oy, double oz, bool leftHanded) {
+  return guarded(
+      "makeHelix",
+      [&] { return makeHelixWire(radius, pitch, height, ax, ay, az, ox, oy, oz, leftHanded); },
+      OccShape());
+}
+
+OccShape pipeShellWrap(const OccShape& profile, const OccShape& spine,
+                       int mode, double bx, double by, double bz,
+                       int transition, bool correction, bool solid) {
+  return guarded(
+      "pipeShell",
+      [&] {
+        return pipeShellShape(profile, spine, mode, bx, by, bz, transition, correction, solid);
+      },
+      OccShape());
+}
+
+OccShape mirrorWrap(const OccShape& shape, int mode,
+                    double ox, double oy, double oz,
+                    double dx, double dy, double dz) {
+  return guarded(
+      "mirror", [&] { return mirrorShape(shape, mode, ox, oy, oz, dx, dy, dz); }, OccShape());
+}
+
+OccShape rectangularPatternWrap(const OccShape& shape, int countX, int countY,
+                                double spacingX, double spacingY,
+                                double ux, double uy, double uz,
+                                double vx, double vy, double vz) {
+  return guarded(
+      "rectangularPattern",
+      [&] {
+        return rectangularPattern(shape, countX, countY, spacingX, spacingY, ux, uy, uz, vx, vy, vz);
+      },
+      OccShape());
+}
+
+OccShape circularPatternWrap(const OccShape& shape, int count, double sweepRadians,
+                             double ax, double ay, double az,
+                             double ox, double oy, double oz) {
+  return guarded(
+      "circularPattern",
+      [&] { return circularPattern(shape, count, sweepRadians, ax, ay, az, ox, oy, oz); },
+      OccShape());
+}
+
+OccShape healWrap(const std::vector<OccShape>& shapes, double tolerance, bool sew, bool fix) {
+  return guarded("heal", [&] { return healShapes(shapes, tolerance, sew, fix); }, OccShape());
+}
+
+OccShape makeBsplineSurfaceWrap(unsigned int ptr, int uCount, int vCount,
+                                int uDegree, int vDegree) {
+  return guarded(
+      "makeBsplineSurface",
+      [&] {
+        return makeBsplineSurfaceShape(doublesFromHeap(ptr, uCount * vCount * 3),
+                                       uCount, vCount, uDegree, vDegree);
+      },
+      OccShape());
+}
+
+OccShape makeBsplineSurfaceThroughWrap(unsigned int ptr, int uCount, int vCount) {
+  return guarded(
+      "makeBsplineSurfaceThrough",
+      [&] {
+        return interpolateBsplineSurfaceShape(doublesFromHeap(ptr, uCount * vCount * 3),
+                                              uCount, vCount);
+      },
+      OccShape());
+}
+
+OccShape setBsplineSurfacePolesWrap(const OccShape& face, unsigned int ptr,
+                                    int uCount, int vCount) {
+  return guarded(
+      "setBsplineSurfacePoles",
+      [&] {
+        return setBsplineSurfacePolesShape(face, doublesFromHeap(ptr, uCount * vCount * 3),
+                                            uCount, vCount);
+      },
+      OccShape());
+}
+
 MeshData tessellateWrap(const OccShape& shape, double linDefl, double angDeflDeg, bool relative) {
   return guarded(
       "tessellate", [&] { return tessellateShape(shape, linDefl, angDeflDeg, relative); },
@@ -346,6 +431,10 @@ std::string classifyPointWrap(const OccShape& shape, double x, double y, double 
   return guarded("classifyPoint", [&] { return classifyPointIn(shape, x, y, z); }, std::string("unknown"));
 }
 
+std::string describeSurfaceWrap(const OccShape& face) {
+  return guarded("describeSurface", [&] { return describeBsplineSurface(face); }, std::string());
+}
+
 } // namespace
 
 EMSCRIPTEN_BINDINGS(opencascade_ts) {
@@ -417,7 +506,18 @@ EMSCRIPTEN_BINDINGS(opencascade_ts) {
   function("revolve", &revolveWrap);
   function("loft", &loftWrap);
   function("sweep", &sweepWrap);
+  function("makeHelix", &makeHelixWrap);
+  function("pipeShell", &pipeShellWrap);
   function("offsetSolid", &offsetSolidWrap);
+
+  function("mirror", &mirrorWrap);
+  function("rectangularPattern", &rectangularPatternWrap);
+  function("circularPattern", &circularPatternWrap);
+  function("heal", &healWrap);
+
+  function("makeBsplineSurface", &makeBsplineSurfaceWrap);
+  function("makeBsplineSurfaceThrough", &makeBsplineSurfaceThroughWrap);
+  function("setBsplineSurfacePoles", &setBsplineSurfacePolesWrap);
 
   function("tessellate", &tessellateWrap);
   function("hiddenLines", &hiddenLinesWrap);
@@ -437,4 +537,5 @@ EMSCRIPTEN_BINDINGS(opencascade_ts) {
   function("distance", &distanceWrap);
   function("section", &sectionWrap);
   function("classifyPoint", &classifyPointWrap);
+  function("describeSurface", &describeSurfaceWrap);
 }

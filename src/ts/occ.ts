@@ -23,18 +23,26 @@ import type {
   ArcOptions,
   BoundingBox,
   BsplineOptions,
+  BsplineSurfaceInfo,
+  BsplineSurfaceOptions,
   CircleOptions,
+  CircularPatternOptions,
   DraftOptions,
   EdgeBlendOptions,
   EllipseOptions,
+  HealOptions,
+  HelixOptions,
   HiddenLineOptions,
   HiddenLineResult,
   InterpolateOptions,
   LoftOptions,
   MeshData,
+  MirrorOptions,
+  PipeShellOptions,
   PointClassification,
   PolygonOptions,
   PrimitiveOptions,
+  RectangularPatternOptions,
   RevolveOptions,
   ShapeTypeName,
   ShellOptions,
@@ -333,6 +341,27 @@ export class OccSession {
   }
 
   /**
+   * Helix wire — climbs `pitch` per full turn around the axis, ending at
+   * `height`. The spine for springs and threads: sweep a circle along it,
+   * or a rectangle for a screw flight.
+   */
+  makeHelix(radius: number, pitch: number, height: number, options: HelixOptions = {}): OccShape {
+    if (!(radius > 0)) throw new Error("makeHelix: radius must be a positive number");
+    if (!(pitch > 0)) throw new Error("makeHelix: pitch must be a positive number");
+    if (!(height > 0)) throw new Error("makeHelix: height must be a positive number");
+    const [dx, dy, dz] = options.direction ?? [0, 0, 1];
+    const len = Math.hypot(dx, dy, dz);
+    if (len < 1e-12) throw new Error("makeHelix: direction must be a non-zero vector");
+    const [ox, oy, oz] = options.origin ?? [0, 0, 0];
+    return this.adopt(
+      this.module.makeHelix(
+        radius, pitch, height, dx / len, dy / len, dz / len, ox, oy, oz,
+        options.leftHanded ?? false,
+      ),
+    );
+  }
+
+  /**
    * Cap a planar outer wire into a face, with optional `holes` inside it —
    * the section for plates, flanges and gaskets (extrude it, or compose 2D
    * trim/intersect via `cut`/`common` on faces).
@@ -377,6 +406,103 @@ export class OccSession {
     return this.adopt(this.module.offsetSolid(shape.raw, distance));
   }
 
+  // --- healing -------------------------------------------------------------------
+
+  /**
+   * Repair geometry — the safety net after a sloppy import. Coincident
+   * boundaries are stitched (faces of a compound merge shared edges; several
+   * shapes assemble into one shell) and the result is fixed (faces, wires,
+   * orientation, tolerances). Pass an array to stitch multiple parts
+   * together; solids skip the stitching step (they are closed already) but
+   * still get fixed.
+   */
+  heal(shapes: OccShape | readonly OccShape[], options: HealOptions = {}): OccShape {
+    const list = Array.isArray(shapes) ? shapes : [shapes];
+    if (list.length === 0) throw new Error("heal: needs at least one shape");
+    const tolerance = options.tolerance ?? 1e-6;
+    if (!(tolerance > 0)) throw new Error("heal: tolerance must be a positive number");
+    const vector = new this.module.VectorShape();
+    try {
+      for (const shape of list) {
+        vector.push_back(shape.raw);
+      }
+      return this.adopt(
+        this.module.heal(vector, tolerance, options.sew ?? true, options.fix ?? true),
+      );
+    } finally {
+      vector.delete();
+    }
+  }
+
+  // --- B-spline surfaces -----------------------------------------------------------
+
+  /**
+   * B-spline surface face from a control-point grid: `poles` is an array of
+   * rows, each row running along u (the row index is v). Knots are clamped
+   * and uniform in both directions — the surface passes through the border
+   * poles and approaches the interior ones. Degrees default to `3`.
+   */
+  makeBsplineSurface(
+    poles: readonly (readonly Vec3[])[],
+    options: BsplineSurfaceOptions = {},
+  ): OccShape {
+    const { flat, uCount, vCount } = flattenGrid(poles, "makeBsplineSurface");
+    const uDegree = options.uDegree ?? 3;
+    const vDegree = options.vDegree ?? 3;
+    for (const [degree, count, axis] of [[uDegree, uCount, "u"], [vDegree, vCount, "v"]] as const) {
+      if (!Number.isInteger(degree) || degree < 1) {
+        throw new Error(`makeBsplineSurface: degrees must be positive integers (got ${degree} along ${axis})`);
+      }
+      if (count <= degree) {
+        throw new Error(
+          `makeBsplineSurface: ${count} poles along ${axis} cannot support degree ${degree} — need at least degree + 1`,
+        );
+      }
+    }
+    return this.adopt(
+      this.withFloats(flat, (ptr, _) =>
+        this.module.makeBsplineSurface(ptr, uCount, vCount, uDegree, vDegree),
+      ),
+    );
+  }
+
+  /**
+   * Smooth B-spline surface face interpolated THROUGH every point of a grid
+   * — the "surface through points" primitive (`poles` layout as
+   * `makeBsplineSurface`).
+   */
+  makeBsplineSurfaceThrough(points: readonly (readonly Vec3[])[]): OccShape {
+    const { flat, uCount, vCount } = flattenGrid(points, "makeBsplineSurfaceThrough");
+    return this.adopt(
+      this.withFloats(flat, (ptr, _) =>
+        this.module.makeBsplineSurfaceThrough(ptr, uCount, vCount),
+      ),
+    );
+  }
+
+  /**
+   * B-spline surface details of a face: degrees, knots, multiplicities and
+   * the pole grid — enough to understand an imported surface or plan edits.
+   */
+  describeSurface(shape: OccShape): BsplineSurfaceInfo {
+    const json = this.module.describeSurface(shape.raw);
+    this.throwIfError();
+    return JSON.parse(json) as BsplineSurfaceInfo;
+  }
+
+  /**
+   * Replace the pole grid of a B-spline surface face (`describeSurface`'s
+   * `poles` layout) — returns a **new** face, the original is untouched.
+   */
+  setBsplinePoles(shape: OccShape, poles: readonly (readonly Vec3[])[]): OccShape {
+    const { flat, uCount, vCount } = flattenGrid(poles, "setBsplinePoles");
+    return this.adopt(
+      this.withFloats(flat, (ptr, _) =>
+        this.module.setBsplineSurfacePoles(shape.raw, ptr, uCount, vCount),
+      ),
+    );
+  }
+
   // --- booleans ----------------------------------------------------------------
 
   fuse(a: OccShape, b: OccShape): OccShape {
@@ -409,6 +535,95 @@ export class OccSession {
 
   scale(shape: OccShape, factor: number): OccShape {
     return this.adopt(this.module.scale(shape.raw, factor));
+  }
+
+  /**
+   * Mirror through a `plane` (a point on it plus its normal) or about an
+   * `axis` line — pass exactly one of the two. Left/right handed parts and
+   * symmetric assemblies start here.
+   */
+  mirror(shape: OccShape, options: MirrorOptions): OccShape {
+    const usingPlane = options.plane !== undefined;
+    const usingAxis = options.axis !== undefined;
+    if (usingPlane === usingAxis) {
+      throw new Error("mirror: pass exactly one of plane { origin, normal } or axis { origin, direction }");
+    }
+    if (usingPlane) {
+      const [dx, dy, dz] = options.plane!.normal;
+      const len = Math.hypot(dx, dy, dz);
+      if (len < 1e-12) throw new Error("mirror: plane normal must be a non-zero vector");
+      const [ox, oy, oz] = options.plane!.origin ?? [0, 0, 0];
+      return this.adopt(
+        this.module.mirror(shape.raw, 0, ox, oy, oz, dx / len, dy / len, dz / len),
+      );
+    }
+    const [dx, dy, dz] = options.axis!.direction;
+    const len = Math.hypot(dx, dy, dz);
+    if (len < 1e-12) throw new Error("mirror: axis direction must be a non-zero vector");
+    const [ox, oy, oz] = options.axis!.origin ?? [0, 0, 0];
+    return this.adopt(
+      this.module.mirror(shape.raw, 1, ox, oy, oz, dx / len, dy / len, dz / len),
+    );
+  }
+
+  /**
+   * A grid of translated copies — bolt circles start as grids, ribs land on
+   * grids. The original sits at (0, 0); the result is a compound of all
+   * copies (`fuse` merges them into one solid).
+   */
+  rectangularPattern(shape: OccShape, options: RectangularPatternOptions): OccShape {
+    const countX = options.countX;
+    const countY = options.countY ?? 1;
+    if (!Number.isInteger(countX) || countX < 1) {
+      throw new Error("rectangularPattern: countX must be an integer of at least 1");
+    }
+    if (!Number.isInteger(countY) || countY < 1) {
+      throw new Error("rectangularPattern: countY must be an integer of at least 1");
+    }
+    if (countX * countY < 2) {
+      throw new Error("rectangularPattern: a 1 × 1 grid is a single copy — raise a count");
+    }
+    const spacingX = options.spacingX;
+    const spacingY = options.spacingY ?? spacingX;
+    if (!(Math.abs(spacingX) > 0)) throw new Error("rectangularPattern: spacingX must be non-zero");
+    if (!(Math.abs(spacingY) > 0)) throw new Error("rectangularPattern: spacingY must be non-zero");
+    const u = normalizedOption(options.directionX ?? [1, 0, 0], "rectangularPattern: directionX");
+    const v = normalizedOption(options.directionY ?? [0, 1, 0], "rectangularPattern: directionY");
+    if (Math.abs(u[0] * v[0] + u[1] * v[1] + u[2] * v[2]) > 1 - 1e-9) {
+      throw new Error("rectangularPattern: directionX and directionY must not be parallel");
+    }
+    return this.adopt(
+      this.module.rectangularPattern(
+        shape.raw, countX, countY, spacingX, spacingY,
+        u[0], u[1], u[2], v[0], v[1], v[2],
+      ),
+    );
+  }
+
+  /**
+   * Copies rotated around an axis, evenly spread over `sweepDegrees` (the
+   * original sits at angle 0). The result is a compound of all copies —
+   * `fuse` merges them into one solid.
+   */
+  circularPattern(shape: OccShape, options: CircularPatternOptions): OccShape {
+    const count = options.count;
+    if (!Number.isInteger(count) || count < 2) {
+      throw new Error("circularPattern: count must be an integer of at least 2");
+    }
+    const sweepDegrees = options.sweepDegrees ?? 360;
+    if (!(sweepDegrees > 0)) throw new Error("circularPattern: sweepDegrees must be positive");
+    const [dx, dy, dz] = options.axis ?? [0, 0, 1];
+    const len = Math.hypot(dx, dy, dz);
+    if (len < 1e-12) throw new Error("circularPattern: axis must be a non-zero vector");
+    const [ox, oy, oz] = options.origin ?? [0, 0, 0];
+    // Like revolve: over-360° sweeps clamp to the full circle (copies would
+    // otherwise land on top of earlier ones).
+    const radians = Math.min(sweepDegrees, 360) * Math.PI / 180;
+    return this.adopt(
+      this.module.circularPattern(
+        shape.raw, count, radians, dx / len, dy / len, dz / len, ox, oy, oz,
+      ),
+    );
   }
 
   // --- shelling & drafting ----------------------------------------------------
@@ -590,6 +805,36 @@ export class OccSession {
    */
   sweep(profile: OccShape, spine: OccShape, options: SolidProfileOptions = {}): OccShape {
     return this.adopt(this.module.sweep(profile.raw, spine.raw, options.solid ?? true));
+  }
+
+  /**
+   * The controllable sweep (`BRepOffsetAPI_MakePipeShell`): everything
+   * `sweep` does, plus a say in how the profile's frame travels. A fixed
+   * `binormal` keeps a swept rectangle flat (a spiral ribbon); `frenet` is
+   * the textbook frame; `correction: true` re-orients the profile onto the
+   * spine's normal plane so it need not be placed perpendicular by hand.
+   */
+  pipeShell(profile: OccShape, spine: OccShape, options: PipeShellOptions = {}): OccShape {
+    const mode = options.mode ?? "correctedFrenet";
+    let modeIndex = 0;
+    let binormal: Vec3 = [0, 0, 1];
+    if (mode === "frenet") {
+      modeIndex = 1;
+    } else if (mode === "binormal") {
+      modeIndex = 2;
+      if (!options.binormal) {
+        throw new Error('pipeShell: mode "binormal" needs a binormal direction');
+      }
+      binormal = normalizedOption(options.binormal, "pipeShell: binormal");
+    }
+    const transition = options.transition ?? "transformed";
+    const transitionIndex = transition === "round" ? 1 : transition === "rightCorner" ? 2 : 0;
+    return this.adopt(
+      this.module.pipeShell(
+        profile.raw, spine.raw, modeIndex, binormal[0], binormal[1], binormal[2],
+        transitionIndex, options.correction ?? false, options.solid ?? true,
+      ),
+    );
   }
 
   // --- data exchange ----------------------------------------------------------------
@@ -955,6 +1200,42 @@ function normalize(v: Vec3): Vec3 {
   const len = Math.hypot(v[0], v[1], v[2]);
   if (len < 1e-12) throw new Error("direction must be a non-zero vector");
   return [v[0] / len, v[1] / len, v[2] / len];
+}
+
+/** `normalize` with the house-style operation-prefixed error message. */
+function normalizedOption(v: Vec3, message: string): Vec3 {
+  const len = Math.hypot(v[0], v[1], v[2]);
+  if (len < 1e-12) throw new Error(`${message} must be a non-zero vector`);
+  return [v[0] / len, v[1] / len, v[2] / len];
+}
+
+/**
+ * Flatten a rectangular point grid (rows of constant v, running along u) to
+ * the flat row-major doubles the wasm side consumes, validating the shape.
+ */
+function flattenGrid(
+  grid: readonly (readonly Vec3[])[],
+  operation: string,
+): { flat: number[]; uCount: number; vCount: number } {
+  const vCount = grid.length;
+  if (vCount < 2) throw new Error(`${operation}: needs at least a 2 × 2 grid`);
+  const uCount = grid[0]!.length;
+  if (uCount < 2) throw new Error(`${operation}: needs at least a 2 × 2 grid`);
+  const flat: number[] = [];
+  for (const row of grid) {
+    if (row.length !== uCount) {
+      throw new Error(
+        `${operation}: the grid must be rectangular — the first row has ${uCount} points, another has ${row.length}`,
+      );
+    }
+    for (const point of row) {
+      if (![point[0], point[1], point[2]].every(Number.isFinite)) {
+        throw new Error(`${operation}: points must be finite numbers`);
+      }
+      flat.push(point[0], point[1], point[2]);
+    }
+  }
+  return { flat, uCount, vCount };
 }
 
 function allFinite(points: readonly Vec3[]): boolean {

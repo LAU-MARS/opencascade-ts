@@ -13,6 +13,7 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepFilletAPI_MakeChamfer.hxx>
@@ -21,6 +22,7 @@
 #include <BRepOffsetAPI_DraftAngle.hxx>
 #include <BRepOffsetAPI_MakeOffsetShape.hxx>
 #include <BRepOffsetAPI_MakePipe.hxx>
+#include <BRepOffsetAPI_MakePipeShell.hxx>
 #include <BRepOffsetAPI_MakeThickSolid.hxx>
 #include <BRepOffsetAPI_ThruSections.hxx>
 #include <BRepOffset_Mode.hxx>
@@ -33,22 +35,32 @@
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepPrimAPI_MakeTorus.hxx>
 #include <BRepLib_MakeWire.hxx>
+#include <BRepLib.hxx>
 #include <BRepTools.hxx>
+#include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <Bnd_Box.hxx>
+#include <GCE2d_MakeSegment.hxx>
 #include <GProp_GProps.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <GeomAPI_Interpolate.hxx>
+#include <GeomAPI_PointsToBSplineSurface.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <ShapeFix_Shape.hxx>
 #include <Standard_Version.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColgp_Array1OfPnt.hxx>
+#include <TColgp_Array2OfPnt.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Wire.hxx>
@@ -60,6 +72,7 @@
 #include <gp_Dir.hxx>
 #include <gp_Elips.hxx>
 #include <gp_Pln.hxx>
+#include <gp_Pnt2d.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
@@ -154,6 +167,8 @@ gp_Ax2 makeAxis(double ox, double oy, double oz,
                 double dx, double dy, double dz) {
   return gp_Ax2(gp_Pnt(ox, oy, oz), gp_Dir(dx, dy, dz));
 }
+
+const double TWO_PI = 6.28318530717958647692;
 
 } // namespace
 
@@ -312,6 +327,37 @@ OccShape interpolateBsplineWire(const std::vector<double>& coordinates,
   return OccShape(maker.Wire());
 }
 
+OccShape makeHelixWire(double radius, double pitch, double height,
+                       double ax, double ay, double az,
+                       double ox, double oy, double oz,
+                       bool leftHanded) {
+  if (!(radius > 0)) throw std::runtime_error("helix: radius must be positive");
+  if (!(pitch > 0)) throw std::runtime_error("helix: pitch must be positive");
+  if (!(height > 0)) throw std::runtime_error("helix: height must be positive");
+  // There is no helix primitive in OCCT — the standard recipe is a straight
+  // line in the cylinder's (u, v) parameter space: u advances 2π per turn,
+  // v climbs one pitch per turn.
+  Handle(Geom_CylindricalSurface) cylinder =
+      new Geom_CylindricalSurface(makeAxis(ox, oy, oz, ax, ay, az), radius);
+  const double turns = height / pitch;
+  const double uEnd = (leftHanded ? -1.0 : 1.0) * turns * TWO_PI;
+  GCE2d_MakeSegment segment(gp_Pnt2d(0.0, 0.0), gp_Pnt2d(uEnd, height));
+  if (!segment.IsDone()) throw std::runtime_error("helix construction failed");
+  // The (pcurve, surface) MakeEdge overload builds the 3D curve itself and
+  // takes the trimmed curve's full range — exactly the segment above.
+  BRepBuilderAPI_MakeEdge edge(segment.Value(), cylinder);
+  BRepBuilderAPI_MakeWire maker(edge.Edge());
+  if (!edge.IsDone() || !maker.IsDone() || maker.Wire().IsNull()) {
+    throw std::runtime_error("helix construction failed");
+  }
+  // The pcurve edge carries no 3D curve the sweep algorithms can walk —
+  // approximate one (a C1 B-spline well under model tolerances).
+  if (!BRepLib::BuildCurves3d(maker.Wire(), 1e-6)) {
+    throw std::runtime_error("helix construction failed (no 3D curve)");
+  }
+  return OccShape(maker.Wire());
+}
+
 OccShape assembleWire(const std::vector<OccShape>& parts) {
   if (parts.size() < 2) {
     throw std::runtime_error("wire assembly needs at least 2 parts");
@@ -415,6 +461,82 @@ OccShape scaleShape(const OccShape& shape, double factor) {
   gp_Trsf trsf;
   trsf.SetScaleFactor(factor);
   return OccShape(BRepBuilderAPI_Transform(shape.get(), trsf, true).Shape());
+}
+
+OccShape mirrorShape(const OccShape& shape, int mode,
+                     double ox, double oy, double oz,
+                     double dx, double dy, double dz) {
+  gp_Trsf trsf;
+  if (mode == 0) {
+    trsf.SetMirror(gp_Ax2(gp_Pnt(ox, oy, oz), gp_Dir(dx, dy, dz)));
+  } else {
+    trsf.SetMirror(gp_Ax1(gp_Pnt(ox, oy, oz), gp_Dir(dx, dy, dz)));
+  }
+  return OccShape(BRepBuilderAPI_Transform(shape.get(), trsf, true).Shape());
+}
+
+// --- patterning -----------------------------------------------------------------
+
+namespace {
+
+// Copies share the original's geometry through locations (pure translations
+// and rotations are direct isometries — nothing needs to be copied).
+void addPatternCopies(TopoDS_Compound& compound, BRep_Builder& builder,
+                      const TopoDS_Shape& original, const std::vector<gp_Trsf>& placements) {
+  for (const gp_Trsf& placement : placements) {
+    builder.Add(compound, original.Moved(placement));
+  }
+}
+
+} // namespace
+
+OccShape rectangularPattern(const OccShape& shape, int countX, int countY,
+                            double spacingX, double spacingY,
+                            double ux, double uy, double uz,
+                            double vx, double vy, double vz) {
+  if (countX < 1 || countY < 1) {
+    throw std::runtime_error("pattern: counts must be at least 1");
+  }
+  if (spacingX == 0 || spacingY == 0) {
+    throw std::runtime_error("pattern: spacing must be non-zero");
+  }
+  const gp_Vec directionU(ux, uy, uz), directionV(vx, vy, vz);
+  std::vector<gp_Trsf> placements;
+  for (int j = 0; j < countY; ++j) {
+    for (int i = 0; i < countX; ++i) {
+      gp_Trsf trsf;
+      trsf.SetTranslation(directionU * (spacingX * i) + directionV * (spacingY * j));
+      placements.push_back(trsf);
+    }
+  }
+  TopoDS_Compound compound;
+  BRep_Builder builder;
+  builder.MakeCompound(compound);
+  addPatternCopies(compound, builder, shape.get(), placements);
+  return OccShape(compound);
+}
+
+OccShape circularPattern(const OccShape& shape, int count, double sweepRadians,
+                         double ax, double ay, double az,
+                         double ox, double oy, double oz) {
+  if (count < 1) {
+    throw std::runtime_error("pattern: count must be at least 1");
+  }
+  if (!(sweepRadians > 0)) {
+    throw std::runtime_error("pattern: sweepDegrees must be positive");
+  }
+  const gp_Ax1 axis(gp_Pnt(ox, oy, oz), gp_Dir(ax, ay, az));
+  std::vector<gp_Trsf> placements;
+  for (int k = 0; k < count; ++k) {
+    gp_Trsf trsf;
+    trsf.SetRotation(axis, sweepRadians * k / count);
+    placements.push_back(trsf);
+  }
+  TopoDS_Compound compound;
+  BRep_Builder builder;
+  builder.MakeCompound(compound);
+  addPatternCopies(compound, builder, shape.get(), placements);
+  return OccShape(compound);
 }
 
 // --- shelling & drafting ------------------------------------------------------
@@ -752,16 +874,25 @@ OccShape loftShapes(const std::vector<OccShape>& sections, bool ruled, bool soli
   return OccShape(maker.Shape());
 }
 
-OccShape sweepShape(const OccShape& profile, const OccShape& spine, bool solid) {
-  TopoDS_Wire spineWire;
+namespace {
+
+// Sweep spines arrive as wires (the profile constructors' output) or single
+// edges (e.g. a helix).
+TopoDS_Wire toSpineWire(const OccShape& spine, const char* operation) {
   if (spine.get().ShapeType() == TopAbs_WIRE) {
-    spineWire = TopoDS::Wire(spine.get());
-  } else if (spine.get().ShapeType() == TopAbs_EDGE) {
-    spineWire = BRepBuilderAPI_MakeWire(TopoDS::Edge(spine.get())).Wire();
-  } else {
-    throw std::runtime_error(
-        "sweep: spine must be a Wire or Edge (e.g. makePolygon / makeCircle output)");
+    return TopoDS::Wire(spine.get());
   }
+  if (spine.get().ShapeType() == TopAbs_EDGE) {
+    return BRepBuilderAPI_MakeWire(TopoDS::Edge(spine.get())).Wire();
+  }
+  throw std::runtime_error(std::string(operation) +
+                           ": spine must be a Wire or Edge (e.g. makeCircle / helix output)");
+}
+
+} // namespace
+
+OccShape sweepShape(const OccShape& profile, const OccShape& spine, bool solid) {
+  const TopoDS_Wire spineWire = toSpineWire(spine, "sweep");
   // MakePipe transports the profile along the spine starting from its start
   // vertex — callers place the profile there, perpendicular to the tangent.
   BRepOffsetAPI_MakePipe pipe(spineWire, prepareProfile(profile.get(), solid, "sweep"));
@@ -769,6 +900,45 @@ OccShape sweepShape(const OccShape& profile, const OccShape& spine, bool solid) 
     throw std::runtime_error("sweep failed (profile not planar, or not near the spine start?)");
   }
   return OccShape(pipe.Shape());
+}
+
+OccShape pipeShellShape(const OccShape& profile, const OccShape& spine,
+                        int mode, double bx, double by, double bz,
+                        int transition, bool correction, bool solid) {
+  TopoDS_Wire profileWire;
+  if (profile.get().ShapeType() == TopAbs_WIRE) {
+    profileWire = TopoDS::Wire(profile.get());
+  } else if (profile.get().ShapeType() == TopAbs_FACE) {
+    profileWire = BRepTools::OuterWire(TopoDS::Face(profile.get()));
+  } else {
+    throw std::runtime_error(
+        "pipeShell: profile must be a Wire or Face (e.g. makeCircle output)");
+  }
+  BRepOffsetAPI_MakePipeShell maker(toSpineWire(spine, "pipeShell"));
+  switch (mode) {
+    case 1: maker.SetMode(true); break;    // Frenet — spins in inflection areas
+    case 2: maker.SetMode(gp_Dir(bx, by, bz)); break;  // fixed binormal
+    default: maker.SetMode(false); break;  // corrected Frenet
+  }
+  switch (transition) {
+    case 1: maker.SetTransitionMode(BRepBuilderAPI_RoundCorner); break;
+    case 2: maker.SetTransitionMode(BRepBuilderAPI_RightCorner); break;
+    default: maker.SetTransitionMode(BRepBuilderAPI_Transformed); break;
+  }
+  // WithCorrection re-orients the profile onto the spine's normal plane, so
+  // callers need not place it exactly perpendicular by hand.
+  maker.Add(profileWire, false, correction);
+  maker.Build();
+  if (!maker.IsDone() || maker.Shape().IsNull()) {
+    throw std::runtime_error(
+        "pipeShell failed (profile not near the spine start, or mode unsuitable?)");
+  }
+  if (solid && !maker.MakeSolid()) {
+    throw std::runtime_error(
+        "pipeShell: the profile is not closed — cannot cap it into a solid "
+        "(pass solid: false for the shell)");
+  }
+  return OccShape(maker.Shape());
 }
 
 // --- splitting & offsetting ------------------------------------------------------
@@ -809,4 +979,178 @@ OccShape offsetSolid(const OccShape& shape, double distance) {
     throw std::runtime_error("offset failed (try a smaller |distance|)");
   }
   return OccShape(maker.Shape());
+}
+
+// --- healing -------------------------------------------------------------------
+
+OccShape healShapes(const std::vector<OccShape>& shapes,
+                    double tolerance, bool sew, bool fix) {
+  if (shapes.empty()) throw std::runtime_error("heal: needs at least one shape");
+  if (!(tolerance > 0)) throw std::runtime_error("heal: tolerance must be positive");
+
+  TopoDS_Shape working;
+  if (shapes.size() == 1) {
+    working = shapes[0].get();
+    // Solids are closed by construction — sewing them has nothing to stitch
+    // and would degrade them to shells. Several shapes, or open geometry
+    // (faces/shells/wires/compounds), is where stitching earns its keep.
+    if (working.ShapeType() == TopAbs_SOLID || working.ShapeType() == TopAbs_COMPSOLID) {
+      sew = false;
+    }
+  } else {
+    TopoDS_Compound compound;
+    BRep_Builder builder;
+    builder.MakeCompound(compound);
+    for (const OccShape& shape : shapes) {
+      builder.Add(compound, shape.get());
+    }
+    working = compound;
+  }
+
+  if (sew) {
+    BRepBuilderAPI_Sewing sewing(tolerance, true, true, false, false);
+    sewing.Add(working);
+    sewing.Perform();
+    const TopoDS_Shape sewed = sewing.SewedShape();
+    if (sewed.IsNull()) throw std::runtime_error("heal: sewing failed");
+    working = sewed;
+  }
+
+  if (fix) {
+    ShapeFix_Shape fixer(working);
+    fixer.SetPrecision(tolerance);
+    // Let the fixer relax tolerances up to 1.0 rather than drop geometry that
+    // only misses by a hair — healing is the last stop before discarding.
+    fixer.SetMaxTolerance(std::max(tolerance, 1.0));
+    fixer.Perform();
+    const TopoDS_Shape fixed = fixer.Shape();
+    if (fixed.IsNull()) throw std::runtime_error("heal: shape fixing failed");
+    working = fixed;
+  }
+  return OccShape(working);
+}
+
+// --- B-spline surfaces -----------------------------------------------------------
+
+namespace {
+
+void uniformSurfaceKnots(int poleCount, int degree,
+                         TColStd_Array1OfReal& knots, TColStd_Array1OfInteger& mults) {
+  // Clamped uniform knots [0, 1, …, n-d] — the 2D twin of makeBsplineWire's
+  // knot layout: ends at multiplicity degree + 1 so the surface passes
+  // through the border pole grid.
+  const int knotCount = poleCount - degree + 1;
+  for (int k = 1; k <= knotCount; ++k) {
+    knots.SetValue(k, k - 1);
+    mults.SetValue(k, 1);
+  }
+  mults.SetValue(1, degree + 1);
+  mults.SetValue(knotCount, degree + 1);
+}
+
+TColgp_Array2OfPnt gridFromArray(const std::vector<double>& coordinates,
+                                 int uCount, int vCount, const char* operation) {
+  if (uCount < 2 || vCount < 2) {
+    throw std::runtime_error(std::string(operation) +
+                             ": the grid needs at least 2 × 2 points");
+  }
+  if (static_cast<int>(coordinates.size() / 3) != uCount * vCount) {
+    std::ostringstream message;
+    message << operation << ": expected " << uCount << " × " << vCount
+            << " points (" << uCount * vCount * 3 << " numbers) — got "
+            << coordinates.size();
+    throw std::runtime_error(message.str());
+  }
+  // Row-major over rows of constant v, each running along u.
+  TColgp_Array2OfPnt grid(1, uCount, 1, vCount);
+  for (int v = 1; v <= vCount; ++v) {
+    for (int u = 1; u <= uCount; ++u) {
+      const size_t index = ((v - 1) * uCount + (u - 1)) * 3;
+      grid.SetValue(u, v, gp_Pnt(coordinates[index], coordinates[index + 1],
+                                 coordinates[index + 2]));
+    }
+  }
+  return grid;
+}
+
+} // namespace
+
+OccShape makeBsplineSurfaceShape(const std::vector<double>& coordinates,
+                                 int uCount, int vCount, int uDegree, int vDegree) {
+  if (uDegree < 1 || vDegree < 1) {
+    throw std::runtime_error("bspline surface: degrees must be at least 1");
+  }
+  if (uCount <= uDegree || vCount <= vDegree) {
+    std::ostringstream message;
+    message << "bspline surface: a " << uCount << " × " << vCount
+            << " pole grid cannot support degrees " << uDegree << " × " << vDegree
+            << " — each needs at least degree + 1 poles";
+    throw std::runtime_error(message.str());
+  }
+  const TColgp_Array2OfPnt poles = gridFromArray(coordinates, uCount, vCount, "bspline surface");
+
+  TColStd_Array1OfReal uKnots(1, uCount - uDegree + 1);
+  TColStd_Array1OfInteger uMults(1, uCount - uDegree + 1);
+  uniformSurfaceKnots(uCount, uDegree, uKnots, uMults);
+  TColStd_Array1OfReal vKnots(1, vCount - vDegree + 1);
+  TColStd_Array1OfInteger vMults(1, vCount - vDegree + 1);
+  uniformSurfaceKnots(vCount, vDegree, vKnots, vMults);
+
+  Handle(Geom_BSplineSurface) surface =
+      new Geom_BSplineSurface(poles, uKnots, vKnots, uMults, vMults, uDegree, vDegree);
+  BRepBuilderAPI_MakeFace maker(surface, 1e-6);
+  if (!maker.IsDone() || maker.Face().IsNull()) {
+    throw std::runtime_error("bspline surface construction failed");
+  }
+  return OccShape(maker.Face());
+}
+
+OccShape interpolateBsplineSurfaceShape(const std::vector<double>& coordinates,
+                                        int uCount, int vCount) {
+  const TColgp_Array2OfPnt points = gridFromArray(coordinates, uCount, vCount, "surface through");
+  GeomAPI_PointsToBSplineSurface fitter;
+  fitter.Interpolate(points);
+  if (fitter.Surface().IsNull()) {
+    throw std::runtime_error("surface interpolation failed");
+  }
+  BRepBuilderAPI_MakeFace maker(fitter.Surface(), 1e-6);
+  if (!maker.IsDone() || maker.Face().IsNull()) {
+    throw std::runtime_error("surface interpolation failed");
+  }
+  return OccShape(maker.Face());
+}
+
+OccShape setBsplineSurfacePolesShape(const OccShape& face,
+                                     const std::vector<double>& coordinates,
+                                     int uCount, int vCount) {
+  if (face.get().ShapeType() != TopAbs_FACE) {
+    throw std::runtime_error(
+        "setBsplinePoles: shape must be a Face (e.g. makeBsplineSurface output)");
+  }
+  // BRep_Tool::Surface hands out the face's stored handle — Copy() it before
+  // editing, or the original face would warp underneath the caller.
+  Handle(Geom_BSplineSurface) original =
+      Handle(Geom_BSplineSurface)::DownCast(BRep_Tool::Surface(TopoDS::Face(face.get())));
+  if (original.IsNull()) {
+    throw std::runtime_error("setBsplinePoles: the face's surface is not a B-spline");
+  }
+  if (original->NbUPoles() != uCount || original->NbVPoles() != vCount) {
+    std::ostringstream message;
+    message << "setBsplinePoles: the surface has a " << original->NbUPoles() << " × "
+            << original->NbVPoles() << " pole grid — got " << uCount << " × " << vCount;
+    throw std::runtime_error(message.str());
+  }
+  const TColgp_Array2OfPnt poles = gridFromArray(coordinates, uCount, vCount, "setBsplinePoles");
+  Handle(Geom_BSplineSurface) modified =
+      Handle(Geom_BSplineSurface)::DownCast(original->Copy());
+  for (int v = 1; v <= vCount; ++v) {
+    for (int u = 1; u <= uCount; ++u) {
+      modified->SetPole(u, v, poles.Value(u, v));
+    }
+  }
+  BRepBuilderAPI_MakeFace maker(modified, 1e-6);
+  if (!maker.IsDone() || maker.Face().IsNull()) {
+    throw std::runtime_error("setBsplinePoles failed");
+  }
+  return OccShape(maker.Face());
 }

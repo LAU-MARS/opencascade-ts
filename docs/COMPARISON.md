@@ -30,9 +30,9 @@ line exists only as that single beta.
 
 ### occt.ts
 
-This project (LGPL-2.1). `0.2.0` on OCCT **7.9.3** (2025) with Emscripten 3.1.74. The OCCT
+This project (LGPL-2.1). `0.8.0` on OCCT **7.9.3** (2025) with Emscripten 3.1.74. The OCCT
 version is a single build argument (`OCCT_VERSION`); 8.0 is supported experimentally. A small
-curated TypeScript API (~40 calls), a zero-dependency WebGL2 viewer, a JSON CLI, and hidden-line
+curated TypeScript API (~70 calls), a zero-dependency WebGL2 viewer, a JSON CLI, and hidden-line
 drawings — actively developed.
 
 ## Scorecard
@@ -46,9 +46,12 @@ the ❌ from raw calls; the difference is what you get out of the box.
 | OCCT kernel | 7.4.0p1 (2019) stable · 7.6.2 (2022) beta/master | **7.9.3 (2025)**; 8.0 experimental |
 | Emscripten | 3.1.14 | 3.1.74 |
 | Maintenance | last stable 2020 · quiet since Aug 2023 | active |
-| API surface | **auto-generated bindings for nearly all of OCCT** — thousands of classes | ~50 curated, hand-written calls |
+| API surface | **auto-generated bindings for nearly all of OCCT** — thousands of classes | ~70 curated, hand-written calls |
 | API style | raw embind: manual `.delete()`, downcasts, machine-generated typings | strict TypeScript, ESM, validated options, errors that teach |
 | Fillets · chamfers · extrude/revolve · 2D | ✅ raw classes | ✅ `fillet` / `chamfer` / `variableFillet` / `extrude` / `revolve` / `loft` / `sweep` + line/arc/ellipse/B-spline profiles & wire assembly |
+| Pipe sweeps w/ frame control · helices | ✅ raw classes | ✅ `pipeShell` (Frenet/binormal, corner modes) + `makeHelix` |
+| Healing (sew + shape repair) · mirror · patterns | ✅ raw classes | ✅ `heal` / `mirror` / `rectangularPattern` / `circularPattern` |
+| Freeform surfaces | ✅ raw classes | ✅ B-spline surfaces from poles / through points, `describeSurface` + `setBsplinePoles` editing |
 | Shelling (thick solid) · draft angle | ❌ bound as empty stubs — no callable methods | ✅ `shell` / `draft` |
 | STEP · BRep · IGES I/O | ✅ raw XCAF/XSControl classes | ✅ first-class, with unit selection |
 | Assembly tree: names · colors · transforms | raw calls | ✅ `readStepDocument` → JSON · `writeStepDocument` ← tree |
@@ -57,7 +60,7 @@ the ❌ from raw calls; the difference is what you get out of the box.
 | Headless Node | ✅ | ✅ plus CLI with `--json` |
 | Interrogation: describe · holes · distance · section · point-in-solid | ❌ | ✅ JSON out of the box |
 | Exports beyond kernel formats | — | SVG drawings · glTF (.glb) · OBJ, one call each |
-| npm package (unpacked) | ~67 MB — full API | ~25 MB |
+| npm package (unpacked) | ~67 MB — full API | ~35 MB |
 | Custom/slim builds | ✅ regenerate from a class list | not needed — curation happened at design time |
 | Ecosystem | CascadeStudio · RepliCAD · BitByBit · ArchiYou | young |
 
@@ -157,7 +160,8 @@ typed, tested, one-call path.
 
 opencascade.js on npm unpacks to ~67 MB — the price of binding everything — and offers a
 custom-build system that regenerates a slimmer wasm from a list of classes you provide.
-occt.ts's npm package is ~25 MB unpacked (the wasm is 24.8 MB) because the curation happened at
+occt.ts's npm package is ~35 MB unpacked (the wasm is 34.3 MB; the 0.4.0–0.8.0 modeling
+releases pulled in the surface, sweep and healing libraries) because the curation happened at
 design time instead of at your build time. No configuration, no codegen step: `npm install
 occt.ts` and the artifact is there.
 
@@ -181,7 +185,10 @@ B-splines (control points and through-point interpolation) with wire assembly (`
 faces with holes (`makeFace`, which also composes 2D trim/intersect with `cut`/`common`),
 splitting and solid offsetting, mass centroids, and XCAF write-back
 (`writeStepDocument`: names, colors, assembly structure, placements) landed with the
-0.4.0–0.7.0 modeling releases.
+0.4.0–0.7.0 modeling releases; healing (`heal`: sewing + ShapeFix), `mirror`,
+rectangular/circular patterns, `makeHelix` + `pipeShell` (frame-controlled sweeps) and B-spline
+surfaces (`makeBsplineSurface` / `makeBsplineSurfaceThrough` / `describeSurface` /
+`setBsplinePoles`) landed with 0.8.0.
 
 1. **MCP server**: first-class agent access — the flagship next step.
 2. **Sketch constraints**: dimensions and coincidences on 2D profiles.
@@ -222,9 +229,10 @@ Checked 2026-09-11; numbers drift, so re-verify before quoting elsewhere.
 - README at tag `v1.1.1`: "Current OCCT version: V7_4_0p1". README at master: OCCT 7.6.2 badge.
 - Master `Dockerfile`: OCCT pinned to commit `bb368e2…`, `emscripten/emsdk:3.1.14`, RapidJSON
   v1.1.0, FreeType 2.13.0.
-- This repo: `package.json` (occt.ts 0.2.0), `etc/docker/Dockerfile` (`ARG OCCT_VERSION=7.9.3`,
-  `emscripten/emsdk:3.1.74`), `dist/wasm/occtjs.wasm` ≈ 24.8 MB, npm `files` (dist, bin, docs)
-  → ~25 MB unpacked.
+- This repo: `package.json` (occt.ts 0.8.0), `etc/docker/Dockerfile` (`ARG OCCT_VERSION=7.9.3`,
+  `emscripten/emsdk:3.1.74`), `dist/wasm/occtjs.wasm` ≈ 34.3 MB, npm `files` (dist, bin, docs)
+  → ~35 MB unpacked (the 0.4.0–0.8.0 modeling releases grew it from the ~25 MB of 0.2.0;
+  freeform surfaces, sweeps and ShapeFix bring their OCCT libraries along).
 - Empty-stub status of `BRepOffsetAPI_DraftAngle` / `BRepOffsetAPI_MakeThickSolid` (and the
   absent `BRepOffset_MakeOffset`) in the shipped opencascade.js builds: observed by hands-on
   porting work (2026-09), accepted as reported. occt.ts's `shell`/`draft` are verified against

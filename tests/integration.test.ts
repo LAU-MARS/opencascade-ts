@@ -749,4 +749,235 @@ describeWasm("opencascade-ts kernel (wasm integration)", () => {
     expect(metres).toContain("METRE");
     expect(metres).not.toContain("MILLI");
   });
+
+  it("sews adjacent faces into a shared-edge shell", () => {
+    const left = occ.makeFace(occ.makePolygon([[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0]]));
+    const right = occ.makeFace(occ.makePolygon([[1, 0, 0], [2, 0, 0], [2, 1, 0], [1, 1, 0]]));
+    const shell = occ.heal([left, right]);
+    expect(shell.count("Shell")).toBe(1);
+    expect(shell.isValid()).toBe(true);
+    expect(shell.count("Face")).toBe(2);
+    // 8 unsewn edges; the two along the shared boundary merge into one: 7 remain
+    expect(shell.count("Edge")).toBe(7);
+    expect(shell.area()).toBeCloseTo(2, 6);
+  });
+
+  it("heals a valid solid without changing it", () => {
+    const healed = occ.heal(occ.makeBox(10, 10, 10));
+    expect(healed.shapeType()).toBe("Solid");
+    expect(healed.isValid()).toBe(true);
+    expect(healed.volume()).toBeCloseTo(1000, 6);
+    expect(() => occ.heal([])).toThrow(/at least one/);
+    expect(() => occ.heal(occ.makeBox(1, 1, 1), { tolerance: 0 })).toThrow(/positive/);
+  });
+
+  it("mirrors through planes and about axes", () => {
+    const part = occ.translate(occ.makeBox(2, 4, 6), [1, 0, 0]); // x ∈ [1, 3]
+    const flipped = occ.mirror(part, { plane: { origin: [0, 0, 0], normal: [0, 0, 1] } });
+    expect(flipped.shapeType()).toBe("Solid");
+    expect(flipped.isValid()).toBe(true);
+    expect(flipped.volume()).toBeCloseTo(48, 6);
+    expectVec3Close(flipped.bounds().min, [1, 0, -6]);
+    expectVec3Close(flipped.bounds().max, [3, 4, 0]);
+
+    // a rotation by π about the X axis: both y and z flip
+    const aboutX = occ.mirror(part, { axis: { origin: [0, 0, 0], direction: [1, 0, 0] } });
+    expectVec3Close(aboutX.bounds().min, [1, -4, -6]);
+    expectVec3Close(aboutX.bounds().max, [3, 0, 0]);
+
+    expect(() => occ.mirror(part, {})).toThrow(/exactly one/);
+    expect(() =>
+      occ.mirror(part, { plane: { normal: [0, 0, 1] }, axis: { direction: [1, 0, 0] } }),
+    ).toThrow(/exactly one/);
+    expect(() => occ.mirror(part, { plane: { normal: [0, 0, 0] } })).toThrow(/non-zero/);
+  });
+
+  it("lays out rectangular and circular patterns", () => {
+    const grid = occ.rectangularPattern(occ.makeBox(1, 1, 1), {
+      countX: 3, countY: 2, spacingX: 2, spacingY: 3,
+    });
+    expect(grid.shapeType()).toBe("Compound");
+    expect(grid.count("Solid")).toBe(6);
+    expect(grid.volume()).toBeCloseTo(6, 6);
+    expectVec3Close(grid.bounds().min, [0, 0, 0]);
+    expectVec3Close(grid.bounds().max, [5, 4, 1]);
+
+    const spoke = occ.translate(occ.makeBox(1, 1, 1), [1, 0, 0]); // x ∈ [1, 2]
+    const ring = occ.circularPattern(spoke, { count: 4 });
+    expect(ring.shapeType()).toBe("Compound");
+    expect(ring.count("Solid")).toBe(4);
+    expect(ring.volume()).toBeCloseTo(4, 6);
+    expectVec3Close(ring.bounds().min, [-2, -2, 0]);
+    expectVec3Close(ring.bounds().max, [2, 2, 1]);
+
+    // a half ring: copies at 0°, 60°, 120° — all in y ≥ 0
+    const arc = occ.circularPattern(spoke, { count: 3, sweepDegrees: 180 });
+    expect(arc.count("Solid")).toBe(3);
+    expect(arc.bounds().min[1]).toBeGreaterThanOrEqual(-1e-6);
+
+    expect(() =>
+      occ.rectangularPattern(spoke, { countX: 1, countY: 1, spacingX: 1 }),
+    ).toThrow(/single copy/);
+    expect(() =>
+      occ.rectangularPattern(spoke, { countX: 2, countY: 1, spacingX: 1, directionY: [1, 0, 0] }),
+    ).toThrow(/parallel/);
+    expect(() => occ.circularPattern(spoke, { count: 1 })).toThrow(/at least 2/);
+  });
+
+  it("builds a helix and sweeps a spring along it", () => {
+    const helix = occ.makeHelix(5, 2, 2); // one full turn: radius 5, pitch 2
+    expect(helix.shapeType()).toBe("Wire");
+    expect(helix.count("Edge")).toBe(1);
+    // the helix walks on the r=5 cylinder — B-spline bounds pad by its
+    // control points, so allow slack on x/y, none on the exact z range
+    const bounds = helix.bounds();
+    for (const value of [bounds.min[0], bounds.min[1], bounds.max[0], bounds.max[1]]) {
+      expect(Math.abs(Math.abs(value) - 5)).toBeLessThan(0.3);
+    }
+    expect(bounds.min[2]).toBeCloseTo(0, 2);
+    expect(bounds.max[2]).toBeCloseTo(2, 2);
+
+    // circle at the helix start — `correction` re-orients it onto the normal
+    // plane. Tube volume ≈ cross-section × centerline length.
+    const profile = occ.makeCircle(0.25, { origin: [5, 0, 0], normal: [0, 1, 0] });
+    const spring = occ.pipeShell(profile, helix, { correction: true });
+    expect(spring.shapeType()).toBe("Solid");
+    expect(spring.isValid()).toBe(true);
+    const centerline = Math.hypot(2 * Math.PI * 5, 2);
+    expect(spring.volume()).toBeCloseTo(Math.PI * 0.25 * 0.25 * centerline, 0);
+
+    const left = occ.makeHelix(5, 2, 2, { leftHanded: true });
+    expect(left.bounds().min[2]).toBeCloseTo(0, 2);
+    expect(left.bounds().max[2]).toBeCloseTo(2, 2);
+    expect(() => occ.makeHelix(0, 2, 2)).toThrow(/positive/);
+    expect(() => occ.makeHelix(5, 0, 2)).toThrow(/positive/);
+  });
+
+  it("pipe-shells a circle along a circle into an exact torus", () => {
+    const spine = occ.makeCircle(4, { normal: [0, 0, 1] }); // starts at (4, 0, 0)
+    const profile = occ.makeCircle(1, { origin: [4, 0, 0], normal: [0, 1, 0] });
+    const torus = occ.pipeShell(profile, spine);
+    expect(torus.shapeType()).toBe("Solid");
+    expect(torus.isValid()).toBe(true);
+    expect(torus.volume()).toBeCloseTo(2 * Math.PI * Math.PI * 4, 1);
+    // the swept surface is a B-spline; its bounds pad by control points
+    const bounds = torus.bounds();
+    for (const value of [bounds.min[0], bounds.min[1], bounds.max[0], bounds.max[1]]) {
+      expect(Math.abs(Math.abs(value) - 5)).toBeLessThan(0.5);
+    }
+    expect(bounds.min[2]).toBeCloseTo(-1, 1);
+    expect(bounds.max[2]).toBeCloseTo(1, 1);
+
+    expect(() =>
+      occ.pipeShell(profile, spine, { mode: "binormal" }),
+    ).toThrow(/binormal.*direction/);
+  });
+
+  it("keeps a swept rectangle flat with a fixed binormal", () => {
+    const helix = occ.makeHelix(5, 2, 2);
+    // rectangle in the XZ plane at the helix start (the tangent there is +Y)
+    const ribbon = occ.makePolygon([
+      [4.9, 0, -0.25], [5.1, 0, -0.25], [5.1, 0, 0.25], [4.9, 0, 0.25],
+    ]);
+    const flight = occ.pipeShell(ribbon, helix, {
+      mode: "binormal", binormal: [0, 0, 1], correction: true,
+    });
+    expect(flight.shapeType()).toBe("Solid");
+    expect(flight.isValid()).toBe(true);
+    // the ribbon stays level the whole way: 2 of climb + 0.5 of ribbon height
+    const z = flight.bounds();
+    expect(z.max[2] - z.min[2]).toBeCloseTo(2.5, 1);
+    // cross-section 0.2 × 0.5 carried along the centerline (length ≈ 31.5)
+    expect(flight.volume()).toBeGreaterThan(2.5);
+    expect(flight.volume()).toBeLessThan(4);
+  });
+
+  it("builds B-spline surfaces from control points", () => {
+    const surface = occ.makeBsplineSurface(
+      [
+        [[0, 0, 0], [2, 0, 0]],
+        [[0, 3, 0], [2, 3, 0]],
+      ],
+      { uDegree: 1, vDegree: 1 },
+    );
+    expect(surface.shapeType()).toBe("Face");
+    expect(surface.isValid()).toBe(true);
+    // the bilinear patch between the four corners: a flat 2 × 3 rectangle
+    expect(surface.area()).toBeCloseTo(6, 3);
+
+    // a 4 × 4 planar grid at the default degree 3 is still exactly planar
+    const smooth = occ.makeBsplineSurface(
+      Array.from({ length: 4 }, (_, v) =>
+        Array.from({ length: 4 }, (_, u) => [u, v, 0]),
+      ),
+    );
+    expect(smooth.isValid()).toBe(true);
+    expect(smooth.area()).toBeCloseTo(9, 3);
+
+    expect(() => occ.makeBsplineSurface([[[0, 0, 0], [1, 0, 0]]])).toThrow(/2 × 2/);
+    expect(() =>
+      occ.makeBsplineSurface([[[0, 0, 0], [1, 0, 0]], [[0, 1, 0]]]),
+    ).toThrow(/rectangular/);
+    expect(() =>
+      occ.makeBsplineSurface(
+        [[[0, 0, 0], [2, 0, 0]], [[0, 3, 0], [2, 3, 0]]],
+        { uDegree: 2, vDegree: 1 },
+      ),
+    ).toThrow(/degree/);
+  });
+
+  it("interpolates a surface through a point grid", () => {
+    const flat = occ.makeBsplineSurfaceThrough([
+      [[0, 0, 0], [1, 0, 0], [2, 0, 0]],
+      [[0, 1, 0], [1, 1, 0], [2, 1, 0]],
+      [[0, 2, 0], [1, 2, 0], [2, 2, 0]],
+    ]);
+    expect(flat.shapeType()).toBe("Face");
+    expect(flat.isValid()).toBe(true);
+    expect(flat.area()).toBeCloseTo(4, 3);
+
+    // a lifted middle point bends the patch beyond the flat 2 × 2
+    const saddle = occ.makeBsplineSurfaceThrough([
+      [[0, 0, 0], [1, 0, 0], [2, 0, 0]],
+      [[0, 1, 0], [1, 1, 0.5], [2, 1, 0]],
+      [[0, 2, 0], [1, 2, 0], [2, 2, 0]],
+    ]);
+    expect(saddle.isValid()).toBe(true);
+    expect(saddle.area()).toBeGreaterThan(4);
+  });
+
+  it("describes and re-poles B-spline surfaces", () => {
+    const surface = occ.makeBsplineSurface(
+      [[[0, 0, 0], [2, 0, 0]], [[0, 3, 0], [2, 3, 0]]],
+      { uDegree: 1, vDegree: 1 },
+    );
+    const info = occ.describeSurface(surface);
+    expect(info.surface).toBe("bspline");
+    expect(info.uPoles).toBe(2);
+    expect(info.vPoles).toBe(2);
+    expect(info.uDegree).toBe(1);
+    expect(info.vDegree).toBe(1);
+    expect(info.rational).toBe(false);
+    expectVec3Close(info.poles[0]![0]!, [0, 0, 0]);
+    expectVec3Close(info.poles[1]![1]!, [2, 3, 0]);
+
+    const edited = occ.setBsplinePoles(surface, [
+      [[0, 0, 2], [2, 0, 0]],
+      [[0, 3, 0], [2, 3, 0]],
+    ]);
+    // the original is untouched — the edit works on a copy
+    expect(surface.area()).toBeCloseTo(6, 3);
+    expect(edited.area()).toBeGreaterThan(6);
+    expectVec3Close(occ.describeSurface(edited).poles[0]![0]!, [0, 0, 2]);
+
+    expect(() =>
+      occ.setBsplinePoles(surface, [
+        [[0, 0, 0], [1, 0, 0]],
+        [[0, 1, 0], [1, 1, 0]],
+        [[0, 2, 0], [1, 2, 0]],
+      ]),
+    ).toThrow(/pole grid/);
+    expect(() => occ.describeSurface(occ.makeBox(1, 1, 1))).toThrow(/Face/);
+    expect(() => occ.describeSurface(occ.makeFace(occ.makeCircle(1)))).toThrow(/not a B-spline/);
+  });
 });

@@ -50,6 +50,16 @@ is documented in `src/ts/loader.ts`.
 | `revolve(profile, { direction, origin?, angleDegrees?, solid? })` | Revolve a planar profile about the axis; `angleDegrees` defaults to a full turn. |
 | `loft(sections, { ruled?, solid? })` | Skin ≥2 wire/face sections into one solid; `ruled: true` rules straight sections (two circles → an exact frustum). |
 | `sweep(profile, spine, { solid? })` | Transport a planar profile along a spine wire from its start, perpendicular to the tangent. |
+| `pipeShell(profile, spine, { mode?, binormal?, transition?, correction?, solid? })` | The controllable sweep (`MakePipeShell`): choose the profile's travelling frame — `"correctedFrenet"` (default) / `"frenet"` / `"binormal"` (fixed direction, keeps ribbons flat) — corner handling (`"transformed"` / `"round"` / `"rightCorner"`), and `correction` to re-orient the profile onto the spine's normal plane. |
+| `makeHelix(radius, pitch, height, { direction?, origin?, leftHanded? })` | Helix wire — climbs `pitch` per full turn, ending at `height`. The spine for springs and threads. |
+| `mirror(shape, { plane? \| axis? })` | Mirror through a plane (`{ origin, normal }`) or about a line (`{ origin, direction }`) — exactly one. |
+| `rectangularPattern(shape, { countX, countY?, spacingX, spacingY?, directionX?, directionY? })` | Compound of translated copies on a grid (original at (0, 0)); `fuse` the result to merge. |
+| `circularPattern(shape, { count, sweepDegrees?, axis?, origin? })` | Compound of copies rotated evenly over `sweepDegrees` (default 360) around the axis. |
+| `heal(shapeOrShapes, { tolerance?, sew?, fix? })` | Repair: stitch coincident boundaries (several shapes assemble into one shell) + ShapeFix (faces, wires, orientation, tolerances). The safety net after a sloppy import. |
+| `makeBsplineSurface(poles, { uDegree?, vDegree? })` | B-spline surface **face** from a control-point grid (array of rows, each running along u); clamped uniform knots. |
+| `makeBsplineSurfaceThrough(points)` | Surface face interpolated **through** every point of a grid. |
+| `describeSurface(shape)` | B-spline surface details of a face → `BsplineSurfaceInfo` (degrees, knots, pole grid, weights). |
+| `setBsplinePoles(shape, poles)` | Replace a B-spline surface's pole grid → **new** face; the original is untouched. |
 | `readStep(bytes, {unit?})` / `readBrep(bytes)` / `readIges(bytes)` | Import from file bytes → shape. Throws with a `STEP`/`BREP`/`IGES`-prefixed message on bad input. |
 | `readStepDocument(bytes, {unit?})` | Import as an XCAF document: `{ format, tree, shapeCount }` with names, `"#RRGGBB"` colors and 12-number instance transforms. |
 | `documentShape(index)` / `documentShapeCount` | World-positioned leaf shapes from the last `readStepDocument` (valid until the next call). |
@@ -159,7 +169,7 @@ const bytes = occ.writeStepDocument([
   `readStepDocument`'s output format.
 - Colors travel as sRGB `"#RRGGBB"` — the STEP convention.
 
-## Sketch → solid — extrude / revolve / loft / sweep
+## Sketch → solid — extrude / revolve / loft / sweep / pipe-shell
 
 ```ts
 const cylinder = occ.extrude(occ.makeCircle(5), [0, 0, 10]);            // π·5²·10
@@ -186,6 +196,74 @@ const pipe = occ.sweep(
 - `sweep` transports the profile along the spine from its **start** — place
   the profile there, perpendicular to the tangent (a circle on a circular
   spine yields an exact torus).
+- `pipeShell` adds frame control: a fixed `binormal` keeps a swept rectangle
+  level (a flat spiral ribbon along a helix), `frenet` is the textbook frame,
+  and `correction: true` re-orients the profile onto the spine's normal plane
+  so it need not be placed perpendicular by hand:
+
+```ts
+const spring = occ.pipeShell(
+  occ.makeCircle(0.25, { origin: [5, 0, 0], normal: [0, 1, 0] }),
+  occ.makeHelix(5, 2, 20),                       // radius 5, pitch 2, 10 turns
+  { correction: true },
+);
+```
+
+## Healing — sewing & shape repair
+
+```ts
+const stitched = occ.heal([faceA, faceB, faceC]);   // → one shared-edge shell
+const repaired = occ.heal(importedStep, { tolerance: 1e-3 });
+```
+
+- `sew` (default on) stitches boundaries within `tolerance`: faces of a
+  compound merge shared edges, several shapes assemble into one shell.
+  Solids skip it — they are closed by construction, and sewing would degrade
+  them to shells.
+- `fix` (default on) runs ShapeFix: repairs faces, wires, orientation and
+  tolerances, allowed to relax tolerances up to 1.0 rather than drop geometry.
+- Raise `tolerance` for sloppy imports (typical gaps: 1e-3 … 1e-1). Pair with
+  `isValid()` before/after to see what changed.
+
+## B-spline surfaces
+
+```ts
+const hull = occ.makeBsplineSurface([
+  // rows of constant v, each running along u — here a 2 × 2 control grid
+  [[0, 0, 0], [10, 0, 0]],
+  [[0, 5, 0], [10, 5, 2]],
+]);                                                 // bilinear patch
+const fit = occ.makeBsplineSurfaceThrough(measuredGrid);
+const info = occ.describeSurface(hull);            // degrees, knots, poles
+const flatter = occ.setBsplinePoles(hull, newGrid); // new face; hull unchanged
+```
+
+- Grid layout everywhere: an array of rows, each row running along **u** (the
+  row index is **v**) — `describeSurface().poles` feeds straight back into
+  `setBsplinePoles`.
+- `makeBsplineSurface` takes control points with clamped uniform knots (the
+  surface passes through the border poles); degrees default to 3 and need
+  at least degree + 1 poles per direction.
+- `makeBsplineSurfaceThrough` interpolates exactly through every point.
+- Results are open faces — extrude/loft/pipe with them, or cap them into
+  solids with `makeFace` + `fuse`.
+
+## Transforms & patterns
+
+```ts
+const leftHand = occ.mirror(rightHand, { plane: { normal: [1, 0, 0] } });
+const boltCircle = occ.circularPattern(bolt, { count: 8 });           // full ring
+const vents = occ.rectangularPattern(vent, { countX: 1, countY: 5, spacingY: 12 });
+const grill = occ.fuse(occ.rectangularPattern(slat, {
+  countX: 10, spacingX: 4, directionX: [1, 0, 0], directionY: [0, 0, 1],
+}));
+```
+
+- Patterns return **compounds** of copies sharing the original's geometry —
+  `fuse` merges them into one solid when the copies should become one body.
+- `mirror` takes exactly one of `plane` (`{ origin?, normal }`) or `axis`
+  (`{ origin?, direction }`); mirroring flips handedness, so the geometry is
+  copied rather than location-shared.
 
 ## Tessellation — `MeshData`
 

@@ -101,6 +101,37 @@ export interface BsplineOptions {
   degree?: number;
 }
 
+/** Degrees per direction for `makeBsplineSurface` (each defaults to `3`). */
+export interface BsplineSurfaceOptions {
+  /** Polynomial degree along u. Default `3`. */
+  uDegree?: number;
+  /** Polynomial degree along v. Default `3`. */
+  vDegree?: number;
+}
+
+/** B-spline surface description returned by `describeSurface`. */
+export interface BsplineSurfaceInfo {
+  surface: "bspline";
+  uDegree: number;
+  vDegree: number;
+  /** Pole grid dimensions: `uPoles` × `vPoles`. */
+  uPoles: number;
+  vPoles: number;
+  uKnots: number[];
+  vKnots: number[];
+  uMultiplicities: number[];
+  vMultiplicities: number[];
+  /**
+   * Row-major pole grid: rows of constant v, each running along u — the same
+   * layout `setBsplinePoles` consumes.
+   */
+  poles: Vec3[][];
+  /** True when the surface carries per-pole weights (e.g. imported geometry). */
+  rational: boolean;
+  /** Pole weights, same grid layout as `poles` (only when `rational`). */
+  weights?: number[][];
+}
+
 export interface InterpolateOptions {
   /** Close the curve smoothly through the last point back to the first. Default `false`. */
   periodic?: boolean;
@@ -129,6 +160,12 @@ export interface PolygonOptions {
   close?: boolean;
 }
 
+/** Helix parameters beyond the axis placement. */
+export interface HelixOptions extends PrimitiveOptions {
+  /** Wind counterclockwise falling (default) or clockwise rising. Default `false` (right-handed). */
+  leftHanded?: boolean;
+}
+
 /** Shared by `extrude` / `revolve` / `sweep`: cap wire profiles into solids. */
 export interface SolidProfileOptions {
   /**
@@ -153,6 +190,84 @@ export interface LoftOptions extends SolidProfileOptions {
    * smoothing a B-spline skin across all of them. Default `false`.
    */
   ruled?: boolean;
+}
+
+export interface PipeShellOptions extends SolidProfileOptions {
+  /**
+   * Trihedron carried along the spine. `"correctedFrenet"` (default) is
+   * stable everywhere; `"frenet"` spins where the spine inflects;
+   * `"binormal"` locks the given direction as the profile's in-plane axis.
+   */
+  mode?: "correctedFrenet" | "frenet" | "binormal";
+  /** Fixed in-plane axis direction — required when `mode` is `"binormal"`. */
+  binormal?: Vec3;
+  /**
+   * Corner handling where the spine bends sharply: `"transformed"` (default)
+   * keeps the profile rigid, `"round"` rounds the corner, `"rightCorner"`
+   * extends the segments to a sharp corner.
+   */
+  transition?: "transformed" | "round" | "rightCorner";
+  /**
+   * Re-orient the profile onto the spine's normal plane before sweeping, so
+   * it need not be placed exactly perpendicular by hand. Default `false`.
+   */
+  correction?: boolean;
+}
+
+/** Which mirror to apply — exactly one of `plane` / `axis`. */
+export interface MirrorOptions {
+  /** Mirror plane: a point on it plus its normal. */
+  plane?: { origin?: Vec3; normal: Vec3 };
+  /** Mirror axis line: a point on it plus its direction. */
+  axis?: { origin?: Vec3; direction: Vec3 };
+}
+
+export interface RectangularPatternOptions {
+  /** Copies along the first direction (including the original). Required. */
+  countX: number;
+  /** Copies along the second direction. Default `1`. */
+  countY?: number;
+  /** Step along the first direction, in model units. Required. */
+  spacingX: number;
+  /** Step along the second direction. Default `spacingX`. */
+  spacingY?: number;
+  /** First direction. Default `[1, 0, 0]`. */
+  directionX?: Vec3;
+  /** Second direction (must not be parallel to `directionX`). Default `[0, 1, 0]`. */
+  directionY?: Vec3;
+}
+
+export interface CircularPatternOptions {
+  /** Number of copies (including the original at angle 0). Required. */
+  count: number;
+  /**
+   * Total sweep in degrees the copies spread over. Default `360` — a full,
+   * evenly spaced ring.
+   */
+  sweepDegrees?: number;
+  /** Rotation axis. Default `[0, 0, 1]`. */
+  axis?: Vec3;
+  /** A point on the axis. Default `[0, 0, 0]`. */
+  origin?: Vec3;
+}
+
+export interface HealOptions {
+  /**
+   * Coincidence tolerance for stitching and fixing — raise it for sloppy
+   * imports (typical gaps: 1e-3 … 1e-1). Default `1e-6`.
+   */
+  tolerance?: number;
+  /**
+   * Stitch coincident boundaries — several shapes assemble into one shell,
+   * faces of a compound merge shared edges. Default `true`. Solids pass
+   * through untouched: they are closed by construction.
+   */
+  sew?: boolean;
+  /**
+   * Repair the shape (ShapeFix): faces, wires, orientation, tolerances.
+   * Default `true`.
+   */
+  fix?: boolean;
 }
 
 export interface DraftOptions {

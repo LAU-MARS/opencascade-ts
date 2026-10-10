@@ -23,3 +23,8 @@ OccShape sectionOf(const OccShape& a, const OccShape& b);
 
 // "in" | "out" | "on" | "unknown" — against all solids (union semantics).
 std::string classifyPointIn(const OccShape& shape, double x, double y, double z);
+
+// B-spline surface description of a Face: degrees, knots, multiplicities and
+// the row-major pole grid (rows of constant v) that setBsplinePoles consumes.
+// Throws std::runtime_error for non-Face input or non-B-spline surfaces.
+std::string describeBsplineSurface(const OccShape& face);

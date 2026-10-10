@@ -39,6 +39,13 @@ OccShape makeBsplineWire(const std::vector<double>& coordinates, int degree);
 // B-spline interpolated through every point (flat coordinates).
 OccShape interpolateBsplineWire(const std::vector<double>& coordinates,
                                 bool periodic, double tolerance);
+// Helix wire of `radius` around the axis through (ox, oy, oz) along
+// (ax, ay, az): rises `pitch` per full turn, ending at `height`.
+// `leftHanded` reverses the winding. Throws std::runtime_error on bad input.
+OccShape makeHelixWire(double radius, double pitch, double height,
+                       double ax, double ay, double az,
+                       double ox, double oy, double oz,
+                       bool leftHanded);
 // Concatenate connected wires/edges into one wire, in order.
 OccShape assembleWire(const std::vector<OccShape>& parts);
 // Planar face from an outer wire, with optional hole wires inside it (the
@@ -52,6 +59,26 @@ OccShape booleanOp(int op, const OccShape& a, const OccShape& b);
 OccShape translateShape(const OccShape& shape, double dx, double dy, double dz);
 OccShape rotateShape(const OccShape& shape, double ax, double ay, double az, double angleRadians);
 OccShape scaleShape(const OccShape& shape, double factor);
+// Mirror through the plane through (ox, oy, oz) normal to (dx, dy, dz)
+// (mode 0), or about the line through (ox, oy, oz) along (dx, dy, dz)
+// (mode 1). Mirrors flip handedness, so the geometry is copied (unlike
+// translate/rotate, which reuse it via a location).
+OccShape mirrorShape(const OccShape& shape, int mode,
+                     double ox, double oy, double oz,
+                     double dx, double dy, double dz);
+
+// Patterning: copies at (i·spacingX)·u + (j·spacingY)·v for i < countX,
+// j < countY (rectangular) or rotated by k·sweep/count around the axis
+// (circular). The original at (0, 0) / angle 0 is included. Results are
+// compounds sharing the original's geometry — fuse them to merge. Throws on
+// counts < 1 or zero spacing/sweep.
+OccShape rectangularPattern(const OccShape& shape, int countX, int countY,
+                            double spacingX, double spacingY,
+                            double ux, double uy, double uz,
+                            double vx, double vy, double vz);
+OccShape circularPattern(const OccShape& shape, int count, double sweepRadians,
+                         double ax, double ay, double az,
+                         double ox, double oy, double oz);
 
 // Shelling: hollow the solid with an inward wall of `thickness`; the 1-based
 // face indices (as emitted by describeGeometry) in `openFaces` are removed.
@@ -95,9 +122,39 @@ OccShape revolveShape(const OccShape& profile,
                       double angleRadians, bool solid);
 OccShape loftShapes(const std::vector<OccShape>& sections, bool ruled, bool solid);
 OccShape sweepShape(const OccShape& profile, const OccShape& spine, bool solid);
+// PipeShell — the controllable sweep: trihedron mode 0 = corrected Frenet
+// (default), 1 = Frenet, 2 = fixed binormal (bx, by, bz); transition 0 =
+// transformed, 1 = round corner, 2 = right corner where the spine bends.
+// `correction` re-orients the profile perpendicular to the spine start.
+// Throws on failure.
+OccShape pipeShellShape(const OccShape& profile, const OccShape& spine,
+                        int mode, double bx, double by, double bz,
+                        int transition, bool correction, bool solid);
+
+// B-spline surfaces. `coordinates` is a flat row-major pole/point grid:
+// (uCount × vCount) triples, rows running along u. makeBsplineSurfaceShape
+// takes control points with clamped uniform knots (degrees per direction);
+// interpolateBsplineSurfaceShape passes exactly through every point.
+// setBsplineSurfacePolesShape copies the face's B-spline surface and swaps
+// in a new pole grid (dimensions must match). All return Faces and throw
+// std::runtime_error on bad input.
+OccShape makeBsplineSurfaceShape(const std::vector<double>& coordinates,
+                                 int uCount, int vCount, int uDegree, int vDegree);
+OccShape interpolateBsplineSurfaceShape(const std::vector<double>& coordinates,
+                                        int uCount, int vCount);
+OccShape setBsplineSurfacePolesShape(const OccShape& face,
+                                     const std::vector<double>& coordinates,
+                                     int uCount, int vCount);
 
 // Splitting keeps every piece (unlike cut): the result is a compound of the
 // shape's fragments minus the tool volumes. offsetSolid grows (positive) or
 // shrinks (negative) the whole solid by `distance`. Both throw on failure.
 OccShape splitShape(const OccShape& shape, const std::vector<OccShape>& tools);
 OccShape offsetSolid(const OccShape& shape, double distance);
+
+// Healing: stitch coincident boundaries (sewing — several shapes assemble
+// into one shell) and repair the result (ShapeFix: faces, wires, orientation,
+// tolerances). Solids skip sewing — they are closed by construction, and
+// sewing would degrade them to shells. Throws on empty input.
+OccShape healShapes(const std::vector<OccShape>& shapes,
+                    double tolerance, bool sew, bool fix);

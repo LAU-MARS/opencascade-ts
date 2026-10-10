@@ -115,6 +115,21 @@ export interface OccWasmModule {
   makeBsplineThrough(
     ptsPtr: number, pointCount: number, periodic: boolean, tolerance: number,
   ): WasmShape;
+  /** Helix wire: `radius`, rising `pitch` per turn, ending at `height`. */
+  makeHelix(
+    radius: number, pitch: number, height: number,
+    ax: number, ay: number, az: number,
+    ox: number, oy: number, oz: number,
+    leftHanded: boolean,
+  ): WasmShape;
+  /** B-spline surface face from a pole grid: `uCount × vCount` triples at `polesPtr`. */
+  makeBsplineSurface(
+    polesPtr: number, uCount: number, vCount: number, uDegree: number, vDegree: number,
+  ): WasmShape;
+  /** Surface face interpolated through a `uCount × vCount` point grid at `ptsPtr`. */
+  makeBsplineSurfaceThrough(ptsPtr: number, uCount: number, vCount: number): WasmShape;
+  /** Replace the pole grid of a B-spline surface face (dimensions must match). */
+  setBsplineSurfacePoles(s: WasmShape, polesPtr: number, uCount: number, vCount: number): WasmShape;
   /** Concatenate connected wires/edges, in order. */
   makeWire(parts: WasmShapeVector): WasmShape;
   /** Planar face from an outer wire with optional hole wires (all planar). */
@@ -131,6 +146,21 @@ export interface OccWasmModule {
   translate(s: WasmShape, dx: number, dy: number, dz: number): WasmShape;
   rotate(s: WasmShape, ax: number, ay: number, az: number, angleRadians: number): WasmShape;
   scale(s: WasmShape, factor: number): WasmShape;
+  /** mode 0 = mirror plane through (ox,oy,oz) normal to (dx,dy,dz); 1 = about that axis line. */
+  mirror(s: WasmShape, mode: number, ox: number, oy: number, oz: number,
+    dx: number, dy: number, dz: number): WasmShape;
+  /** Compound of countX × countY translated copies (unit directions given). */
+  rectangularPattern(
+    s: WasmShape, countX: number, countY: number, spacingX: number, spacingY: number,
+    ux: number, uy: number, uz: number, vx: number, vy: number, vz: number,
+  ): WasmShape;
+  /** Compound of `count` rotated copies over `sweepRadians` around the axis. */
+  circularPattern(
+    s: WasmShape, count: number, sweepRadians: number,
+    ax: number, ay: number, az: number, ox: number, oy: number, oz: number,
+  ): WasmShape;
+  /** Sew + ShapeFix a shape (or assemble several into one) at `tolerance`. */
+  heal(shapes: WasmShapeVector, tolerance: number, sew: boolean, fix: boolean): WasmShape;
 
   /** 1-based face indices at `facesPtr` (`faceCount` × int32; 0 = none). */
   shell(s: WasmShape, thickness: number, facesPtr: number, faceCount: number): WasmShape;
@@ -162,6 +192,17 @@ export interface OccWasmModule {
   ): WasmShape;
   loft(sections: WasmShapeVector, ruled: boolean, solid: boolean): WasmShape;
   sweep(profile: WasmShape, spine: WasmShape, solid: boolean): WasmShape;
+  /**
+   * Controllable sweep (BRepOffsetAPI_MakePipeShell): mode 0 = corrected
+   * Frenet, 1 = Frenet, 2 = fixed binormal (bx/by/bz); transition 0 =
+   * transformed, 1 = round corner, 2 = right corner; `correction` re-orients
+   * the profile perpendicular to the spine start.
+   */
+  pipeShell(
+    profile: WasmShape, spine: WasmShape,
+    mode: number, bx: number, by: number, bz: number,
+    transition: number, correction: boolean, solid: boolean,
+  ): WasmShape;
 
   tessellate(s: WasmShape, linDefl: number, angDeflDegrees: number, relative: boolean): WasmMeshData;
   hiddenLines(
@@ -201,6 +242,8 @@ export interface OccWasmModule {
   distance(a: WasmShape, b: WasmShape): string;
   section(a: WasmShape, b: WasmShape): WasmShape;
   classifyPoint(s: WasmShape, x: number, y: number, z: number): string;
+  /** JSON: BsplineSurfaceInfo — degrees, knots and the pole grid of a face. */
+  describeSurface(s: WasmShape): string;
 }
 
 export type OccModuleFactory = (config: {

@@ -11,6 +11,7 @@
 #include <BRep_Tool.hxx>
 #include <GCPnts_QuasiUniformDeflection.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <GProp_GProps.hxx>
@@ -304,4 +305,77 @@ std::string classifyPointIn(const OccShape& shape, double x, double y, double z)
   if (anyIn) return "in";
   if (anyOn) return "on";
   return "out";
+}
+
+std::string describeBsplineSurface(const OccShape& face) {
+  if (face.get().IsNull() || face.get().ShapeType() != TopAbs_FACE) {
+    throw std::runtime_error(
+        "describeSurface: shape must be a Face (e.g. makeBsplineSurface output)");
+  }
+  Handle(Geom_BSplineSurface) surface =
+      Handle(Geom_BSplineSurface)::DownCast(BRep_Tool::Surface(TopoDS::Face(face.get())));
+  if (surface.IsNull()) {
+    BRepAdaptor_Surface adaptor(TopoDS::Face(face.get()));
+    std::ostringstream message;
+    message << "describeSurface: the face's surface is a \""
+            << surfaceTypeName(adaptor.GetType()) << "\", not a B-spline";
+    throw std::runtime_error(message.str());
+  }
+  // Same row-major layout setBsplineSurfacePolesShape consumes: rows of
+  // constant v, each running along u.
+  std::ostringstream out;
+  out << "{\"surface\":\"bspline\""
+      << ",\"uDegree\":" << surface->UDegree()
+      << ",\"vDegree\":" << surface->VDegree()
+      << ",\"uPoles\":" << surface->NbUPoles()
+      << ",\"vPoles\":" << surface->NbVPoles()
+      << ",\"uKnots\":[";
+  for (int i = 1; i <= surface->NbUKnots(); ++i) {
+    if (i > 1) out << ',';
+    out << jsonNumber(surface->UKnot(i));
+  }
+  out << "],\"uMultiplicities\":[";
+  const TColStd_Array1OfInteger& uMultiplicities = surface->UMultiplicities();
+  for (int i = 1; i <= surface->NbUKnots(); ++i) {
+    if (i > 1) out << ',';
+    out << uMultiplicities(i);
+  }
+  out << "],\"vKnots\":[";
+  for (int i = 1; i <= surface->NbVKnots(); ++i) {
+    if (i > 1) out << ',';
+    out << jsonNumber(surface->VKnot(i));
+  }
+  out << "],\"vMultiplicities\":[";
+  const TColStd_Array1OfInteger& vMultiplicities = surface->VMultiplicities();
+  for (int i = 1; i <= surface->NbVKnots(); ++i) {
+    if (i > 1) out << ',';
+    out << vMultiplicities(i);
+  }
+  out << "],\"poles\":[";
+  for (int v = 1; v <= surface->NbVPoles(); ++v) {
+    if (v > 1) out << ',';
+    out << '[';
+    for (int u = 1; u <= surface->NbUPoles(); ++u) {
+      if (u > 1) out << ',';
+      putPoint(out, surface->Pole(u, v));
+    }
+    out << ']';
+  }
+  const bool rational = surface->IsURational() || surface->IsVRational();
+  out << "],\"rational\":" << (rational ? "true" : "false");
+  if (rational) {
+    out << ",\"weights\":[";
+    for (int v = 1; v <= surface->NbVPoles(); ++v) {
+      if (v > 1) out << ',';
+      out << '[';
+      for (int u = 1; u <= surface->NbUPoles(); ++u) {
+        if (u > 1) out << ',';
+        out << jsonNumber(surface->Weight(u, v));
+      }
+      out << ']';
+    }
+    out << ']';
+  }
+  out << "}";
+  return out.str();
 }
