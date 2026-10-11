@@ -328,6 +328,91 @@ describeWasm("opencascade-ts kernel (wasm integration)", () => {
     }
   });
 
+  it("bridges curated shapes into the raw layer and back", () => {
+    // OCP-style constants are module-level numbers
+    expect(occ.module.TopAbs_FACE).toBe(4);
+    expect(occ.module.TopAbs_SOLID).toBe(2);
+
+    const box = occ.makeBox(3, 4, 5);
+    const rawBox = occ.toRaw(box); // JS-owned copy — delete() discipline
+    try {
+      // TopExp.MapShapes + IndexedMap — the enumeration backbone, raw
+      const faces = new occ.module.TopTools_IndexedMapOfShape();
+      try {
+        occ.module.TopExp.MapShapes(rawBox, occ.module.TopAbs_FACE, faces);
+        expect(faces.Extent()).toBe(6);
+
+        // TopoDS.Face_s cast → BRep_Tool.Surface → Geom_Plane.DownCast
+        const shape = faces.FindKey(1);
+        try {
+          const face = occ.module.TopoDS_Face_s(shape);
+          try {
+            const surface = occ.module.BRep_Tool.Surface(face);
+            try {
+              const plane = occ.module.DownCast_Geom_Plane(surface);
+              try {
+                expect(plane.IsNull()).toBe(false);
+              } finally {
+                plane.delete();
+              }
+            } finally {
+              surface.delete();
+            }
+          } finally {
+            face.delete();
+          }
+        } finally {
+          shape.delete();
+        }
+      } finally {
+        faces.delete();
+      }
+
+      // ...and back into the curated layer (session-adopted)
+      const roundTrip = occ.fromRaw(rawBox);
+      expect(roundTrip.volume()).toBeCloseTo(60, 6);
+    } finally {
+      rawBox.delete();
+    }
+  });
+
+  it("runs raw booleans with UnifySameDomain like the curated clean pass", () => {
+    const raw = occ.module;
+    const a = occ.toRaw(occ.makeBox(10, 10, 10));
+    const b = occ.toRaw(occ.translate(occ.makeBox(10, 10, 10), [5, 0, 0]));
+    const fuse = new raw.BRepAlgoAPI_Fuse(a, b);
+    try {
+      expect(fuse.IsDone()).toBeTruthy();
+      const fused = fuse.Shape();
+      try {
+        const unifier = new raw.ShapeUpgrade_UnifySameDomain(fused);
+        try {
+          unifier.Build();
+          const cleaned = unifier.Shape();
+          try {
+            const m = new raw.TopTools_IndexedMapOfShape();
+            try {
+              raw.TopExp.MapShapes(cleaned, raw.TopAbs_FACE, m);
+              expect(m.Extent()).toBe(6); // same as the curated clean fuse
+            } finally {
+              m.delete();
+            }
+          } finally {
+            cleaned.delete();
+          }
+        } finally {
+          unifier.delete();
+        }
+      } finally {
+        fused.delete();
+      }
+    } finally {
+      fuse.delete();
+      b.delete();
+      a.delete();
+    }
+  });
+
   it("extrudes a circle into a cylinder and a polygon into a box", () => {
     const cylinder = occ.extrude(occ.makeCircle(5), [0, 0, 10]);
     expect(cylinder.shapeType()).toBe("Solid");

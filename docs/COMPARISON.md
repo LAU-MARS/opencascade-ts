@@ -53,7 +53,7 @@ the ❌ from raw calls; the difference is what you get out of the box.
 | Healing (sew + shape repair) · mirror · patterns | ✅ raw classes | ✅ `heal` / `mirror` / `rectangularPattern` / `circularPattern` |
 | Freeform surfaces | ✅ raw classes | ✅ B-spline surfaces from poles / through points, `describeSurface` + `setBsplinePoles` editing |
 | Sub-shape handles | ✅ raw `TopoDS` classes | ✅ `subShapes` / `edges` / `faces` / … + `isSame` identity, pass-back into blends |
-| Raw OCCT escape hatch | ✅ the whole point | ✅ **generated** raw layer: ~70 build123d-core classes, libclang codegen, OCP naming (`tools/codegen`) |
+| Raw OCCT escape hatch | ✅ the whole point | ✅ **generated** raw layer: 152 build123d-core classes + containers/enums/handles, libclang codegen, OCP naming, raw↔curated bridge (`tools/codegen`) |
 | Shelling (thick solid) · draft angle | ❌ bound as empty stubs — no callable methods | ✅ `shell` / `draft` |
 | STEP · BRep · IGES I/O | ✅ raw XCAF/XSControl classes | ✅ first-class, with unit selection |
 | Assembly tree: names · colors · transforms | raw calls | ✅ `readStepDocument` → JSON · `writeStepDocument` ← tree |

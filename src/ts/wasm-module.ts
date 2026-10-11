@@ -59,7 +59,7 @@ export interface WasmHlrData {
   delete(): void;
 }
 
-import type { RawBindings } from "./raw.generated.js";
+import type { RawBindings, Raw_TopoDS_Shape } from "./raw.generated.js";
 
 /**
  * The raw OCCT escape hatch rides the same module object as the curated
@@ -67,6 +67,14 @@ import type { RawBindings } from "./raw.generated.js";
  * discipline applies there.
  */
 export interface OccWasmModule extends RawBindings {
+  /**
+   * Bridge into the raw layer: a JS-owned `TopoDS_Shape` copy of a curated
+   * `Shape` (delete() it when done). `fromRaw` bridges back — the returned
+   * `Shape` should be adopted by a session (see OccSession.fromRaw).
+   */
+  toRaw(shape: WasmShape): Raw_TopoDS_Shape;
+  fromRaw(raw: Raw_TopoDS_Shape): WasmShape;
+
   /** Uint8Array view over the wasm heap (detaches on memory growth — copy early). */
   readonly HEAPU8: Uint8Array;
   _malloc(bytes: number): number;

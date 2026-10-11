@@ -4,758 +4,610 @@
 // or pointer) owns a C++ instance — call .delete() when done, or leak.
 // The curated OccSession API remains the recommended surface.
 
-/** Raw TopoDS_Shape (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_TopoDS_Shape {
+/** Raw gp_XY (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_gp_XY {
   delete(): void;
-  IsNull(): number;
-  Nullify(): void;
-  ShapeType(): number;
-  Free(): number;
-  Free(a0: number): void;
-  Locked(): number;
-  Locked(a0: number): void;
-  Modified(): number;
-  Modified(a0: number): void;
-  Checked(): number;
-  Checked(a0: number): void;
-  Orientable(): number;
-  Orientable(a0: number): void;
-  Closed(): number;
-  Closed(a0: number): void;
-  Infinite(): number;
-  Infinite(a0: number): void;
-  Convex(): number;
-  Convex(a0: number): void;
+  SetCoord(a0: number, a1: number): void;
+  SetCoord(a0: number, a1: number): void;
+  SetX(a0: number): void;
+  SetY(a0: number): void;
+  Coord(a0: number): number;
+  ChangeCoord(a0: number): number;
+  X(): number;
+  Y(): number;
+  Modulus(): number;
+  SquareModulus(): number;
+  IsEqual(a0: Raw_gp_XY, a1: number): number;
+  Add(a0: Raw_gp_XY): void;
+  Added(a0: Raw_gp_XY): Raw_gp_XY;
+  Crossed(a0: Raw_gp_XY): number;
+  CrossMagnitude(a0: Raw_gp_XY): number;
+  CrossSquareMagnitude(a0: Raw_gp_XY): number;
+  Divide(a0: number): void;
+  Divided(a0: number): Raw_gp_XY;
+  Dot(a0: Raw_gp_XY): number;
+  Multiply(a0: number): void;
+  Multiply(a0: Raw_gp_XY): void;
+  Multiplied(a0: number): Raw_gp_XY;
+  Multiplied(a0: Raw_gp_XY): Raw_gp_XY;
+  Normalize(): void;
+  Normalized(): Raw_gp_XY;
   Reverse(): void;
-  Reversed(): Raw_TopoDS_Shape;
-  Complement(): void;
-  Complemented(): Raw_TopoDS_Shape;
-  NbChildren(): number;
-  IsPartner(a0: Raw_TopoDS_Shape): number;
-  IsSame(a0: Raw_TopoDS_Shape): number;
-  IsEqual(a0: Raw_TopoDS_Shape): number;
-  IsNotEqual(a0: Raw_TopoDS_Shape): number;
-  EmptyCopy(): void;
-  EmptyCopied(): Raw_TopoDS_Shape;
+  Reversed(): Raw_gp_XY;
+  SetLinearForm(a0: number, a1: Raw_gp_XY, a2: number, a3: Raw_gp_XY): void;
+  SetLinearForm(a0: number, a1: Raw_gp_XY, a2: number, a3: Raw_gp_XY, a4: Raw_gp_XY): void;
+  SetLinearForm(a0: number, a1: Raw_gp_XY, a2: Raw_gp_XY): void;
+  SetLinearForm(a0: Raw_gp_XY, a1: Raw_gp_XY): void;
+  Subtract(a0: Raw_gp_XY): void;
+  Subtracted(a0: Raw_gp_XY): Raw_gp_XY;
 }
 
-export interface Ctor_TopoDS_Shape {
-  new (): Raw_TopoDS_Shape;
+export interface Ctor_gp_XY {
+  new (): Raw_gp_XY;
+  new (a0: number, a1: number): Raw_gp_XY;
 }
 
-/** Raw TopoDS_Builder (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_TopoDS_Builder {
+/** Raw Law_Function (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Law_Function {
   delete(): void;
-  MakeWire(a0: Raw_TopoDS_Wire): void;
-  MakeShell(a0: Raw_TopoDS_Shell): void;
-  MakeSolid(a0: Raw_TopoDS_Solid): void;
-  MakeCompSolid(a0: Raw_TopoDS_CompSolid): void;
-  MakeCompound(a0: Raw_TopoDS_Compound): void;
-  Add(a0: Raw_TopoDS_Shape, a1: Raw_TopoDS_Shape): void;
-  Remove(a0: Raw_TopoDS_Shape, a1: Raw_TopoDS_Shape): void;
-}
-
-/** Raw TopoDS_Iterator (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_TopoDS_Iterator {
-  delete(): void;
-  Initialize(a0: Raw_TopoDS_Shape, a1: number, a2: number): void;
-  More(): number;
-  Next(): void;
-  Value(): Raw_TopoDS_Shape;
-}
-
-export interface Ctor_TopoDS_Iterator {
-  new (): Raw_TopoDS_Iterator;
-  new (a0: Raw_TopoDS_Shape, a1: number, a2: number): Raw_TopoDS_Iterator;
-}
-
-/** Raw TopoDS_Vertex (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_TopoDS_Vertex {
-  delete(): void;
-  IsNull(): number;
-  Nullify(): void;
-  ShapeType(): number;
-  Free(): number;
-  Locked(): number;
-  Modified(): number;
-  Checked(): number;
-  Orientable(): number;
-  Closed(): number;
-  Infinite(): number;
-  Convex(): number;
-  Reverse(): void;
-  Reversed(): Raw_TopoDS_Shape;
-  Complement(): void;
-  Complemented(): Raw_TopoDS_Shape;
-  NbChildren(): number;
-  IsPartner(a0: Raw_TopoDS_Shape): number;
-  IsSame(a0: Raw_TopoDS_Shape): number;
-  IsEqual(a0: Raw_TopoDS_Shape): number;
-  IsNotEqual(a0: Raw_TopoDS_Shape): number;
-  EmptyCopy(): void;
-  EmptyCopied(): Raw_TopoDS_Shape;
-}
-
-export interface Ctor_TopoDS_Vertex {
-  new (): Raw_TopoDS_Vertex;
-}
-
-/** Raw TopoDS_Edge (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_TopoDS_Edge {
-  delete(): void;
-  IsNull(): number;
-  Nullify(): void;
-  ShapeType(): number;
-  Free(): number;
-  Locked(): number;
-  Modified(): number;
-  Checked(): number;
-  Orientable(): number;
-  Closed(): number;
-  Infinite(): number;
-  Convex(): number;
-  Reverse(): void;
-  Reversed(): Raw_TopoDS_Shape;
-  Complement(): void;
-  Complemented(): Raw_TopoDS_Shape;
-  NbChildren(): number;
-  IsPartner(a0: Raw_TopoDS_Shape): number;
-  IsSame(a0: Raw_TopoDS_Shape): number;
-  IsEqual(a0: Raw_TopoDS_Shape): number;
-  IsNotEqual(a0: Raw_TopoDS_Shape): number;
-  EmptyCopy(): void;
-  EmptyCopied(): Raw_TopoDS_Shape;
-}
-
-export interface Ctor_TopoDS_Edge {
-  new (): Raw_TopoDS_Edge;
-}
-
-/** Raw TopoDS_Wire (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_TopoDS_Wire {
-  delete(): void;
-  IsNull(): number;
-  Nullify(): void;
-  ShapeType(): number;
-  Free(): number;
-  Locked(): number;
-  Modified(): number;
-  Checked(): number;
-  Orientable(): number;
-  Closed(): number;
-  Infinite(): number;
-  Convex(): number;
-  Reverse(): void;
-  Reversed(): Raw_TopoDS_Shape;
-  Complement(): void;
-  Complemented(): Raw_TopoDS_Shape;
-  NbChildren(): number;
-  IsPartner(a0: Raw_TopoDS_Shape): number;
-  IsSame(a0: Raw_TopoDS_Shape): number;
-  IsEqual(a0: Raw_TopoDS_Shape): number;
-  IsNotEqual(a0: Raw_TopoDS_Shape): number;
-  EmptyCopy(): void;
-  EmptyCopied(): Raw_TopoDS_Shape;
-}
-
-export interface Ctor_TopoDS_Wire {
-  new (): Raw_TopoDS_Wire;
-}
-
-/** Raw TopoDS_Face (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_TopoDS_Face {
-  delete(): void;
-  IsNull(): number;
-  Nullify(): void;
-  ShapeType(): number;
-  Free(): number;
-  Locked(): number;
-  Modified(): number;
-  Checked(): number;
-  Orientable(): number;
-  Closed(): number;
-  Infinite(): number;
-  Convex(): number;
-  Reverse(): void;
-  Reversed(): Raw_TopoDS_Shape;
-  Complement(): void;
-  Complemented(): Raw_TopoDS_Shape;
-  NbChildren(): number;
-  IsPartner(a0: Raw_TopoDS_Shape): number;
-  IsSame(a0: Raw_TopoDS_Shape): number;
-  IsEqual(a0: Raw_TopoDS_Shape): number;
-  IsNotEqual(a0: Raw_TopoDS_Shape): number;
-  EmptyCopy(): void;
-  EmptyCopied(): Raw_TopoDS_Shape;
-}
-
-export interface Ctor_TopoDS_Face {
-  new (): Raw_TopoDS_Face;
-}
-
-/** Raw TopoDS_Shell (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_TopoDS_Shell {
-  delete(): void;
-  IsNull(): number;
-  Nullify(): void;
-  ShapeType(): number;
-  Free(): number;
-  Locked(): number;
-  Modified(): number;
-  Checked(): number;
-  Orientable(): number;
-  Closed(): number;
-  Infinite(): number;
-  Convex(): number;
-  Reverse(): void;
-  Reversed(): Raw_TopoDS_Shape;
-  Complement(): void;
-  Complemented(): Raw_TopoDS_Shape;
-  NbChildren(): number;
-  IsPartner(a0: Raw_TopoDS_Shape): number;
-  IsSame(a0: Raw_TopoDS_Shape): number;
-  IsEqual(a0: Raw_TopoDS_Shape): number;
-  IsNotEqual(a0: Raw_TopoDS_Shape): number;
-  EmptyCopy(): void;
-  EmptyCopied(): Raw_TopoDS_Shape;
-}
-
-export interface Ctor_TopoDS_Shell {
-  new (): Raw_TopoDS_Shell;
-}
-
-/** Raw TopoDS_Solid (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_TopoDS_Solid {
-  delete(): void;
-  IsNull(): number;
-  Nullify(): void;
-  ShapeType(): number;
-  Free(): number;
-  Locked(): number;
-  Modified(): number;
-  Checked(): number;
-  Orientable(): number;
-  Closed(): number;
-  Infinite(): number;
-  Convex(): number;
-  Reverse(): void;
-  Reversed(): Raw_TopoDS_Shape;
-  Complement(): void;
-  Complemented(): Raw_TopoDS_Shape;
-  NbChildren(): number;
-  IsPartner(a0: Raw_TopoDS_Shape): number;
-  IsSame(a0: Raw_TopoDS_Shape): number;
-  IsEqual(a0: Raw_TopoDS_Shape): number;
-  IsNotEqual(a0: Raw_TopoDS_Shape): number;
-  EmptyCopy(): void;
-  EmptyCopied(): Raw_TopoDS_Shape;
-}
-
-export interface Ctor_TopoDS_Solid {
-  new (): Raw_TopoDS_Solid;
-}
-
-/** Raw TopoDS_CompSolid (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_TopoDS_CompSolid {
-  delete(): void;
-  IsNull(): number;
-  Nullify(): void;
-  ShapeType(): number;
-  Free(): number;
-  Locked(): number;
-  Modified(): number;
-  Checked(): number;
-  Orientable(): number;
-  Closed(): number;
-  Infinite(): number;
-  Convex(): number;
-  Reverse(): void;
-  Reversed(): Raw_TopoDS_Shape;
-  Complement(): void;
-  Complemented(): Raw_TopoDS_Shape;
-  NbChildren(): number;
-  IsPartner(a0: Raw_TopoDS_Shape): number;
-  IsSame(a0: Raw_TopoDS_Shape): number;
-  IsEqual(a0: Raw_TopoDS_Shape): number;
-  IsNotEqual(a0: Raw_TopoDS_Shape): number;
-  EmptyCopy(): void;
-  EmptyCopied(): Raw_TopoDS_Shape;
-}
-
-export interface Ctor_TopoDS_CompSolid {
-  new (): Raw_TopoDS_CompSolid;
-}
-
-/** Raw TopoDS_Compound (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_TopoDS_Compound {
-  delete(): void;
-  IsNull(): number;
-  Nullify(): void;
-  ShapeType(): number;
-  Free(): number;
-  Locked(): number;
-  Modified(): number;
-  Checked(): number;
-  Orientable(): number;
-  Closed(): number;
-  Infinite(): number;
-  Convex(): number;
-  Reverse(): void;
-  Reversed(): Raw_TopoDS_Shape;
-  Complement(): void;
-  Complemented(): Raw_TopoDS_Shape;
-  NbChildren(): number;
-  IsPartner(a0: Raw_TopoDS_Shape): number;
-  IsSame(a0: Raw_TopoDS_Shape): number;
-  IsEqual(a0: Raw_TopoDS_Shape): number;
-  IsNotEqual(a0: Raw_TopoDS_Shape): number;
-  EmptyCopy(): void;
-  EmptyCopied(): Raw_TopoDS_Shape;
-}
-
-export interface Ctor_TopoDS_Compound {
-  new (): Raw_TopoDS_Compound;
-}
-
-/** Raw TopExp (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_TopExp {
-  delete(): void;
-}
-
-export interface Ctor_TopExp {
-  FirstVertex(a0: Raw_TopoDS_Edge, a1: number): Raw_TopoDS_Vertex;
-  LastVertex(a0: Raw_TopoDS_Edge, a1: number): Raw_TopoDS_Vertex;
-  Vertices(a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Vertex, a2: Raw_TopoDS_Vertex, a3: number): void;
-  Vertices(a0: Raw_TopoDS_Wire, a1: Raw_TopoDS_Vertex, a2: Raw_TopoDS_Vertex): void;
-  CommonVertex(a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Edge, a2: Raw_TopoDS_Vertex): number;
-}
-
-/** Raw TopExp_Explorer (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_TopExp_Explorer {
-  delete(): void;
-  Init(a0: Raw_TopoDS_Shape, a1: number, a2: number): void;
-  More(): number;
-  Next(): void;
-  Value(): Raw_TopoDS_Shape;
-  Current(): Raw_TopoDS_Shape;
-  ReInit(): void;
-  ExploredShape(): Raw_TopoDS_Shape;
-  Depth(): number;
-  Clear(): void;
-}
-
-export interface Ctor_TopExp_Explorer {
-  new (): Raw_TopExp_Explorer;
-}
-
-/** Raw BRepAlgoAPI_Fuse (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_BRepAlgoAPI_Fuse {
-  delete(): void;
-  IsDone(): number;
-  Check(): void;
-  Shape(): Raw_TopoDS_Shape;
-  IsDeleted(a0: Raw_TopoDS_Shape): number;
-  SetNonDestructive(a0: number): void;
-  NonDestructive(): number;
-  SetCheckInverted(a0: number): void;
-  CheckInverted(): number;
-  SimplifyResult(a0: number, a1: number, a2: number): void;
-  HasModified(): number;
-  HasGenerated(): number;
-  HasDeleted(): number;
-  SetToFillHistory(a0: number): void;
-  HasHistory(): number;
-  Shape1(): Raw_TopoDS_Shape;
-  Shape2(): Raw_TopoDS_Shape;
-}
-
-export interface Ctor_BRepAlgoAPI_Fuse {
-  new (): Raw_BRepAlgoAPI_Fuse;
-}
-
-/** Raw BRepAlgoAPI_Cut (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_BRepAlgoAPI_Cut {
-  delete(): void;
-  IsDone(): number;
-  Check(): void;
-  Shape(): Raw_TopoDS_Shape;
-  IsDeleted(a0: Raw_TopoDS_Shape): number;
-  SetNonDestructive(a0: number): void;
-  NonDestructive(): number;
-  SetCheckInverted(a0: number): void;
-  CheckInverted(): number;
-  SimplifyResult(a0: number, a1: number, a2: number): void;
-  HasModified(): number;
-  HasGenerated(): number;
-  HasDeleted(): number;
-  SetToFillHistory(a0: number): void;
-  HasHistory(): number;
-  Shape1(): Raw_TopoDS_Shape;
-  Shape2(): Raw_TopoDS_Shape;
-}
-
-export interface Ctor_BRepAlgoAPI_Cut {
-  new (): Raw_BRepAlgoAPI_Cut;
-}
-
-/** Raw BRepAlgoAPI_Common (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_BRepAlgoAPI_Common {
-  delete(): void;
-  IsDone(): number;
-  Check(): void;
-  Shape(): Raw_TopoDS_Shape;
-  IsDeleted(a0: Raw_TopoDS_Shape): number;
-  SetNonDestructive(a0: number): void;
-  NonDestructive(): number;
-  SetCheckInverted(a0: number): void;
-  CheckInverted(): number;
-  SimplifyResult(a0: number, a1: number, a2: number): void;
-  HasModified(): number;
-  HasGenerated(): number;
-  HasDeleted(): number;
-  SetToFillHistory(a0: number): void;
-  HasHistory(): number;
-  Shape1(): Raw_TopoDS_Shape;
-  Shape2(): Raw_TopoDS_Shape;
-}
-
-export interface Ctor_BRepAlgoAPI_Common {
-  new (): Raw_BRepAlgoAPI_Common;
-}
-
-/** Raw BRepAlgoAPI_Splitter (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_BRepAlgoAPI_Splitter {
-  delete(): void;
-  IsDone(): number;
-  Check(): void;
-  Shape(): Raw_TopoDS_Shape;
-  IsDeleted(a0: Raw_TopoDS_Shape): number;
-  SetNonDestructive(a0: number): void;
-  NonDestructive(): number;
-  SetCheckInverted(a0: number): void;
-  CheckInverted(): number;
-  SimplifyResult(a0: number, a1: number, a2: number): void;
-  HasModified(): number;
-  HasGenerated(): number;
-  HasDeleted(): number;
-  SetToFillHistory(a0: number): void;
-  HasHistory(): number;
-}
-
-export interface Ctor_BRepAlgoAPI_Splitter {
-  new (): Raw_BRepAlgoAPI_Splitter;
-}
-
-/** Raw BRepFilletAPI_MakeFillet (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_BRepFilletAPI_MakeFillet {
-  delete(): void;
-  IsDone(): number;
-  Check(): void;
-  Shape(): Raw_TopoDS_Shape;
-  IsDeleted(a0: Raw_TopoDS_Shape): number;
-  IsDeleted(a0: Raw_TopoDS_Shape): number;
-  Add(a0: Raw_TopoDS_Edge): void;
-  Add(a0: Raw_TopoDS_Edge): void;
-  Add(a0: number, a1: Raw_TopoDS_Edge): void;
-  Add(a0: number, a1: number, a2: Raw_TopoDS_Edge): void;
-  ResetContour(a0: number): void;
-  ResetContour(a0: number): void;
-  NbContours(): number;
-  NbContours(): number;
-  Contour(a0: Raw_TopoDS_Edge): number;
-  Contour(a0: Raw_TopoDS_Edge): number;
-  NbEdges(a0: number): number;
-  NbEdges(a0: number): number;
-  Edge(a0: number, a1: number): Raw_TopoDS_Edge;
-  Edge(a0: number, a1: number): Raw_TopoDS_Edge;
-  Remove(a0: Raw_TopoDS_Edge): void;
-  Remove(a0: Raw_TopoDS_Edge): void;
-  Length(a0: number): number;
-  Length(a0: number): number;
-  FirstVertex(a0: number): Raw_TopoDS_Vertex;
-  FirstVertex(a0: number): Raw_TopoDS_Vertex;
-  LastVertex(a0: number): Raw_TopoDS_Vertex;
-  LastVertex(a0: number): Raw_TopoDS_Vertex;
-  Abscissa(a0: number, a1: Raw_TopoDS_Vertex): number;
-  Abscissa(a0: number, a1: Raw_TopoDS_Vertex): number;
-  RelativeAbscissa(a0: number, a1: Raw_TopoDS_Vertex): number;
-  RelativeAbscissa(a0: number, a1: Raw_TopoDS_Vertex): number;
-  ClosedAndTangent(a0: number): number;
-  ClosedAndTangent(a0: number): number;
-  Closed(a0: number): number;
-  Closed(a0: number): number;
-  Reset(): void;
-  Reset(): void;
-  Simulate(a0: number): void;
-  Simulate(a0: number): void;
-  NbSurf(a0: number): number;
-  NbSurf(a0: number): number;
-  SetParams(a0: number, a1: number, a2: number, a3: number, a4: number, a5: number): void;
-  SetRadius(a0: number, a1: number, a2: number): void;
-  SetRadius(a0: number, a1: number, a2: number, a3: number): void;
-  SetRadius(a0: number, a1: number, a2: Raw_TopoDS_Edge): void;
-  SetRadius(a0: number, a1: number, a2: Raw_TopoDS_Vertex): void;
-  IsConstant(a0: number): number;
-  IsConstant(a0: number, a1: Raw_TopoDS_Edge): number;
-  Radius(a0: number): number;
-  Radius(a0: number, a1: Raw_TopoDS_Edge): number;
-  NbSurfaces(): number;
-  NbFaultyContours(): number;
-  FaultyContour(a0: number): number;
-  NbComputedSurfaces(a0: number): number;
-  NbFaultyVertices(): number;
-  FaultyVertex(a0: number): Raw_TopoDS_Vertex;
-  HasResult(): number;
-  BadShape(): Raw_TopoDS_Shape;
-}
-
-/** Raw BRepFilletAPI_MakeChamfer (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_BRepFilletAPI_MakeChamfer {
-  delete(): void;
-  IsDone(): number;
-  Check(): void;
-  Shape(): Raw_TopoDS_Shape;
-  IsDeleted(a0: Raw_TopoDS_Shape): number;
-  IsDeleted(a0: Raw_TopoDS_Shape): number;
-  Add(a0: Raw_TopoDS_Edge): void;
-  Add(a0: Raw_TopoDS_Edge): void;
-  Add(a0: number, a1: Raw_TopoDS_Edge): void;
-  Add(a0: number, a1: number, a2: Raw_TopoDS_Edge, a3: Raw_TopoDS_Face): void;
-  ResetContour(a0: number): void;
-  ResetContour(a0: number): void;
-  NbContours(): number;
-  NbContours(): number;
-  Contour(a0: Raw_TopoDS_Edge): number;
-  Contour(a0: Raw_TopoDS_Edge): number;
-  NbEdges(a0: number): number;
-  NbEdges(a0: number): number;
-  Edge(a0: number, a1: number): Raw_TopoDS_Edge;
-  Edge(a0: number, a1: number): Raw_TopoDS_Edge;
-  Remove(a0: Raw_TopoDS_Edge): void;
-  Remove(a0: Raw_TopoDS_Edge): void;
-  Length(a0: number): number;
-  Length(a0: number): number;
-  FirstVertex(a0: number): Raw_TopoDS_Vertex;
-  FirstVertex(a0: number): Raw_TopoDS_Vertex;
-  LastVertex(a0: number): Raw_TopoDS_Vertex;
-  LastVertex(a0: number): Raw_TopoDS_Vertex;
-  Abscissa(a0: number, a1: Raw_TopoDS_Vertex): number;
-  Abscissa(a0: number, a1: Raw_TopoDS_Vertex): number;
-  RelativeAbscissa(a0: number, a1: Raw_TopoDS_Vertex): number;
-  RelativeAbscissa(a0: number, a1: Raw_TopoDS_Vertex): number;
-  ClosedAndTangent(a0: number): number;
-  ClosedAndTangent(a0: number): number;
-  Closed(a0: number): number;
-  Closed(a0: number): number;
-  Reset(): void;
-  Reset(): void;
-  Simulate(a0: number): void;
-  Simulate(a0: number): void;
-  NbSurf(a0: number): number;
-  NbSurf(a0: number): number;
-  SetDist(a0: number, a1: number, a2: Raw_TopoDS_Face): void;
-  SetDists(a0: number, a1: number, a2: number, a3: Raw_TopoDS_Face): void;
-  AddDA(a0: number, a1: number, a2: Raw_TopoDS_Edge, a3: Raw_TopoDS_Face): void;
-  SetDistAngle(a0: number, a1: number, a2: number, a3: Raw_TopoDS_Face): void;
-  IsSymetric(a0: number): number;
-  IsTwoDistances(a0: number): number;
-  IsDistanceAngle(a0: number): number;
-}
-
-export interface Ctor_BRepFilletAPI_MakeChamfer {
-  new (a0: Raw_TopoDS_Shape): Raw_BRepFilletAPI_MakeChamfer;
-}
-
-/** Raw BRepBuilderAPI_MakeWire (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_BRepBuilderAPI_MakeWire {
-  delete(): void;
-  IsDone(): number;
-  IsDone(): number;
-  Check(): void;
-  Shape(): Raw_TopoDS_Shape;
-  IsDeleted(a0: Raw_TopoDS_Shape): number;
-  Add(a0: Raw_TopoDS_Edge): void;
-  Add(a0: Raw_TopoDS_Wire): void;
-  Wire(): Raw_TopoDS_Wire;
-  Edge(): Raw_TopoDS_Edge;
-  Vertex(): Raw_TopoDS_Vertex;
-}
-
-export interface Ctor_BRepBuilderAPI_MakeWire {
-  new (): Raw_BRepBuilderAPI_MakeWire;
-  new (a0: Raw_TopoDS_Edge): Raw_BRepBuilderAPI_MakeWire;
-  new (a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Edge): Raw_BRepBuilderAPI_MakeWire;
-  new (a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Edge, a2: Raw_TopoDS_Edge): Raw_BRepBuilderAPI_MakeWire;
-  new (a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Edge, a2: Raw_TopoDS_Edge, a3: Raw_TopoDS_Edge): Raw_BRepBuilderAPI_MakeWire;
-  new (a0: Raw_TopoDS_Wire): Raw_BRepBuilderAPI_MakeWire;
-  new (a0: Raw_TopoDS_Wire, a1: Raw_TopoDS_Edge): Raw_BRepBuilderAPI_MakeWire;
-}
-
-/** Raw BRepBuilderAPI_Sewing (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_BRepBuilderAPI_Sewing {
-  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
   GetRefCount(): number;
   IncrementRefCounter(): void;
   DecrementRefCounter(): number;
   Delete(): void;
-  Init(a0: number, a1: number, a2: number, a3: number, a4: number): void;
-  Load(a0: Raw_TopoDS_Shape): void;
-  Add(a0: Raw_TopoDS_Shape): void;
-  SewedShape(): Raw_TopoDS_Shape;
-  NbFreeEdges(): number;
-  FreeEdge(a0: number): Raw_TopoDS_Edge;
-  NbMultipleEdges(): number;
-  MultipleEdge(a0: number): Raw_TopoDS_Edge;
-  NbContigousEdges(): number;
-  ContigousEdge(a0: number): Raw_TopoDS_Edge;
-  IsSectionBound(a0: Raw_TopoDS_Edge): number;
-  SectionToBoundary(a0: Raw_TopoDS_Edge): Raw_TopoDS_Edge;
-  NbDegeneratedShapes(): number;
-  DegeneratedShape(a0: number): Raw_TopoDS_Shape;
-  IsDegenerated(a0: Raw_TopoDS_Shape): number;
-  IsModified(a0: Raw_TopoDS_Shape): number;
-  Modified(a0: Raw_TopoDS_Shape): Raw_TopoDS_Shape;
-  IsModifiedSubShape(a0: Raw_TopoDS_Shape): number;
-  ModifiedSubShape(a0: Raw_TopoDS_Shape): Raw_TopoDS_Shape;
-  Dump(): void;
-  NbDeletedFaces(): number;
-  DeletedFace(a0: number): Raw_TopoDS_Face;
-  WhichFace(a0: Raw_TopoDS_Edge, a1: number): Raw_TopoDS_Face;
-  SameParameterMode(): number;
-  SetSameParameterMode(a0: number): void;
-  Tolerance(): number;
-  SetTolerance(a0: number): void;
-  MinTolerance(): number;
-  SetMinTolerance(a0: number): void;
-  MaxTolerance(): number;
-  SetMaxTolerance(a0: number): void;
-  FaceMode(): number;
-  SetFaceMode(a0: number): void;
-  FloatingEdgesMode(): number;
-  SetFloatingEdgesMode(a0: number): void;
-  LocalTolerancesMode(): number;
-  SetLocalTolerancesMode(a0: number): void;
-  SetNonManifoldMode(a0: number): void;
-  NonManifoldMode(): number;
+  Continuity(): number;
+  NbIntervals(a0: number): number;
+  Intervals(a0: Raw_TColStd_Array1OfReal, a1: number): void;
+  Value(a0: number): number;
+  Trim(a0: number, a1: number, a2: number): Raw_Law_Function;
 }
 
-export interface Ctor_BRepBuilderAPI_Sewing {
-  new (a0: number, a1: number, a2: number, a3: number, a4: number): Raw_BRepBuilderAPI_Sewing;
+export interface Ctor_Law_Function {
   get_type_name(): string;
   get_type_name(): string;
 }
 
-/** Raw BRepOffsetAPI_ThruSections (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_BRepOffsetAPI_ThruSections {
+/** Raw Law_Linear (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Law_Linear {
   delete(): void;
-  IsDone(): number;
-  Check(): void;
-  Shape(): Raw_TopoDS_Shape;
-  IsDeleted(a0: Raw_TopoDS_Shape): number;
-  Init(a0: number, a1: number, a2: number): void;
-  AddWire(a0: Raw_TopoDS_Wire): void;
-  AddVertex(a0: Raw_TopoDS_Vertex): void;
-  CheckCompatibility(a0: number): void;
-  SetSmoothing(a0: number): void;
-  SetCriteriumWeight(a0: number, a1: number, a2: number): void;
-  SetMaxDegree(a0: number): void;
-  MaxDegree(): number;
-  UseSmoothing(): number;
-  FirstShape(): Raw_TopoDS_Shape;
-  LastShape(): Raw_TopoDS_Shape;
-  GeneratedFace(a0: Raw_TopoDS_Shape): Raw_TopoDS_Shape;
-  SetMutableInput(a0: number): void;
-  IsMutableInput(): number;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Continuity(): number;
+  Continuity(): number;
+  NbIntervals(a0: number): number;
+  NbIntervals(a0: number): number;
+  Intervals(a0: Raw_TColStd_Array1OfReal, a1: number): void;
+  Intervals(a0: Raw_TColStd_Array1OfReal, a1: number): void;
+  Value(a0: number): number;
+  Value(a0: number): number;
+  Trim(a0: number, a1: number, a2: number): Raw_Law_Function;
+  Trim(a0: number, a1: number, a2: number): Raw_Law_Function;
+  Set(a0: number, a1: number, a2: number, a3: number): void;
 }
 
-export interface Ctor_BRepOffsetAPI_ThruSections {
-  new (a0: number, a1: number, a2: number): Raw_BRepOffsetAPI_ThruSections;
+export interface Ctor_Law_Linear {
+  new (): Raw_Law_Linear;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
 }
 
-/** Raw BRepOffsetAPI_MakePipe (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_BRepOffsetAPI_MakePipe {
+/** Raw Law_S (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Law_S {
   delete(): void;
-  IsDone(): number;
-  Check(): void;
-  Shape(): Raw_TopoDS_Shape;
-  IsDeleted(a0: Raw_TopoDS_Shape): number;
-  FirstShape(): Raw_TopoDS_Shape;
-  FirstShape(): Raw_TopoDS_Shape;
-  LastShape(): Raw_TopoDS_Shape;
-  LastShape(): Raw_TopoDS_Shape;
-  Generated(a0: Raw_TopoDS_Shape, a1: Raw_TopoDS_Shape): Raw_TopoDS_Shape;
-  ErrorOnSurface(): number;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Continuity(): number;
+  NbIntervals(a0: number): number;
+  Intervals(a0: Raw_TColStd_Array1OfReal, a1: number): void;
+  Value(a0: number): number;
+  Trim(a0: number, a1: number, a2: number): Raw_Law_Function;
+  Set(a0: number, a1: number, a2: number, a3: number): void;
+  Set(a0: number, a1: number, a2: number, a3: number, a4: number, a5: number): void;
 }
 
-export interface Ctor_BRepOffsetAPI_MakePipe {
-  new (a0: Raw_TopoDS_Wire, a1: Raw_TopoDS_Shape): Raw_BRepOffsetAPI_MakePipe;
+export interface Ctor_Law_S {
+  new (): Raw_Law_S;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
 }
 
-/** Raw BRepCheck_Analyzer (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_BRepCheck_Analyzer {
+/** Raw Law_Interpol (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Law_Interpol {
   delete(): void;
-  Init(a0: Raw_TopoDS_Shape, a1: number): void;
-  SetExactMethod(a0: number): void;
-  IsExactMethod(): number;
-  SetParallel(a0: number): void;
-  IsParallel(): number;
-  IsValid(a0: Raw_TopoDS_Shape): number;
-  IsValid(): number;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Continuity(): number;
+  NbIntervals(a0: number): number;
+  Intervals(a0: Raw_TColStd_Array1OfReal, a1: number): void;
+  Value(a0: number): number;
+  Trim(a0: number, a1: number, a2: number): Raw_Law_Function;
 }
 
-export interface Ctor_BRepCheck_Analyzer {
-  new (a0: Raw_TopoDS_Shape, a1: number, a2: number, a3: number): Raw_BRepCheck_Analyzer;
+export interface Ctor_Law_Interpol {
+  new (): Raw_Law_Interpol;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
 }
 
-/** Raw STEPControl_Reader (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_STEPControl_Reader {
+/** Raw Law_Composite (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Law_Composite {
   delete(): void;
-  NbRootsForTransfer(): number;
-  NbRootsForTransfer(): number;
-  ClearShapes(): void;
-  NbShapes(): number;
-  Shape(a0: number): Raw_TopoDS_Shape;
-  OneShape(): Raw_TopoDS_Shape;
-  PrintStatsTransfer(a0: number, a1: number): void;
-  SetSystemLengthUnit(a0: number): void;
-  SystemLengthUnit(): number;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Continuity(): number;
+  Continuity(): number;
+  NbIntervals(a0: number): number;
+  NbIntervals(a0: number): number;
+  Intervals(a0: Raw_TColStd_Array1OfReal, a1: number): void;
+  Intervals(a0: Raw_TColStd_Array1OfReal, a1: number): void;
+  Value(a0: number): number;
+  Value(a0: number): number;
+  Trim(a0: number, a1: number, a2: number): Raw_Law_Function;
+  Trim(a0: number, a1: number, a2: number): Raw_Law_Function;
+  ChangeElementaryLaw(a0: number): Raw_Law_Function;
+  IsPeriodic(): number;
+  SetPeriodic(): void;
 }
 
-export interface Ctor_STEPControl_Reader {
-  new (): Raw_STEPControl_Reader;
+export interface Ctor_Law_Composite {
+  new (): Raw_Law_Composite;
+  new (a0: number, a1: number, a2: number): Raw_Law_Composite;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
 }
 
-/** Raw STEPControl_Writer (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_STEPControl_Writer {
+/** Raw Poly_Triangle (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Poly_Triangle {
   delete(): void;
-  SetTolerance(a0: number): void;
-  UnsetTolerance(): void;
-  PrintStatsTransfer(a0: number, a1: number): void;
+  Set(a0: number, a1: number, a2: number): void;
+  Set(a0: number, a1: number): void;
+  Value(a0: number): number;
+  ChangeValue(a0: number): number;
 }
 
-export interface Ctor_STEPControl_Writer {
-  new (): Raw_STEPControl_Writer;
+export interface Ctor_Poly_Triangle {
+  new (): Raw_Poly_Triangle;
+  new (a0: number, a1: number, a2: number): Raw_Poly_Triangle;
+}
+
+/** Raw Poly_Polygon2D (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Poly_Polygon2D {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Deflection(): number;
+  Deflection(a0: number): void;
+  NbNodes(): number;
+}
+
+export interface Ctor_Poly_Polygon2D {
+  new (a0: number): Raw_Poly_Polygon2D;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw TColStd_Array1OfReal (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TColStd_Array1OfReal {
+  delete(): void;
+  Init(a0: number): void;
+  Size(): number;
+  Length(): number;
+  IsEmpty(): number;
+  Lower(): number;
+  Upper(): number;
+  Assign(a0: Raw_TColStd_Array1OfReal): Raw_TColStd_Array1OfReal;
+  First(): number;
+  ChangeFirst(): number;
+  Last(): number;
+  ChangeLast(): number;
+  Value(a0: number): number;
+  ChangeValue(a0: number): number;
+  SetValue(a0: number, a1: number): void;
+  UpdateLowerBound(a0: number): void;
+  UpdateUpperBound(a0: number): void;
+  Resize(a0: number, a1: number, a2: number): void;
+  IsDeletable(): number;
+}
+
+export interface Ctor_TColStd_Array1OfReal {
+  new (): Raw_TColStd_Array1OfReal;
+  new (a0: Raw_TColStd_Array1OfReal): Raw_TColStd_Array1OfReal;
+}
+
+/** Raw TColStd_Array1OfInteger (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TColStd_Array1OfInteger {
+  delete(): void;
+  Init(a0: number): void;
+  Size(): number;
+  Length(): number;
+  IsEmpty(): number;
+  Lower(): number;
+  Upper(): number;
+  Assign(a0: Raw_TColStd_Array1OfInteger): Raw_TColStd_Array1OfInteger;
+  First(): number;
+  ChangeFirst(): number;
+  Last(): number;
+  ChangeLast(): number;
+  Value(a0: number): number;
+  ChangeValue(a0: number): number;
+  SetValue(a0: number, a1: number): void;
+  UpdateLowerBound(a0: number): void;
+  UpdateUpperBound(a0: number): void;
+  Resize(a0: number, a1: number, a2: number): void;
+  IsDeletable(): number;
+}
+
+export interface Ctor_TColStd_Array1OfInteger {
+  new (): Raw_TColStd_Array1OfInteger;
+  new (a0: Raw_TColStd_Array1OfInteger): Raw_TColStd_Array1OfInteger;
+}
+
+/** Raw TColStd_HArray1OfReal (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TColStd_HArray1OfReal {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Array1(): Raw_TColStd_Array1OfReal;
+  ChangeArray1(): Raw_TColStd_Array1OfReal;
+}
+
+export interface Ctor_TColStd_HArray1OfReal {
+  new (): Raw_TColStd_HArray1OfReal;
+  new (a0: number, a1: number): Raw_TColStd_HArray1OfReal;
+  new (a0: number, a1: number, a2: number): Raw_TColStd_HArray1OfReal;
+  new (a0: number, a1: number, a2: number, a3: number): Raw_TColStd_HArray1OfReal;
+  new (a0: Raw_TColStd_Array1OfReal): Raw_TColStd_HArray1OfReal;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw TColStd_HArray1OfInteger (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TColStd_HArray1OfInteger {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Array1(): Raw_TColStd_Array1OfInteger;
+  ChangeArray1(): Raw_TColStd_Array1OfInteger;
+}
+
+export interface Ctor_TColStd_HArray1OfInteger {
+  new (): Raw_TColStd_HArray1OfInteger;
+  new (a0: number, a1: number): Raw_TColStd_HArray1OfInteger;
+  new (a0: number, a1: number, a2: number): Raw_TColStd_HArray1OfInteger;
+  new (a0: number, a1: number, a2: number, a3: number): Raw_TColStd_HArray1OfInteger;
+  new (a0: Raw_TColStd_Array1OfInteger): Raw_TColStd_HArray1OfInteger;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Message_ProgressRange (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Message_ProgressRange {
+  delete(): void;
+  UserBreak(): number;
+  More(): number;
+  IsActive(): number;
+  Close(): void;
+}
+
+export interface Ctor_Message_ProgressRange {
+  new (): Raw_Message_ProgressRange;
+  new (a0: Raw_Message_ProgressRange): Raw_Message_ProgressRange;
+}
+
+/** Raw DESTEP_Parameters (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_DESTEP_Parameters {
+  delete(): void;
+  InitFromStatic(): void;
+  Reset(): void;
+}
+
+export interface Ctor_DESTEP_Parameters {
+  new (): Raw_DESTEP_Parameters;
+}
+
+/** Raw TCollection_AsciiString (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TCollection_AsciiString {
+  delete(): void;
+  AssignCat(a0: number): void;
+  AssignCat(a0: number): void;
+  AssignCat(a0: number): void;
+  AssignCat(a0: string): void;
+  AssignCat(a0: Raw_TCollection_AsciiString): void;
+  Capitalize(): void;
+  Cat(a0: number): Raw_TCollection_AsciiString;
+  Cat(a0: number): Raw_TCollection_AsciiString;
+  Cat(a0: number): Raw_TCollection_AsciiString;
+  Cat(a0: string): Raw_TCollection_AsciiString;
+  Cat(a0: Raw_TCollection_AsciiString): Raw_TCollection_AsciiString;
+  Center(a0: number, a1: number): void;
+  ChangeAll(a0: number, a1: number, a2: number): void;
+  Clear(): void;
+  Copy(a0: string): void;
+  Copy(a0: Raw_TCollection_AsciiString): void;
+  Swap(a0: Raw_TCollection_AsciiString): void;
+  FirstLocationInSet(a0: Raw_TCollection_AsciiString, a1: number, a2: number): number;
+  FirstLocationNotInSet(a0: Raw_TCollection_AsciiString, a1: number, a2: number): number;
+  Insert(a0: number, a1: number): void;
+  Insert(a0: number, a1: string): void;
+  Insert(a0: number, a1: Raw_TCollection_AsciiString): void;
+  InsertAfter(a0: number, a1: Raw_TCollection_AsciiString): void;
+  InsertBefore(a0: number, a1: Raw_TCollection_AsciiString): void;
+  IsEmpty(): number;
+  IsEqual(a0: string): number;
+  IsEqual(a0: Raw_TCollection_AsciiString): number;
+  IsDifferent(a0: string): number;
+  IsDifferent(a0: Raw_TCollection_AsciiString): number;
+  IsLess(a0: string): number;
+  IsLess(a0: Raw_TCollection_AsciiString): number;
+  IsGreater(a0: string): number;
+  IsGreater(a0: Raw_TCollection_AsciiString): number;
+  StartsWith(a0: Raw_TCollection_AsciiString): number;
+  EndsWith(a0: Raw_TCollection_AsciiString): number;
+  IntegerValue(): number;
+  IsIntegerValue(): number;
+  IsRealValue(a0: number): number;
+  IsAscii(): number;
+  LeftAdjust(): void;
+  LeftJustify(a0: number, a1: number): void;
+  Length(): number;
+  Location(a0: Raw_TCollection_AsciiString, a1: number, a2: number): number;
+  Location(a0: number, a1: number, a2: number, a3: number): number;
+  LowerCase(): void;
+  Prepend(a0: Raw_TCollection_AsciiString): void;
+  RealValue(): number;
+  RemoveAll(a0: number, a1: number): void;
+  RemoveAll(a0: number): void;
+  Remove(a0: number, a1: number): void;
+  RightAdjust(): void;
+  RightJustify(a0: number, a1: number): void;
+  Search(a0: string): number;
+  Search(a0: Raw_TCollection_AsciiString): number;
+  SearchFromEnd(a0: string): number;
+  SearchFromEnd(a0: Raw_TCollection_AsciiString): number;
+  SetValue(a0: number, a1: number): void;
+  SetValue(a0: number, a1: string): void;
+  SetValue(a0: number, a1: Raw_TCollection_AsciiString): void;
+  Split(a0: number): Raw_TCollection_AsciiString;
+  SubString(a0: number, a1: number): Raw_TCollection_AsciiString;
+  ToCString(): string;
+  Token(a0: string, a1: number): Raw_TCollection_AsciiString;
+  Trunc(a0: number): void;
+  UpperCase(): void;
+  UsefullLength(): number;
+  Value(a0: number): number;
+  HashCode(): number;
+}
+
+export interface Ctor_TCollection_AsciiString {
+  new (): Raw_TCollection_AsciiString;
+  new (a0: string): Raw_TCollection_AsciiString;
+  new (a0: string, a1: number): Raw_TCollection_AsciiString;
+  new (a0: number): Raw_TCollection_AsciiString;
+  new (a0: number, a1: number): Raw_TCollection_AsciiString;
+  new (a0: number): Raw_TCollection_AsciiString;
+  new (a0: number): Raw_TCollection_AsciiString;
+  new (a0: Raw_TCollection_AsciiString): Raw_TCollection_AsciiString;
+  new (a0: Raw_TCollection_AsciiString, a1: number): Raw_TCollection_AsciiString;
+  new (a0: Raw_TCollection_AsciiString, a1: string): Raw_TCollection_AsciiString;
+  new (a0: Raw_TCollection_AsciiString, a1: Raw_TCollection_AsciiString): Raw_TCollection_AsciiString;
+  IsEqual(a0: Raw_TCollection_AsciiString, a1: Raw_TCollection_AsciiString): number;
+  IsEqual(a0: Raw_TCollection_AsciiString, a1: string): number;
+  IsSameString(a0: Raw_TCollection_AsciiString, a1: Raw_TCollection_AsciiString, a2: number): number;
+}
+
+/** Raw TCollection_HAsciiString (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TCollection_HAsciiString {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  AssignCat(a0: string): void;
+  AssignCat(a0: Raw_TCollection_HAsciiString): void;
+  Capitalize(): void;
+  Cat(a0: string): Raw_TCollection_HAsciiString;
+  Cat(a0: Raw_TCollection_HAsciiString): Raw_TCollection_HAsciiString;
+  Center(a0: number, a1: number): void;
+  ChangeAll(a0: number, a1: number, a2: number): void;
+  Clear(): void;
+  FirstLocationInSet(a0: Raw_TCollection_HAsciiString, a1: number, a2: number): number;
+  FirstLocationNotInSet(a0: Raw_TCollection_HAsciiString, a1: number, a2: number): number;
+  Insert(a0: number, a1: number): void;
+  Insert(a0: number, a1: string): void;
+  Insert(a0: number, a1: Raw_TCollection_HAsciiString): void;
+  InsertAfter(a0: number, a1: Raw_TCollection_HAsciiString): void;
+  InsertBefore(a0: number, a1: Raw_TCollection_HAsciiString): void;
+  IsEmpty(): number;
+  IsLess(a0: Raw_TCollection_HAsciiString): number;
+  IsGreater(a0: Raw_TCollection_HAsciiString): number;
+  IntegerValue(): number;
+  IsIntegerValue(): number;
+  IsRealValue(): number;
+  IsAscii(): number;
+  IsDifferent(a0: Raw_TCollection_HAsciiString): number;
+  IsSameString(a0: Raw_TCollection_HAsciiString): number;
+  IsSameString(a0: Raw_TCollection_HAsciiString, a1: number): number;
+  LeftAdjust(): void;
+  LeftJustify(a0: number, a1: number): void;
+  Length(): number;
+  Location(a0: Raw_TCollection_HAsciiString, a1: number, a2: number): number;
+  Location(a0: number, a1: number, a2: number, a3: number): number;
+  LowerCase(): void;
+  Prepend(a0: Raw_TCollection_HAsciiString): void;
+  RealValue(): number;
+  RemoveAll(a0: number, a1: number): void;
+  RemoveAll(a0: number): void;
+  Remove(a0: number, a1: number): void;
+  RightAdjust(): void;
+  RightJustify(a0: number, a1: number): void;
+  Search(a0: string): number;
+  Search(a0: Raw_TCollection_HAsciiString): number;
+  SearchFromEnd(a0: string): number;
+  SearchFromEnd(a0: Raw_TCollection_HAsciiString): number;
+  SetValue(a0: number, a1: number): void;
+  SetValue(a0: number, a1: string): void;
+  SetValue(a0: number, a1: Raw_TCollection_HAsciiString): void;
+  Split(a0: number): Raw_TCollection_HAsciiString;
+  SubString(a0: number, a1: number): Raw_TCollection_HAsciiString;
+  ToCString(): string;
+  Token(a0: string, a1: number): Raw_TCollection_HAsciiString;
+  Trunc(a0: number): void;
+  UpperCase(): void;
+  UsefullLength(): number;
+  Value(a0: number): number;
+  String(): Raw_TCollection_AsciiString;
+  IsSameState(a0: Raw_TCollection_HAsciiString): number;
+}
+
+export interface Ctor_TCollection_HAsciiString {
+  new (): Raw_TCollection_HAsciiString;
+  new (a0: string): Raw_TCollection_HAsciiString;
+  new (a0: number): Raw_TCollection_HAsciiString;
+  new (a0: number, a1: number): Raw_TCollection_HAsciiString;
+  new (a0: number): Raw_TCollection_HAsciiString;
+  new (a0: number): Raw_TCollection_HAsciiString;
+  new (a0: Raw_TCollection_AsciiString): Raw_TCollection_HAsciiString;
+  new (a0: Raw_TCollection_HAsciiString): Raw_TCollection_HAsciiString;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw MoniTool_TypedValue (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_MoniTool_TypedValue {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Name(): string;
+  ValueType(): number;
+  Definition(): Raw_TCollection_AsciiString;
+  SetDefinition(a0: string): void;
+  AddDef(a0: string): number;
+  SetLabel(a0: string): void;
+  Label(): string;
+  SetMaxLength(a0: number): void;
+  MaxLength(): number;
+  SetIntegerLimit(a0: number, a1: number): void;
+  SetRealLimit(a0: number, a1: number): void;
+  SetUnitDef(a0: string): void;
+  UnitDef(): string;
+  StartEnum(a0: number, a1: number): void;
+  AddEnum(a0: string, a1: string, a2: string, a3: string, a4: string, a5: string, a6: string, a7: string, a8: string, a9: string): void;
+  AddEnumValue(a0: string, a1: number): void;
+  EnumVal(a0: number): string;
+  EnumCase(a0: string): number;
+  HasInterpret(): number;
+  SatisfiesName(): string;
+  IsSetValue(): number;
+  CStringValue(): string;
+  HStringValue(): Raw_TCollection_HAsciiString;
+  Interpret(a0: Raw_TCollection_HAsciiString, a1: number): Raw_TCollection_HAsciiString;
+  Satisfies(a0: Raw_TCollection_HAsciiString): number;
+  ClearValue(): void;
+  SetCStringValue(a0: string): number;
+  SetHStringValue(a0: Raw_TCollection_HAsciiString): number;
+  IntegerValue(): number;
+  SetIntegerValue(a0: number): number;
+  RealValue(): number;
+  SetRealValue(a0: number): number;
+  ObjectTypeName(): string;
+}
+
+export interface Ctor_MoniTool_TypedValue {
+  new (a0: string, a1: number, a2: string): Raw_MoniTool_TypedValue;
+  new (a0: Raw_MoniTool_TypedValue): Raw_MoniTool_TypedValue;
+  get_type_name(): string;
+  get_type_name(): string;
+  AddLib(a0: Raw_MoniTool_TypedValue, a1: string): number;
+  Lib(a0: string): Raw_MoniTool_TypedValue;
+  FromLib(a0: string): Raw_MoniTool_TypedValue;
+  StaticValue(a0: string): Raw_MoniTool_TypedValue;
 }
 
 /** Raw Interface_Static (see tools/codegen/SKIPPED.md for unmapped members). */
 export interface Raw_Interface_Static {
   delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
   GetRefCount(): number;
   IncrementRefCounter(): void;
   DecrementRefCounter(): number;
   Delete(): void;
+  Name(): string;
+  ValueType(): number;
+  Definition(): Raw_TCollection_AsciiString;
+  SetDefinition(a0: string): void;
+  AddDef(a0: string): number;
+  SetLabel(a0: string): void;
+  Label(): string;
   SetMaxLength(a0: number): void;
   MaxLength(): number;
   SetIntegerLimit(a0: number, a1: number): void;
   SetRealLimit(a0: number, a1: number): void;
+  SetUnitDef(a0: string): void;
+  UnitDef(): string;
   StartEnum(a0: number, a1: number): void;
+  AddEnum(a0: string, a1: string, a2: string, a3: string, a4: string, a5: string, a6: string, a7: string, a8: string, a9: string): void;
+  AddEnumValue(a0: string, a1: number): void;
+  EnumVal(a0: number): string;
+  EnumCase(a0: string): number;
   HasInterpret(): number;
+  SatisfiesName(): string;
   IsSetValue(): number;
+  CStringValue(): string;
+  HStringValue(): Raw_TCollection_HAsciiString;
+  Interpret(a0: Raw_TCollection_HAsciiString, a1: number): Raw_TCollection_HAsciiString;
+  Satisfies(a0: Raw_TCollection_HAsciiString): number;
   ClearValue(): void;
+  SetCStringValue(a0: string): number;
+  SetHStringValue(a0: Raw_TCollection_HAsciiString): number;
   IntegerValue(): number;
   SetIntegerValue(a0: number): number;
   RealValue(): number;
   SetRealValue(a0: number): number;
+  ObjectTypeName(): string;
+  Type(): number;
+  Family(): string;
   SetWild(a0: Raw_Interface_Static): void;
   Wild(): Raw_Interface_Static;
   SetUptodate(): void;
@@ -763,10 +615,33 @@ export interface Raw_Interface_Static {
 }
 
 export interface Ctor_Interface_Static {
+  new (a0: string, a1: string, a2: number, a3: string): Raw_Interface_Static;
+  new (a0: string, a1: string, a2: Raw_Interface_Static): Raw_Interface_Static;
   get_type_name(): string;
   get_type_name(): string;
   get_type_name(): string;
   get_type_name(): string;
+  AddLib(a0: Raw_MoniTool_TypedValue, a1: string): number;
+  Lib(a0: string): Raw_MoniTool_TypedValue;
+  FromLib(a0: string): Raw_MoniTool_TypedValue;
+  StaticValue(a0: string): Raw_MoniTool_TypedValue;
+  ParamTypeToValueType(a0: number): number;
+  ValueTypeToParamType(a0: number): number;
+  Init(a0: string, a1: string, a2: number, a3: string): number;
+  Init(a0: string, a1: string, a2: number, a3: string): number;
+  Static(a0: string): Raw_Interface_Static;
+  IsPresent(a0: string): number;
+  CDef(a0: string, a1: string): string;
+  IDef(a0: string, a1: string): number;
+  IsSet(a0: string, a1: number): number;
+  CVal(a0: string): string;
+  IVal(a0: string): number;
+  RVal(a0: string): number;
+  SetCVal(a0: string, a1: string): number;
+  SetIVal(a0: string, a1: number): number;
+  SetRVal(a0: string, a1: number): number;
+  Update(a0: string): number;
+  IsUpdated(a0: string): number;
   Standards(): void;
 }
 
@@ -778,10 +653,14 @@ export interface Raw_gp_Pnt {
   SetX(a0: number): void;
   SetY(a0: number): void;
   SetZ(a0: number): void;
+  SetXYZ(a0: Raw_gp_XYZ): void;
   Coord(a0: number): number;
+  Coord(): Raw_gp_XYZ;
   X(): number;
   Y(): number;
   Z(): number;
+  XYZ(): Raw_gp_XYZ;
+  ChangeCoord(): Raw_gp_XYZ;
   BaryCenter(a0: number, a1: Raw_gp_Pnt, a2: number): void;
   IsEqual(a0: Raw_gp_Pnt, a1: number): number;
   Distance(a0: Raw_gp_Pnt): number;
@@ -806,6 +685,7 @@ export interface Raw_gp_Pnt {
 
 export interface Ctor_gp_Pnt {
   new (): Raw_gp_Pnt;
+  new (a0: Raw_gp_XYZ): Raw_gp_Pnt;
   new (a0: number, a1: number, a2: number): Raw_gp_Pnt;
 }
 
@@ -817,10 +697,12 @@ export interface Raw_gp_Vec {
   SetX(a0: number): void;
   SetY(a0: number): void;
   SetZ(a0: number): void;
+  SetXYZ(a0: Raw_gp_XYZ): void;
   Coord(a0: number): number;
   X(): number;
   Y(): number;
   Z(): number;
+  XYZ(): Raw_gp_XYZ;
   IsEqual(a0: Raw_gp_Vec, a1: number, a2: number): number;
   IsNormal(a0: Raw_gp_Vec, a1: number): number;
   IsOpposite(a0: Raw_gp_Vec, a1: number): number;
@@ -872,6 +754,7 @@ export interface Raw_gp_Vec {
 export interface Ctor_gp_Vec {
   new (): Raw_gp_Vec;
   new (a0: Raw_gp_Dir): Raw_gp_Vec;
+  new (a0: Raw_gp_XYZ): Raw_gp_Vec;
   new (a0: number, a1: number, a2: number): Raw_gp_Vec;
   new (a0: Raw_gp_Pnt, a1: Raw_gp_Pnt): Raw_gp_Vec;
 }
@@ -884,10 +767,12 @@ export interface Raw_gp_Dir {
   SetX(a0: number): void;
   SetY(a0: number): void;
   SetZ(a0: number): void;
+  SetXYZ(a0: Raw_gp_XYZ): void;
   Coord(a0: number): number;
   X(): number;
   Y(): number;
   Z(): number;
+  XYZ(): Raw_gp_XYZ;
   IsEqual(a0: Raw_gp_Dir, a1: number): number;
   IsNormal(a0: Raw_gp_Dir, a1: number): number;
   IsOpposite(a0: Raw_gp_Dir, a1: number): number;
@@ -917,7 +802,144 @@ export interface Raw_gp_Dir {
 export interface Ctor_gp_Dir {
   new (): Raw_gp_Dir;
   new (a0: Raw_gp_Vec): Raw_gp_Dir;
+  new (a0: Raw_gp_XYZ): Raw_gp_Dir;
   new (a0: number, a1: number, a2: number): Raw_gp_Dir;
+}
+
+/** Raw gp_XYZ (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_gp_XYZ {
+  delete(): void;
+  SetCoord(a0: number, a1: number, a2: number): void;
+  SetCoord(a0: number, a1: number): void;
+  SetX(a0: number): void;
+  SetY(a0: number): void;
+  SetZ(a0: number): void;
+  Coord(a0: number): number;
+  ChangeCoord(a0: number): number;
+  X(): number;
+  Y(): number;
+  Z(): number;
+  Modulus(): number;
+  SquareModulus(): number;
+  IsEqual(a0: Raw_gp_XYZ, a1: number): number;
+  Add(a0: Raw_gp_XYZ): void;
+  Added(a0: Raw_gp_XYZ): Raw_gp_XYZ;
+  Cross(a0: Raw_gp_XYZ): void;
+  Crossed(a0: Raw_gp_XYZ): Raw_gp_XYZ;
+  CrossMagnitude(a0: Raw_gp_XYZ): number;
+  CrossSquareMagnitude(a0: Raw_gp_XYZ): number;
+  CrossCross(a0: Raw_gp_XYZ, a1: Raw_gp_XYZ): void;
+  CrossCrossed(a0: Raw_gp_XYZ, a1: Raw_gp_XYZ): Raw_gp_XYZ;
+  Divide(a0: number): void;
+  Divided(a0: number): Raw_gp_XYZ;
+  Dot(a0: Raw_gp_XYZ): number;
+  DotCross(a0: Raw_gp_XYZ, a1: Raw_gp_XYZ): number;
+  Multiply(a0: number): void;
+  Multiply(a0: Raw_gp_XYZ): void;
+  Multiply(a0: Raw_gp_Mat): void;
+  Multiplied(a0: number): Raw_gp_XYZ;
+  Multiplied(a0: Raw_gp_XYZ): Raw_gp_XYZ;
+  Multiplied(a0: Raw_gp_Mat): Raw_gp_XYZ;
+  Normalize(): void;
+  Normalized(): Raw_gp_XYZ;
+  Reverse(): void;
+  Reversed(): Raw_gp_XYZ;
+  Subtract(a0: Raw_gp_XYZ): void;
+  Subtracted(a0: Raw_gp_XYZ): Raw_gp_XYZ;
+  SetLinearForm(a0: number, a1: Raw_gp_XYZ, a2: number, a3: Raw_gp_XYZ, a4: number, a5: Raw_gp_XYZ, a6: Raw_gp_XYZ): void;
+  SetLinearForm(a0: number, a1: Raw_gp_XYZ, a2: number, a3: Raw_gp_XYZ, a4: number, a5: Raw_gp_XYZ): void;
+  SetLinearForm(a0: number, a1: Raw_gp_XYZ, a2: number, a3: Raw_gp_XYZ, a4: Raw_gp_XYZ): void;
+  SetLinearForm(a0: number, a1: Raw_gp_XYZ, a2: number, a3: Raw_gp_XYZ): void;
+  SetLinearForm(a0: number, a1: Raw_gp_XYZ, a2: Raw_gp_XYZ): void;
+  SetLinearForm(a0: Raw_gp_XYZ, a1: Raw_gp_XYZ): void;
+}
+
+export interface Ctor_gp_XYZ {
+  new (): Raw_gp_XYZ;
+  new (a0: number, a1: number, a2: number): Raw_gp_XYZ;
+}
+
+/** Raw gp_Mat (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_gp_Mat {
+  delete(): void;
+  SetCol(a0: number, a1: Raw_gp_XYZ): void;
+  SetCols(a0: Raw_gp_XYZ, a1: Raw_gp_XYZ, a2: Raw_gp_XYZ): void;
+  SetCross(a0: Raw_gp_XYZ): void;
+  SetDiagonal(a0: number, a1: number, a2: number): void;
+  SetDot(a0: Raw_gp_XYZ): void;
+  SetIdentity(): void;
+  SetRotation(a0: Raw_gp_XYZ, a1: number): void;
+  SetRow(a0: number, a1: Raw_gp_XYZ): void;
+  SetRows(a0: Raw_gp_XYZ, a1: Raw_gp_XYZ, a2: Raw_gp_XYZ): void;
+  SetScale(a0: number): void;
+  SetValue(a0: number, a1: number, a2: number): void;
+  Column(a0: number): Raw_gp_XYZ;
+  Determinant(): number;
+  Diagonal(): Raw_gp_XYZ;
+  Row(a0: number): Raw_gp_XYZ;
+  Value(a0: number, a1: number): number;
+  ChangeValue(a0: number, a1: number): number;
+  IsSingular(): number;
+  Add(a0: Raw_gp_Mat): void;
+  Added(a0: Raw_gp_Mat): Raw_gp_Mat;
+  Divide(a0: number): void;
+  Divided(a0: number): Raw_gp_Mat;
+  Invert(): void;
+  Inverted(): Raw_gp_Mat;
+  Multiplied(a0: Raw_gp_Mat): Raw_gp_Mat;
+  Multiplied(a0: number): Raw_gp_Mat;
+  Multiply(a0: Raw_gp_Mat): void;
+  Multiply(a0: number): void;
+  PreMultiply(a0: Raw_gp_Mat): void;
+  Power(a0: number): void;
+  Powered(a0: number): Raw_gp_Mat;
+  Subtract(a0: Raw_gp_Mat): void;
+  Subtracted(a0: Raw_gp_Mat): Raw_gp_Mat;
+  Transpose(): void;
+  Transposed(): Raw_gp_Mat;
+}
+
+export interface Ctor_gp_Mat {
+  new (): Raw_gp_Mat;
+  new (a0: number, a1: number, a2: number, a3: number, a4: number, a5: number, a6: number, a7: number, a8: number): Raw_gp_Mat;
+  new (a0: Raw_gp_XYZ, a1: Raw_gp_XYZ, a2: Raw_gp_XYZ): Raw_gp_Mat;
+}
+
+/** Raw gp_Ax22d (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_gp_Ax22d {
+  delete(): void;
+  SetAxis(a0: Raw_gp_Ax22d): void;
+  SetXAxis(a0: Raw_gp_Ax2d): void;
+  SetYAxis(a0: Raw_gp_Ax2d): void;
+  SetLocation(a0: Raw_gp_Pnt2d): void;
+  SetXDirection(a0: Raw_gp_Dir2d): void;
+  SetYDirection(a0: Raw_gp_Dir2d): void;
+  XAxis(): Raw_gp_Ax2d;
+  YAxis(): Raw_gp_Ax2d;
+  Location(): Raw_gp_Pnt2d;
+  XDirection(): Raw_gp_Dir2d;
+  YDirection(): Raw_gp_Dir2d;
+  Mirror(a0: Raw_gp_Pnt2d): void;
+  Mirror(a0: Raw_gp_Ax2d): void;
+  Mirrored(a0: Raw_gp_Pnt2d): Raw_gp_Ax22d;
+  Mirrored(a0: Raw_gp_Ax2d): Raw_gp_Ax22d;
+  Rotate(a0: Raw_gp_Pnt2d, a1: number): void;
+  Rotated(a0: Raw_gp_Pnt2d, a1: number): Raw_gp_Ax22d;
+  Scale(a0: Raw_gp_Pnt2d, a1: number): void;
+  Scaled(a0: Raw_gp_Pnt2d, a1: number): Raw_gp_Ax22d;
+  Transform(a0: Raw_gp_Trsf2d): void;
+  Transformed(a0: Raw_gp_Trsf2d): Raw_gp_Ax22d;
+  Translate(a0: Raw_gp_Vec2d): void;
+  Translate(a0: Raw_gp_Pnt2d, a1: Raw_gp_Pnt2d): void;
+  Translated(a0: Raw_gp_Vec2d): Raw_gp_Ax22d;
+  Translated(a0: Raw_gp_Pnt2d, a1: Raw_gp_Pnt2d): Raw_gp_Ax22d;
+}
+
+export interface Ctor_gp_Ax22d {
+  new (): Raw_gp_Ax22d;
+  new (a0: Raw_gp_Pnt2d, a1: Raw_gp_Dir2d, a2: Raw_gp_Dir2d): Raw_gp_Ax22d;
+  new (a0: Raw_gp_Pnt2d, a1: Raw_gp_Dir2d, a2: number): Raw_gp_Ax22d;
+  new (a0: Raw_gp_Ax2d, a1: number): Raw_gp_Ax22d;
 }
 
 /** Raw gp_Ax1 (see tools/codegen/SKIPPED.md for unmapped members). */
@@ -1050,17 +1072,26 @@ export interface Raw_gp_Trsf {
   SetMirror(a0: Raw_gp_Ax1): void;
   SetMirror(a0: Raw_gp_Ax2): void;
   SetRotation(a0: Raw_gp_Ax1, a1: number): void;
+  SetRotation(a0: Raw_gp_Quaternion): void;
+  SetRotationPart(a0: Raw_gp_Quaternion): void;
   SetScale(a0: Raw_gp_Pnt, a1: number): void;
   SetDisplacement(a0: Raw_gp_Ax3, a1: Raw_gp_Ax3): void;
   SetTransformation(a0: Raw_gp_Ax3, a1: Raw_gp_Ax3): void;
   SetTransformation(a0: Raw_gp_Ax3): void;
+  SetTransformation(a0: Raw_gp_Quaternion, a1: Raw_gp_Vec): void;
   SetTranslation(a0: Raw_gp_Vec): void;
   SetTranslation(a0: Raw_gp_Pnt, a1: Raw_gp_Pnt): void;
   SetTranslationPart(a0: Raw_gp_Vec): void;
   SetScaleFactor(a0: number): void;
+  SetForm(a0: number): void;
   SetValues(a0: number, a1: number, a2: number, a3: number, a4: number, a5: number, a6: number, a7: number, a8: number, a9: number, a10: number, a11: number): void;
   IsNegative(): number;
+  Form(): number;
   ScaleFactor(): number;
+  TranslationPart(): Raw_gp_XYZ;
+  GetRotation(): Raw_gp_Quaternion;
+  VectorialPart(): Raw_gp_Mat;
+  HVectorialPart(): Raw_gp_Mat;
   Value(a0: number, a1: number): number;
   Invert(): void;
   Inverted(): Raw_gp_Trsf;
@@ -1069,10 +1100,12 @@ export interface Raw_gp_Trsf {
   PreMultiply(a0: Raw_gp_Trsf): void;
   Power(a0: number): void;
   Powered(a0: number): Raw_gp_Trsf;
+  Transforms(a0: Raw_gp_XYZ): void;
 }
 
 export interface Ctor_gp_Trsf {
   new (): Raw_gp_Trsf;
+  new (a0: Raw_gp_Trsf2d): Raw_gp_Trsf;
 }
 
 /** Raw gp_GTrsf (see tools/codegen/SKIPPED.md for unmapped members). */
@@ -1081,10 +1114,15 @@ export interface Raw_gp_GTrsf {
   SetAffinity(a0: Raw_gp_Ax1, a1: number): void;
   SetAffinity(a0: Raw_gp_Ax2, a1: number): void;
   SetValue(a0: number, a1: number, a2: number): void;
+  SetVectorialPart(a0: Raw_gp_Mat): void;
+  SetTranslationPart(a0: Raw_gp_XYZ): void;
   SetTrsf(a0: Raw_gp_Trsf): void;
   IsNegative(): number;
   IsSingular(): number;
+  Form(): number;
   SetForm(): void;
+  TranslationPart(): Raw_gp_XYZ;
+  VectorialPart(): Raw_gp_Mat;
   Value(a0: number, a1: number): number;
   Invert(): void;
   Inverted(): Raw_gp_GTrsf;
@@ -1093,12 +1131,14 @@ export interface Raw_gp_GTrsf {
   PreMultiply(a0: Raw_gp_GTrsf): void;
   Power(a0: number): void;
   Powered(a0: number): Raw_gp_GTrsf;
+  Transforms(a0: Raw_gp_XYZ): void;
   Trsf(): Raw_gp_Trsf;
 }
 
 export interface Ctor_gp_GTrsf {
   new (): Raw_gp_GTrsf;
   new (a0: Raw_gp_Trsf): Raw_gp_GTrsf;
+  new (a0: Raw_gp_Mat, a1: Raw_gp_XYZ): Raw_gp_GTrsf;
 }
 
 /** Raw gp_Pln (see tools/codegen/SKIPPED.md for unmapped members). */
@@ -1231,6 +1271,1249 @@ export interface Ctor_gp_Lin {
   new (a0: Raw_gp_Pnt, a1: Raw_gp_Dir): Raw_gp_Lin;
 }
 
+/** Raw gp_Elips (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_gp_Elips {
+  delete(): void;
+  SetAxis(a0: Raw_gp_Ax1): void;
+  SetLocation(a0: Raw_gp_Pnt): void;
+  SetMajorRadius(a0: number): void;
+  SetMinorRadius(a0: number): void;
+  SetPosition(a0: Raw_gp_Ax2): void;
+  Area(): number;
+  Axis(): Raw_gp_Ax1;
+  Directrix1(): Raw_gp_Ax1;
+  Directrix2(): Raw_gp_Ax1;
+  Eccentricity(): number;
+  Focal(): number;
+  Focus1(): Raw_gp_Pnt;
+  Focus2(): Raw_gp_Pnt;
+  Location(): Raw_gp_Pnt;
+  MajorRadius(): number;
+  MinorRadius(): number;
+  Parameter(): number;
+  Position(): Raw_gp_Ax2;
+  XAxis(): Raw_gp_Ax1;
+  YAxis(): Raw_gp_Ax1;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Mirror(a0: Raw_gp_Ax1): void;
+  Mirror(a0: Raw_gp_Ax2): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_gp_Elips;
+  Mirrored(a0: Raw_gp_Ax1): Raw_gp_Elips;
+  Mirrored(a0: Raw_gp_Ax2): Raw_gp_Elips;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_gp_Elips;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_gp_Elips;
+  Transform(a0: Raw_gp_Trsf): void;
+  Transformed(a0: Raw_gp_Trsf): Raw_gp_Elips;
+  Translate(a0: Raw_gp_Vec): void;
+  Translate(a0: Raw_gp_Pnt, a1: Raw_gp_Pnt): void;
+  Translated(a0: Raw_gp_Vec): Raw_gp_Elips;
+  Translated(a0: Raw_gp_Pnt, a1: Raw_gp_Pnt): Raw_gp_Elips;
+}
+
+export interface Ctor_gp_Elips {
+  new (): Raw_gp_Elips;
+  new (a0: Raw_gp_Ax2, a1: number, a2: number): Raw_gp_Elips;
+}
+
+/** Raw gp_Parab (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_gp_Parab {
+  delete(): void;
+  SetAxis(a0: Raw_gp_Ax1): void;
+  SetFocal(a0: number): void;
+  SetLocation(a0: Raw_gp_Pnt): void;
+  SetPosition(a0: Raw_gp_Ax2): void;
+  Axis(): Raw_gp_Ax1;
+  Directrix(): Raw_gp_Ax1;
+  Focal(): number;
+  Focus(): Raw_gp_Pnt;
+  Location(): Raw_gp_Pnt;
+  Parameter(): number;
+  Position(): Raw_gp_Ax2;
+  XAxis(): Raw_gp_Ax1;
+  YAxis(): Raw_gp_Ax1;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Mirror(a0: Raw_gp_Ax1): void;
+  Mirror(a0: Raw_gp_Ax2): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_gp_Parab;
+  Mirrored(a0: Raw_gp_Ax1): Raw_gp_Parab;
+  Mirrored(a0: Raw_gp_Ax2): Raw_gp_Parab;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_gp_Parab;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_gp_Parab;
+  Transform(a0: Raw_gp_Trsf): void;
+  Transformed(a0: Raw_gp_Trsf): Raw_gp_Parab;
+  Translate(a0: Raw_gp_Vec): void;
+  Translate(a0: Raw_gp_Pnt, a1: Raw_gp_Pnt): void;
+  Translated(a0: Raw_gp_Vec): Raw_gp_Parab;
+  Translated(a0: Raw_gp_Pnt, a1: Raw_gp_Pnt): Raw_gp_Parab;
+}
+
+export interface Ctor_gp_Parab {
+  new (): Raw_gp_Parab;
+  new (a0: Raw_gp_Ax2, a1: number): Raw_gp_Parab;
+  new (a0: Raw_gp_Ax1, a1: Raw_gp_Pnt): Raw_gp_Parab;
+}
+
+/** Raw gp_Hypr (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_gp_Hypr {
+  delete(): void;
+  SetAxis(a0: Raw_gp_Ax1): void;
+  SetLocation(a0: Raw_gp_Pnt): void;
+  SetMajorRadius(a0: number): void;
+  SetMinorRadius(a0: number): void;
+  SetPosition(a0: Raw_gp_Ax2): void;
+  Asymptote1(): Raw_gp_Ax1;
+  Asymptote2(): Raw_gp_Ax1;
+  Axis(): Raw_gp_Ax1;
+  ConjugateBranch1(): Raw_gp_Hypr;
+  ConjugateBranch2(): Raw_gp_Hypr;
+  Directrix1(): Raw_gp_Ax1;
+  Directrix2(): Raw_gp_Ax1;
+  Eccentricity(): number;
+  Focal(): number;
+  Focus1(): Raw_gp_Pnt;
+  Focus2(): Raw_gp_Pnt;
+  Location(): Raw_gp_Pnt;
+  MajorRadius(): number;
+  MinorRadius(): number;
+  OtherBranch(): Raw_gp_Hypr;
+  Parameter(): number;
+  Position(): Raw_gp_Ax2;
+  XAxis(): Raw_gp_Ax1;
+  YAxis(): Raw_gp_Ax1;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Mirror(a0: Raw_gp_Ax1): void;
+  Mirror(a0: Raw_gp_Ax2): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_gp_Hypr;
+  Mirrored(a0: Raw_gp_Ax1): Raw_gp_Hypr;
+  Mirrored(a0: Raw_gp_Ax2): Raw_gp_Hypr;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_gp_Hypr;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_gp_Hypr;
+  Transform(a0: Raw_gp_Trsf): void;
+  Transformed(a0: Raw_gp_Trsf): Raw_gp_Hypr;
+  Translate(a0: Raw_gp_Vec): void;
+  Translate(a0: Raw_gp_Pnt, a1: Raw_gp_Pnt): void;
+  Translated(a0: Raw_gp_Vec): Raw_gp_Hypr;
+  Translated(a0: Raw_gp_Pnt, a1: Raw_gp_Pnt): Raw_gp_Hypr;
+}
+
+export interface Ctor_gp_Hypr {
+  new (): Raw_gp_Hypr;
+  new (a0: Raw_gp_Ax2, a1: number, a2: number): Raw_gp_Hypr;
+}
+
+/** Raw gp_Cylinder (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_gp_Cylinder {
+  delete(): void;
+  SetAxis(a0: Raw_gp_Ax1): void;
+  SetLocation(a0: Raw_gp_Pnt): void;
+  SetPosition(a0: Raw_gp_Ax3): void;
+  SetRadius(a0: number): void;
+  UReverse(): void;
+  VReverse(): void;
+  Direct(): number;
+  Axis(): Raw_gp_Ax1;
+  Location(): Raw_gp_Pnt;
+  Position(): Raw_gp_Ax3;
+  Radius(): number;
+  XAxis(): Raw_gp_Ax1;
+  YAxis(): Raw_gp_Ax1;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Mirror(a0: Raw_gp_Ax1): void;
+  Mirror(a0: Raw_gp_Ax2): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_gp_Cylinder;
+  Mirrored(a0: Raw_gp_Ax1): Raw_gp_Cylinder;
+  Mirrored(a0: Raw_gp_Ax2): Raw_gp_Cylinder;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_gp_Cylinder;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_gp_Cylinder;
+  Transform(a0: Raw_gp_Trsf): void;
+  Transformed(a0: Raw_gp_Trsf): Raw_gp_Cylinder;
+  Translate(a0: Raw_gp_Vec): void;
+  Translate(a0: Raw_gp_Pnt, a1: Raw_gp_Pnt): void;
+  Translated(a0: Raw_gp_Vec): Raw_gp_Cylinder;
+  Translated(a0: Raw_gp_Pnt, a1: Raw_gp_Pnt): Raw_gp_Cylinder;
+}
+
+export interface Ctor_gp_Cylinder {
+  new (): Raw_gp_Cylinder;
+  new (a0: Raw_gp_Ax3, a1: number): Raw_gp_Cylinder;
+}
+
+/** Raw gp_Cone (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_gp_Cone {
+  delete(): void;
+  SetAxis(a0: Raw_gp_Ax1): void;
+  SetLocation(a0: Raw_gp_Pnt): void;
+  SetPosition(a0: Raw_gp_Ax3): void;
+  SetRadius(a0: number): void;
+  SetSemiAngle(a0: number): void;
+  Apex(): Raw_gp_Pnt;
+  UReverse(): void;
+  VReverse(): void;
+  Direct(): number;
+  Axis(): Raw_gp_Ax1;
+  Location(): Raw_gp_Pnt;
+  Position(): Raw_gp_Ax3;
+  RefRadius(): number;
+  SemiAngle(): number;
+  XAxis(): Raw_gp_Ax1;
+  YAxis(): Raw_gp_Ax1;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Mirror(a0: Raw_gp_Ax1): void;
+  Mirror(a0: Raw_gp_Ax2): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_gp_Cone;
+  Mirrored(a0: Raw_gp_Ax1): Raw_gp_Cone;
+  Mirrored(a0: Raw_gp_Ax2): Raw_gp_Cone;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_gp_Cone;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_gp_Cone;
+  Transform(a0: Raw_gp_Trsf): void;
+  Transformed(a0: Raw_gp_Trsf): Raw_gp_Cone;
+  Translate(a0: Raw_gp_Vec): void;
+  Translate(a0: Raw_gp_Pnt, a1: Raw_gp_Pnt): void;
+  Translated(a0: Raw_gp_Vec): Raw_gp_Cone;
+  Translated(a0: Raw_gp_Pnt, a1: Raw_gp_Pnt): Raw_gp_Cone;
+}
+
+export interface Ctor_gp_Cone {
+  new (): Raw_gp_Cone;
+  new (a0: Raw_gp_Ax3, a1: number, a2: number): Raw_gp_Cone;
+}
+
+/** Raw gp_Sphere (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_gp_Sphere {
+  delete(): void;
+  SetLocation(a0: Raw_gp_Pnt): void;
+  SetPosition(a0: Raw_gp_Ax3): void;
+  SetRadius(a0: number): void;
+  Area(): number;
+  UReverse(): void;
+  VReverse(): void;
+  Direct(): number;
+  Location(): Raw_gp_Pnt;
+  Position(): Raw_gp_Ax3;
+  Radius(): number;
+  Volume(): number;
+  XAxis(): Raw_gp_Ax1;
+  YAxis(): Raw_gp_Ax1;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Mirror(a0: Raw_gp_Ax1): void;
+  Mirror(a0: Raw_gp_Ax2): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_gp_Sphere;
+  Mirrored(a0: Raw_gp_Ax1): Raw_gp_Sphere;
+  Mirrored(a0: Raw_gp_Ax2): Raw_gp_Sphere;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_gp_Sphere;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_gp_Sphere;
+  Transform(a0: Raw_gp_Trsf): void;
+  Transformed(a0: Raw_gp_Trsf): Raw_gp_Sphere;
+  Translate(a0: Raw_gp_Vec): void;
+  Translate(a0: Raw_gp_Pnt, a1: Raw_gp_Pnt): void;
+  Translated(a0: Raw_gp_Vec): Raw_gp_Sphere;
+  Translated(a0: Raw_gp_Pnt, a1: Raw_gp_Pnt): Raw_gp_Sphere;
+}
+
+export interface Ctor_gp_Sphere {
+  new (): Raw_gp_Sphere;
+  new (a0: Raw_gp_Ax3, a1: number): Raw_gp_Sphere;
+}
+
+/** Raw gp_Torus (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_gp_Torus {
+  delete(): void;
+  SetAxis(a0: Raw_gp_Ax1): void;
+  SetLocation(a0: Raw_gp_Pnt): void;
+  SetMajorRadius(a0: number): void;
+  SetMinorRadius(a0: number): void;
+  SetPosition(a0: Raw_gp_Ax3): void;
+  Area(): number;
+  UReverse(): void;
+  VReverse(): void;
+  Direct(): number;
+  Axis(): Raw_gp_Ax1;
+  Coefficients(a0: Raw_TColStd_Array1OfReal): void;
+  Location(): Raw_gp_Pnt;
+  Position(): Raw_gp_Ax3;
+  MajorRadius(): number;
+  MinorRadius(): number;
+  Volume(): number;
+  XAxis(): Raw_gp_Ax1;
+  YAxis(): Raw_gp_Ax1;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Mirror(a0: Raw_gp_Ax1): void;
+  Mirror(a0: Raw_gp_Ax2): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_gp_Torus;
+  Mirrored(a0: Raw_gp_Ax1): Raw_gp_Torus;
+  Mirrored(a0: Raw_gp_Ax2): Raw_gp_Torus;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_gp_Torus;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_gp_Torus;
+  Transform(a0: Raw_gp_Trsf): void;
+  Transformed(a0: Raw_gp_Trsf): Raw_gp_Torus;
+  Translate(a0: Raw_gp_Vec): void;
+  Translate(a0: Raw_gp_Pnt, a1: Raw_gp_Pnt): void;
+  Translated(a0: Raw_gp_Vec): Raw_gp_Torus;
+  Translated(a0: Raw_gp_Pnt, a1: Raw_gp_Pnt): Raw_gp_Torus;
+}
+
+export interface Ctor_gp_Torus {
+  new (): Raw_gp_Torus;
+  new (a0: Raw_gp_Ax3, a1: number, a2: number): Raw_gp_Torus;
+}
+
+/** Raw gp_Quaternion (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_gp_Quaternion {
+  delete(): void;
+  IsEqual(a0: Raw_gp_Quaternion): number;
+  SetRotation(a0: Raw_gp_Vec, a1: Raw_gp_Vec): void;
+  SetRotation(a0: Raw_gp_Vec, a1: Raw_gp_Vec, a2: Raw_gp_Vec): void;
+  SetVectorAndAngle(a0: Raw_gp_Vec, a1: number): void;
+  SetMatrix(a0: Raw_gp_Mat): void;
+  GetMatrix(): Raw_gp_Mat;
+  Set(a0: number, a1: number, a2: number, a3: number): void;
+  Set(a0: Raw_gp_Quaternion): void;
+  X(): number;
+  Y(): number;
+  Z(): number;
+  W(): number;
+  SetIdent(): void;
+  Reverse(): void;
+  Reversed(): Raw_gp_Quaternion;
+  Invert(): void;
+  Inverted(): Raw_gp_Quaternion;
+  SquareNorm(): number;
+  Norm(): number;
+  Scale(a0: number): void;
+  Scaled(a0: number): Raw_gp_Quaternion;
+  StabilizeLength(): void;
+  Normalize(): void;
+  Normalized(): Raw_gp_Quaternion;
+  Negated(): Raw_gp_Quaternion;
+  Added(a0: Raw_gp_Quaternion): Raw_gp_Quaternion;
+  Subtracted(a0: Raw_gp_Quaternion): Raw_gp_Quaternion;
+  Multiplied(a0: Raw_gp_Quaternion): Raw_gp_Quaternion;
+  Add(a0: Raw_gp_Quaternion): void;
+  Subtract(a0: Raw_gp_Quaternion): void;
+  Multiply(a0: Raw_gp_Quaternion): void;
+  Multiply(a0: Raw_gp_Vec): Raw_gp_Vec;
+  Dot(a0: Raw_gp_Quaternion): number;
+  GetRotationAngle(): number;
+}
+
+export interface Ctor_gp_Quaternion {
+  new (): Raw_gp_Quaternion;
+  new (a0: number, a1: number, a2: number, a3: number): Raw_gp_Quaternion;
+  new (a0: Raw_gp_Vec, a1: Raw_gp_Vec): Raw_gp_Quaternion;
+  new (a0: Raw_gp_Vec, a1: Raw_gp_Vec, a2: Raw_gp_Vec): Raw_gp_Quaternion;
+  new (a0: Raw_gp_Vec, a1: number): Raw_gp_Quaternion;
+  new (a0: Raw_gp_Mat): Raw_gp_Quaternion;
+}
+
+/** Raw gp_Pnt2d (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_gp_Pnt2d {
+  delete(): void;
+  SetCoord(a0: number, a1: number): void;
+  SetCoord(a0: number, a1: number): void;
+  SetX(a0: number): void;
+  SetY(a0: number): void;
+  SetXY(a0: Raw_gp_XY): void;
+  Coord(a0: number): number;
+  Coord(): Raw_gp_XY;
+  X(): number;
+  Y(): number;
+  XY(): Raw_gp_XY;
+  ChangeCoord(): Raw_gp_XY;
+  IsEqual(a0: Raw_gp_Pnt2d, a1: number): number;
+  Distance(a0: Raw_gp_Pnt2d): number;
+  SquareDistance(a0: Raw_gp_Pnt2d): number;
+  Mirror(a0: Raw_gp_Pnt2d): void;
+  Mirror(a0: Raw_gp_Ax2d): void;
+  Mirrored(a0: Raw_gp_Pnt2d): Raw_gp_Pnt2d;
+  Mirrored(a0: Raw_gp_Ax2d): Raw_gp_Pnt2d;
+  Rotate(a0: Raw_gp_Pnt2d, a1: number): void;
+  Rotated(a0: Raw_gp_Pnt2d, a1: number): Raw_gp_Pnt2d;
+  Scale(a0: Raw_gp_Pnt2d, a1: number): void;
+  Scaled(a0: Raw_gp_Pnt2d, a1: number): Raw_gp_Pnt2d;
+  Transform(a0: Raw_gp_Trsf2d): void;
+  Transformed(a0: Raw_gp_Trsf2d): Raw_gp_Pnt2d;
+  Translate(a0: Raw_gp_Vec2d): void;
+  Translate(a0: Raw_gp_Pnt2d, a1: Raw_gp_Pnt2d): void;
+  Translated(a0: Raw_gp_Vec2d): Raw_gp_Pnt2d;
+  Translated(a0: Raw_gp_Pnt2d, a1: Raw_gp_Pnt2d): Raw_gp_Pnt2d;
+}
+
+export interface Ctor_gp_Pnt2d {
+  new (): Raw_gp_Pnt2d;
+  new (a0: Raw_gp_XY): Raw_gp_Pnt2d;
+  new (a0: number, a1: number): Raw_gp_Pnt2d;
+}
+
+/** Raw gp_Vec2d (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_gp_Vec2d {
+  delete(): void;
+  SetCoord(a0: number, a1: number): void;
+  SetCoord(a0: number, a1: number): void;
+  SetX(a0: number): void;
+  SetY(a0: number): void;
+  SetXY(a0: Raw_gp_XY): void;
+  Coord(a0: number): number;
+  X(): number;
+  Y(): number;
+  XY(): Raw_gp_XY;
+  IsEqual(a0: Raw_gp_Vec2d, a1: number, a2: number): number;
+  IsNormal(a0: Raw_gp_Vec2d, a1: number): number;
+  IsOpposite(a0: Raw_gp_Vec2d, a1: number): number;
+  IsParallel(a0: Raw_gp_Vec2d, a1: number): number;
+  Angle(a0: Raw_gp_Vec2d): number;
+  Magnitude(): number;
+  SquareMagnitude(): number;
+  Add(a0: Raw_gp_Vec2d): void;
+  Added(a0: Raw_gp_Vec2d): Raw_gp_Vec2d;
+  Crossed(a0: Raw_gp_Vec2d): number;
+  CrossMagnitude(a0: Raw_gp_Vec2d): number;
+  CrossSquareMagnitude(a0: Raw_gp_Vec2d): number;
+  Divide(a0: number): void;
+  Divided(a0: number): Raw_gp_Vec2d;
+  Dot(a0: Raw_gp_Vec2d): number;
+  GetNormal(): Raw_gp_Vec2d;
+  Multiply(a0: number): void;
+  Multiplied(a0: number): Raw_gp_Vec2d;
+  Normalize(): void;
+  Normalized(): Raw_gp_Vec2d;
+  Reverse(): void;
+  Reversed(): Raw_gp_Vec2d;
+  Subtract(a0: Raw_gp_Vec2d): void;
+  Subtracted(a0: Raw_gp_Vec2d): Raw_gp_Vec2d;
+  SetLinearForm(a0: number, a1: Raw_gp_Vec2d, a2: number, a3: Raw_gp_Vec2d, a4: Raw_gp_Vec2d): void;
+  SetLinearForm(a0: number, a1: Raw_gp_Vec2d, a2: number, a3: Raw_gp_Vec2d): void;
+  SetLinearForm(a0: number, a1: Raw_gp_Vec2d, a2: Raw_gp_Vec2d): void;
+  SetLinearForm(a0: Raw_gp_Vec2d, a1: Raw_gp_Vec2d): void;
+  Mirror(a0: Raw_gp_Vec2d): void;
+  Mirror(a0: Raw_gp_Ax2d): void;
+  Mirrored(a0: Raw_gp_Vec2d): Raw_gp_Vec2d;
+  Mirrored(a0: Raw_gp_Ax2d): Raw_gp_Vec2d;
+  Rotate(a0: number): void;
+  Rotated(a0: number): Raw_gp_Vec2d;
+  Scale(a0: number): void;
+  Scaled(a0: number): Raw_gp_Vec2d;
+  Transform(a0: Raw_gp_Trsf2d): void;
+  Transformed(a0: Raw_gp_Trsf2d): Raw_gp_Vec2d;
+}
+
+export interface Ctor_gp_Vec2d {
+  new (): Raw_gp_Vec2d;
+  new (a0: Raw_gp_Dir2d): Raw_gp_Vec2d;
+  new (a0: Raw_gp_XY): Raw_gp_Vec2d;
+  new (a0: number, a1: number): Raw_gp_Vec2d;
+  new (a0: Raw_gp_Pnt2d, a1: Raw_gp_Pnt2d): Raw_gp_Vec2d;
+}
+
+/** Raw gp_Dir2d (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_gp_Dir2d {
+  delete(): void;
+  SetCoord(a0: number, a1: number): void;
+  SetCoord(a0: number, a1: number): void;
+  SetX(a0: number): void;
+  SetY(a0: number): void;
+  SetXY(a0: Raw_gp_XY): void;
+  Coord(a0: number): number;
+  X(): number;
+  Y(): number;
+  XY(): Raw_gp_XY;
+  IsEqual(a0: Raw_gp_Dir2d, a1: number): number;
+  IsNormal(a0: Raw_gp_Dir2d, a1: number): number;
+  IsOpposite(a0: Raw_gp_Dir2d, a1: number): number;
+  IsParallel(a0: Raw_gp_Dir2d, a1: number): number;
+  Angle(a0: Raw_gp_Dir2d): number;
+  Crossed(a0: Raw_gp_Dir2d): number;
+  Dot(a0: Raw_gp_Dir2d): number;
+  Reverse(): void;
+  Reversed(): Raw_gp_Dir2d;
+  Mirror(a0: Raw_gp_Dir2d): void;
+  Mirror(a0: Raw_gp_Ax2d): void;
+  Mirrored(a0: Raw_gp_Dir2d): Raw_gp_Dir2d;
+  Mirrored(a0: Raw_gp_Ax2d): Raw_gp_Dir2d;
+  Rotate(a0: number): void;
+  Rotated(a0: number): Raw_gp_Dir2d;
+  Transform(a0: Raw_gp_Trsf2d): void;
+  Transformed(a0: Raw_gp_Trsf2d): Raw_gp_Dir2d;
+}
+
+export interface Ctor_gp_Dir2d {
+  new (): Raw_gp_Dir2d;
+  new (a0: Raw_gp_Vec2d): Raw_gp_Dir2d;
+  new (a0: Raw_gp_XY): Raw_gp_Dir2d;
+  new (a0: number, a1: number): Raw_gp_Dir2d;
+}
+
+/** Raw gp_Ax2d (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_gp_Ax2d {
+  delete(): void;
+  SetLocation(a0: Raw_gp_Pnt2d): void;
+  SetDirection(a0: Raw_gp_Dir2d): void;
+  Location(): Raw_gp_Pnt2d;
+  Direction(): Raw_gp_Dir2d;
+  IsCoaxial(a0: Raw_gp_Ax2d, a1: number, a2: number): number;
+  IsNormal(a0: Raw_gp_Ax2d, a1: number): number;
+  IsOpposite(a0: Raw_gp_Ax2d, a1: number): number;
+  IsParallel(a0: Raw_gp_Ax2d, a1: number): number;
+  Angle(a0: Raw_gp_Ax2d): number;
+  Reverse(): void;
+  Reversed(): Raw_gp_Ax2d;
+  Mirror(a0: Raw_gp_Pnt2d): void;
+  Mirror(a0: Raw_gp_Ax2d): void;
+  Mirrored(a0: Raw_gp_Pnt2d): Raw_gp_Ax2d;
+  Mirrored(a0: Raw_gp_Ax2d): Raw_gp_Ax2d;
+  Rotate(a0: Raw_gp_Pnt2d, a1: number): void;
+  Rotated(a0: Raw_gp_Pnt2d, a1: number): Raw_gp_Ax2d;
+  Scale(a0: Raw_gp_Pnt2d, a1: number): void;
+  Scaled(a0: Raw_gp_Pnt2d, a1: number): Raw_gp_Ax2d;
+  Transform(a0: Raw_gp_Trsf2d): void;
+  Transformed(a0: Raw_gp_Trsf2d): Raw_gp_Ax2d;
+  Translate(a0: Raw_gp_Vec2d): void;
+  Translate(a0: Raw_gp_Pnt2d, a1: Raw_gp_Pnt2d): void;
+  Translated(a0: Raw_gp_Vec2d): Raw_gp_Ax2d;
+  Translated(a0: Raw_gp_Pnt2d, a1: Raw_gp_Pnt2d): Raw_gp_Ax2d;
+}
+
+export interface Ctor_gp_Ax2d {
+  new (): Raw_gp_Ax2d;
+  new (a0: Raw_gp_Pnt2d, a1: Raw_gp_Dir2d): Raw_gp_Ax2d;
+}
+
+/** Raw gp_Lin2d (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_gp_Lin2d {
+  delete(): void;
+  Reverse(): void;
+  Reversed(): Raw_gp_Lin2d;
+  SetDirection(a0: Raw_gp_Dir2d): void;
+  SetLocation(a0: Raw_gp_Pnt2d): void;
+  SetPosition(a0: Raw_gp_Ax2d): void;
+  Direction(): Raw_gp_Dir2d;
+  Location(): Raw_gp_Pnt2d;
+  Position(): Raw_gp_Ax2d;
+  Angle(a0: Raw_gp_Lin2d): number;
+  Contains(a0: Raw_gp_Pnt2d, a1: number): number;
+  Distance(a0: Raw_gp_Pnt2d): number;
+  Distance(a0: Raw_gp_Lin2d): number;
+  SquareDistance(a0: Raw_gp_Pnt2d): number;
+  SquareDistance(a0: Raw_gp_Lin2d): number;
+  Normal(a0: Raw_gp_Pnt2d): Raw_gp_Lin2d;
+  Mirror(a0: Raw_gp_Pnt2d): void;
+  Mirror(a0: Raw_gp_Ax2d): void;
+  Mirrored(a0: Raw_gp_Pnt2d): Raw_gp_Lin2d;
+  Mirrored(a0: Raw_gp_Ax2d): Raw_gp_Lin2d;
+  Rotate(a0: Raw_gp_Pnt2d, a1: number): void;
+  Rotated(a0: Raw_gp_Pnt2d, a1: number): Raw_gp_Lin2d;
+  Scale(a0: Raw_gp_Pnt2d, a1: number): void;
+  Scaled(a0: Raw_gp_Pnt2d, a1: number): Raw_gp_Lin2d;
+  Transform(a0: Raw_gp_Trsf2d): void;
+  Transformed(a0: Raw_gp_Trsf2d): Raw_gp_Lin2d;
+  Translate(a0: Raw_gp_Vec2d): void;
+  Translate(a0: Raw_gp_Pnt2d, a1: Raw_gp_Pnt2d): void;
+  Translated(a0: Raw_gp_Vec2d): Raw_gp_Lin2d;
+  Translated(a0: Raw_gp_Pnt2d, a1: Raw_gp_Pnt2d): Raw_gp_Lin2d;
+}
+
+export interface Ctor_gp_Lin2d {
+  new (): Raw_gp_Lin2d;
+  new (a0: Raw_gp_Ax2d): Raw_gp_Lin2d;
+  new (a0: Raw_gp_Pnt2d, a1: Raw_gp_Dir2d): Raw_gp_Lin2d;
+  new (a0: number, a1: number, a2: number): Raw_gp_Lin2d;
+}
+
+/** Raw gp_Circ2d (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_gp_Circ2d {
+  delete(): void;
+  SetLocation(a0: Raw_gp_Pnt2d): void;
+  SetXAxis(a0: Raw_gp_Ax2d): void;
+  SetAxis(a0: Raw_gp_Ax22d): void;
+  SetYAxis(a0: Raw_gp_Ax2d): void;
+  SetRadius(a0: number): void;
+  Area(): number;
+  Contains(a0: Raw_gp_Pnt2d, a1: number): number;
+  Distance(a0: Raw_gp_Pnt2d): number;
+  SquareDistance(a0: Raw_gp_Pnt2d): number;
+  Length(): number;
+  Location(): Raw_gp_Pnt2d;
+  Radius(): number;
+  Axis(): Raw_gp_Ax22d;
+  Position(): Raw_gp_Ax22d;
+  XAxis(): Raw_gp_Ax2d;
+  YAxis(): Raw_gp_Ax2d;
+  Reverse(): void;
+  Reversed(): Raw_gp_Circ2d;
+  IsDirect(): number;
+  Mirror(a0: Raw_gp_Pnt2d): void;
+  Mirror(a0: Raw_gp_Ax2d): void;
+  Mirrored(a0: Raw_gp_Pnt2d): Raw_gp_Circ2d;
+  Mirrored(a0: Raw_gp_Ax2d): Raw_gp_Circ2d;
+  Rotate(a0: Raw_gp_Pnt2d, a1: number): void;
+  Rotated(a0: Raw_gp_Pnt2d, a1: number): Raw_gp_Circ2d;
+  Scale(a0: Raw_gp_Pnt2d, a1: number): void;
+  Scaled(a0: Raw_gp_Pnt2d, a1: number): Raw_gp_Circ2d;
+  Transform(a0: Raw_gp_Trsf2d): void;
+  Transformed(a0: Raw_gp_Trsf2d): Raw_gp_Circ2d;
+  Translate(a0: Raw_gp_Vec2d): void;
+  Translate(a0: Raw_gp_Pnt2d, a1: Raw_gp_Pnt2d): void;
+  Translated(a0: Raw_gp_Vec2d): Raw_gp_Circ2d;
+  Translated(a0: Raw_gp_Pnt2d, a1: Raw_gp_Pnt2d): Raw_gp_Circ2d;
+}
+
+export interface Ctor_gp_Circ2d {
+  new (): Raw_gp_Circ2d;
+  new (a0: Raw_gp_Ax2d, a1: number, a2: number): Raw_gp_Circ2d;
+  new (a0: Raw_gp_Ax22d, a1: number): Raw_gp_Circ2d;
+}
+
+/** Raw gp_Elips2d (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_gp_Elips2d {
+  delete(): void;
+  SetLocation(a0: Raw_gp_Pnt2d): void;
+  SetMajorRadius(a0: number): void;
+  SetMinorRadius(a0: number): void;
+  SetAxis(a0: Raw_gp_Ax22d): void;
+  SetXAxis(a0: Raw_gp_Ax2d): void;
+  SetYAxis(a0: Raw_gp_Ax2d): void;
+  Area(): number;
+  Directrix1(): Raw_gp_Ax2d;
+  Directrix2(): Raw_gp_Ax2d;
+  Eccentricity(): number;
+  Focal(): number;
+  Focus1(): Raw_gp_Pnt2d;
+  Focus2(): Raw_gp_Pnt2d;
+  Location(): Raw_gp_Pnt2d;
+  MajorRadius(): number;
+  MinorRadius(): number;
+  Parameter(): number;
+  Axis(): Raw_gp_Ax22d;
+  XAxis(): Raw_gp_Ax2d;
+  YAxis(): Raw_gp_Ax2d;
+  Reverse(): void;
+  Reversed(): Raw_gp_Elips2d;
+  IsDirect(): number;
+  Mirror(a0: Raw_gp_Pnt2d): void;
+  Mirror(a0: Raw_gp_Ax2d): void;
+  Mirrored(a0: Raw_gp_Pnt2d): Raw_gp_Elips2d;
+  Mirrored(a0: Raw_gp_Ax2d): Raw_gp_Elips2d;
+  Rotate(a0: Raw_gp_Pnt2d, a1: number): void;
+  Rotated(a0: Raw_gp_Pnt2d, a1: number): Raw_gp_Elips2d;
+  Scale(a0: Raw_gp_Pnt2d, a1: number): void;
+  Scaled(a0: Raw_gp_Pnt2d, a1: number): Raw_gp_Elips2d;
+  Transform(a0: Raw_gp_Trsf2d): void;
+  Transformed(a0: Raw_gp_Trsf2d): Raw_gp_Elips2d;
+  Translate(a0: Raw_gp_Vec2d): void;
+  Translate(a0: Raw_gp_Pnt2d, a1: Raw_gp_Pnt2d): void;
+  Translated(a0: Raw_gp_Vec2d): Raw_gp_Elips2d;
+  Translated(a0: Raw_gp_Pnt2d, a1: Raw_gp_Pnt2d): Raw_gp_Elips2d;
+}
+
+export interface Ctor_gp_Elips2d {
+  new (): Raw_gp_Elips2d;
+  new (a0: Raw_gp_Ax2d, a1: number, a2: number, a3: number): Raw_gp_Elips2d;
+  new (a0: Raw_gp_Ax22d, a1: number, a2: number): Raw_gp_Elips2d;
+}
+
+/** Raw gp_Trsf2d (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_gp_Trsf2d {
+  delete(): void;
+  SetMirror(a0: Raw_gp_Pnt2d): void;
+  SetMirror(a0: Raw_gp_Ax2d): void;
+  SetRotation(a0: Raw_gp_Pnt2d, a1: number): void;
+  SetScale(a0: Raw_gp_Pnt2d, a1: number): void;
+  SetTransformation(a0: Raw_gp_Ax2d, a1: Raw_gp_Ax2d): void;
+  SetTransformation(a0: Raw_gp_Ax2d): void;
+  SetTranslation(a0: Raw_gp_Vec2d): void;
+  SetTranslation(a0: Raw_gp_Pnt2d, a1: Raw_gp_Pnt2d): void;
+  SetTranslationPart(a0: Raw_gp_Vec2d): void;
+  SetScaleFactor(a0: number): void;
+  IsNegative(): number;
+  Form(): number;
+  ScaleFactor(): number;
+  TranslationPart(): Raw_gp_XY;
+  RotationPart(): number;
+  Value(a0: number, a1: number): number;
+  Invert(): void;
+  Inverted(): Raw_gp_Trsf2d;
+  Multiplied(a0: Raw_gp_Trsf2d): Raw_gp_Trsf2d;
+  Multiply(a0: Raw_gp_Trsf2d): void;
+  PreMultiply(a0: Raw_gp_Trsf2d): void;
+  Power(a0: number): void;
+  Powered(a0: number): Raw_gp_Trsf2d;
+  Transforms(a0: Raw_gp_XY): void;
+  SetValues(a0: number, a1: number, a2: number, a3: number, a4: number, a5: number): void;
+}
+
+export interface Ctor_gp_Trsf2d {
+  new (): Raw_gp_Trsf2d;
+  new (a0: Raw_gp_Trsf): Raw_gp_Trsf2d;
+}
+
+/** Raw gp_GTrsf2d (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_gp_GTrsf2d {
+  delete(): void;
+  SetAffinity(a0: Raw_gp_Ax2d, a1: number): void;
+  SetValue(a0: number, a1: number, a2: number): void;
+  SetTranslationPart(a0: Raw_gp_XY): void;
+  SetTrsf2d(a0: Raw_gp_Trsf2d): void;
+  IsNegative(): number;
+  IsSingular(): number;
+  Form(): number;
+  TranslationPart(): Raw_gp_XY;
+  Value(a0: number, a1: number): number;
+  Invert(): void;
+  Inverted(): Raw_gp_GTrsf2d;
+  Multiplied(a0: Raw_gp_GTrsf2d): Raw_gp_GTrsf2d;
+  Multiply(a0: Raw_gp_GTrsf2d): void;
+  PreMultiply(a0: Raw_gp_GTrsf2d): void;
+  Power(a0: number): void;
+  Powered(a0: number): Raw_gp_GTrsf2d;
+  Transforms(a0: Raw_gp_XY): void;
+  Transformed(a0: Raw_gp_XY): Raw_gp_XY;
+  Trsf2d(): Raw_gp_Trsf2d;
+}
+
+export interface Ctor_gp_GTrsf2d {
+  new (): Raw_gp_GTrsf2d;
+  new (a0: Raw_gp_Trsf2d): Raw_gp_GTrsf2d;
+}
+
+/** Raw TopoDS_Shape (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TopoDS_Shape {
+  delete(): void;
+  IsNull(): number;
+  Nullify(): void;
+  Location(): Raw_TopLoc_Location;
+  Location(a0: Raw_TopLoc_Location, a1: number): void;
+  Located(a0: Raw_TopLoc_Location, a1: number): Raw_TopoDS_Shape;
+  Orientation(): number;
+  Orientation(a0: number): void;
+  Oriented(a0: number): Raw_TopoDS_Shape;
+  ShapeType(): number;
+  Free(): number;
+  Free(a0: number): void;
+  Locked(): number;
+  Locked(a0: number): void;
+  Modified(): number;
+  Modified(a0: number): void;
+  Checked(): number;
+  Checked(a0: number): void;
+  Orientable(): number;
+  Orientable(a0: number): void;
+  Closed(): number;
+  Closed(a0: number): void;
+  Infinite(): number;
+  Infinite(a0: number): void;
+  Convex(): number;
+  Convex(a0: number): void;
+  Move(a0: Raw_TopLoc_Location, a1: number): void;
+  Moved(a0: Raw_TopLoc_Location, a1: number): Raw_TopoDS_Shape;
+  Reverse(): void;
+  Reversed(): Raw_TopoDS_Shape;
+  Complement(): void;
+  Complemented(): Raw_TopoDS_Shape;
+  Compose(a0: number): void;
+  Composed(a0: number): Raw_TopoDS_Shape;
+  NbChildren(): number;
+  IsPartner(a0: Raw_TopoDS_Shape): number;
+  IsSame(a0: Raw_TopoDS_Shape): number;
+  IsEqual(a0: Raw_TopoDS_Shape): number;
+  IsNotEqual(a0: Raw_TopoDS_Shape): number;
+  EmptyCopy(): void;
+  EmptyCopied(): Raw_TopoDS_Shape;
+}
+
+export interface Ctor_TopoDS_Shape {
+  new (): Raw_TopoDS_Shape;
+}
+
+/** Raw TopoDS_Builder (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TopoDS_Builder {
+  delete(): void;
+  MakeWire(a0: Raw_TopoDS_Wire): void;
+  MakeShell(a0: Raw_TopoDS_Shell): void;
+  MakeSolid(a0: Raw_TopoDS_Solid): void;
+  MakeCompSolid(a0: Raw_TopoDS_CompSolid): void;
+  MakeCompound(a0: Raw_TopoDS_Compound): void;
+  Add(a0: Raw_TopoDS_Shape, a1: Raw_TopoDS_Shape): void;
+  Remove(a0: Raw_TopoDS_Shape, a1: Raw_TopoDS_Shape): void;
+}
+
+/** Raw TopoDS_Iterator (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TopoDS_Iterator {
+  delete(): void;
+  Initialize(a0: Raw_TopoDS_Shape, a1: number, a2: number): void;
+  More(): number;
+  Next(): void;
+  Value(): Raw_TopoDS_Shape;
+}
+
+export interface Ctor_TopoDS_Iterator {
+  new (): Raw_TopoDS_Iterator;
+  new (a0: Raw_TopoDS_Shape, a1: number, a2: number): Raw_TopoDS_Iterator;
+}
+
+/** Raw TopoDS_Vertex (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TopoDS_Vertex {
+  delete(): void;
+  IsNull(): number;
+  Nullify(): void;
+  Location(): Raw_TopLoc_Location;
+  Located(a0: Raw_TopLoc_Location, a1: number): Raw_TopoDS_Shape;
+  Orientation(): number;
+  Oriented(a0: number): Raw_TopoDS_Shape;
+  ShapeType(): number;
+  Free(): number;
+  Locked(): number;
+  Modified(): number;
+  Checked(): number;
+  Orientable(): number;
+  Closed(): number;
+  Infinite(): number;
+  Convex(): number;
+  Move(a0: Raw_TopLoc_Location, a1: number): void;
+  Moved(a0: Raw_TopLoc_Location, a1: number): Raw_TopoDS_Shape;
+  Reverse(): void;
+  Reversed(): Raw_TopoDS_Shape;
+  Complement(): void;
+  Complemented(): Raw_TopoDS_Shape;
+  Compose(a0: number): void;
+  Composed(a0: number): Raw_TopoDS_Shape;
+  NbChildren(): number;
+  IsPartner(a0: Raw_TopoDS_Shape): number;
+  IsSame(a0: Raw_TopoDS_Shape): number;
+  IsEqual(a0: Raw_TopoDS_Shape): number;
+  IsNotEqual(a0: Raw_TopoDS_Shape): number;
+  EmptyCopy(): void;
+  EmptyCopied(): Raw_TopoDS_Shape;
+}
+
+export interface Ctor_TopoDS_Vertex {
+  new (): Raw_TopoDS_Vertex;
+}
+
+/** Raw TopoDS_Edge (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TopoDS_Edge {
+  delete(): void;
+  IsNull(): number;
+  Nullify(): void;
+  Location(): Raw_TopLoc_Location;
+  Located(a0: Raw_TopLoc_Location, a1: number): Raw_TopoDS_Shape;
+  Orientation(): number;
+  Oriented(a0: number): Raw_TopoDS_Shape;
+  ShapeType(): number;
+  Free(): number;
+  Locked(): number;
+  Modified(): number;
+  Checked(): number;
+  Orientable(): number;
+  Closed(): number;
+  Infinite(): number;
+  Convex(): number;
+  Move(a0: Raw_TopLoc_Location, a1: number): void;
+  Moved(a0: Raw_TopLoc_Location, a1: number): Raw_TopoDS_Shape;
+  Reverse(): void;
+  Reversed(): Raw_TopoDS_Shape;
+  Complement(): void;
+  Complemented(): Raw_TopoDS_Shape;
+  Compose(a0: number): void;
+  Composed(a0: number): Raw_TopoDS_Shape;
+  NbChildren(): number;
+  IsPartner(a0: Raw_TopoDS_Shape): number;
+  IsSame(a0: Raw_TopoDS_Shape): number;
+  IsEqual(a0: Raw_TopoDS_Shape): number;
+  IsNotEqual(a0: Raw_TopoDS_Shape): number;
+  EmptyCopy(): void;
+  EmptyCopied(): Raw_TopoDS_Shape;
+}
+
+export interface Ctor_TopoDS_Edge {
+  new (): Raw_TopoDS_Edge;
+}
+
+/** Raw TopoDS_Wire (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TopoDS_Wire {
+  delete(): void;
+  IsNull(): number;
+  Nullify(): void;
+  Location(): Raw_TopLoc_Location;
+  Located(a0: Raw_TopLoc_Location, a1: number): Raw_TopoDS_Shape;
+  Orientation(): number;
+  Oriented(a0: number): Raw_TopoDS_Shape;
+  ShapeType(): number;
+  Free(): number;
+  Locked(): number;
+  Modified(): number;
+  Checked(): number;
+  Orientable(): number;
+  Closed(): number;
+  Infinite(): number;
+  Convex(): number;
+  Move(a0: Raw_TopLoc_Location, a1: number): void;
+  Moved(a0: Raw_TopLoc_Location, a1: number): Raw_TopoDS_Shape;
+  Reverse(): void;
+  Reversed(): Raw_TopoDS_Shape;
+  Complement(): void;
+  Complemented(): Raw_TopoDS_Shape;
+  Compose(a0: number): void;
+  Composed(a0: number): Raw_TopoDS_Shape;
+  NbChildren(): number;
+  IsPartner(a0: Raw_TopoDS_Shape): number;
+  IsSame(a0: Raw_TopoDS_Shape): number;
+  IsEqual(a0: Raw_TopoDS_Shape): number;
+  IsNotEqual(a0: Raw_TopoDS_Shape): number;
+  EmptyCopy(): void;
+  EmptyCopied(): Raw_TopoDS_Shape;
+}
+
+export interface Ctor_TopoDS_Wire {
+  new (): Raw_TopoDS_Wire;
+}
+
+/** Raw TopoDS_Face (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TopoDS_Face {
+  delete(): void;
+  IsNull(): number;
+  Nullify(): void;
+  Location(): Raw_TopLoc_Location;
+  Located(a0: Raw_TopLoc_Location, a1: number): Raw_TopoDS_Shape;
+  Orientation(): number;
+  Oriented(a0: number): Raw_TopoDS_Shape;
+  ShapeType(): number;
+  Free(): number;
+  Locked(): number;
+  Modified(): number;
+  Checked(): number;
+  Orientable(): number;
+  Closed(): number;
+  Infinite(): number;
+  Convex(): number;
+  Move(a0: Raw_TopLoc_Location, a1: number): void;
+  Moved(a0: Raw_TopLoc_Location, a1: number): Raw_TopoDS_Shape;
+  Reverse(): void;
+  Reversed(): Raw_TopoDS_Shape;
+  Complement(): void;
+  Complemented(): Raw_TopoDS_Shape;
+  Compose(a0: number): void;
+  Composed(a0: number): Raw_TopoDS_Shape;
+  NbChildren(): number;
+  IsPartner(a0: Raw_TopoDS_Shape): number;
+  IsSame(a0: Raw_TopoDS_Shape): number;
+  IsEqual(a0: Raw_TopoDS_Shape): number;
+  IsNotEqual(a0: Raw_TopoDS_Shape): number;
+  EmptyCopy(): void;
+  EmptyCopied(): Raw_TopoDS_Shape;
+}
+
+export interface Ctor_TopoDS_Face {
+  new (): Raw_TopoDS_Face;
+}
+
+/** Raw TopoDS_Shell (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TopoDS_Shell {
+  delete(): void;
+  IsNull(): number;
+  Nullify(): void;
+  Location(): Raw_TopLoc_Location;
+  Located(a0: Raw_TopLoc_Location, a1: number): Raw_TopoDS_Shape;
+  Orientation(): number;
+  Oriented(a0: number): Raw_TopoDS_Shape;
+  ShapeType(): number;
+  Free(): number;
+  Locked(): number;
+  Modified(): number;
+  Checked(): number;
+  Orientable(): number;
+  Closed(): number;
+  Infinite(): number;
+  Convex(): number;
+  Move(a0: Raw_TopLoc_Location, a1: number): void;
+  Moved(a0: Raw_TopLoc_Location, a1: number): Raw_TopoDS_Shape;
+  Reverse(): void;
+  Reversed(): Raw_TopoDS_Shape;
+  Complement(): void;
+  Complemented(): Raw_TopoDS_Shape;
+  Compose(a0: number): void;
+  Composed(a0: number): Raw_TopoDS_Shape;
+  NbChildren(): number;
+  IsPartner(a0: Raw_TopoDS_Shape): number;
+  IsSame(a0: Raw_TopoDS_Shape): number;
+  IsEqual(a0: Raw_TopoDS_Shape): number;
+  IsNotEqual(a0: Raw_TopoDS_Shape): number;
+  EmptyCopy(): void;
+  EmptyCopied(): Raw_TopoDS_Shape;
+}
+
+export interface Ctor_TopoDS_Shell {
+  new (): Raw_TopoDS_Shell;
+}
+
+/** Raw TopoDS_Solid (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TopoDS_Solid {
+  delete(): void;
+  IsNull(): number;
+  Nullify(): void;
+  Location(): Raw_TopLoc_Location;
+  Located(a0: Raw_TopLoc_Location, a1: number): Raw_TopoDS_Shape;
+  Orientation(): number;
+  Oriented(a0: number): Raw_TopoDS_Shape;
+  ShapeType(): number;
+  Free(): number;
+  Locked(): number;
+  Modified(): number;
+  Checked(): number;
+  Orientable(): number;
+  Closed(): number;
+  Infinite(): number;
+  Convex(): number;
+  Move(a0: Raw_TopLoc_Location, a1: number): void;
+  Moved(a0: Raw_TopLoc_Location, a1: number): Raw_TopoDS_Shape;
+  Reverse(): void;
+  Reversed(): Raw_TopoDS_Shape;
+  Complement(): void;
+  Complemented(): Raw_TopoDS_Shape;
+  Compose(a0: number): void;
+  Composed(a0: number): Raw_TopoDS_Shape;
+  NbChildren(): number;
+  IsPartner(a0: Raw_TopoDS_Shape): number;
+  IsSame(a0: Raw_TopoDS_Shape): number;
+  IsEqual(a0: Raw_TopoDS_Shape): number;
+  IsNotEqual(a0: Raw_TopoDS_Shape): number;
+  EmptyCopy(): void;
+  EmptyCopied(): Raw_TopoDS_Shape;
+}
+
+export interface Ctor_TopoDS_Solid {
+  new (): Raw_TopoDS_Solid;
+}
+
+/** Raw TopoDS_CompSolid (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TopoDS_CompSolid {
+  delete(): void;
+  IsNull(): number;
+  Nullify(): void;
+  Location(): Raw_TopLoc_Location;
+  Located(a0: Raw_TopLoc_Location, a1: number): Raw_TopoDS_Shape;
+  Orientation(): number;
+  Oriented(a0: number): Raw_TopoDS_Shape;
+  ShapeType(): number;
+  Free(): number;
+  Locked(): number;
+  Modified(): number;
+  Checked(): number;
+  Orientable(): number;
+  Closed(): number;
+  Infinite(): number;
+  Convex(): number;
+  Move(a0: Raw_TopLoc_Location, a1: number): void;
+  Moved(a0: Raw_TopLoc_Location, a1: number): Raw_TopoDS_Shape;
+  Reverse(): void;
+  Reversed(): Raw_TopoDS_Shape;
+  Complement(): void;
+  Complemented(): Raw_TopoDS_Shape;
+  Compose(a0: number): void;
+  Composed(a0: number): Raw_TopoDS_Shape;
+  NbChildren(): number;
+  IsPartner(a0: Raw_TopoDS_Shape): number;
+  IsSame(a0: Raw_TopoDS_Shape): number;
+  IsEqual(a0: Raw_TopoDS_Shape): number;
+  IsNotEqual(a0: Raw_TopoDS_Shape): number;
+  EmptyCopy(): void;
+  EmptyCopied(): Raw_TopoDS_Shape;
+}
+
+export interface Ctor_TopoDS_CompSolid {
+  new (): Raw_TopoDS_CompSolid;
+}
+
+/** Raw TopoDS_Compound (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TopoDS_Compound {
+  delete(): void;
+  IsNull(): number;
+  Nullify(): void;
+  Location(): Raw_TopLoc_Location;
+  Located(a0: Raw_TopLoc_Location, a1: number): Raw_TopoDS_Shape;
+  Orientation(): number;
+  Oriented(a0: number): Raw_TopoDS_Shape;
+  ShapeType(): number;
+  Free(): number;
+  Locked(): number;
+  Modified(): number;
+  Checked(): number;
+  Orientable(): number;
+  Closed(): number;
+  Infinite(): number;
+  Convex(): number;
+  Move(a0: Raw_TopLoc_Location, a1: number): void;
+  Moved(a0: Raw_TopLoc_Location, a1: number): Raw_TopoDS_Shape;
+  Reverse(): void;
+  Reversed(): Raw_TopoDS_Shape;
+  Complement(): void;
+  Complemented(): Raw_TopoDS_Shape;
+  Compose(a0: number): void;
+  Composed(a0: number): Raw_TopoDS_Shape;
+  NbChildren(): number;
+  IsPartner(a0: Raw_TopoDS_Shape): number;
+  IsSame(a0: Raw_TopoDS_Shape): number;
+  IsEqual(a0: Raw_TopoDS_Shape): number;
+  IsNotEqual(a0: Raw_TopoDS_Shape): number;
+  EmptyCopy(): void;
+  EmptyCopied(): Raw_TopoDS_Shape;
+}
+
+export interface Ctor_TopoDS_Compound {
+  new (): Raw_TopoDS_Compound;
+}
+
+/** Raw TopExp (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TopExp {
+  delete(): void;
+}
+
+export interface Ctor_TopExp {
+  MapShapes(a0: Raw_TopoDS_Shape, a1: number, a2: Raw_TopTools_IndexedMapOfShape): void;
+  MapShapes(a0: Raw_TopoDS_Shape, a1: Raw_TopTools_IndexedMapOfShape, a2: number, a3: number): void;
+  MapShapes(a0: Raw_TopoDS_Shape, a1: Raw_TopTools_MapOfShape, a2: number, a3: number): void;
+  FirstVertex(a0: Raw_TopoDS_Edge, a1: number): Raw_TopoDS_Vertex;
+  LastVertex(a0: Raw_TopoDS_Edge, a1: number): Raw_TopoDS_Vertex;
+  Vertices(a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Vertex, a2: Raw_TopoDS_Vertex, a3: number): void;
+  Vertices(a0: Raw_TopoDS_Wire, a1: Raw_TopoDS_Vertex, a2: Raw_TopoDS_Vertex): void;
+  CommonVertex(a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Edge, a2: Raw_TopoDS_Vertex): number;
+}
+
+/** Raw TopExp_Explorer (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TopExp_Explorer {
+  delete(): void;
+  Init(a0: Raw_TopoDS_Shape, a1: number, a2: number): void;
+  More(): number;
+  Next(): void;
+  Value(): Raw_TopoDS_Shape;
+  Current(): Raw_TopoDS_Shape;
+  ReInit(): void;
+  ExploredShape(): Raw_TopoDS_Shape;
+  Depth(): number;
+  Clear(): void;
+}
+
+export interface Ctor_TopExp_Explorer {
+  new (): Raw_TopExp_Explorer;
+  new (a0: Raw_TopoDS_Shape, a1: number, a2: number): Raw_TopExp_Explorer;
+}
+
+/** Raw TopLoc_Location (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TopLoc_Location {
+  delete(): void;
+  IsIdentity(): number;
+  Identity(): void;
+  FirstPower(): number;
+  NextLocation(): Raw_TopLoc_Location;
+  Transformation(): Raw_gp_Trsf;
+  Inverted(): Raw_TopLoc_Location;
+  Multiplied(a0: Raw_TopLoc_Location): Raw_TopLoc_Location;
+  Divided(a0: Raw_TopLoc_Location): Raw_TopLoc_Location;
+  Predivided(a0: Raw_TopLoc_Location): Raw_TopLoc_Location;
+  Powered(a0: number): Raw_TopLoc_Location;
+  HashCode(): number;
+  IsEqual(a0: Raw_TopLoc_Location): number;
+  IsDifferent(a0: Raw_TopLoc_Location): number;
+  Clear(): void;
+}
+
+export interface Ctor_TopLoc_Location {
+  new (): Raw_TopLoc_Location;
+  new (a0: Raw_gp_Trsf): Raw_TopLoc_Location;
+  ScalePrec(): number;
+}
+
+/** Raw TopTools_ListOfShape (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TopTools_ListOfShape {
+  delete(): void;
+  Size(): number;
+  Assign(a0: Raw_TopTools_ListOfShape): Raw_TopTools_ListOfShape;
+  First(): Raw_TopoDS_Shape;
+  Last(): Raw_TopoDS_Shape;
+  Append(a0: Raw_TopoDS_Shape): Raw_TopoDS_Shape;
+  Prepend(a0: Raw_TopoDS_Shape): Raw_TopoDS_Shape;
+  RemoveFirst(): void;
+  Reverse(): void;
+  Extent(): number;
+  IsEmpty(): number;
+}
+
+export interface Ctor_TopTools_ListOfShape {
+  new (): Raw_TopTools_ListOfShape;
+  new (a0: Raw_TopTools_ListOfShape): Raw_TopTools_ListOfShape;
+}
+
+/** Raw TopTools_IndexedMapOfShape (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TopTools_IndexedMapOfShape {
+  delete(): void;
+  Exchange(a0: Raw_TopTools_IndexedMapOfShape): void;
+  Assign(a0: Raw_TopTools_IndexedMapOfShape): Raw_TopTools_IndexedMapOfShape;
+  ReSize(a0: number): void;
+  Add(a0: Raw_TopoDS_Shape): number;
+  Contains(a0: Raw_TopoDS_Shape): number;
+  Substitute(a0: number, a1: Raw_TopoDS_Shape): void;
+  Swap(a0: number, a1: number): void;
+  RemoveLast(): void;
+  RemoveFromIndex(a0: number): void;
+  RemoveKey(a0: Raw_TopoDS_Shape): number;
+  FindKey(a0: number): Raw_TopoDS_Shape;
+  FindIndex(a0: Raw_TopoDS_Shape): number;
+  Clear(a0: number): void;
+  Size(): number;
+  NbBuckets(): number;
+  Extent(): number;
+  IsEmpty(): number;
+}
+
+export interface Ctor_TopTools_IndexedMapOfShape {
+  new (): Raw_TopTools_IndexedMapOfShape;
+  new (a0: Raw_TopTools_IndexedMapOfShape): Raw_TopTools_IndexedMapOfShape;
+}
+
+/** Raw TopTools_MapOfShape (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TopTools_MapOfShape {
+  delete(): void;
+  Exchange(a0: Raw_TopTools_MapOfShape): void;
+  Assign(a0: Raw_TopTools_MapOfShape): Raw_TopTools_MapOfShape;
+  ReSize(a0: number): void;
+  Add(a0: Raw_TopoDS_Shape): number;
+  Added(a0: Raw_TopoDS_Shape): Raw_TopoDS_Shape;
+  Contains(a0: Raw_TopoDS_Shape): number;
+  Remove(a0: Raw_TopoDS_Shape): number;
+  Clear(a0: number): void;
+  Size(): number;
+  IsEqual(a0: Raw_TopTools_MapOfShape): number;
+  Union(a0: Raw_TopTools_MapOfShape, a1: Raw_TopTools_MapOfShape): void;
+  Unite(a0: Raw_TopTools_MapOfShape): number;
+  HasIntersection(a0: Raw_TopTools_MapOfShape): number;
+  Intersection(a0: Raw_TopTools_MapOfShape, a1: Raw_TopTools_MapOfShape): void;
+  Intersect(a0: Raw_TopTools_MapOfShape): number;
+  Subtraction(a0: Raw_TopTools_MapOfShape, a1: Raw_TopTools_MapOfShape): void;
+  Subtract(a0: Raw_TopTools_MapOfShape): number;
+  Difference(a0: Raw_TopTools_MapOfShape, a1: Raw_TopTools_MapOfShape): void;
+  Differ(a0: Raw_TopTools_MapOfShape): number;
+  NbBuckets(): number;
+  Extent(): number;
+  IsEmpty(): number;
+}
+
+export interface Ctor_TopTools_MapOfShape {
+  new (): Raw_TopTools_MapOfShape;
+  new (a0: Raw_TopTools_MapOfShape): Raw_TopTools_MapOfShape;
+}
+
 /** Raw BRep_Tool (see tools/codegen/SKIPPED.md for unmapped members). */
 export interface Raw_BRep_Tool {
   delete(): void;
@@ -1239,20 +2522,38 @@ export interface Raw_BRep_Tool {
 export interface Ctor_BRep_Tool {
   IsClosed(a0: Raw_TopoDS_Shape): number;
   IsClosed(a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Face): number;
+  IsClosed(a0: Raw_TopoDS_Edge, a1: Raw_Geom_Surface, a2: Raw_TopLoc_Location): number;
+  IsClosed(a0: Raw_TopoDS_Edge, a1: Raw_Poly_Triangulation, a2: Raw_TopLoc_Location): number;
+  Surface(a0: Raw_TopoDS_Face, a1: Raw_TopLoc_Location): Raw_Geom_Surface;
+  Surface(a0: Raw_TopoDS_Face): Raw_Geom_Surface;
+  Triangulation(a0: Raw_TopoDS_Face, a1: Raw_TopLoc_Location, a2: number): Raw_Poly_Triangulation;
   Tolerance(a0: Raw_TopoDS_Face): number;
   Tolerance(a0: Raw_TopoDS_Edge): number;
   Tolerance(a0: Raw_TopoDS_Vertex): number;
   NaturalRestriction(a0: Raw_TopoDS_Face): number;
   IsGeometric(a0: Raw_TopoDS_Face): number;
   IsGeometric(a0: Raw_TopoDS_Edge): number;
+  Polygon3D(a0: Raw_TopoDS_Edge, a1: Raw_TopLoc_Location): Raw_Poly_Polygon3D;
+  PolygonOnSurface(a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Face): Raw_Poly_Polygon2D;
+  PolygonOnSurface(a0: Raw_TopoDS_Edge, a1: Raw_Geom_Surface, a2: Raw_TopLoc_Location): Raw_Poly_Polygon2D;
   SameParameter(a0: Raw_TopoDS_Edge): number;
   SameRange(a0: Raw_TopoDS_Edge): number;
   Degenerated(a0: Raw_TopoDS_Edge): number;
+  UVPoints(a0: Raw_TopoDS_Edge, a1: Raw_Geom_Surface, a2: Raw_TopLoc_Location, a3: Raw_gp_Pnt2d, a4: Raw_gp_Pnt2d): void;
+  UVPoints(a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Face, a2: Raw_gp_Pnt2d, a3: Raw_gp_Pnt2d): void;
+  SetUVPoints(a0: Raw_TopoDS_Edge, a1: Raw_Geom_Surface, a2: Raw_TopLoc_Location, a3: Raw_gp_Pnt2d, a4: Raw_gp_Pnt2d): void;
+  SetUVPoints(a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Face, a2: Raw_gp_Pnt2d, a3: Raw_gp_Pnt2d): void;
   HasContinuity(a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Face, a2: Raw_TopoDS_Face): number;
+  HasContinuity(a0: Raw_TopoDS_Edge, a1: Raw_Geom_Surface, a2: Raw_Geom_Surface, a3: Raw_TopLoc_Location, a4: Raw_TopLoc_Location): number;
   HasContinuity(a0: Raw_TopoDS_Edge): number;
+  Continuity(a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Face, a2: Raw_TopoDS_Face): number;
+  Continuity(a0: Raw_TopoDS_Edge, a1: Raw_Geom_Surface, a2: Raw_Geom_Surface, a3: Raw_TopLoc_Location, a4: Raw_TopLoc_Location): number;
+  MaxContinuity(a0: Raw_TopoDS_Edge): number;
   Pnt(a0: Raw_TopoDS_Vertex): Raw_gp_Pnt;
   Parameter(a0: Raw_TopoDS_Vertex, a1: Raw_TopoDS_Edge): number;
   Parameter(a0: Raw_TopoDS_Vertex, a1: Raw_TopoDS_Edge, a2: Raw_TopoDS_Face): number;
+  Parameter(a0: Raw_TopoDS_Vertex, a1: Raw_TopoDS_Edge, a2: Raw_Geom_Surface, a3: Raw_TopLoc_Location): number;
+  Parameters(a0: Raw_TopoDS_Vertex, a1: Raw_TopoDS_Face): Raw_gp_Pnt2d;
   MaxTolerance(a0: Raw_TopoDS_Shape, a1: number): number;
 }
 
@@ -1267,14 +2568,39 @@ export interface Raw_BRep_Builder {
   Add(a0: Raw_TopoDS_Shape, a1: Raw_TopoDS_Shape): void;
   Remove(a0: Raw_TopoDS_Shape, a1: Raw_TopoDS_Shape): void;
   MakeFace(a0: Raw_TopoDS_Face): void;
+  MakeFace(a0: Raw_TopoDS_Face, a1: Raw_Geom_Surface, a2: number): void;
+  MakeFace(a0: Raw_TopoDS_Face, a1: Raw_Geom_Surface, a2: Raw_TopLoc_Location, a3: number): void;
+  MakeFace(a0: Raw_TopoDS_Face, a1: Raw_Poly_Triangulation): void;
+  UpdateFace(a0: Raw_TopoDS_Face, a1: Raw_Geom_Surface, a2: Raw_TopLoc_Location, a3: number): void;
+  UpdateFace(a0: Raw_TopoDS_Face, a1: Raw_Poly_Triangulation, a2: number): void;
   UpdateFace(a0: Raw_TopoDS_Face, a1: number): void;
   NaturalRestriction(a0: Raw_TopoDS_Face, a1: number): void;
   MakeEdge(a0: Raw_TopoDS_Edge): void;
+  MakeEdge(a0: Raw_TopoDS_Edge, a1: Raw_Geom_Curve, a2: number): void;
+  MakeEdge(a0: Raw_TopoDS_Edge, a1: Raw_Geom_Curve, a2: Raw_TopLoc_Location, a3: number): void;
+  MakeEdge(a0: Raw_TopoDS_Edge, a1: Raw_Poly_Polygon3D): void;
+  UpdateEdge(a0: Raw_TopoDS_Edge, a1: Raw_Geom_Curve, a2: number): void;
+  UpdateEdge(a0: Raw_TopoDS_Edge, a1: Raw_Geom_Curve, a2: Raw_TopLoc_Location, a3: number): void;
+  UpdateEdge(a0: Raw_TopoDS_Edge, a1: Raw_Geom2d_Curve, a2: Raw_TopoDS_Face, a3: number): void;
+  UpdateEdge(a0: Raw_TopoDS_Edge, a1: Raw_Geom2d_Curve, a2: Raw_Geom2d_Curve, a3: Raw_TopoDS_Face, a4: number): void;
+  UpdateEdge(a0: Raw_TopoDS_Edge, a1: Raw_Geom2d_Curve, a2: Raw_Geom_Surface, a3: Raw_TopLoc_Location, a4: number): void;
+  UpdateEdge(a0: Raw_TopoDS_Edge, a1: Raw_Geom2d_Curve, a2: Raw_Geom_Surface, a3: Raw_TopLoc_Location, a4: number, a5: Raw_gp_Pnt2d, a6: Raw_gp_Pnt2d): void;
+  UpdateEdge(a0: Raw_TopoDS_Edge, a1: Raw_Geom2d_Curve, a2: Raw_Geom2d_Curve, a3: Raw_Geom_Surface, a4: Raw_TopLoc_Location, a5: number): void;
+  UpdateEdge(a0: Raw_TopoDS_Edge, a1: Raw_Geom2d_Curve, a2: Raw_Geom2d_Curve, a3: Raw_Geom_Surface, a4: Raw_TopLoc_Location, a5: number, a6: Raw_gp_Pnt2d, a7: Raw_gp_Pnt2d): void;
+  UpdateEdge(a0: Raw_TopoDS_Edge, a1: Raw_Poly_Polygon3D): void;
+  UpdateEdge(a0: Raw_TopoDS_Edge, a1: Raw_Poly_Polygon3D, a2: Raw_TopLoc_Location): void;
+  UpdateEdge(a0: Raw_TopoDS_Edge, a1: Raw_Poly_Polygon2D, a2: Raw_TopoDS_Face): void;
+  UpdateEdge(a0: Raw_TopoDS_Edge, a1: Raw_Poly_Polygon2D, a2: Raw_Geom_Surface, a3: Raw_TopLoc_Location): void;
+  UpdateEdge(a0: Raw_TopoDS_Edge, a1: Raw_Poly_Polygon2D, a2: Raw_Poly_Polygon2D, a3: Raw_TopoDS_Face): void;
+  UpdateEdge(a0: Raw_TopoDS_Edge, a1: Raw_Poly_Polygon2D, a2: Raw_Poly_Polygon2D, a3: Raw_Geom_Surface, a4: Raw_TopLoc_Location): void;
   UpdateEdge(a0: Raw_TopoDS_Edge, a1: number): void;
+  Continuity(a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Face, a2: Raw_TopoDS_Face, a3: number): void;
+  Continuity(a0: Raw_TopoDS_Edge, a1: Raw_Geom_Surface, a2: Raw_Geom_Surface, a3: Raw_TopLoc_Location, a4: Raw_TopLoc_Location, a5: number): void;
   SameParameter(a0: Raw_TopoDS_Edge, a1: number): void;
   SameRange(a0: Raw_TopoDS_Edge, a1: number): void;
   Degenerated(a0: Raw_TopoDS_Edge, a1: number): void;
   Range(a0: Raw_TopoDS_Edge, a1: number, a2: number, a3: number): void;
+  Range(a0: Raw_TopoDS_Edge, a1: Raw_Geom_Surface, a2: Raw_TopLoc_Location, a3: number, a4: number): void;
   Range(a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Face, a2: number, a3: number): void;
   Transfert(a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Edge): void;
   Transfert(a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Edge, a2: Raw_TopoDS_Vertex, a3: Raw_TopoDS_Vertex): void;
@@ -1283,6 +2609,7 @@ export interface Raw_BRep_Builder {
   UpdateVertex(a0: Raw_TopoDS_Vertex, a1: Raw_gp_Pnt, a2: number): void;
   UpdateVertex(a0: Raw_TopoDS_Vertex, a1: number, a2: Raw_TopoDS_Edge, a3: number): void;
   UpdateVertex(a0: Raw_TopoDS_Vertex, a1: number, a2: Raw_TopoDS_Edge, a3: Raw_TopoDS_Face, a4: number): void;
+  UpdateVertex(a0: Raw_TopoDS_Vertex, a1: number, a2: Raw_TopoDS_Edge, a3: Raw_Geom_Surface, a4: Raw_TopLoc_Location, a5: number): void;
   UpdateVertex(a0: Raw_TopoDS_Vertex, a1: number, a2: number, a3: Raw_TopoDS_Face, a4: number): void;
   UpdateVertex(a0: Raw_TopoDS_Vertex, a1: number): void;
 }
@@ -1290,14 +2617,26 @@ export interface Raw_BRep_Builder {
 /** Raw BRepAdaptor_Curve (see tools/codegen/SKIPPED.md for unmapped members). */
 export interface Raw_BRepAdaptor_Curve {
   delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
   GetRefCount(): number;
   IncrementRefCounter(): void;
   DecrementRefCounter(): number;
   Delete(): void;
+  ShallowCopy(): Raw_Adaptor3d_Curve;
+  ShallowCopy(): Raw_Adaptor3d_Curve;
   FirstParameter(): number;
   FirstParameter(): number;
   LastParameter(): number;
   LastParameter(): number;
+  Continuity(): number;
+  Continuity(): number;
+  NbIntervals(a0: number): number;
+  NbIntervals(a0: number): number;
+  Intervals(a0: Raw_TColStd_Array1OfReal, a1: number): void;
+  Intervals(a0: Raw_TColStd_Array1OfReal, a1: number): void;
+  Trim(a0: number, a1: number, a2: number): Raw_Adaptor3d_Curve;
+  Trim(a0: number, a1: number, a2: number): Raw_Adaptor3d_Curve;
   IsClosed(): number;
   IsClosed(): number;
   IsPeriodic(): number;
@@ -1318,10 +2657,18 @@ export interface Raw_BRepAdaptor_Curve {
   DN(a0: number, a1: number): Raw_gp_Vec;
   Resolution(a0: number): number;
   Resolution(a0: number): number;
+  GetType(): number;
+  GetType(): number;
   Line(): Raw_gp_Lin;
   Line(): Raw_gp_Lin;
   Circle(): Raw_gp_Circ;
   Circle(): Raw_gp_Circ;
+  Ellipse(): Raw_gp_Elips;
+  Ellipse(): Raw_gp_Elips;
+  Hyperbola(): Raw_gp_Hypr;
+  Hyperbola(): Raw_gp_Hypr;
+  Parabola(): Raw_gp_Parab;
+  Parabola(): Raw_gp_Parab;
   Degree(): number;
   Degree(): number;
   IsRational(): number;
@@ -1330,8 +2677,12 @@ export interface Raw_BRepAdaptor_Curve {
   NbPoles(): number;
   NbKnots(): number;
   NbKnots(): number;
+  Bezier(): Raw_Geom_BezierCurve;
+  Bezier(): Raw_Geom_BezierCurve;
   BSpline(): Raw_Geom_BSplineCurve;
   BSpline(): Raw_Geom_BSplineCurve;
+  OffsetCurve(): Raw_Geom_OffsetCurve;
+  OffsetCurve(): Raw_Geom_OffsetCurve;
   Reset(): void;
   Initialize(a0: Raw_TopoDS_Edge): void;
   Initialize(a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Face): void;
@@ -1354,10 +2705,14 @@ export interface Ctor_BRepAdaptor_Curve {
 /** Raw BRepAdaptor_Surface (see tools/codegen/SKIPPED.md for unmapped members). */
 export interface Raw_BRepAdaptor_Surface {
   delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
   GetRefCount(): number;
   IncrementRefCounter(): void;
   DecrementRefCounter(): number;
   Delete(): void;
+  ShallowCopy(): Raw_Adaptor3d_Surface;
+  ShallowCopy(): Raw_Adaptor3d_Surface;
   FirstUParameter(): number;
   FirstUParameter(): number;
   LastUParameter(): number;
@@ -1366,6 +2721,22 @@ export interface Raw_BRepAdaptor_Surface {
   FirstVParameter(): number;
   LastVParameter(): number;
   LastVParameter(): number;
+  UContinuity(): number;
+  UContinuity(): number;
+  VContinuity(): number;
+  VContinuity(): number;
+  NbUIntervals(a0: number): number;
+  NbUIntervals(a0: number): number;
+  NbVIntervals(a0: number): number;
+  NbVIntervals(a0: number): number;
+  UIntervals(a0: Raw_TColStd_Array1OfReal, a1: number): void;
+  UIntervals(a0: Raw_TColStd_Array1OfReal, a1: number): void;
+  VIntervals(a0: Raw_TColStd_Array1OfReal, a1: number): void;
+  VIntervals(a0: Raw_TColStd_Array1OfReal, a1: number): void;
+  UTrim(a0: number, a1: number, a2: number): Raw_Adaptor3d_Surface;
+  UTrim(a0: number, a1: number, a2: number): Raw_Adaptor3d_Surface;
+  VTrim(a0: number, a1: number, a2: number): Raw_Adaptor3d_Surface;
+  VTrim(a0: number, a1: number, a2: number): Raw_Adaptor3d_Surface;
   IsUClosed(): number;
   IsUClosed(): number;
   IsVClosed(): number;
@@ -1394,8 +2765,18 @@ export interface Raw_BRepAdaptor_Surface {
   UResolution(a0: number): number;
   VResolution(a0: number): number;
   VResolution(a0: number): number;
+  GetType(): number;
+  GetType(): number;
   Plane(): Raw_gp_Pln;
   Plane(): Raw_gp_Pln;
+  Cylinder(): Raw_gp_Cylinder;
+  Cylinder(): Raw_gp_Cylinder;
+  Cone(): Raw_gp_Cone;
+  Cone(): Raw_gp_Cone;
+  Sphere(): Raw_gp_Sphere;
+  Sphere(): Raw_gp_Sphere;
+  Torus(): Raw_gp_Torus;
+  Torus(): Raw_gp_Torus;
   UDegree(): number;
   UDegree(): number;
   NbUPoles(): number;
@@ -1418,6 +2799,10 @@ export interface Raw_BRepAdaptor_Surface {
   AxeOfRevolution(): Raw_gp_Ax1;
   Direction(): Raw_gp_Dir;
   Direction(): Raw_gp_Dir;
+  BasisCurve(): Raw_Adaptor3d_Curve;
+  BasisCurve(): Raw_Adaptor3d_Curve;
+  BasisSurface(): Raw_Adaptor3d_Surface;
+  BasisSurface(): Raw_Adaptor3d_Surface;
   OffsetValue(): number;
   OffsetValue(): number;
   Initialize(a0: Raw_TopoDS_Face, a1: number): void;
@@ -1434,17 +2819,124 @@ export interface Ctor_BRepAdaptor_Surface {
   get_type_name(): string;
 }
 
+/** Raw BRepLib (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_BRepLib {
+  delete(): void;
+}
+
+export interface Ctor_BRepLib {
+  Precision(a0: number): void;
+  Precision(): number;
+  Plane(a0: Raw_Geom_Plane): void;
+  Plane(): Raw_Geom_Plane;
+  CheckSameRange(a0: Raw_TopoDS_Edge, a1: number): number;
+  SameRange(a0: Raw_TopoDS_Edge, a1: number): void;
+  BuildCurve3d(a0: Raw_TopoDS_Edge, a1: number, a2: number, a3: number, a4: number): number;
+  BuildCurves3d(a0: Raw_TopoDS_Shape, a1: number, a2: number, a3: number, a4: number): number;
+  BuildCurves3d(a0: Raw_TopoDS_Shape): number;
+  BuildPCurveForEdgeOnPlane(a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Face): void;
+  UpdateEdgeTol(a0: Raw_TopoDS_Edge, a1: number, a2: number): number;
+  UpdateEdgeTolerance(a0: Raw_TopoDS_Shape, a1: number, a2: number): number;
+  SameParameter(a0: Raw_TopoDS_Edge, a1: number): void;
+  SameParameter(a0: Raw_TopoDS_Shape, a1: number, a2: number): void;
+  UpdateTolerances(a0: Raw_TopoDS_Shape, a1: number): void;
+  UpdateInnerTolerances(a0: Raw_TopoDS_Shape): void;
+  OrientClosedSolid(a0: Raw_TopoDS_Solid): number;
+  ContinuityOfFaces(a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Face, a2: Raw_TopoDS_Face, a3: number): number;
+  EncodeRegularity(a0: Raw_TopoDS_Shape, a1: number): void;
+  EncodeRegularity(a0: Raw_TopoDS_Shape, a1: Raw_TopTools_ListOfShape, a2: number): void;
+  EncodeRegularity(a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Face, a2: Raw_TopoDS_Face, a3: number): void;
+  SortFaces(a0: Raw_TopoDS_Shape, a1: Raw_TopTools_ListOfShape): void;
+  ReverseSortFaces(a0: Raw_TopoDS_Shape, a1: Raw_TopTools_ListOfShape): void;
+  EnsureNormalConsistency(a0: Raw_TopoDS_Shape, a1: number, a2: number): number;
+  UpdateDeflection(a0: Raw_TopoDS_Shape): void;
+  ExtendFace(a0: Raw_TopoDS_Face, a1: number, a2: number, a3: number, a4: number, a5: number, a6: Raw_TopoDS_Face): void;
+}
+
+/** Raw BRepTools (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_BRepTools {
+  delete(): void;
+}
+
+export interface Ctor_BRepTools {
+  Update(a0: Raw_TopoDS_Vertex): void;
+  Update(a0: Raw_TopoDS_Edge): void;
+  Update(a0: Raw_TopoDS_Wire): void;
+  Update(a0: Raw_TopoDS_Face): void;
+  Update(a0: Raw_TopoDS_Shell): void;
+  Update(a0: Raw_TopoDS_Solid): void;
+  Update(a0: Raw_TopoDS_CompSolid): void;
+  Update(a0: Raw_TopoDS_Compound): void;
+  Update(a0: Raw_TopoDS_Shape): void;
+  UpdateFaceUVPoints(a0: Raw_TopoDS_Face): void;
+  Clean(a0: Raw_TopoDS_Shape, a1: number): void;
+  CleanGeometry(a0: Raw_TopoDS_Shape): void;
+  RemoveUnusedPCurves(a0: Raw_TopoDS_Shape): void;
+  Triangulation(a0: Raw_TopoDS_Shape, a1: number, a2: number): number;
+  UnloadTriangulation(a0: Raw_TopoDS_Shape, a1: number): number;
+  ActivateTriangulation(a0: Raw_TopoDS_Shape, a1: number, a2: number): number;
+  UnloadAllTriangulations(a0: Raw_TopoDS_Shape): number;
+  Compare(a0: Raw_TopoDS_Vertex, a1: Raw_TopoDS_Vertex): number;
+  Compare(a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Edge): number;
+  OuterWire(a0: Raw_TopoDS_Face): Raw_TopoDS_Wire;
+  Map3DEdges(a0: Raw_TopoDS_Shape, a1: Raw_TopTools_IndexedMapOfShape): void;
+  IsReallyClosed(a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Face): number;
+  Write(a0: Raw_TopoDS_Shape, a1: string, a2: Raw_Message_ProgressRange): number;
+  Read(a0: Raw_TopoDS_Shape, a1: string, a2: Raw_BRep_Builder, a3: Raw_Message_ProgressRange): number;
+  EvalAndUpdateTol(a0: Raw_TopoDS_Edge, a1: Raw_Geom_Curve, a2: Raw_Geom2d_Curve, a3: Raw_Geom_Surface, a4: number, a5: number): number;
+  OriEdgeInFace(a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Face): number;
+  RemoveInternals(a0: Raw_TopoDS_Shape, a1: number): void;
+  CheckLocations(a0: Raw_TopoDS_Shape, a1: Raw_TopTools_ListOfShape): void;
+}
+
+/** Raw BRepTools_History (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_BRepTools_History {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  AddGenerated(a0: Raw_TopoDS_Shape, a1: Raw_TopoDS_Shape): void;
+  AddModified(a0: Raw_TopoDS_Shape, a1: Raw_TopoDS_Shape): void;
+  Remove(a0: Raw_TopoDS_Shape): void;
+  ReplaceGenerated(a0: Raw_TopoDS_Shape, a1: Raw_TopoDS_Shape): void;
+  ReplaceModified(a0: Raw_TopoDS_Shape, a1: Raw_TopoDS_Shape): void;
+  Clear(): void;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  IsRemoved(a0: Raw_TopoDS_Shape): number;
+  HasGenerated(): number;
+  HasModified(): number;
+  HasRemoved(): number;
+  Merge(a0: Raw_BRepTools_History): void;
+  Merge(a0: Raw_BRepTools_History): void;
+}
+
+export interface Ctor_BRepTools_History {
+  new (): Raw_BRepTools_History;
+  get_type_name(): string;
+  get_type_name(): string;
+  IsSupportedType(a0: Raw_TopoDS_Shape): number;
+}
+
 /** Raw BRepPrimAPI_MakeBox (see tools/codegen/SKIPPED.md for unmapped members). */
 export interface Raw_BRepPrimAPI_MakeBox {
   delete(): void;
   IsDone(): number;
   Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Build(a0: Raw_Message_ProgressRange): void;
   Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
   IsDeleted(a0: Raw_TopoDS_Shape): number;
   Init(a0: number, a1: number, a2: number): void;
   Init(a0: Raw_gp_Pnt, a1: number, a2: number, a3: number): void;
   Init(a0: Raw_gp_Pnt, a1: Raw_gp_Pnt): void;
   Init(a0: Raw_gp_Ax2, a1: number, a2: number, a3: number): void;
+  Wedge(): Raw_BRepPrim_Wedge;
   Shell(): Raw_TopoDS_Shell;
   Solid(): Raw_TopoDS_Solid;
   BottomFace(): Raw_TopoDS_Face;
@@ -1468,7 +2960,10 @@ export interface Raw_BRepPrimAPI_MakeCylinder {
   delete(): void;
   IsDone(): number;
   Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
   Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
   IsDeleted(a0: Raw_TopoDS_Shape): number;
   Face(): Raw_TopoDS_Face;
   Shell(): Raw_TopoDS_Shell;
@@ -1487,7 +2982,10 @@ export interface Raw_BRepPrimAPI_MakeCone {
   delete(): void;
   IsDone(): number;
   Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
   Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
   IsDeleted(a0: Raw_TopoDS_Shape): number;
   Face(): Raw_TopoDS_Face;
   Shell(): Raw_TopoDS_Shell;
@@ -1506,7 +3004,10 @@ export interface Raw_BRepPrimAPI_MakeSphere {
   delete(): void;
   IsDone(): number;
   Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
   Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
   IsDeleted(a0: Raw_TopoDS_Shape): number;
   Face(): Raw_TopoDS_Face;
   Shell(): Raw_TopoDS_Shell;
@@ -1533,7 +3034,10 @@ export interface Raw_BRepPrimAPI_MakeTorus {
   delete(): void;
   IsDone(): number;
   Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
   Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
   IsDeleted(a0: Raw_TopoDS_Shape): number;
   Face(): Raw_TopoDS_Face;
   Shell(): Raw_TopoDS_Shell;
@@ -1556,7 +3060,12 @@ export interface Raw_BRepPrimAPI_MakePrism {
   delete(): void;
   IsDone(): number;
   Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Build(a0: Raw_Message_ProgressRange): void;
   Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
   IsDeleted(a0: Raw_TopoDS_Shape): number;
   IsDeleted(a0: Raw_TopoDS_Shape): number;
   FirstShape(): Raw_TopoDS_Shape;
@@ -1577,7 +3086,12 @@ export interface Raw_BRepPrimAPI_MakeRevol {
   delete(): void;
   IsDone(): number;
   Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Build(a0: Raw_Message_ProgressRange): void;
   Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
   IsDeleted(a0: Raw_TopoDS_Shape): number;
   IsDeleted(a0: Raw_TopoDS_Shape): number;
   FirstShape(): Raw_TopoDS_Shape;
@@ -1587,6 +3101,7 @@ export interface Raw_BRepPrimAPI_MakeRevol {
   LastShape(): Raw_TopoDS_Shape;
   LastShape(a0: Raw_TopoDS_Shape): Raw_TopoDS_Shape;
   HasDegenerated(): number;
+  Degenerated(): Raw_TopTools_ListOfShape;
 }
 
 export interface Ctor_BRepPrimAPI_MakeRevol {
@@ -1599,8 +3114,13 @@ export interface Raw_BRepPrimAPI_MakeWedge {
   delete(): void;
   IsDone(): number;
   Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Build(a0: Raw_Message_ProgressRange): void;
   Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
   IsDeleted(a0: Raw_TopoDS_Shape): number;
+  Wedge(): Raw_BRepPrim_Wedge;
   Shell(): Raw_TopoDS_Shell;
   Solid(): Raw_TopoDS_Solid;
 }
@@ -1612,15 +3132,22 @@ export interface Ctor_BRepPrimAPI_MakeWedge {
   new (a0: Raw_gp_Ax2, a1: number, a2: number, a3: number, a4: number, a5: number, a6: number, a7: number): Raw_BRepPrimAPI_MakeWedge;
 }
 
-/** Raw BRepAlgoAPI_Section (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_BRepAlgoAPI_Section {
+/** Raw BRepAlgoAPI_Fuse (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_BRepAlgoAPI_Fuse {
   delete(): void;
   IsDone(): number;
   Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
   Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
   IsDeleted(a0: Raw_TopoDS_Shape): number;
+  SetArguments(a0: Raw_TopTools_ListOfShape): void;
+  Arguments(): Raw_TopTools_ListOfShape;
   SetNonDestructive(a0: number): void;
   NonDestructive(): number;
+  SetGlue(a0: number): void;
+  Glue(): number;
   SetCheckInverted(a0: number): void;
   CheckInverted(): number;
   SimplifyResult(a0: number, a1: number, a2: number): void;
@@ -1629,12 +3156,138 @@ export interface Raw_BRepAlgoAPI_Section {
   HasDeleted(): number;
   SetToFillHistory(a0: number): void;
   HasHistory(): number;
+  SectionEdges(): Raw_TopTools_ListOfShape;
+  History(): Raw_BRepTools_History;
   Shape1(): Raw_TopoDS_Shape;
   Shape2(): Raw_TopoDS_Shape;
+  SetTools(a0: Raw_TopTools_ListOfShape): void;
+  Tools(): Raw_TopTools_ListOfShape;
+  SetOperation(a0: number): void;
+  Operation(): number;
+}
+
+export interface Ctor_BRepAlgoAPI_Fuse {
+  new (): Raw_BRepAlgoAPI_Fuse;
+  new (a0: Raw_TopoDS_Shape, a1: Raw_TopoDS_Shape, a2: Raw_Message_ProgressRange): Raw_BRepAlgoAPI_Fuse;
+}
+
+/** Raw BRepAlgoAPI_Cut (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_BRepAlgoAPI_Cut {
+  delete(): void;
+  IsDone(): number;
+  Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  IsDeleted(a0: Raw_TopoDS_Shape): number;
+  SetArguments(a0: Raw_TopTools_ListOfShape): void;
+  Arguments(): Raw_TopTools_ListOfShape;
+  SetNonDestructive(a0: number): void;
+  NonDestructive(): number;
+  SetGlue(a0: number): void;
+  Glue(): number;
+  SetCheckInverted(a0: number): void;
+  CheckInverted(): number;
+  SimplifyResult(a0: number, a1: number, a2: number): void;
+  HasModified(): number;
+  HasGenerated(): number;
+  HasDeleted(): number;
+  SetToFillHistory(a0: number): void;
+  HasHistory(): number;
+  SectionEdges(): Raw_TopTools_ListOfShape;
+  History(): Raw_BRepTools_History;
+  Shape1(): Raw_TopoDS_Shape;
+  Shape2(): Raw_TopoDS_Shape;
+  SetTools(a0: Raw_TopTools_ListOfShape): void;
+  Tools(): Raw_TopTools_ListOfShape;
+  SetOperation(a0: number): void;
+  Operation(): number;
+}
+
+export interface Ctor_BRepAlgoAPI_Cut {
+  new (): Raw_BRepAlgoAPI_Cut;
+  new (a0: Raw_TopoDS_Shape, a1: Raw_TopoDS_Shape, a2: Raw_Message_ProgressRange): Raw_BRepAlgoAPI_Cut;
+}
+
+/** Raw BRepAlgoAPI_Common (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_BRepAlgoAPI_Common {
+  delete(): void;
+  IsDone(): number;
+  Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  IsDeleted(a0: Raw_TopoDS_Shape): number;
+  SetArguments(a0: Raw_TopTools_ListOfShape): void;
+  Arguments(): Raw_TopTools_ListOfShape;
+  SetNonDestructive(a0: number): void;
+  NonDestructive(): number;
+  SetGlue(a0: number): void;
+  Glue(): number;
+  SetCheckInverted(a0: number): void;
+  CheckInverted(): number;
+  SimplifyResult(a0: number, a1: number, a2: number): void;
+  HasModified(): number;
+  HasGenerated(): number;
+  HasDeleted(): number;
+  SetToFillHistory(a0: number): void;
+  HasHistory(): number;
+  SectionEdges(): Raw_TopTools_ListOfShape;
+  History(): Raw_BRepTools_History;
+  Shape1(): Raw_TopoDS_Shape;
+  Shape2(): Raw_TopoDS_Shape;
+  SetTools(a0: Raw_TopTools_ListOfShape): void;
+  Tools(): Raw_TopTools_ListOfShape;
+  SetOperation(a0: number): void;
+  Operation(): number;
+}
+
+export interface Ctor_BRepAlgoAPI_Common {
+  new (): Raw_BRepAlgoAPI_Common;
+  new (a0: Raw_TopoDS_Shape, a1: Raw_TopoDS_Shape, a2: Raw_Message_ProgressRange): Raw_BRepAlgoAPI_Common;
+}
+
+/** Raw BRepAlgoAPI_Section (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_BRepAlgoAPI_Section {
+  delete(): void;
+  IsDone(): number;
+  Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  IsDeleted(a0: Raw_TopoDS_Shape): number;
+  SetArguments(a0: Raw_TopTools_ListOfShape): void;
+  Arguments(): Raw_TopTools_ListOfShape;
+  SetNonDestructive(a0: number): void;
+  NonDestructive(): number;
+  SetGlue(a0: number): void;
+  Glue(): number;
+  SetCheckInverted(a0: number): void;
+  CheckInverted(): number;
+  SimplifyResult(a0: number, a1: number, a2: number): void;
+  HasModified(): number;
+  HasGenerated(): number;
+  HasDeleted(): number;
+  SetToFillHistory(a0: number): void;
+  HasHistory(): number;
+  SectionEdges(): Raw_TopTools_ListOfShape;
+  History(): Raw_BRepTools_History;
+  Shape1(): Raw_TopoDS_Shape;
+  Shape2(): Raw_TopoDS_Shape;
+  SetTools(a0: Raw_TopTools_ListOfShape): void;
+  Tools(): Raw_TopTools_ListOfShape;
+  SetOperation(a0: number): void;
+  Operation(): number;
   Init1(a0: Raw_TopoDS_Shape): void;
   Init1(a0: Raw_gp_Pln): void;
+  Init1(a0: Raw_Geom_Surface): void;
   Init2(a0: Raw_TopoDS_Shape): void;
   Init2(a0: Raw_gp_Pln): void;
+  Init2(a0: Raw_Geom_Surface): void;
   Approximation(a0: number): void;
   ComputePCurveOn1(a0: number): void;
   ComputePCurveOn2(a0: number): void;
@@ -1646,6 +3299,190 @@ export interface Ctor_BRepAlgoAPI_Section {
   new (): Raw_BRepAlgoAPI_Section;
   new (a0: Raw_TopoDS_Shape, a1: Raw_TopoDS_Shape, a2: number): Raw_BRepAlgoAPI_Section;
   new (a0: Raw_TopoDS_Shape, a1: Raw_gp_Pln, a2: number): Raw_BRepAlgoAPI_Section;
+  new (a0: Raw_TopoDS_Shape, a1: Raw_Geom_Surface, a2: number): Raw_BRepAlgoAPI_Section;
+  new (a0: Raw_Geom_Surface, a1: Raw_TopoDS_Shape, a2: number): Raw_BRepAlgoAPI_Section;
+  new (a0: Raw_Geom_Surface, a1: Raw_Geom_Surface, a2: number): Raw_BRepAlgoAPI_Section;
+}
+
+/** Raw BRepAlgoAPI_Splitter (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_BRepAlgoAPI_Splitter {
+  delete(): void;
+  IsDone(): number;
+  Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  IsDeleted(a0: Raw_TopoDS_Shape): number;
+  SetArguments(a0: Raw_TopTools_ListOfShape): void;
+  Arguments(): Raw_TopTools_ListOfShape;
+  SetNonDestructive(a0: number): void;
+  NonDestructive(): number;
+  SetGlue(a0: number): void;
+  Glue(): number;
+  SetCheckInverted(a0: number): void;
+  CheckInverted(): number;
+  SimplifyResult(a0: number, a1: number, a2: number): void;
+  HasModified(): number;
+  HasGenerated(): number;
+  HasDeleted(): number;
+  SetToFillHistory(a0: number): void;
+  HasHistory(): number;
+  SectionEdges(): Raw_TopTools_ListOfShape;
+  History(): Raw_BRepTools_History;
+  SetTools(a0: Raw_TopTools_ListOfShape): void;
+  Tools(): Raw_TopTools_ListOfShape;
+}
+
+export interface Ctor_BRepAlgoAPI_Splitter {
+  new (): Raw_BRepAlgoAPI_Splitter;
+}
+
+/** Raw BRepFilletAPI_MakeFillet (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_BRepFilletAPI_MakeFillet {
+  delete(): void;
+  IsDone(): number;
+  Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  IsDeleted(a0: Raw_TopoDS_Shape): number;
+  IsDeleted(a0: Raw_TopoDS_Shape): number;
+  Add(a0: Raw_TopoDS_Edge): void;
+  Add(a0: Raw_TopoDS_Edge): void;
+  Add(a0: number, a1: Raw_TopoDS_Edge): void;
+  Add(a0: number, a1: number, a2: Raw_TopoDS_Edge): void;
+  Add(a0: Raw_Law_Function, a1: Raw_TopoDS_Edge): void;
+  ResetContour(a0: number): void;
+  ResetContour(a0: number): void;
+  NbContours(): number;
+  NbContours(): number;
+  Contour(a0: Raw_TopoDS_Edge): number;
+  Contour(a0: Raw_TopoDS_Edge): number;
+  NbEdges(a0: number): number;
+  NbEdges(a0: number): number;
+  Edge(a0: number, a1: number): Raw_TopoDS_Edge;
+  Edge(a0: number, a1: number): Raw_TopoDS_Edge;
+  Remove(a0: Raw_TopoDS_Edge): void;
+  Remove(a0: Raw_TopoDS_Edge): void;
+  Length(a0: number): number;
+  Length(a0: number): number;
+  FirstVertex(a0: number): Raw_TopoDS_Vertex;
+  FirstVertex(a0: number): Raw_TopoDS_Vertex;
+  LastVertex(a0: number): Raw_TopoDS_Vertex;
+  LastVertex(a0: number): Raw_TopoDS_Vertex;
+  Abscissa(a0: number, a1: Raw_TopoDS_Vertex): number;
+  Abscissa(a0: number, a1: Raw_TopoDS_Vertex): number;
+  RelativeAbscissa(a0: number, a1: Raw_TopoDS_Vertex): number;
+  RelativeAbscissa(a0: number, a1: Raw_TopoDS_Vertex): number;
+  ClosedAndTangent(a0: number): number;
+  ClosedAndTangent(a0: number): number;
+  Closed(a0: number): number;
+  Closed(a0: number): number;
+  Reset(): void;
+  Reset(): void;
+  Simulate(a0: number): void;
+  Simulate(a0: number): void;
+  NbSurf(a0: number): number;
+  NbSurf(a0: number): number;
+  SetParams(a0: number, a1: number, a2: number, a3: number, a4: number, a5: number): void;
+  SetContinuity(a0: number, a1: number): void;
+  SetRadius(a0: number, a1: number, a2: number): void;
+  SetRadius(a0: number, a1: number, a2: number, a3: number): void;
+  SetRadius(a0: Raw_Law_Function, a1: number, a2: number): void;
+  SetRadius(a0: number, a1: number, a2: Raw_TopoDS_Edge): void;
+  SetRadius(a0: number, a1: number, a2: Raw_TopoDS_Vertex): void;
+  IsConstant(a0: number): number;
+  IsConstant(a0: number, a1: Raw_TopoDS_Edge): number;
+  Radius(a0: number): number;
+  Radius(a0: number, a1: Raw_TopoDS_Edge): number;
+  GetLaw(a0: number, a1: Raw_TopoDS_Edge): Raw_Law_Function;
+  SetLaw(a0: number, a1: Raw_TopoDS_Edge, a2: Raw_Law_Function): void;
+  SetFilletShape(a0: number): void;
+  GetFilletShape(): number;
+  NbSurfaces(): number;
+  NewFaces(a0: number): Raw_TopTools_ListOfShape;
+  NbFaultyContours(): number;
+  FaultyContour(a0: number): number;
+  NbComputedSurfaces(a0: number): number;
+  ComputedSurface(a0: number, a1: number): Raw_Geom_Surface;
+  NbFaultyVertices(): number;
+  FaultyVertex(a0: number): Raw_TopoDS_Vertex;
+  HasResult(): number;
+  BadShape(): Raw_TopoDS_Shape;
+  StripeStatus(a0: number): number;
+}
+
+export interface Ctor_BRepFilletAPI_MakeFillet {
+  new (a0: Raw_TopoDS_Shape, a1: number): Raw_BRepFilletAPI_MakeFillet;
+}
+
+/** Raw BRepFilletAPI_MakeChamfer (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_BRepFilletAPI_MakeChamfer {
+  delete(): void;
+  IsDone(): number;
+  Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  IsDeleted(a0: Raw_TopoDS_Shape): number;
+  IsDeleted(a0: Raw_TopoDS_Shape): number;
+  Add(a0: Raw_TopoDS_Edge): void;
+  Add(a0: Raw_TopoDS_Edge): void;
+  Add(a0: number, a1: Raw_TopoDS_Edge): void;
+  Add(a0: number, a1: number, a2: Raw_TopoDS_Edge, a3: Raw_TopoDS_Face): void;
+  ResetContour(a0: number): void;
+  ResetContour(a0: number): void;
+  NbContours(): number;
+  NbContours(): number;
+  Contour(a0: Raw_TopoDS_Edge): number;
+  Contour(a0: Raw_TopoDS_Edge): number;
+  NbEdges(a0: number): number;
+  NbEdges(a0: number): number;
+  Edge(a0: number, a1: number): Raw_TopoDS_Edge;
+  Edge(a0: number, a1: number): Raw_TopoDS_Edge;
+  Remove(a0: Raw_TopoDS_Edge): void;
+  Remove(a0: Raw_TopoDS_Edge): void;
+  Length(a0: number): number;
+  Length(a0: number): number;
+  FirstVertex(a0: number): Raw_TopoDS_Vertex;
+  FirstVertex(a0: number): Raw_TopoDS_Vertex;
+  LastVertex(a0: number): Raw_TopoDS_Vertex;
+  LastVertex(a0: number): Raw_TopoDS_Vertex;
+  Abscissa(a0: number, a1: Raw_TopoDS_Vertex): number;
+  Abscissa(a0: number, a1: Raw_TopoDS_Vertex): number;
+  RelativeAbscissa(a0: number, a1: Raw_TopoDS_Vertex): number;
+  RelativeAbscissa(a0: number, a1: Raw_TopoDS_Vertex): number;
+  ClosedAndTangent(a0: number): number;
+  ClosedAndTangent(a0: number): number;
+  Closed(a0: number): number;
+  Closed(a0: number): number;
+  Reset(): void;
+  Reset(): void;
+  Simulate(a0: number): void;
+  Simulate(a0: number): void;
+  NbSurf(a0: number): number;
+  NbSurf(a0: number): number;
+  SetDist(a0: number, a1: number, a2: Raw_TopoDS_Face): void;
+  SetDists(a0: number, a1: number, a2: number, a3: Raw_TopoDS_Face): void;
+  AddDA(a0: number, a1: number, a2: Raw_TopoDS_Edge, a3: Raw_TopoDS_Face): void;
+  SetDistAngle(a0: number, a1: number, a2: number, a3: Raw_TopoDS_Face): void;
+  IsSymetric(a0: number): number;
+  IsTwoDistances(a0: number): number;
+  IsDistanceAngle(a0: number): number;
+}
+
+export interface Ctor_BRepFilletAPI_MakeChamfer {
+  new (a0: Raw_TopoDS_Shape): Raw_BRepFilletAPI_MakeChamfer;
 }
 
 /** Raw BRepBuilderAPI_MakeEdge (see tools/codegen/SKIPPED.md for unmapped members). */
@@ -1654,8 +3491,24 @@ export interface Raw_BRepBuilderAPI_MakeEdge {
   IsDone(): number;
   IsDone(): number;
   Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
   Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
   IsDeleted(a0: Raw_TopoDS_Shape): number;
+  Init(a0: Raw_Geom_Curve): void;
+  Init(a0: Raw_Geom_Curve, a1: number, a2: number): void;
+  Init(a0: Raw_Geom_Curve, a1: Raw_gp_Pnt, a2: Raw_gp_Pnt): void;
+  Init(a0: Raw_Geom_Curve, a1: Raw_TopoDS_Vertex, a2: Raw_TopoDS_Vertex): void;
+  Init(a0: Raw_Geom_Curve, a1: Raw_gp_Pnt, a2: Raw_gp_Pnt, a3: number, a4: number): void;
+  Init(a0: Raw_Geom_Curve, a1: Raw_TopoDS_Vertex, a2: Raw_TopoDS_Vertex, a3: number, a4: number): void;
+  Init(a0: Raw_Geom2d_Curve, a1: Raw_Geom_Surface): void;
+  Init(a0: Raw_Geom2d_Curve, a1: Raw_Geom_Surface, a2: number, a3: number): void;
+  Init(a0: Raw_Geom2d_Curve, a1: Raw_Geom_Surface, a2: Raw_gp_Pnt, a3: Raw_gp_Pnt): void;
+  Init(a0: Raw_Geom2d_Curve, a1: Raw_Geom_Surface, a2: Raw_TopoDS_Vertex, a3: Raw_TopoDS_Vertex): void;
+  Init(a0: Raw_Geom2d_Curve, a1: Raw_Geom_Surface, a2: Raw_gp_Pnt, a3: Raw_gp_Pnt, a4: number, a5: number): void;
+  Init(a0: Raw_Geom2d_Curve, a1: Raw_Geom_Surface, a2: Raw_TopoDS_Vertex, a3: Raw_TopoDS_Vertex, a4: number, a5: number): void;
+  Error(): number;
   Edge(): Raw_TopoDS_Edge;
   Vertex1(): Raw_TopoDS_Vertex;
   Vertex2(): Raw_TopoDS_Vertex;
@@ -1673,6 +3526,60 @@ export interface Ctor_BRepBuilderAPI_MakeEdge {
   new (a0: Raw_gp_Circ, a1: number, a2: number): Raw_BRepBuilderAPI_MakeEdge;
   new (a0: Raw_gp_Circ, a1: Raw_gp_Pnt, a2: Raw_gp_Pnt): Raw_BRepBuilderAPI_MakeEdge;
   new (a0: Raw_gp_Circ, a1: Raw_TopoDS_Vertex, a2: Raw_TopoDS_Vertex): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_gp_Elips): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_gp_Elips, a1: number, a2: number): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_gp_Elips, a1: Raw_gp_Pnt, a2: Raw_gp_Pnt): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_gp_Elips, a1: Raw_TopoDS_Vertex, a2: Raw_TopoDS_Vertex): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_gp_Hypr): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_gp_Hypr, a1: number, a2: number): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_gp_Hypr, a1: Raw_gp_Pnt, a2: Raw_gp_Pnt): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_gp_Hypr, a1: Raw_TopoDS_Vertex, a2: Raw_TopoDS_Vertex): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_gp_Parab): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_gp_Parab, a1: number, a2: number): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_gp_Parab, a1: Raw_gp_Pnt, a2: Raw_gp_Pnt): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_gp_Parab, a1: Raw_TopoDS_Vertex, a2: Raw_TopoDS_Vertex): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_Geom_Curve): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_Geom_Curve, a1: number, a2: number): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_Geom_Curve, a1: Raw_gp_Pnt, a2: Raw_gp_Pnt): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_Geom_Curve, a1: Raw_TopoDS_Vertex, a2: Raw_TopoDS_Vertex): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_Geom_Curve, a1: Raw_gp_Pnt, a2: Raw_gp_Pnt, a3: number, a4: number): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_Geom_Curve, a1: Raw_TopoDS_Vertex, a2: Raw_TopoDS_Vertex, a3: number, a4: number): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_Geom2d_Curve, a1: Raw_Geom_Surface): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_Geom2d_Curve, a1: Raw_Geom_Surface, a2: number, a3: number): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_Geom2d_Curve, a1: Raw_Geom_Surface, a2: Raw_gp_Pnt, a3: Raw_gp_Pnt): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_Geom2d_Curve, a1: Raw_Geom_Surface, a2: Raw_TopoDS_Vertex, a3: Raw_TopoDS_Vertex): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_Geom2d_Curve, a1: Raw_Geom_Surface, a2: Raw_gp_Pnt, a3: Raw_gp_Pnt, a4: number, a5: number): Raw_BRepBuilderAPI_MakeEdge;
+  new (a0: Raw_Geom2d_Curve, a1: Raw_Geom_Surface, a2: Raw_TopoDS_Vertex, a3: Raw_TopoDS_Vertex, a4: number, a5: number): Raw_BRepBuilderAPI_MakeEdge;
+}
+
+/** Raw BRepBuilderAPI_MakeWire (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_BRepBuilderAPI_MakeWire {
+  delete(): void;
+  IsDone(): number;
+  IsDone(): number;
+  Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  IsDeleted(a0: Raw_TopoDS_Shape): number;
+  Add(a0: Raw_TopoDS_Edge): void;
+  Add(a0: Raw_TopoDS_Wire): void;
+  Add(a0: Raw_TopTools_ListOfShape): void;
+  Error(): number;
+  Wire(): Raw_TopoDS_Wire;
+  Edge(): Raw_TopoDS_Edge;
+  Vertex(): Raw_TopoDS_Vertex;
+}
+
+export interface Ctor_BRepBuilderAPI_MakeWire {
+  new (): Raw_BRepBuilderAPI_MakeWire;
+  new (a0: Raw_TopoDS_Edge): Raw_BRepBuilderAPI_MakeWire;
+  new (a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Edge): Raw_BRepBuilderAPI_MakeWire;
+  new (a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Edge, a2: Raw_TopoDS_Edge): Raw_BRepBuilderAPI_MakeWire;
+  new (a0: Raw_TopoDS_Edge, a1: Raw_TopoDS_Edge, a2: Raw_TopoDS_Edge, a3: Raw_TopoDS_Edge): Raw_BRepBuilderAPI_MakeWire;
+  new (a0: Raw_TopoDS_Wire): Raw_BRepBuilderAPI_MakeWire;
+  new (a0: Raw_TopoDS_Wire, a1: Raw_TopoDS_Edge): Raw_BRepBuilderAPI_MakeWire;
 }
 
 /** Raw BRepBuilderAPI_MakeFace (see tools/codegen/SKIPPED.md for unmapped members). */
@@ -1681,10 +3588,16 @@ export interface Raw_BRepBuilderAPI_MakeFace {
   IsDone(): number;
   IsDone(): number;
   Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
   Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
   IsDeleted(a0: Raw_TopoDS_Shape): number;
   Init(a0: Raw_TopoDS_Face): void;
+  Init(a0: Raw_Geom_Surface, a1: number, a2: number): void;
+  Init(a0: Raw_Geom_Surface, a1: number, a2: number, a3: number, a4: number, a5: number): void;
   Add(a0: Raw_TopoDS_Wire): void;
+  Error(): number;
   Face(): Raw_TopoDS_Face;
 }
 
@@ -1692,9 +3605,24 @@ export interface Ctor_BRepBuilderAPI_MakeFace {
   new (): Raw_BRepBuilderAPI_MakeFace;
   new (a0: Raw_TopoDS_Face): Raw_BRepBuilderAPI_MakeFace;
   new (a0: Raw_gp_Pln): Raw_BRepBuilderAPI_MakeFace;
+  new (a0: Raw_gp_Cylinder): Raw_BRepBuilderAPI_MakeFace;
+  new (a0: Raw_gp_Cone): Raw_BRepBuilderAPI_MakeFace;
+  new (a0: Raw_gp_Sphere): Raw_BRepBuilderAPI_MakeFace;
+  new (a0: Raw_gp_Torus): Raw_BRepBuilderAPI_MakeFace;
+  new (a0: Raw_Geom_Surface, a1: number): Raw_BRepBuilderAPI_MakeFace;
   new (a0: Raw_gp_Pln, a1: number, a2: number, a3: number, a4: number): Raw_BRepBuilderAPI_MakeFace;
+  new (a0: Raw_gp_Cylinder, a1: number, a2: number, a3: number, a4: number): Raw_BRepBuilderAPI_MakeFace;
+  new (a0: Raw_gp_Cone, a1: number, a2: number, a3: number, a4: number): Raw_BRepBuilderAPI_MakeFace;
+  new (a0: Raw_gp_Sphere, a1: number, a2: number, a3: number, a4: number): Raw_BRepBuilderAPI_MakeFace;
+  new (a0: Raw_gp_Torus, a1: number, a2: number, a3: number, a4: number): Raw_BRepBuilderAPI_MakeFace;
+  new (a0: Raw_Geom_Surface, a1: number, a2: number, a3: number, a4: number, a5: number): Raw_BRepBuilderAPI_MakeFace;
   new (a0: Raw_TopoDS_Wire, a1: number): Raw_BRepBuilderAPI_MakeFace;
   new (a0: Raw_gp_Pln, a1: Raw_TopoDS_Wire, a2: number): Raw_BRepBuilderAPI_MakeFace;
+  new (a0: Raw_gp_Cylinder, a1: Raw_TopoDS_Wire, a2: number): Raw_BRepBuilderAPI_MakeFace;
+  new (a0: Raw_gp_Cone, a1: Raw_TopoDS_Wire, a2: number): Raw_BRepBuilderAPI_MakeFace;
+  new (a0: Raw_gp_Sphere, a1: Raw_TopoDS_Wire, a2: number): Raw_BRepBuilderAPI_MakeFace;
+  new (a0: Raw_gp_Torus, a1: Raw_TopoDS_Wire, a2: number): Raw_BRepBuilderAPI_MakeFace;
+  new (a0: Raw_Geom_Surface, a1: Raw_TopoDS_Wire, a2: number): Raw_BRepBuilderAPI_MakeFace;
   new (a0: Raw_TopoDS_Face, a1: Raw_TopoDS_Wire): Raw_BRepBuilderAPI_MakeFace;
 }
 
@@ -1704,7 +3632,10 @@ export interface Raw_BRepBuilderAPI_MakePolygon {
   IsDone(): number;
   IsDone(): number;
   Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
   Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
   IsDeleted(a0: Raw_TopoDS_Shape): number;
   Add(a0: Raw_gp_Pnt): void;
   Add(a0: Raw_TopoDS_Vertex): void;
@@ -1731,7 +3662,10 @@ export interface Raw_BRepBuilderAPI_MakeVertex {
   delete(): void;
   IsDone(): number;
   Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
   Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
   IsDeleted(a0: Raw_TopoDS_Shape): number;
   Vertex(): Raw_TopoDS_Vertex;
 }
@@ -1740,12 +3674,42 @@ export interface Ctor_BRepBuilderAPI_MakeVertex {
   new (a0: Raw_gp_Pnt): Raw_BRepBuilderAPI_MakeVertex;
 }
 
+/** Raw BRepBuilderAPI_MakeSolid (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_BRepBuilderAPI_MakeSolid {
+  delete(): void;
+  IsDone(): number;
+  IsDone(): number;
+  Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  IsDeleted(a0: Raw_TopoDS_Shape): number;
+  IsDeleted(a0: Raw_TopoDS_Shape): number;
+  Add(a0: Raw_TopoDS_Shell): void;
+  Solid(): Raw_TopoDS_Solid;
+}
+
+export interface Ctor_BRepBuilderAPI_MakeSolid {
+  new (): Raw_BRepBuilderAPI_MakeSolid;
+  new (a0: Raw_TopoDS_CompSolid): Raw_BRepBuilderAPI_MakeSolid;
+  new (a0: Raw_TopoDS_Shell): Raw_BRepBuilderAPI_MakeSolid;
+  new (a0: Raw_TopoDS_Shell, a1: Raw_TopoDS_Shell): Raw_BRepBuilderAPI_MakeSolid;
+  new (a0: Raw_TopoDS_Shell, a1: Raw_TopoDS_Shell, a2: Raw_TopoDS_Shell): Raw_BRepBuilderAPI_MakeSolid;
+  new (a0: Raw_TopoDS_Solid): Raw_BRepBuilderAPI_MakeSolid;
+  new (a0: Raw_TopoDS_Solid, a1: Raw_TopoDS_Shell): Raw_BRepBuilderAPI_MakeSolid;
+}
+
 /** Raw BRepBuilderAPI_Transform (see tools/codegen/SKIPPED.md for unmapped members). */
 export interface Raw_BRepBuilderAPI_Transform {
   delete(): void;
   IsDone(): number;
   Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
   Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
   IsDeleted(a0: Raw_TopoDS_Shape): number;
   ModifiedShape(a0: Raw_TopoDS_Shape): Raw_TopoDS_Shape;
   ModifiedShape(a0: Raw_TopoDS_Shape): Raw_TopoDS_Shape;
@@ -1762,7 +3726,11 @@ export interface Raw_BRepBuilderAPI_GTransform {
   delete(): void;
   IsDone(): number;
   Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
   Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
   IsDeleted(a0: Raw_TopoDS_Shape): number;
   ModifiedShape(a0: Raw_TopoDS_Shape): Raw_TopoDS_Shape;
   ModifiedShape(a0: Raw_TopoDS_Shape): Raw_TopoDS_Shape;
@@ -1774,12 +3742,135 @@ export interface Ctor_BRepBuilderAPI_GTransform {
   new (a0: Raw_TopoDS_Shape, a1: Raw_gp_GTrsf, a2: number): Raw_BRepBuilderAPI_GTransform;
 }
 
+/** Raw BRepBuilderAPI_Sewing (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_BRepBuilderAPI_Sewing {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Init(a0: number, a1: number, a2: number, a3: number, a4: number): void;
+  Load(a0: Raw_TopoDS_Shape): void;
+  Add(a0: Raw_TopoDS_Shape): void;
+  Perform(a0: Raw_Message_ProgressRange): void;
+  SewedShape(): Raw_TopoDS_Shape;
+  NbFreeEdges(): number;
+  FreeEdge(a0: number): Raw_TopoDS_Edge;
+  NbMultipleEdges(): number;
+  MultipleEdge(a0: number): Raw_TopoDS_Edge;
+  NbContigousEdges(): number;
+  ContigousEdge(a0: number): Raw_TopoDS_Edge;
+  ContigousEdgeCouple(a0: number): Raw_TopTools_ListOfShape;
+  IsSectionBound(a0: Raw_TopoDS_Edge): number;
+  SectionToBoundary(a0: Raw_TopoDS_Edge): Raw_TopoDS_Edge;
+  NbDegeneratedShapes(): number;
+  DegeneratedShape(a0: number): Raw_TopoDS_Shape;
+  IsDegenerated(a0: Raw_TopoDS_Shape): number;
+  IsModified(a0: Raw_TopoDS_Shape): number;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopoDS_Shape;
+  IsModifiedSubShape(a0: Raw_TopoDS_Shape): number;
+  ModifiedSubShape(a0: Raw_TopoDS_Shape): Raw_TopoDS_Shape;
+  Dump(): void;
+  NbDeletedFaces(): number;
+  DeletedFace(a0: number): Raw_TopoDS_Face;
+  WhichFace(a0: Raw_TopoDS_Edge, a1: number): Raw_TopoDS_Face;
+  SameParameterMode(): number;
+  SetSameParameterMode(a0: number): void;
+  Tolerance(): number;
+  SetTolerance(a0: number): void;
+  MinTolerance(): number;
+  SetMinTolerance(a0: number): void;
+  MaxTolerance(): number;
+  SetMaxTolerance(a0: number): void;
+  FaceMode(): number;
+  SetFaceMode(a0: number): void;
+  FloatingEdgesMode(): number;
+  SetFloatingEdgesMode(a0: number): void;
+  LocalTolerancesMode(): number;
+  SetLocalTolerancesMode(a0: number): void;
+  SetNonManifoldMode(a0: number): void;
+  NonManifoldMode(): number;
+}
+
+export interface Ctor_BRepBuilderAPI_Sewing {
+  new (a0: number, a1: number, a2: number, a3: number, a4: number): Raw_BRepBuilderAPI_Sewing;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw BRepOffsetAPI_ThruSections (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_BRepOffsetAPI_ThruSections {
+  delete(): void;
+  IsDone(): number;
+  Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  IsDeleted(a0: Raw_TopoDS_Shape): number;
+  Init(a0: number, a1: number, a2: number): void;
+  AddWire(a0: Raw_TopoDS_Wire): void;
+  AddVertex(a0: Raw_TopoDS_Vertex): void;
+  CheckCompatibility(a0: number): void;
+  SetSmoothing(a0: number): void;
+  SetContinuity(a0: number): void;
+  SetCriteriumWeight(a0: number, a1: number, a2: number): void;
+  SetMaxDegree(a0: number): void;
+  Continuity(): number;
+  MaxDegree(): number;
+  UseSmoothing(): number;
+  FirstShape(): Raw_TopoDS_Shape;
+  LastShape(): Raw_TopoDS_Shape;
+  GeneratedFace(a0: Raw_TopoDS_Shape): Raw_TopoDS_Shape;
+  SetMutableInput(a0: number): void;
+  Wires(): Raw_TopTools_ListOfShape;
+  IsMutableInput(): number;
+  GetStatus(): number;
+}
+
+export interface Ctor_BRepOffsetAPI_ThruSections {
+  new (a0: number, a1: number, a2: number): Raw_BRepOffsetAPI_ThruSections;
+}
+
+/** Raw BRepOffsetAPI_MakePipe (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_BRepOffsetAPI_MakePipe {
+  delete(): void;
+  IsDone(): number;
+  Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Generated(a0: Raw_TopoDS_Shape, a1: Raw_TopoDS_Shape): Raw_TopoDS_Shape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  IsDeleted(a0: Raw_TopoDS_Shape): number;
+  FirstShape(): Raw_TopoDS_Shape;
+  FirstShape(): Raw_TopoDS_Shape;
+  LastShape(): Raw_TopoDS_Shape;
+  LastShape(): Raw_TopoDS_Shape;
+  ErrorOnSurface(): number;
+}
+
+export interface Ctor_BRepOffsetAPI_MakePipe {
+  new (a0: Raw_TopoDS_Wire, a1: Raw_TopoDS_Shape): Raw_BRepOffsetAPI_MakePipe;
+}
+
 /** Raw BRepOffsetAPI_MakePipeShell (see tools/codegen/SKIPPED.md for unmapped members). */
 export interface Raw_BRepOffsetAPI_MakePipeShell {
   delete(): void;
   IsDone(): number;
   Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Build(a0: Raw_Message_ProgressRange): void;
   Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
   IsDeleted(a0: Raw_TopoDS_Shape): number;
   FirstShape(): Raw_TopoDS_Shape;
   FirstShape(): Raw_TopoDS_Shape;
@@ -1792,14 +3883,19 @@ export interface Raw_BRepOffsetAPI_MakePipeShell {
   SetDiscreteMode(): void;
   Add(a0: Raw_TopoDS_Shape, a1: number, a2: number): void;
   Add(a0: Raw_TopoDS_Shape, a1: Raw_TopoDS_Vertex, a2: number, a3: number): void;
+  SetLaw(a0: Raw_TopoDS_Shape, a1: Raw_Law_Function, a2: number, a3: number): void;
+  SetLaw(a0: Raw_TopoDS_Shape, a1: Raw_Law_Function, a2: Raw_TopoDS_Vertex, a3: number, a4: number): void;
   Delete(a0: Raw_TopoDS_Shape): void;
   IsReady(): number;
+  GetStatus(): number;
   SetTolerance(a0: number, a1: number, a2: number): void;
   SetMaxDegree(a0: number): void;
   SetMaxSegments(a0: number): void;
   SetForceApproxC1(a0: number): void;
+  Simulate(a0: number, a1: Raw_TopTools_ListOfShape): void;
   MakeSolid(): number;
   ErrorOnSurface(): number;
+  Profiles(a0: Raw_TopTools_ListOfShape): void;
   Spine(): Raw_TopoDS_Wire;
 }
 
@@ -1807,56 +3903,135 @@ export interface Ctor_BRepOffsetAPI_MakePipeShell {
   new (a0: Raw_TopoDS_Wire): Raw_BRepOffsetAPI_MakePipeShell;
 }
 
-/** Raw GeomAPI_Interpolate (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_GeomAPI_Interpolate {
-  delete(): void;
-  Load(a0: Raw_gp_Vec, a1: Raw_gp_Vec, a2: number): void;
-  Perform(): void;
-  Curve(): Raw_Geom_BSplineCurve;
-  IsDone(): number;
-}
-
-/** Raw GeomAPI_PointsToBSpline (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_GeomAPI_PointsToBSpline {
-  delete(): void;
-  Curve(): Raw_Geom_BSplineCurve;
-  IsDone(): number;
-}
-
-export interface Ctor_GeomAPI_PointsToBSpline {
-  new (): Raw_GeomAPI_PointsToBSpline;
-}
-
-/** Raw GC_MakeSegment (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_GC_MakeSegment {
+/** Raw BRepOffsetAPI_MakeThickSolid (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_BRepOffsetAPI_MakeThickSolid {
   delete(): void;
   IsDone(): number;
+  Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  IsDeleted(a0: Raw_TopoDS_Shape): number;
+  PerformBySimple(a0: Raw_TopoDS_Shape, a1: number): void;
+  MakeOffset(): Raw_BRepOffset_MakeOffset;
+  GetJoinType(): number;
+  MakeThickSolidBySimple(a0: Raw_TopoDS_Shape, a1: number): void;
 }
 
-export interface Ctor_GC_MakeSegment {
-  new (a0: Raw_gp_Pnt, a1: Raw_gp_Pnt): Raw_GC_MakeSegment;
-  new (a0: Raw_gp_Lin, a1: number, a2: number): Raw_GC_MakeSegment;
-  new (a0: Raw_gp_Lin, a1: Raw_gp_Pnt, a2: number): Raw_GC_MakeSegment;
-  new (a0: Raw_gp_Lin, a1: Raw_gp_Pnt, a2: Raw_gp_Pnt): Raw_GC_MakeSegment;
+export interface Ctor_BRepOffsetAPI_MakeThickSolid {
+  new (): Raw_BRepOffsetAPI_MakeThickSolid;
 }
 
-/** Raw GC_MakeArcOfCircle (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_GC_MakeArcOfCircle {
+/** Raw BRepOffsetAPI_MakeOffsetShape (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_BRepOffsetAPI_MakeOffsetShape {
   delete(): void;
   IsDone(): number;
+  Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  IsDeleted(a0: Raw_TopoDS_Shape): number;
+  IsDeleted(a0: Raw_TopoDS_Shape): number;
+  PerformBySimple(a0: Raw_TopoDS_Shape, a1: number): void;
+  MakeOffset(): Raw_BRepOffset_MakeOffset;
+  GetJoinType(): number;
 }
 
-export interface Ctor_GC_MakeArcOfCircle {
-  new (a0: Raw_gp_Circ, a1: number, a2: number, a3: number): Raw_GC_MakeArcOfCircle;
-  new (a0: Raw_gp_Circ, a1: Raw_gp_Pnt, a2: number, a3: number): Raw_GC_MakeArcOfCircle;
-  new (a0: Raw_gp_Circ, a1: Raw_gp_Pnt, a2: Raw_gp_Pnt, a3: number): Raw_GC_MakeArcOfCircle;
-  new (a0: Raw_gp_Pnt, a1: Raw_gp_Pnt, a2: Raw_gp_Pnt): Raw_GC_MakeArcOfCircle;
-  new (a0: Raw_gp_Pnt, a1: Raw_gp_Vec, a2: Raw_gp_Pnt): Raw_GC_MakeArcOfCircle;
+export interface Ctor_BRepOffsetAPI_MakeOffsetShape {
+  new (): Raw_BRepOffsetAPI_MakeOffsetShape;
 }
 
-/** Raw Geom_BSplineCurve (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_Geom_BSplineCurve {
+/** Raw Geom_Geometry (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom_Geometry {
   delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Mirror(a0: Raw_gp_Ax1): void;
+  Mirror(a0: Raw_gp_Ax2): void;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Translate(a0: Raw_gp_Vec): void;
+  Translate(a0: Raw_gp_Pnt, a1: Raw_gp_Pnt): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_Geom_Geometry;
+  Mirrored(a0: Raw_gp_Ax1): Raw_Geom_Geometry;
+  Mirrored(a0: Raw_gp_Ax2): Raw_Geom_Geometry;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_Geom_Geometry;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_Geom_Geometry;
+  Transformed(a0: Raw_gp_Trsf): Raw_Geom_Geometry;
+  Translated(a0: Raw_gp_Vec): Raw_Geom_Geometry;
+  Translated(a0: Raw_gp_Pnt, a1: Raw_gp_Pnt): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+}
+
+export interface Ctor_Geom_Geometry {
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Geom_Curve (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom_Curve {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Translate(a0: Raw_gp_Vec): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_Geom_Geometry;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_Geom_Geometry;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_Geom_Geometry;
+  Transformed(a0: Raw_gp_Trsf): Raw_Geom_Geometry;
+  Translated(a0: Raw_gp_Vec): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Reverse(): void;
+  ReversedParameter(a0: number): number;
+  TransformedParameter(a0: number, a1: Raw_gp_Trsf): number;
+  ParametricTransformation(a0: Raw_gp_Trsf): number;
+  Reversed(): Raw_Geom_Curve;
+  FirstParameter(): number;
+  LastParameter(): number;
+  IsClosed(): number;
+  IsPeriodic(): number;
+  Period(): number;
+  Continuity(): number;
+  IsCN(a0: number): number;
+  D0(a0: number, a1: Raw_gp_Pnt): void;
+  D1(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec): void;
+  D2(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec): void;
+  D3(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  DN(a0: number, a1: number): Raw_gp_Vec;
+  Value(a0: number): Raw_gp_Pnt;
+}
+
+export interface Ctor_Geom_Curve {
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Geom_Line (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom_Line {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
   GetRefCount(): number;
   IncrementRefCounter(): void;
   DecrementRefCounter(): number;
@@ -1867,12 +4042,22 @@ export interface Raw_Geom_BSplineCurve {
   Translate(a0: Raw_gp_Vec): void;
   Transform(a0: Raw_gp_Trsf): void;
   Transform(a0: Raw_gp_Trsf): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_Geom_Geometry;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_Geom_Geometry;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_Geom_Geometry;
+  Transformed(a0: Raw_gp_Trsf): Raw_Geom_Geometry;
+  Translated(a0: Raw_gp_Vec): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
   Reverse(): void;
   Reverse(): void;
   ReversedParameter(a0: number): number;
   ReversedParameter(a0: number): number;
   TransformedParameter(a0: number, a1: Raw_gp_Trsf): number;
+  TransformedParameter(a0: number, a1: Raw_gp_Trsf): number;
   ParametricTransformation(a0: Raw_gp_Trsf): number;
+  ParametricTransformation(a0: Raw_gp_Trsf): number;
+  Reversed(): Raw_Geom_Curve;
   FirstParameter(): number;
   FirstParameter(): number;
   LastParameter(): number;
@@ -1882,6 +4067,644 @@ export interface Raw_Geom_BSplineCurve {
   IsPeriodic(): number;
   IsPeriodic(): number;
   Period(): number;
+  Continuity(): number;
+  Continuity(): number;
+  IsCN(a0: number): number;
+  IsCN(a0: number): number;
+  D0(a0: number, a1: Raw_gp_Pnt): void;
+  D0(a0: number, a1: Raw_gp_Pnt): void;
+  D1(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec): void;
+  D1(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec): void;
+  D2(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec): void;
+  D2(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec): void;
+  D3(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D3(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  DN(a0: number, a1: number): Raw_gp_Vec;
+  DN(a0: number, a1: number): Raw_gp_Vec;
+  Value(a0: number): Raw_gp_Pnt;
+  SetLin(a0: Raw_gp_Lin): void;
+  SetDirection(a0: Raw_gp_Dir): void;
+  SetLocation(a0: Raw_gp_Pnt): void;
+  SetPosition(a0: Raw_gp_Ax1): void;
+  Lin(): Raw_gp_Lin;
+  Position(): Raw_gp_Ax1;
+}
+
+export interface Ctor_Geom_Line {
+  new (a0: Raw_gp_Ax1): Raw_Geom_Line;
+  new (a0: Raw_gp_Lin): Raw_Geom_Line;
+  new (a0: Raw_gp_Pnt, a1: Raw_gp_Dir): Raw_Geom_Line;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Geom_Circle (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom_Circle {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Translate(a0: Raw_gp_Vec): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_Geom_Geometry;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_Geom_Geometry;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_Geom_Geometry;
+  Transformed(a0: Raw_gp_Trsf): Raw_Geom_Geometry;
+  Translated(a0: Raw_gp_Vec): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Reverse(): void;
+  ReversedParameter(a0: number): number;
+  ReversedParameter(a0: number): number;
+  TransformedParameter(a0: number, a1: Raw_gp_Trsf): number;
+  ParametricTransformation(a0: Raw_gp_Trsf): number;
+  Reversed(): Raw_Geom_Curve;
+  FirstParameter(): number;
+  FirstParameter(): number;
+  LastParameter(): number;
+  LastParameter(): number;
+  IsClosed(): number;
+  IsClosed(): number;
+  IsPeriodic(): number;
+  IsPeriodic(): number;
+  Period(): number;
+  Continuity(): number;
+  IsCN(a0: number): number;
+  D0(a0: number, a1: Raw_gp_Pnt): void;
+  D0(a0: number, a1: Raw_gp_Pnt): void;
+  D1(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec): void;
+  D1(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec): void;
+  D2(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec): void;
+  D2(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec): void;
+  D3(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D3(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  DN(a0: number, a1: number): Raw_gp_Vec;
+  DN(a0: number, a1: number): Raw_gp_Vec;
+  Value(a0: number): Raw_gp_Pnt;
+  SetAxis(a0: Raw_gp_Ax1): void;
+  SetLocation(a0: Raw_gp_Pnt): void;
+  SetPosition(a0: Raw_gp_Ax2): void;
+  Axis(): Raw_gp_Ax1;
+  Location(): Raw_gp_Pnt;
+  Position(): Raw_gp_Ax2;
+  Eccentricity(): number;
+  Eccentricity(): number;
+  XAxis(): Raw_gp_Ax1;
+  YAxis(): Raw_gp_Ax1;
+  SetCirc(a0: Raw_gp_Circ): void;
+  SetRadius(a0: number): void;
+  Circ(): Raw_gp_Circ;
+  Radius(): number;
+}
+
+export interface Ctor_Geom_Circle {
+  new (a0: Raw_gp_Circ): Raw_Geom_Circle;
+  new (a0: Raw_gp_Ax2, a1: number): Raw_Geom_Circle;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Geom_Ellipse (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom_Ellipse {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Translate(a0: Raw_gp_Vec): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_Geom_Geometry;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_Geom_Geometry;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_Geom_Geometry;
+  Transformed(a0: Raw_gp_Trsf): Raw_Geom_Geometry;
+  Translated(a0: Raw_gp_Vec): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Reverse(): void;
+  ReversedParameter(a0: number): number;
+  ReversedParameter(a0: number): number;
+  TransformedParameter(a0: number, a1: Raw_gp_Trsf): number;
+  ParametricTransformation(a0: Raw_gp_Trsf): number;
+  Reversed(): Raw_Geom_Curve;
+  FirstParameter(): number;
+  FirstParameter(): number;
+  LastParameter(): number;
+  LastParameter(): number;
+  IsClosed(): number;
+  IsClosed(): number;
+  IsPeriodic(): number;
+  IsPeriodic(): number;
+  Period(): number;
+  Continuity(): number;
+  IsCN(a0: number): number;
+  D0(a0: number, a1: Raw_gp_Pnt): void;
+  D0(a0: number, a1: Raw_gp_Pnt): void;
+  D1(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec): void;
+  D1(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec): void;
+  D2(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec): void;
+  D2(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec): void;
+  D3(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D3(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  DN(a0: number, a1: number): Raw_gp_Vec;
+  DN(a0: number, a1: number): Raw_gp_Vec;
+  Value(a0: number): Raw_gp_Pnt;
+  SetAxis(a0: Raw_gp_Ax1): void;
+  SetLocation(a0: Raw_gp_Pnt): void;
+  SetPosition(a0: Raw_gp_Ax2): void;
+  Axis(): Raw_gp_Ax1;
+  Location(): Raw_gp_Pnt;
+  Position(): Raw_gp_Ax2;
+  Eccentricity(): number;
+  Eccentricity(): number;
+  XAxis(): Raw_gp_Ax1;
+  YAxis(): Raw_gp_Ax1;
+  SetElips(a0: Raw_gp_Elips): void;
+  SetMajorRadius(a0: number): void;
+  SetMinorRadius(a0: number): void;
+  Elips(): Raw_gp_Elips;
+  Directrix1(): Raw_gp_Ax1;
+  Directrix2(): Raw_gp_Ax1;
+  Focal(): number;
+  Focus1(): Raw_gp_Pnt;
+  Focus2(): Raw_gp_Pnt;
+  MajorRadius(): number;
+  MinorRadius(): number;
+  Parameter(): number;
+}
+
+export interface Ctor_Geom_Ellipse {
+  new (a0: Raw_gp_Elips): Raw_Geom_Ellipse;
+  new (a0: Raw_gp_Ax2, a1: number, a2: number): Raw_Geom_Ellipse;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Geom_Hyperbola (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom_Hyperbola {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Translate(a0: Raw_gp_Vec): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_Geom_Geometry;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_Geom_Geometry;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_Geom_Geometry;
+  Transformed(a0: Raw_gp_Trsf): Raw_Geom_Geometry;
+  Translated(a0: Raw_gp_Vec): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Reverse(): void;
+  ReversedParameter(a0: number): number;
+  ReversedParameter(a0: number): number;
+  TransformedParameter(a0: number, a1: Raw_gp_Trsf): number;
+  ParametricTransformation(a0: Raw_gp_Trsf): number;
+  Reversed(): Raw_Geom_Curve;
+  FirstParameter(): number;
+  FirstParameter(): number;
+  LastParameter(): number;
+  LastParameter(): number;
+  IsClosed(): number;
+  IsClosed(): number;
+  IsPeriodic(): number;
+  IsPeriodic(): number;
+  Period(): number;
+  Continuity(): number;
+  IsCN(a0: number): number;
+  D0(a0: number, a1: Raw_gp_Pnt): void;
+  D0(a0: number, a1: Raw_gp_Pnt): void;
+  D1(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec): void;
+  D1(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec): void;
+  D2(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec): void;
+  D2(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec): void;
+  D3(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D3(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  DN(a0: number, a1: number): Raw_gp_Vec;
+  DN(a0: number, a1: number): Raw_gp_Vec;
+  Value(a0: number): Raw_gp_Pnt;
+  SetAxis(a0: Raw_gp_Ax1): void;
+  SetLocation(a0: Raw_gp_Pnt): void;
+  SetPosition(a0: Raw_gp_Ax2): void;
+  Axis(): Raw_gp_Ax1;
+  Location(): Raw_gp_Pnt;
+  Position(): Raw_gp_Ax2;
+  Eccentricity(): number;
+  Eccentricity(): number;
+  XAxis(): Raw_gp_Ax1;
+  YAxis(): Raw_gp_Ax1;
+  SetHypr(a0: Raw_gp_Hypr): void;
+  SetMajorRadius(a0: number): void;
+  SetMinorRadius(a0: number): void;
+  Hypr(): Raw_gp_Hypr;
+  Asymptote1(): Raw_gp_Ax1;
+  Asymptote2(): Raw_gp_Ax1;
+  ConjugateBranch1(): Raw_gp_Hypr;
+  ConjugateBranch2(): Raw_gp_Hypr;
+  Directrix1(): Raw_gp_Ax1;
+  Directrix2(): Raw_gp_Ax1;
+  Focal(): number;
+  Focus1(): Raw_gp_Pnt;
+  Focus2(): Raw_gp_Pnt;
+  MajorRadius(): number;
+  MinorRadius(): number;
+  OtherBranch(): Raw_gp_Hypr;
+  Parameter(): number;
+}
+
+export interface Ctor_Geom_Hyperbola {
+  new (a0: Raw_gp_Hypr): Raw_Geom_Hyperbola;
+  new (a0: Raw_gp_Ax2, a1: number, a2: number): Raw_Geom_Hyperbola;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Geom_Parabola (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom_Parabola {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Translate(a0: Raw_gp_Vec): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_Geom_Geometry;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_Geom_Geometry;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_Geom_Geometry;
+  Transformed(a0: Raw_gp_Trsf): Raw_Geom_Geometry;
+  Translated(a0: Raw_gp_Vec): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Reverse(): void;
+  ReversedParameter(a0: number): number;
+  ReversedParameter(a0: number): number;
+  TransformedParameter(a0: number, a1: Raw_gp_Trsf): number;
+  TransformedParameter(a0: number, a1: Raw_gp_Trsf): number;
+  ParametricTransformation(a0: Raw_gp_Trsf): number;
+  ParametricTransformation(a0: Raw_gp_Trsf): number;
+  Reversed(): Raw_Geom_Curve;
+  FirstParameter(): number;
+  FirstParameter(): number;
+  LastParameter(): number;
+  LastParameter(): number;
+  IsClosed(): number;
+  IsClosed(): number;
+  IsPeriodic(): number;
+  IsPeriodic(): number;
+  Period(): number;
+  Continuity(): number;
+  IsCN(a0: number): number;
+  D0(a0: number, a1: Raw_gp_Pnt): void;
+  D0(a0: number, a1: Raw_gp_Pnt): void;
+  D1(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec): void;
+  D1(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec): void;
+  D2(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec): void;
+  D2(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec): void;
+  D3(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D3(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  DN(a0: number, a1: number): Raw_gp_Vec;
+  DN(a0: number, a1: number): Raw_gp_Vec;
+  Value(a0: number): Raw_gp_Pnt;
+  SetAxis(a0: Raw_gp_Ax1): void;
+  SetLocation(a0: Raw_gp_Pnt): void;
+  SetPosition(a0: Raw_gp_Ax2): void;
+  Axis(): Raw_gp_Ax1;
+  Location(): Raw_gp_Pnt;
+  Position(): Raw_gp_Ax2;
+  Eccentricity(): number;
+  Eccentricity(): number;
+  XAxis(): Raw_gp_Ax1;
+  YAxis(): Raw_gp_Ax1;
+  SetFocal(a0: number): void;
+  SetParab(a0: Raw_gp_Parab): void;
+  Parab(): Raw_gp_Parab;
+  Directrix(): Raw_gp_Ax1;
+  Focus(): Raw_gp_Pnt;
+  Focal(): number;
+  Parameter(): number;
+}
+
+export interface Ctor_Geom_Parabola {
+  new (a0: Raw_gp_Parab): Raw_Geom_Parabola;
+  new (a0: Raw_gp_Ax2, a1: number): Raw_Geom_Parabola;
+  new (a0: Raw_gp_Ax1, a1: Raw_gp_Pnt): Raw_Geom_Parabola;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Geom_BezierCurve (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom_BezierCurve {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Translate(a0: Raw_gp_Vec): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_Geom_Geometry;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_Geom_Geometry;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_Geom_Geometry;
+  Transformed(a0: Raw_gp_Trsf): Raw_Geom_Geometry;
+  Translated(a0: Raw_gp_Vec): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Reverse(): void;
+  Reverse(): void;
+  ReversedParameter(a0: number): number;
+  ReversedParameter(a0: number): number;
+  TransformedParameter(a0: number, a1: Raw_gp_Trsf): number;
+  ParametricTransformation(a0: Raw_gp_Trsf): number;
+  Reversed(): Raw_Geom_Curve;
+  FirstParameter(): number;
+  FirstParameter(): number;
+  LastParameter(): number;
+  LastParameter(): number;
+  IsClosed(): number;
+  IsClosed(): number;
+  IsPeriodic(): number;
+  IsPeriodic(): number;
+  Period(): number;
+  Continuity(): number;
+  Continuity(): number;
+  IsCN(a0: number): number;
+  IsCN(a0: number): number;
+  D0(a0: number, a1: Raw_gp_Pnt): void;
+  D0(a0: number, a1: Raw_gp_Pnt): void;
+  D1(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec): void;
+  D1(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec): void;
+  D2(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec): void;
+  D2(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec): void;
+  D3(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D3(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  DN(a0: number, a1: number): Raw_gp_Vec;
+  DN(a0: number, a1: number): Raw_gp_Vec;
+  Value(a0: number): Raw_gp_Pnt;
+  EndPoint(): Raw_gp_Pnt;
+  EndPoint(): Raw_gp_Pnt;
+  StartPoint(): Raw_gp_Pnt;
+  StartPoint(): Raw_gp_Pnt;
+  Increase(a0: number): void;
+  InsertPoleAfter(a0: number, a1: Raw_gp_Pnt): void;
+  InsertPoleAfter(a0: number, a1: Raw_gp_Pnt, a2: number): void;
+  InsertPoleBefore(a0: number, a1: Raw_gp_Pnt): void;
+  InsertPoleBefore(a0: number, a1: Raw_gp_Pnt, a2: number): void;
+  RemovePole(a0: number): void;
+  Segment(a0: number, a1: number): void;
+  SetPole(a0: number, a1: Raw_gp_Pnt): void;
+  SetPole(a0: number, a1: Raw_gp_Pnt, a2: number): void;
+  SetWeight(a0: number, a1: number): void;
+  IsRational(): number;
+  Degree(): number;
+  NbPoles(): number;
+  Pole(a0: number): Raw_gp_Pnt;
+  Poles(a0: Raw_TColgp_Array1OfPnt): void;
+  Poles(): Raw_TColgp_Array1OfPnt;
+  Weight(a0: number): number;
+  Weights(a0: Raw_TColStd_Array1OfReal): void;
+}
+
+export interface Ctor_Geom_BezierCurve {
+  new (a0: Raw_TColgp_Array1OfPnt): Raw_Geom_BezierCurve;
+  new (a0: Raw_TColgp_Array1OfPnt, a1: Raw_TColStd_Array1OfReal): Raw_Geom_BezierCurve;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  MaxDegree(): number;
+}
+
+/** Raw Geom_TrimmedCurve (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom_TrimmedCurve {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Translate(a0: Raw_gp_Vec): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_Geom_Geometry;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_Geom_Geometry;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_Geom_Geometry;
+  Transformed(a0: Raw_gp_Trsf): Raw_Geom_Geometry;
+  Translated(a0: Raw_gp_Vec): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Reverse(): void;
+  Reverse(): void;
+  ReversedParameter(a0: number): number;
+  ReversedParameter(a0: number): number;
+  TransformedParameter(a0: number, a1: Raw_gp_Trsf): number;
+  TransformedParameter(a0: number, a1: Raw_gp_Trsf): number;
+  ParametricTransformation(a0: Raw_gp_Trsf): number;
+  ParametricTransformation(a0: Raw_gp_Trsf): number;
+  Reversed(): Raw_Geom_Curve;
+  FirstParameter(): number;
+  FirstParameter(): number;
+  LastParameter(): number;
+  LastParameter(): number;
+  IsClosed(): number;
+  IsClosed(): number;
+  IsPeriodic(): number;
+  IsPeriodic(): number;
+  Period(): number;
+  Period(): number;
+  Continuity(): number;
+  Continuity(): number;
+  IsCN(a0: number): number;
+  IsCN(a0: number): number;
+  D0(a0: number, a1: Raw_gp_Pnt): void;
+  D0(a0: number, a1: Raw_gp_Pnt): void;
+  D1(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec): void;
+  D1(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec): void;
+  D2(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec): void;
+  D2(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec): void;
+  D3(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D3(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  DN(a0: number, a1: number): Raw_gp_Vec;
+  DN(a0: number, a1: number): Raw_gp_Vec;
+  Value(a0: number): Raw_gp_Pnt;
+  EndPoint(): Raw_gp_Pnt;
+  EndPoint(): Raw_gp_Pnt;
+  StartPoint(): Raw_gp_Pnt;
+  StartPoint(): Raw_gp_Pnt;
+  SetTrim(a0: number, a1: number, a2: number, a3: number): void;
+  BasisCurve(): Raw_Geom_Curve;
+}
+
+export interface Ctor_Geom_TrimmedCurve {
+  new (a0: Raw_Geom_Curve, a1: number, a2: number, a3: number, a4: number): Raw_Geom_TrimmedCurve;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Geom_OffsetCurve (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom_OffsetCurve {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Translate(a0: Raw_gp_Vec): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_Geom_Geometry;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_Geom_Geometry;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_Geom_Geometry;
+  Transformed(a0: Raw_gp_Trsf): Raw_Geom_Geometry;
+  Translated(a0: Raw_gp_Vec): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Reverse(): void;
+  Reverse(): void;
+  ReversedParameter(a0: number): number;
+  ReversedParameter(a0: number): number;
+  TransformedParameter(a0: number, a1: Raw_gp_Trsf): number;
+  TransformedParameter(a0: number, a1: Raw_gp_Trsf): number;
+  ParametricTransformation(a0: Raw_gp_Trsf): number;
+  ParametricTransformation(a0: Raw_gp_Trsf): number;
+  Reversed(): Raw_Geom_Curve;
+  FirstParameter(): number;
+  FirstParameter(): number;
+  LastParameter(): number;
+  LastParameter(): number;
+  IsClosed(): number;
+  IsClosed(): number;
+  IsPeriodic(): number;
+  IsPeriodic(): number;
+  Period(): number;
+  Period(): number;
+  Continuity(): number;
+  Continuity(): number;
+  IsCN(a0: number): number;
+  IsCN(a0: number): number;
+  D0(a0: number, a1: Raw_gp_Pnt): void;
+  D0(a0: number, a1: Raw_gp_Pnt): void;
+  D1(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec): void;
+  D1(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec): void;
+  D2(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec): void;
+  D2(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec): void;
+  D3(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D3(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  DN(a0: number, a1: number): Raw_gp_Vec;
+  DN(a0: number, a1: number): Raw_gp_Vec;
+  Value(a0: number): Raw_gp_Pnt;
+  SetBasisCurve(a0: Raw_Geom_Curve, a1: number): void;
+  SetDirection(a0: Raw_gp_Dir): void;
+  SetOffsetValue(a0: number): void;
+  BasisCurve(): Raw_Geom_Curve;
+  Direction(): Raw_gp_Dir;
+  Offset(): number;
+  GetBasisCurveContinuity(): number;
+}
+
+export interface Ctor_Geom_OffsetCurve {
+  new (a0: Raw_Geom_Curve, a1: number, a2: Raw_gp_Dir, a3: number): Raw_Geom_OffsetCurve;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Geom_BSplineCurve (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom_BSplineCurve {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Translate(a0: Raw_gp_Vec): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_Geom_Geometry;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_Geom_Geometry;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_Geom_Geometry;
+  Transformed(a0: Raw_gp_Trsf): Raw_Geom_Geometry;
+  Translated(a0: Raw_gp_Vec): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Reverse(): void;
+  Reverse(): void;
+  ReversedParameter(a0: number): number;
+  ReversedParameter(a0: number): number;
+  TransformedParameter(a0: number, a1: Raw_gp_Trsf): number;
+  ParametricTransformation(a0: Raw_gp_Trsf): number;
+  Reversed(): Raw_Geom_Curve;
+  FirstParameter(): number;
+  FirstParameter(): number;
+  LastParameter(): number;
+  LastParameter(): number;
+  IsClosed(): number;
+  IsClosed(): number;
+  IsPeriodic(): number;
+  IsPeriodic(): number;
+  Period(): number;
+  Continuity(): number;
+  Continuity(): number;
   IsCN(a0: number): number;
   IsCN(a0: number): number;
   D0(a0: number, a1: Raw_gp_Pnt): void;
@@ -1904,10 +4727,12 @@ export interface Raw_Geom_BSplineCurve {
   IncreaseMultiplicity(a0: number, a1: number, a2: number): void;
   IncrementMultiplicity(a0: number, a1: number, a2: number): void;
   InsertKnot(a0: number, a1: number, a2: number, a3: number): void;
+  InsertKnots(a0: Raw_TColStd_Array1OfReal, a1: Raw_TColStd_Array1OfInteger, a2: number, a3: number): void;
   RemoveKnot(a0: number, a1: number, a2: number): number;
   Segment(a0: number, a1: number, a2: number): void;
   SetKnot(a0: number, a1: number): void;
   SetKnot(a0: number, a1: number, a2: number): void;
+  SetKnots(a0: Raw_TColStd_Array1OfReal): void;
   SetPeriodic(): void;
   SetOrigin(a0: number): void;
   SetOrigin(a0: number, a1: number): void;
@@ -1926,16 +4751,28 @@ export interface Raw_Geom_BSplineCurve {
   LocalDN(a0: number, a1: number, a2: number, a3: number): Raw_gp_Vec;
   FirstUKnotIndex(): number;
   Knot(a0: number): number;
+  Knots(a0: Raw_TColStd_Array1OfReal): void;
+  Knots(): Raw_TColStd_Array1OfReal;
+  KnotSequence(a0: Raw_TColStd_Array1OfReal): void;
+  KnotSequence(): Raw_TColStd_Array1OfReal;
+  KnotDistribution(): number;
   LastUKnotIndex(): number;
   Multiplicity(a0: number): number;
+  Multiplicities(a0: Raw_TColStd_Array1OfInteger): void;
+  Multiplicities(): Raw_TColStd_Array1OfInteger;
   NbKnots(): number;
   NbPoles(): number;
   Pole(a0: number): Raw_gp_Pnt;
+  Poles(a0: Raw_TColgp_Array1OfPnt): void;
+  Poles(): Raw_TColgp_Array1OfPnt;
   Weight(a0: number): number;
+  Weights(a0: Raw_TColStd_Array1OfReal): void;
   IsEqual(a0: Raw_Geom_BSplineCurve, a1: number): number;
 }
 
 export interface Ctor_Geom_BSplineCurve {
+  new (a0: Raw_TColgp_Array1OfPnt, a1: Raw_TColStd_Array1OfReal, a2: Raw_TColStd_Array1OfInteger, a3: number, a4: number): Raw_Geom_BSplineCurve;
+  new (a0: Raw_TColgp_Array1OfPnt, a1: Raw_TColStd_Array1OfReal, a2: Raw_TColStd_Array1OfReal, a3: Raw_TColStd_Array1OfInteger, a4: number, a5: number, a6: number): Raw_Geom_BSplineCurve;
   get_type_name(): string;
   get_type_name(): string;
   get_type_name(): string;
@@ -1944,9 +4781,63 @@ export interface Ctor_Geom_BSplineCurve {
   MaxDegree(): number;
 }
 
-/** Raw Geom_BSplineSurface (see tools/codegen/SKIPPED.md for unmapped members). */
-export interface Raw_Geom_BSplineSurface {
+/** Raw Geom_Surface (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom_Surface {
   delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Translate(a0: Raw_gp_Vec): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_Geom_Geometry;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_Geom_Geometry;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_Geom_Geometry;
+  Transformed(a0: Raw_gp_Trsf): Raw_Geom_Geometry;
+  Translated(a0: Raw_gp_Vec): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  UReverse(): void;
+  UReversed(): Raw_Geom_Surface;
+  UReversedParameter(a0: number): number;
+  VReverse(): void;
+  VReversed(): Raw_Geom_Surface;
+  VReversedParameter(a0: number): number;
+  ParametricTransformation(a0: Raw_gp_Trsf): Raw_gp_GTrsf2d;
+  IsUClosed(): number;
+  IsVClosed(): number;
+  IsUPeriodic(): number;
+  UPeriod(): number;
+  IsVPeriodic(): number;
+  VPeriod(): number;
+  UIso(a0: number): Raw_Geom_Curve;
+  VIso(a0: number): Raw_Geom_Curve;
+  Continuity(): number;
+  IsCNu(a0: number): number;
+  IsCNv(a0: number): number;
+  D0(a0: number, a1: number, a2: Raw_gp_Pnt): void;
+  D1(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D2(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec): void;
+  D3(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec, a8: Raw_gp_Vec, a9: Raw_gp_Vec, a10: Raw_gp_Vec, a11: Raw_gp_Vec): void;
+  DN(a0: number, a1: number, a2: number, a3: number): Raw_gp_Vec;
+  Value(a0: number, a1: number): Raw_gp_Pnt;
+}
+
+export interface Ctor_Geom_Surface {
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Geom_Plane (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom_Plane {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
   GetRefCount(): number;
   IncrementRefCounter(): void;
   DecrementRefCounter(): number;
@@ -1957,14 +4848,25 @@ export interface Raw_Geom_BSplineSurface {
   Translate(a0: Raw_gp_Vec): void;
   Transform(a0: Raw_gp_Trsf): void;
   Transform(a0: Raw_gp_Trsf): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_Geom_Geometry;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_Geom_Geometry;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_Geom_Geometry;
+  Transformed(a0: Raw_gp_Trsf): Raw_Geom_Geometry;
+  Translated(a0: Raw_gp_Vec): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
   UReverse(): void;
   UReverse(): void;
+  UReversed(): Raw_Geom_Surface;
   UReversedParameter(a0: number): number;
   UReversedParameter(a0: number): number;
   VReverse(): void;
   VReverse(): void;
+  VReversed(): Raw_Geom_Surface;
   VReversedParameter(a0: number): number;
   VReversedParameter(a0: number): number;
+  ParametricTransformation(a0: Raw_gp_Trsf): Raw_gp_GTrsf2d;
+  ParametricTransformation(a0: Raw_gp_Trsf): Raw_gp_GTrsf2d;
   IsUClosed(): number;
   IsUClosed(): number;
   IsVClosed(): number;
@@ -1975,6 +4877,680 @@ export interface Raw_Geom_BSplineSurface {
   IsVPeriodic(): number;
   IsVPeriodic(): number;
   VPeriod(): number;
+  UIso(a0: number): Raw_Geom_Curve;
+  UIso(a0: number): Raw_Geom_Curve;
+  VIso(a0: number): Raw_Geom_Curve;
+  VIso(a0: number): Raw_Geom_Curve;
+  Continuity(): number;
+  IsCNu(a0: number): number;
+  IsCNv(a0: number): number;
+  D0(a0: number, a1: number, a2: Raw_gp_Pnt): void;
+  D0(a0: number, a1: number, a2: Raw_gp_Pnt): void;
+  D1(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D1(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D2(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec): void;
+  D2(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec): void;
+  D3(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec, a8: Raw_gp_Vec, a9: Raw_gp_Vec, a10: Raw_gp_Vec, a11: Raw_gp_Vec): void;
+  D3(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec, a8: Raw_gp_Vec, a9: Raw_gp_Vec, a10: Raw_gp_Vec, a11: Raw_gp_Vec): void;
+  DN(a0: number, a1: number, a2: number, a3: number): Raw_gp_Vec;
+  DN(a0: number, a1: number, a2: number, a3: number): Raw_gp_Vec;
+  Value(a0: number, a1: number): Raw_gp_Pnt;
+  SetAxis(a0: Raw_gp_Ax1): void;
+  SetLocation(a0: Raw_gp_Pnt): void;
+  SetPosition(a0: Raw_gp_Ax3): void;
+  Axis(): Raw_gp_Ax1;
+  Location(): Raw_gp_Pnt;
+  Position(): Raw_gp_Ax3;
+  SetPln(a0: Raw_gp_Pln): void;
+  Pln(): Raw_gp_Pln;
+}
+
+export interface Ctor_Geom_Plane {
+  new (a0: Raw_gp_Ax3): Raw_Geom_Plane;
+  new (a0: Raw_gp_Pln): Raw_Geom_Plane;
+  new (a0: Raw_gp_Pnt, a1: Raw_gp_Dir): Raw_Geom_Plane;
+  new (a0: number, a1: number, a2: number, a3: number): Raw_Geom_Plane;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Geom_CylindricalSurface (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom_CylindricalSurface {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Translate(a0: Raw_gp_Vec): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_Geom_Geometry;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_Geom_Geometry;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_Geom_Geometry;
+  Transformed(a0: Raw_gp_Trsf): Raw_Geom_Geometry;
+  Translated(a0: Raw_gp_Vec): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  UReverse(): void;
+  UReversed(): Raw_Geom_Surface;
+  UReversedParameter(a0: number): number;
+  UReversedParameter(a0: number): number;
+  VReverse(): void;
+  VReversed(): Raw_Geom_Surface;
+  VReversedParameter(a0: number): number;
+  VReversedParameter(a0: number): number;
+  ParametricTransformation(a0: Raw_gp_Trsf): Raw_gp_GTrsf2d;
+  ParametricTransformation(a0: Raw_gp_Trsf): Raw_gp_GTrsf2d;
+  IsUClosed(): number;
+  IsUClosed(): number;
+  IsVClosed(): number;
+  IsVClosed(): number;
+  IsUPeriodic(): number;
+  IsUPeriodic(): number;
+  UPeriod(): number;
+  IsVPeriodic(): number;
+  IsVPeriodic(): number;
+  VPeriod(): number;
+  UIso(a0: number): Raw_Geom_Curve;
+  UIso(a0: number): Raw_Geom_Curve;
+  VIso(a0: number): Raw_Geom_Curve;
+  VIso(a0: number): Raw_Geom_Curve;
+  Continuity(): number;
+  IsCNu(a0: number): number;
+  IsCNv(a0: number): number;
+  D0(a0: number, a1: number, a2: Raw_gp_Pnt): void;
+  D0(a0: number, a1: number, a2: Raw_gp_Pnt): void;
+  D1(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D1(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D2(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec): void;
+  D2(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec): void;
+  D3(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec, a8: Raw_gp_Vec, a9: Raw_gp_Vec, a10: Raw_gp_Vec, a11: Raw_gp_Vec): void;
+  D3(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec, a8: Raw_gp_Vec, a9: Raw_gp_Vec, a10: Raw_gp_Vec, a11: Raw_gp_Vec): void;
+  DN(a0: number, a1: number, a2: number, a3: number): Raw_gp_Vec;
+  DN(a0: number, a1: number, a2: number, a3: number): Raw_gp_Vec;
+  Value(a0: number, a1: number): Raw_gp_Pnt;
+  SetAxis(a0: Raw_gp_Ax1): void;
+  SetLocation(a0: Raw_gp_Pnt): void;
+  SetPosition(a0: Raw_gp_Ax3): void;
+  Axis(): Raw_gp_Ax1;
+  Location(): Raw_gp_Pnt;
+  Position(): Raw_gp_Ax3;
+  SetCylinder(a0: Raw_gp_Cylinder): void;
+  SetRadius(a0: number): void;
+  Cylinder(): Raw_gp_Cylinder;
+  Radius(): number;
+}
+
+export interface Ctor_Geom_CylindricalSurface {
+  new (a0: Raw_gp_Ax3, a1: number): Raw_Geom_CylindricalSurface;
+  new (a0: Raw_gp_Cylinder): Raw_Geom_CylindricalSurface;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Geom_ConicalSurface (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom_ConicalSurface {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Translate(a0: Raw_gp_Vec): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_Geom_Geometry;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_Geom_Geometry;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_Geom_Geometry;
+  Transformed(a0: Raw_gp_Trsf): Raw_Geom_Geometry;
+  Translated(a0: Raw_gp_Vec): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  UReverse(): void;
+  UReversed(): Raw_Geom_Surface;
+  UReversedParameter(a0: number): number;
+  UReversedParameter(a0: number): number;
+  VReverse(): void;
+  VReverse(): void;
+  VReversed(): Raw_Geom_Surface;
+  VReversedParameter(a0: number): number;
+  VReversedParameter(a0: number): number;
+  ParametricTransformation(a0: Raw_gp_Trsf): Raw_gp_GTrsf2d;
+  ParametricTransformation(a0: Raw_gp_Trsf): Raw_gp_GTrsf2d;
+  IsUClosed(): number;
+  IsUClosed(): number;
+  IsVClosed(): number;
+  IsVClosed(): number;
+  IsUPeriodic(): number;
+  IsUPeriodic(): number;
+  UPeriod(): number;
+  IsVPeriodic(): number;
+  IsVPeriodic(): number;
+  VPeriod(): number;
+  UIso(a0: number): Raw_Geom_Curve;
+  UIso(a0: number): Raw_Geom_Curve;
+  VIso(a0: number): Raw_Geom_Curve;
+  VIso(a0: number): Raw_Geom_Curve;
+  Continuity(): number;
+  IsCNu(a0: number): number;
+  IsCNv(a0: number): number;
+  D0(a0: number, a1: number, a2: Raw_gp_Pnt): void;
+  D0(a0: number, a1: number, a2: Raw_gp_Pnt): void;
+  D1(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D1(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D2(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec): void;
+  D2(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec): void;
+  D3(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec, a8: Raw_gp_Vec, a9: Raw_gp_Vec, a10: Raw_gp_Vec, a11: Raw_gp_Vec): void;
+  D3(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec, a8: Raw_gp_Vec, a9: Raw_gp_Vec, a10: Raw_gp_Vec, a11: Raw_gp_Vec): void;
+  DN(a0: number, a1: number, a2: number, a3: number): Raw_gp_Vec;
+  DN(a0: number, a1: number, a2: number, a3: number): Raw_gp_Vec;
+  Value(a0: number, a1: number): Raw_gp_Pnt;
+  SetAxis(a0: Raw_gp_Ax1): void;
+  SetLocation(a0: Raw_gp_Pnt): void;
+  SetPosition(a0: Raw_gp_Ax3): void;
+  Axis(): Raw_gp_Ax1;
+  Location(): Raw_gp_Pnt;
+  Position(): Raw_gp_Ax3;
+  SetCone(a0: Raw_gp_Cone): void;
+  SetRadius(a0: number): void;
+  SetSemiAngle(a0: number): void;
+  Cone(): Raw_gp_Cone;
+  Apex(): Raw_gp_Pnt;
+  RefRadius(): number;
+  SemiAngle(): number;
+}
+
+export interface Ctor_Geom_ConicalSurface {
+  new (a0: Raw_gp_Ax3, a1: number, a2: number): Raw_Geom_ConicalSurface;
+  new (a0: Raw_gp_Cone): Raw_Geom_ConicalSurface;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Geom_SphericalSurface (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom_SphericalSurface {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Translate(a0: Raw_gp_Vec): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_Geom_Geometry;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_Geom_Geometry;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_Geom_Geometry;
+  Transformed(a0: Raw_gp_Trsf): Raw_Geom_Geometry;
+  Translated(a0: Raw_gp_Vec): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  UReverse(): void;
+  UReversed(): Raw_Geom_Surface;
+  UReversedParameter(a0: number): number;
+  UReversedParameter(a0: number): number;
+  VReverse(): void;
+  VReversed(): Raw_Geom_Surface;
+  VReversedParameter(a0: number): number;
+  VReversedParameter(a0: number): number;
+  ParametricTransformation(a0: Raw_gp_Trsf): Raw_gp_GTrsf2d;
+  IsUClosed(): number;
+  IsUClosed(): number;
+  IsVClosed(): number;
+  IsVClosed(): number;
+  IsUPeriodic(): number;
+  IsUPeriodic(): number;
+  UPeriod(): number;
+  IsVPeriodic(): number;
+  IsVPeriodic(): number;
+  VPeriod(): number;
+  UIso(a0: number): Raw_Geom_Curve;
+  UIso(a0: number): Raw_Geom_Curve;
+  VIso(a0: number): Raw_Geom_Curve;
+  VIso(a0: number): Raw_Geom_Curve;
+  Continuity(): number;
+  IsCNu(a0: number): number;
+  IsCNv(a0: number): number;
+  D0(a0: number, a1: number, a2: Raw_gp_Pnt): void;
+  D0(a0: number, a1: number, a2: Raw_gp_Pnt): void;
+  D1(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D1(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D2(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec): void;
+  D2(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec): void;
+  D3(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec, a8: Raw_gp_Vec, a9: Raw_gp_Vec, a10: Raw_gp_Vec, a11: Raw_gp_Vec): void;
+  D3(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec, a8: Raw_gp_Vec, a9: Raw_gp_Vec, a10: Raw_gp_Vec, a11: Raw_gp_Vec): void;
+  DN(a0: number, a1: number, a2: number, a3: number): Raw_gp_Vec;
+  DN(a0: number, a1: number, a2: number, a3: number): Raw_gp_Vec;
+  Value(a0: number, a1: number): Raw_gp_Pnt;
+  SetAxis(a0: Raw_gp_Ax1): void;
+  SetLocation(a0: Raw_gp_Pnt): void;
+  SetPosition(a0: Raw_gp_Ax3): void;
+  Axis(): Raw_gp_Ax1;
+  Location(): Raw_gp_Pnt;
+  Position(): Raw_gp_Ax3;
+  SetRadius(a0: number): void;
+  SetSphere(a0: Raw_gp_Sphere): void;
+  Sphere(): Raw_gp_Sphere;
+  Area(): number;
+  Radius(): number;
+  Volume(): number;
+}
+
+export interface Ctor_Geom_SphericalSurface {
+  new (a0: Raw_gp_Ax3, a1: number): Raw_Geom_SphericalSurface;
+  new (a0: Raw_gp_Sphere): Raw_Geom_SphericalSurface;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Geom_ToroidalSurface (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom_ToroidalSurface {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Translate(a0: Raw_gp_Vec): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_Geom_Geometry;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_Geom_Geometry;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_Geom_Geometry;
+  Transformed(a0: Raw_gp_Trsf): Raw_Geom_Geometry;
+  Translated(a0: Raw_gp_Vec): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  UReverse(): void;
+  UReversed(): Raw_Geom_Surface;
+  UReversedParameter(a0: number): number;
+  UReversedParameter(a0: number): number;
+  VReverse(): void;
+  VReversed(): Raw_Geom_Surface;
+  VReversedParameter(a0: number): number;
+  VReversedParameter(a0: number): number;
+  ParametricTransformation(a0: Raw_gp_Trsf): Raw_gp_GTrsf2d;
+  IsUClosed(): number;
+  IsUClosed(): number;
+  IsVClosed(): number;
+  IsVClosed(): number;
+  IsUPeriodic(): number;
+  IsUPeriodic(): number;
+  UPeriod(): number;
+  IsVPeriodic(): number;
+  IsVPeriodic(): number;
+  VPeriod(): number;
+  UIso(a0: number): Raw_Geom_Curve;
+  UIso(a0: number): Raw_Geom_Curve;
+  VIso(a0: number): Raw_Geom_Curve;
+  VIso(a0: number): Raw_Geom_Curve;
+  Continuity(): number;
+  IsCNu(a0: number): number;
+  IsCNv(a0: number): number;
+  D0(a0: number, a1: number, a2: Raw_gp_Pnt): void;
+  D0(a0: number, a1: number, a2: Raw_gp_Pnt): void;
+  D1(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D1(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D2(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec): void;
+  D2(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec): void;
+  D3(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec, a8: Raw_gp_Vec, a9: Raw_gp_Vec, a10: Raw_gp_Vec, a11: Raw_gp_Vec): void;
+  D3(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec, a8: Raw_gp_Vec, a9: Raw_gp_Vec, a10: Raw_gp_Vec, a11: Raw_gp_Vec): void;
+  DN(a0: number, a1: number, a2: number, a3: number): Raw_gp_Vec;
+  DN(a0: number, a1: number, a2: number, a3: number): Raw_gp_Vec;
+  Value(a0: number, a1: number): Raw_gp_Pnt;
+  SetAxis(a0: Raw_gp_Ax1): void;
+  SetLocation(a0: Raw_gp_Pnt): void;
+  SetPosition(a0: Raw_gp_Ax3): void;
+  Axis(): Raw_gp_Ax1;
+  Location(): Raw_gp_Pnt;
+  Position(): Raw_gp_Ax3;
+  SetMajorRadius(a0: number): void;
+  SetMinorRadius(a0: number): void;
+  SetTorus(a0: Raw_gp_Torus): void;
+  Torus(): Raw_gp_Torus;
+  Area(): number;
+  Coefficients(a0: Raw_TColStd_Array1OfReal): void;
+  MajorRadius(): number;
+  MinorRadius(): number;
+  Volume(): number;
+}
+
+export interface Ctor_Geom_ToroidalSurface {
+  new (a0: Raw_gp_Ax3, a1: number, a2: number): Raw_Geom_ToroidalSurface;
+  new (a0: Raw_gp_Torus): Raw_Geom_ToroidalSurface;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Geom_SurfaceOfRevolution (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom_SurfaceOfRevolution {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Translate(a0: Raw_gp_Vec): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_Geom_Geometry;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_Geom_Geometry;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_Geom_Geometry;
+  Transformed(a0: Raw_gp_Trsf): Raw_Geom_Geometry;
+  Translated(a0: Raw_gp_Vec): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  UReverse(): void;
+  UReverse(): void;
+  UReversed(): Raw_Geom_Surface;
+  UReversedParameter(a0: number): number;
+  UReversedParameter(a0: number): number;
+  VReverse(): void;
+  VReverse(): void;
+  VReversed(): Raw_Geom_Surface;
+  VReversedParameter(a0: number): number;
+  VReversedParameter(a0: number): number;
+  ParametricTransformation(a0: Raw_gp_Trsf): Raw_gp_GTrsf2d;
+  ParametricTransformation(a0: Raw_gp_Trsf): Raw_gp_GTrsf2d;
+  IsUClosed(): number;
+  IsUClosed(): number;
+  IsVClosed(): number;
+  IsVClosed(): number;
+  IsUPeriodic(): number;
+  IsUPeriodic(): number;
+  UPeriod(): number;
+  IsVPeriodic(): number;
+  IsVPeriodic(): number;
+  VPeriod(): number;
+  UIso(a0: number): Raw_Geom_Curve;
+  UIso(a0: number): Raw_Geom_Curve;
+  VIso(a0: number): Raw_Geom_Curve;
+  VIso(a0: number): Raw_Geom_Curve;
+  Continuity(): number;
+  IsCNu(a0: number): number;
+  IsCNu(a0: number): number;
+  IsCNv(a0: number): number;
+  IsCNv(a0: number): number;
+  D0(a0: number, a1: number, a2: Raw_gp_Pnt): void;
+  D0(a0: number, a1: number, a2: Raw_gp_Pnt): void;
+  D1(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D1(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D2(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec): void;
+  D2(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec): void;
+  D3(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec, a8: Raw_gp_Vec, a9: Raw_gp_Vec, a10: Raw_gp_Vec, a11: Raw_gp_Vec): void;
+  D3(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec, a8: Raw_gp_Vec, a9: Raw_gp_Vec, a10: Raw_gp_Vec, a11: Raw_gp_Vec): void;
+  DN(a0: number, a1: number, a2: number, a3: number): Raw_gp_Vec;
+  DN(a0: number, a1: number, a2: number, a3: number): Raw_gp_Vec;
+  Value(a0: number, a1: number): Raw_gp_Pnt;
+  Direction(): Raw_gp_Dir;
+  BasisCurve(): Raw_Geom_Curve;
+  SetAxis(a0: Raw_gp_Ax1): void;
+  SetDirection(a0: Raw_gp_Dir): void;
+  SetBasisCurve(a0: Raw_Geom_Curve): void;
+  SetLocation(a0: Raw_gp_Pnt): void;
+  Axis(): Raw_gp_Ax1;
+  Location(): Raw_gp_Pnt;
+  ReferencePlane(): Raw_gp_Ax2;
+}
+
+export interface Ctor_Geom_SurfaceOfRevolution {
+  new (a0: Raw_Geom_Curve, a1: Raw_gp_Ax1): Raw_Geom_SurfaceOfRevolution;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Geom_SurfaceOfLinearExtrusion (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom_SurfaceOfLinearExtrusion {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Translate(a0: Raw_gp_Vec): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_Geom_Geometry;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_Geom_Geometry;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_Geom_Geometry;
+  Transformed(a0: Raw_gp_Trsf): Raw_Geom_Geometry;
+  Translated(a0: Raw_gp_Vec): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  UReverse(): void;
+  UReverse(): void;
+  UReversed(): Raw_Geom_Surface;
+  UReversedParameter(a0: number): number;
+  UReversedParameter(a0: number): number;
+  VReverse(): void;
+  VReverse(): void;
+  VReversed(): Raw_Geom_Surface;
+  VReversedParameter(a0: number): number;
+  VReversedParameter(a0: number): number;
+  ParametricTransformation(a0: Raw_gp_Trsf): Raw_gp_GTrsf2d;
+  ParametricTransformation(a0: Raw_gp_Trsf): Raw_gp_GTrsf2d;
+  IsUClosed(): number;
+  IsUClosed(): number;
+  IsVClosed(): number;
+  IsVClosed(): number;
+  IsUPeriodic(): number;
+  IsUPeriodic(): number;
+  UPeriod(): number;
+  IsVPeriodic(): number;
+  IsVPeriodic(): number;
+  VPeriod(): number;
+  UIso(a0: number): Raw_Geom_Curve;
+  UIso(a0: number): Raw_Geom_Curve;
+  VIso(a0: number): Raw_Geom_Curve;
+  VIso(a0: number): Raw_Geom_Curve;
+  Continuity(): number;
+  IsCNu(a0: number): number;
+  IsCNu(a0: number): number;
+  IsCNv(a0: number): number;
+  IsCNv(a0: number): number;
+  D0(a0: number, a1: number, a2: Raw_gp_Pnt): void;
+  D0(a0: number, a1: number, a2: Raw_gp_Pnt): void;
+  D1(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D1(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D2(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec): void;
+  D2(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec): void;
+  D3(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec, a8: Raw_gp_Vec, a9: Raw_gp_Vec, a10: Raw_gp_Vec, a11: Raw_gp_Vec): void;
+  D3(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec, a8: Raw_gp_Vec, a9: Raw_gp_Vec, a10: Raw_gp_Vec, a11: Raw_gp_Vec): void;
+  DN(a0: number, a1: number, a2: number, a3: number): Raw_gp_Vec;
+  DN(a0: number, a1: number, a2: number, a3: number): Raw_gp_Vec;
+  Value(a0: number, a1: number): Raw_gp_Pnt;
+  Direction(): Raw_gp_Dir;
+  BasisCurve(): Raw_Geom_Curve;
+  SetDirection(a0: Raw_gp_Dir): void;
+  SetBasisCurve(a0: Raw_Geom_Curve): void;
+}
+
+export interface Ctor_Geom_SurfaceOfLinearExtrusion {
+  new (a0: Raw_Geom_Curve, a1: Raw_gp_Dir): Raw_Geom_SurfaceOfLinearExtrusion;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Geom_OffsetSurface (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom_OffsetSurface {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Translate(a0: Raw_gp_Vec): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_Geom_Geometry;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_Geom_Geometry;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_Geom_Geometry;
+  Transformed(a0: Raw_gp_Trsf): Raw_Geom_Geometry;
+  Translated(a0: Raw_gp_Vec): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  UReverse(): void;
+  UReverse(): void;
+  UReversed(): Raw_Geom_Surface;
+  UReversedParameter(a0: number): number;
+  UReversedParameter(a0: number): number;
+  VReverse(): void;
+  VReverse(): void;
+  VReversed(): Raw_Geom_Surface;
+  VReversedParameter(a0: number): number;
+  VReversedParameter(a0: number): number;
+  ParametricTransformation(a0: Raw_gp_Trsf): Raw_gp_GTrsf2d;
+  ParametricTransformation(a0: Raw_gp_Trsf): Raw_gp_GTrsf2d;
+  IsUClosed(): number;
+  IsUClosed(): number;
+  IsVClosed(): number;
+  IsVClosed(): number;
+  IsUPeriodic(): number;
+  IsUPeriodic(): number;
+  UPeriod(): number;
+  UPeriod(): number;
+  IsVPeriodic(): number;
+  IsVPeriodic(): number;
+  VPeriod(): number;
+  VPeriod(): number;
+  UIso(a0: number): Raw_Geom_Curve;
+  UIso(a0: number): Raw_Geom_Curve;
+  VIso(a0: number): Raw_Geom_Curve;
+  VIso(a0: number): Raw_Geom_Curve;
+  Continuity(): number;
+  Continuity(): number;
+  IsCNu(a0: number): number;
+  IsCNu(a0: number): number;
+  IsCNv(a0: number): number;
+  IsCNv(a0: number): number;
+  D0(a0: number, a1: number, a2: Raw_gp_Pnt): void;
+  D0(a0: number, a1: number, a2: Raw_gp_Pnt): void;
+  D1(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D1(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D2(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec): void;
+  D2(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec): void;
+  D3(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec, a8: Raw_gp_Vec, a9: Raw_gp_Vec, a10: Raw_gp_Vec, a11: Raw_gp_Vec): void;
+  D3(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec, a8: Raw_gp_Vec, a9: Raw_gp_Vec, a10: Raw_gp_Vec, a11: Raw_gp_Vec): void;
+  DN(a0: number, a1: number, a2: number, a3: number): Raw_gp_Vec;
+  DN(a0: number, a1: number, a2: number, a3: number): Raw_gp_Vec;
+  Value(a0: number, a1: number): Raw_gp_Pnt;
+  SetBasisSurface(a0: Raw_Geom_Surface, a1: number): void;
+  SetOffsetValue(a0: number): void;
+  Offset(): number;
+  BasisSurface(): Raw_Geom_Surface;
+  Surface(): Raw_Geom_Surface;
+  GetBasisSurfContinuity(): number;
+}
+
+export interface Ctor_Geom_OffsetSurface {
+  new (a0: Raw_Geom_Surface, a1: number, a2: number): Raw_Geom_OffsetSurface;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Geom_BSplineSurface (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom_BSplineSurface {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt): void;
+  Rotate(a0: Raw_gp_Ax1, a1: number): void;
+  Scale(a0: Raw_gp_Pnt, a1: number): void;
+  Translate(a0: Raw_gp_Vec): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Transform(a0: Raw_gp_Trsf): void;
+  Mirrored(a0: Raw_gp_Pnt): Raw_Geom_Geometry;
+  Rotated(a0: Raw_gp_Ax1, a1: number): Raw_Geom_Geometry;
+  Scaled(a0: Raw_gp_Pnt, a1: number): Raw_Geom_Geometry;
+  Transformed(a0: Raw_gp_Trsf): Raw_Geom_Geometry;
+  Translated(a0: Raw_gp_Vec): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  Copy(): Raw_Geom_Geometry;
+  UReverse(): void;
+  UReverse(): void;
+  UReversed(): Raw_Geom_Surface;
+  UReversedParameter(a0: number): number;
+  UReversedParameter(a0: number): number;
+  VReverse(): void;
+  VReverse(): void;
+  VReversed(): Raw_Geom_Surface;
+  VReversedParameter(a0: number): number;
+  VReversedParameter(a0: number): number;
+  ParametricTransformation(a0: Raw_gp_Trsf): Raw_gp_GTrsf2d;
+  IsUClosed(): number;
+  IsUClosed(): number;
+  IsVClosed(): number;
+  IsVClosed(): number;
+  IsUPeriodic(): number;
+  IsUPeriodic(): number;
+  UPeriod(): number;
+  IsVPeriodic(): number;
+  IsVPeriodic(): number;
+  VPeriod(): number;
+  UIso(a0: number): Raw_Geom_Curve;
+  UIso(a0: number): Raw_Geom_Curve;
+  UIso(a0: number, a1: number): Raw_Geom_Curve;
+  VIso(a0: number): Raw_Geom_Curve;
+  VIso(a0: number): Raw_Geom_Curve;
+  VIso(a0: number, a1: number): Raw_Geom_Curve;
+  Continuity(): number;
+  Continuity(): number;
   IsCNu(a0: number): number;
   IsCNu(a0: number): number;
   IsCNv(a0: number): number;
@@ -1998,6 +5574,8 @@ export interface Raw_Geom_BSplineSurface {
   SetUNotPeriodic(): void;
   SetVNotPeriodic(): void;
   IncreaseDegree(a0: number, a1: number): void;
+  InsertUKnots(a0: Raw_TColStd_Array1OfReal, a1: Raw_TColStd_Array1OfInteger, a2: number, a3: number): void;
+  InsertVKnots(a0: Raw_TColStd_Array1OfReal, a1: Raw_TColStd_Array1OfInteger, a2: number, a3: number): void;
   RemoveUKnot(a0: number, a1: number, a2: number): number;
   RemoveVKnot(a0: number, a1: number, a2: number): number;
   IncreaseUMultiplicity(a0: number, a1: number): void;
@@ -2012,11 +5590,19 @@ export interface Raw_Geom_BSplineSurface {
   CheckAndSegment(a0: number, a1: number, a2: number, a3: number, a4: number, a5: number): void;
   SetUKnot(a0: number, a1: number): void;
   SetUKnot(a0: number, a1: number, a2: number): void;
+  SetUKnots(a0: Raw_TColStd_Array1OfReal): void;
   SetVKnot(a0: number, a1: number): void;
   SetVKnot(a0: number, a1: number, a2: number): void;
+  SetVKnots(a0: Raw_TColStd_Array1OfReal): void;
   SetPole(a0: number, a1: number, a2: Raw_gp_Pnt): void;
   SetPole(a0: number, a1: number, a2: Raw_gp_Pnt, a3: number): void;
+  SetPoleCol(a0: number, a1: Raw_TColgp_Array1OfPnt): void;
+  SetPoleCol(a0: number, a1: Raw_TColgp_Array1OfPnt, a2: Raw_TColStd_Array1OfReal): void;
+  SetPoleRow(a0: number, a1: Raw_TColgp_Array1OfPnt, a2: Raw_TColStd_Array1OfReal): void;
+  SetPoleRow(a0: number, a1: Raw_TColgp_Array1OfPnt): void;
   SetWeight(a0: number, a1: number, a2: number): void;
+  SetWeightCol(a0: number, a1: Raw_TColStd_Array1OfReal): void;
+  SetWeightRow(a0: number, a1: Raw_TColStd_Array1OfReal): void;
   IsURational(): number;
   IsVRational(): number;
   FirstUKnotIndex(): number;
@@ -2028,12 +5614,28 @@ export interface Raw_Geom_BSplineSurface {
   NbVKnots(): number;
   NbVPoles(): number;
   Pole(a0: number, a1: number): Raw_gp_Pnt;
+  Poles(a0: Raw_TColgp_Array2OfPnt): void;
+  Poles(): Raw_TColgp_Array2OfPnt;
   UDegree(): number;
   UKnot(a0: number): number;
+  UKnotDistribution(): number;
+  UKnots(a0: Raw_TColStd_Array1OfReal): void;
+  UKnots(): Raw_TColStd_Array1OfReal;
+  UKnotSequence(a0: Raw_TColStd_Array1OfReal): void;
+  UKnotSequence(): Raw_TColStd_Array1OfReal;
   UMultiplicity(a0: number): number;
+  UMultiplicities(a0: Raw_TColStd_Array1OfInteger): void;
+  UMultiplicities(): Raw_TColStd_Array1OfInteger;
   VDegree(): number;
   VKnot(a0: number): number;
+  VKnotDistribution(): number;
+  VKnots(a0: Raw_TColStd_Array1OfReal): void;
+  VKnots(): Raw_TColStd_Array1OfReal;
+  VKnotSequence(a0: Raw_TColStd_Array1OfReal): void;
+  VKnotSequence(): Raw_TColStd_Array1OfReal;
   VMultiplicity(a0: number): number;
+  VMultiplicities(a0: Raw_TColStd_Array1OfInteger): void;
+  VMultiplicities(): Raw_TColStd_Array1OfInteger;
   Weight(a0: number, a1: number): number;
   LocalD0(a0: number, a1: number, a2: number, a3: number, a4: number, a5: number, a6: Raw_gp_Pnt): void;
   LocalD1(a0: number, a1: number, a2: number, a3: number, a4: number, a5: number, a6: Raw_gp_Pnt, a7: Raw_gp_Vec, a8: Raw_gp_Vec): void;
@@ -2044,12 +5646,795 @@ export interface Raw_Geom_BSplineSurface {
 }
 
 export interface Ctor_Geom_BSplineSurface {
+  new (a0: Raw_TColgp_Array2OfPnt, a1: Raw_TColStd_Array1OfReal, a2: Raw_TColStd_Array1OfReal, a3: Raw_TColStd_Array1OfInteger, a4: Raw_TColStd_Array1OfInteger, a5: number, a6: number, a7: number, a8: number): Raw_Geom_BSplineSurface;
   get_type_name(): string;
   get_type_name(): string;
   get_type_name(): string;
   get_type_name(): string;
   get_type_name(): string;
   MaxDegree(): number;
+}
+
+/** Raw Geom2d_Geometry (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom2d_Geometry {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt2d): void;
+  Mirror(a0: Raw_gp_Ax2d): void;
+  Rotate(a0: Raw_gp_Pnt2d, a1: number): void;
+  Scale(a0: Raw_gp_Pnt2d, a1: number): void;
+  Translate(a0: Raw_gp_Vec2d): void;
+  Translate(a0: Raw_gp_Pnt2d, a1: Raw_gp_Pnt2d): void;
+  Transform(a0: Raw_gp_Trsf2d): void;
+  Mirrored(a0: Raw_gp_Pnt2d): Raw_Geom2d_Geometry;
+  Mirrored(a0: Raw_gp_Ax2d): Raw_Geom2d_Geometry;
+  Rotated(a0: Raw_gp_Pnt2d, a1: number): Raw_Geom2d_Geometry;
+  Scaled(a0: Raw_gp_Pnt2d, a1: number): Raw_Geom2d_Geometry;
+  Transformed(a0: Raw_gp_Trsf2d): Raw_Geom2d_Geometry;
+  Translated(a0: Raw_gp_Vec2d): Raw_Geom2d_Geometry;
+  Translated(a0: Raw_gp_Pnt2d, a1: Raw_gp_Pnt2d): Raw_Geom2d_Geometry;
+  Copy(): Raw_Geom2d_Geometry;
+}
+
+export interface Ctor_Geom2d_Geometry {
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Geom2d_Curve (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom2d_Curve {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt2d): void;
+  Rotate(a0: Raw_gp_Pnt2d, a1: number): void;
+  Scale(a0: Raw_gp_Pnt2d, a1: number): void;
+  Translate(a0: Raw_gp_Vec2d): void;
+  Transform(a0: Raw_gp_Trsf2d): void;
+  Mirrored(a0: Raw_gp_Pnt2d): Raw_Geom2d_Geometry;
+  Rotated(a0: Raw_gp_Pnt2d, a1: number): Raw_Geom2d_Geometry;
+  Scaled(a0: Raw_gp_Pnt2d, a1: number): Raw_Geom2d_Geometry;
+  Transformed(a0: Raw_gp_Trsf2d): Raw_Geom2d_Geometry;
+  Translated(a0: Raw_gp_Vec2d): Raw_Geom2d_Geometry;
+  Copy(): Raw_Geom2d_Geometry;
+  Reverse(): void;
+  ReversedParameter(a0: number): number;
+  TransformedParameter(a0: number, a1: Raw_gp_Trsf2d): number;
+  ParametricTransformation(a0: Raw_gp_Trsf2d): number;
+  Reversed(): Raw_Geom2d_Curve;
+  FirstParameter(): number;
+  LastParameter(): number;
+  IsClosed(): number;
+  IsPeriodic(): number;
+  Period(): number;
+  Continuity(): number;
+  IsCN(a0: number): number;
+  D0(a0: number, a1: Raw_gp_Pnt2d): void;
+  D1(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d): void;
+  D2(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d, a3: Raw_gp_Vec2d): void;
+  D3(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d, a3: Raw_gp_Vec2d, a4: Raw_gp_Vec2d): void;
+  DN(a0: number, a1: number): Raw_gp_Vec2d;
+  Value(a0: number): Raw_gp_Pnt2d;
+}
+
+export interface Ctor_Geom2d_Curve {
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Geom2d_Line (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom2d_Line {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt2d): void;
+  Rotate(a0: Raw_gp_Pnt2d, a1: number): void;
+  Scale(a0: Raw_gp_Pnt2d, a1: number): void;
+  Translate(a0: Raw_gp_Vec2d): void;
+  Transform(a0: Raw_gp_Trsf2d): void;
+  Transform(a0: Raw_gp_Trsf2d): void;
+  Mirrored(a0: Raw_gp_Pnt2d): Raw_Geom2d_Geometry;
+  Rotated(a0: Raw_gp_Pnt2d, a1: number): Raw_Geom2d_Geometry;
+  Scaled(a0: Raw_gp_Pnt2d, a1: number): Raw_Geom2d_Geometry;
+  Transformed(a0: Raw_gp_Trsf2d): Raw_Geom2d_Geometry;
+  Translated(a0: Raw_gp_Vec2d): Raw_Geom2d_Geometry;
+  Copy(): Raw_Geom2d_Geometry;
+  Copy(): Raw_Geom2d_Geometry;
+  Reverse(): void;
+  Reverse(): void;
+  ReversedParameter(a0: number): number;
+  ReversedParameter(a0: number): number;
+  TransformedParameter(a0: number, a1: Raw_gp_Trsf2d): number;
+  TransformedParameter(a0: number, a1: Raw_gp_Trsf2d): number;
+  ParametricTransformation(a0: Raw_gp_Trsf2d): number;
+  ParametricTransformation(a0: Raw_gp_Trsf2d): number;
+  Reversed(): Raw_Geom2d_Curve;
+  FirstParameter(): number;
+  FirstParameter(): number;
+  LastParameter(): number;
+  LastParameter(): number;
+  IsClosed(): number;
+  IsClosed(): number;
+  IsPeriodic(): number;
+  IsPeriodic(): number;
+  Period(): number;
+  Continuity(): number;
+  Continuity(): number;
+  IsCN(a0: number): number;
+  IsCN(a0: number): number;
+  D0(a0: number, a1: Raw_gp_Pnt2d): void;
+  D0(a0: number, a1: Raw_gp_Pnt2d): void;
+  D1(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d): void;
+  D1(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d): void;
+  D2(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d, a3: Raw_gp_Vec2d): void;
+  D2(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d, a3: Raw_gp_Vec2d): void;
+  D3(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d, a3: Raw_gp_Vec2d, a4: Raw_gp_Vec2d): void;
+  D3(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d, a3: Raw_gp_Vec2d, a4: Raw_gp_Vec2d): void;
+  DN(a0: number, a1: number): Raw_gp_Vec2d;
+  DN(a0: number, a1: number): Raw_gp_Vec2d;
+  Value(a0: number): Raw_gp_Pnt2d;
+  SetLin2d(a0: Raw_gp_Lin2d): void;
+  SetDirection(a0: Raw_gp_Dir2d): void;
+  Direction(): Raw_gp_Dir2d;
+  SetLocation(a0: Raw_gp_Pnt2d): void;
+  Location(): Raw_gp_Pnt2d;
+  SetPosition(a0: Raw_gp_Ax2d): void;
+  Position(): Raw_gp_Ax2d;
+  Lin2d(): Raw_gp_Lin2d;
+  Distance(a0: Raw_gp_Pnt2d): number;
+}
+
+export interface Ctor_Geom2d_Line {
+  new (a0: Raw_gp_Ax2d): Raw_Geom2d_Line;
+  new (a0: Raw_gp_Lin2d): Raw_Geom2d_Line;
+  new (a0: Raw_gp_Pnt2d, a1: Raw_gp_Dir2d): Raw_Geom2d_Line;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Geom2d_Circle (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom2d_Circle {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt2d): void;
+  Rotate(a0: Raw_gp_Pnt2d, a1: number): void;
+  Scale(a0: Raw_gp_Pnt2d, a1: number): void;
+  Translate(a0: Raw_gp_Vec2d): void;
+  Transform(a0: Raw_gp_Trsf2d): void;
+  Transform(a0: Raw_gp_Trsf2d): void;
+  Mirrored(a0: Raw_gp_Pnt2d): Raw_Geom2d_Geometry;
+  Rotated(a0: Raw_gp_Pnt2d, a1: number): Raw_Geom2d_Geometry;
+  Scaled(a0: Raw_gp_Pnt2d, a1: number): Raw_Geom2d_Geometry;
+  Transformed(a0: Raw_gp_Trsf2d): Raw_Geom2d_Geometry;
+  Translated(a0: Raw_gp_Vec2d): Raw_Geom2d_Geometry;
+  Copy(): Raw_Geom2d_Geometry;
+  Copy(): Raw_Geom2d_Geometry;
+  Reverse(): void;
+  ReversedParameter(a0: number): number;
+  ReversedParameter(a0: number): number;
+  TransformedParameter(a0: number, a1: Raw_gp_Trsf2d): number;
+  ParametricTransformation(a0: Raw_gp_Trsf2d): number;
+  Reversed(): Raw_Geom2d_Curve;
+  FirstParameter(): number;
+  FirstParameter(): number;
+  LastParameter(): number;
+  LastParameter(): number;
+  IsClosed(): number;
+  IsClosed(): number;
+  IsPeriodic(): number;
+  IsPeriodic(): number;
+  Period(): number;
+  Continuity(): number;
+  IsCN(a0: number): number;
+  D0(a0: number, a1: Raw_gp_Pnt2d): void;
+  D0(a0: number, a1: Raw_gp_Pnt2d): void;
+  D1(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d): void;
+  D1(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d): void;
+  D2(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d, a3: Raw_gp_Vec2d): void;
+  D2(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d, a3: Raw_gp_Vec2d): void;
+  D3(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d, a3: Raw_gp_Vec2d, a4: Raw_gp_Vec2d): void;
+  D3(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d, a3: Raw_gp_Vec2d, a4: Raw_gp_Vec2d): void;
+  DN(a0: number, a1: number): Raw_gp_Vec2d;
+  DN(a0: number, a1: number): Raw_gp_Vec2d;
+  Value(a0: number): Raw_gp_Pnt2d;
+  SetAxis(a0: Raw_gp_Ax22d): void;
+  SetXAxis(a0: Raw_gp_Ax2d): void;
+  SetYAxis(a0: Raw_gp_Ax2d): void;
+  SetLocation(a0: Raw_gp_Pnt2d): void;
+  XAxis(): Raw_gp_Ax2d;
+  YAxis(): Raw_gp_Ax2d;
+  Eccentricity(): number;
+  Eccentricity(): number;
+  Location(): Raw_gp_Pnt2d;
+  Position(): Raw_gp_Ax22d;
+  SetCirc2d(a0: Raw_gp_Circ2d): void;
+  SetRadius(a0: number): void;
+  Circ2d(): Raw_gp_Circ2d;
+  Radius(): number;
+}
+
+export interface Ctor_Geom2d_Circle {
+  new (a0: Raw_gp_Circ2d): Raw_Geom2d_Circle;
+  new (a0: Raw_gp_Ax2d, a1: number, a2: number): Raw_Geom2d_Circle;
+  new (a0: Raw_gp_Ax22d, a1: number): Raw_Geom2d_Circle;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Geom2d_Ellipse (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom2d_Ellipse {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt2d): void;
+  Rotate(a0: Raw_gp_Pnt2d, a1: number): void;
+  Scale(a0: Raw_gp_Pnt2d, a1: number): void;
+  Translate(a0: Raw_gp_Vec2d): void;
+  Transform(a0: Raw_gp_Trsf2d): void;
+  Transform(a0: Raw_gp_Trsf2d): void;
+  Mirrored(a0: Raw_gp_Pnt2d): Raw_Geom2d_Geometry;
+  Rotated(a0: Raw_gp_Pnt2d, a1: number): Raw_Geom2d_Geometry;
+  Scaled(a0: Raw_gp_Pnt2d, a1: number): Raw_Geom2d_Geometry;
+  Transformed(a0: Raw_gp_Trsf2d): Raw_Geom2d_Geometry;
+  Translated(a0: Raw_gp_Vec2d): Raw_Geom2d_Geometry;
+  Copy(): Raw_Geom2d_Geometry;
+  Copy(): Raw_Geom2d_Geometry;
+  Reverse(): void;
+  ReversedParameter(a0: number): number;
+  ReversedParameter(a0: number): number;
+  TransformedParameter(a0: number, a1: Raw_gp_Trsf2d): number;
+  ParametricTransformation(a0: Raw_gp_Trsf2d): number;
+  Reversed(): Raw_Geom2d_Curve;
+  FirstParameter(): number;
+  FirstParameter(): number;
+  LastParameter(): number;
+  LastParameter(): number;
+  IsClosed(): number;
+  IsClosed(): number;
+  IsPeriodic(): number;
+  IsPeriodic(): number;
+  Period(): number;
+  Continuity(): number;
+  IsCN(a0: number): number;
+  D0(a0: number, a1: Raw_gp_Pnt2d): void;
+  D0(a0: number, a1: Raw_gp_Pnt2d): void;
+  D1(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d): void;
+  D1(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d): void;
+  D2(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d, a3: Raw_gp_Vec2d): void;
+  D2(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d, a3: Raw_gp_Vec2d): void;
+  D3(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d, a3: Raw_gp_Vec2d, a4: Raw_gp_Vec2d): void;
+  D3(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d, a3: Raw_gp_Vec2d, a4: Raw_gp_Vec2d): void;
+  DN(a0: number, a1: number): Raw_gp_Vec2d;
+  DN(a0: number, a1: number): Raw_gp_Vec2d;
+  Value(a0: number): Raw_gp_Pnt2d;
+  SetAxis(a0: Raw_gp_Ax22d): void;
+  SetXAxis(a0: Raw_gp_Ax2d): void;
+  SetYAxis(a0: Raw_gp_Ax2d): void;
+  SetLocation(a0: Raw_gp_Pnt2d): void;
+  XAxis(): Raw_gp_Ax2d;
+  YAxis(): Raw_gp_Ax2d;
+  Eccentricity(): number;
+  Eccentricity(): number;
+  Location(): Raw_gp_Pnt2d;
+  Position(): Raw_gp_Ax22d;
+  SetElips2d(a0: Raw_gp_Elips2d): void;
+  SetMajorRadius(a0: number): void;
+  SetMinorRadius(a0: number): void;
+  Elips2d(): Raw_gp_Elips2d;
+  Directrix1(): Raw_gp_Ax2d;
+  Directrix2(): Raw_gp_Ax2d;
+  Focal(): number;
+  Focus1(): Raw_gp_Pnt2d;
+  Focus2(): Raw_gp_Pnt2d;
+  MajorRadius(): number;
+  MinorRadius(): number;
+  Parameter(): number;
+}
+
+export interface Ctor_Geom2d_Ellipse {
+  new (a0: Raw_gp_Elips2d): Raw_Geom2d_Ellipse;
+  new (a0: Raw_gp_Ax2d, a1: number, a2: number, a3: number): Raw_Geom2d_Ellipse;
+  new (a0: Raw_gp_Ax22d, a1: number, a2: number): Raw_Geom2d_Ellipse;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Geom2d_TrimmedCurve (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Geom2d_TrimmedCurve {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Mirror(a0: Raw_gp_Pnt2d): void;
+  Rotate(a0: Raw_gp_Pnt2d, a1: number): void;
+  Scale(a0: Raw_gp_Pnt2d, a1: number): void;
+  Translate(a0: Raw_gp_Vec2d): void;
+  Transform(a0: Raw_gp_Trsf2d): void;
+  Transform(a0: Raw_gp_Trsf2d): void;
+  Mirrored(a0: Raw_gp_Pnt2d): Raw_Geom2d_Geometry;
+  Rotated(a0: Raw_gp_Pnt2d, a1: number): Raw_Geom2d_Geometry;
+  Scaled(a0: Raw_gp_Pnt2d, a1: number): Raw_Geom2d_Geometry;
+  Transformed(a0: Raw_gp_Trsf2d): Raw_Geom2d_Geometry;
+  Translated(a0: Raw_gp_Vec2d): Raw_Geom2d_Geometry;
+  Copy(): Raw_Geom2d_Geometry;
+  Copy(): Raw_Geom2d_Geometry;
+  Reverse(): void;
+  Reverse(): void;
+  ReversedParameter(a0: number): number;
+  ReversedParameter(a0: number): number;
+  TransformedParameter(a0: number, a1: Raw_gp_Trsf2d): number;
+  TransformedParameter(a0: number, a1: Raw_gp_Trsf2d): number;
+  ParametricTransformation(a0: Raw_gp_Trsf2d): number;
+  ParametricTransformation(a0: Raw_gp_Trsf2d): number;
+  Reversed(): Raw_Geom2d_Curve;
+  FirstParameter(): number;
+  FirstParameter(): number;
+  LastParameter(): number;
+  LastParameter(): number;
+  IsClosed(): number;
+  IsClosed(): number;
+  IsPeriodic(): number;
+  IsPeriodic(): number;
+  Period(): number;
+  Period(): number;
+  Continuity(): number;
+  Continuity(): number;
+  IsCN(a0: number): number;
+  IsCN(a0: number): number;
+  D0(a0: number, a1: Raw_gp_Pnt2d): void;
+  D0(a0: number, a1: Raw_gp_Pnt2d): void;
+  D1(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d): void;
+  D1(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d): void;
+  D2(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d, a3: Raw_gp_Vec2d): void;
+  D2(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d, a3: Raw_gp_Vec2d): void;
+  D3(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d, a3: Raw_gp_Vec2d, a4: Raw_gp_Vec2d): void;
+  D3(a0: number, a1: Raw_gp_Pnt2d, a2: Raw_gp_Vec2d, a3: Raw_gp_Vec2d, a4: Raw_gp_Vec2d): void;
+  DN(a0: number, a1: number): Raw_gp_Vec2d;
+  DN(a0: number, a1: number): Raw_gp_Vec2d;
+  Value(a0: number): Raw_gp_Pnt2d;
+  EndPoint(): Raw_gp_Pnt2d;
+  EndPoint(): Raw_gp_Pnt2d;
+  StartPoint(): Raw_gp_Pnt2d;
+  StartPoint(): Raw_gp_Pnt2d;
+  SetTrim(a0: number, a1: number, a2: number, a3: number): void;
+  BasisCurve(): Raw_Geom2d_Curve;
+}
+
+export interface Ctor_Geom2d_TrimmedCurve {
+  new (a0: Raw_Geom2d_Curve, a1: number, a2: number, a3: number, a4: number): Raw_Geom2d_TrimmedCurve;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Adaptor3d_Curve (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Adaptor3d_Curve {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  ShallowCopy(): Raw_Adaptor3d_Curve;
+  FirstParameter(): number;
+  LastParameter(): number;
+  Continuity(): number;
+  NbIntervals(a0: number): number;
+  Intervals(a0: Raw_TColStd_Array1OfReal, a1: number): void;
+  Trim(a0: number, a1: number, a2: number): Raw_Adaptor3d_Curve;
+  IsClosed(): number;
+  IsPeriodic(): number;
+  Period(): number;
+  Value(a0: number): Raw_gp_Pnt;
+  D0(a0: number, a1: Raw_gp_Pnt): void;
+  D1(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec): void;
+  D2(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec): void;
+  D3(a0: number, a1: Raw_gp_Pnt, a2: Raw_gp_Vec, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  DN(a0: number, a1: number): Raw_gp_Vec;
+  Resolution(a0: number): number;
+  GetType(): number;
+  Line(): Raw_gp_Lin;
+  Circle(): Raw_gp_Circ;
+  Ellipse(): Raw_gp_Elips;
+  Hyperbola(): Raw_gp_Hypr;
+  Parabola(): Raw_gp_Parab;
+  Degree(): number;
+  IsRational(): number;
+  NbPoles(): number;
+  NbKnots(): number;
+  Bezier(): Raw_Geom_BezierCurve;
+  BSpline(): Raw_Geom_BSplineCurve;
+  OffsetCurve(): Raw_Geom_OffsetCurve;
+}
+
+export interface Ctor_Adaptor3d_Curve {
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Adaptor3d_Surface (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Adaptor3d_Surface {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  ShallowCopy(): Raw_Adaptor3d_Surface;
+  FirstUParameter(): number;
+  LastUParameter(): number;
+  FirstVParameter(): number;
+  LastVParameter(): number;
+  UContinuity(): number;
+  VContinuity(): number;
+  NbUIntervals(a0: number): number;
+  NbVIntervals(a0: number): number;
+  UIntervals(a0: Raw_TColStd_Array1OfReal, a1: number): void;
+  VIntervals(a0: Raw_TColStd_Array1OfReal, a1: number): void;
+  UTrim(a0: number, a1: number, a2: number): Raw_Adaptor3d_Surface;
+  VTrim(a0: number, a1: number, a2: number): Raw_Adaptor3d_Surface;
+  IsUClosed(): number;
+  IsVClosed(): number;
+  IsUPeriodic(): number;
+  UPeriod(): number;
+  IsVPeriodic(): number;
+  VPeriod(): number;
+  Value(a0: number, a1: number): Raw_gp_Pnt;
+  D0(a0: number, a1: number, a2: Raw_gp_Pnt): void;
+  D1(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec): void;
+  D2(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec): void;
+  D3(a0: number, a1: number, a2: Raw_gp_Pnt, a3: Raw_gp_Vec, a4: Raw_gp_Vec, a5: Raw_gp_Vec, a6: Raw_gp_Vec, a7: Raw_gp_Vec, a8: Raw_gp_Vec, a9: Raw_gp_Vec, a10: Raw_gp_Vec, a11: Raw_gp_Vec): void;
+  DN(a0: number, a1: number, a2: number, a3: number): Raw_gp_Vec;
+  UResolution(a0: number): number;
+  VResolution(a0: number): number;
+  GetType(): number;
+  Plane(): Raw_gp_Pln;
+  Cylinder(): Raw_gp_Cylinder;
+  Cone(): Raw_gp_Cone;
+  Sphere(): Raw_gp_Sphere;
+  Torus(): Raw_gp_Torus;
+  UDegree(): number;
+  NbUPoles(): number;
+  VDegree(): number;
+  NbVPoles(): number;
+  NbUKnots(): number;
+  NbVKnots(): number;
+  IsURational(): number;
+  IsVRational(): number;
+  BSpline(): Raw_Geom_BSplineSurface;
+  AxeOfRevolution(): Raw_gp_Ax1;
+  Direction(): Raw_gp_Dir;
+  BasisCurve(): Raw_Adaptor3d_Curve;
+  BasisSurface(): Raw_Adaptor3d_Surface;
+  OffsetValue(): number;
+}
+
+export interface Ctor_Adaptor3d_Surface {
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw BRepPrim_Wedge (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_BRepPrim_Wedge {
+  delete(): void;
+  Axes(): Raw_gp_Ax2;
+  GetXMin(): number;
+  GetYMin(): number;
+  GetZMin(): number;
+  GetZ2Min(): number;
+  GetX2Min(): number;
+  GetXMax(): number;
+  GetYMax(): number;
+  GetZMax(): number;
+  GetZ2Max(): number;
+  GetX2Max(): number;
+  Shell(): Raw_TopoDS_Shell;
+  IsDegeneratedShape(): number;
+}
+
+export interface Ctor_BRepPrim_Wedge {
+  new (): Raw_BRepPrim_Wedge;
+  new (a0: Raw_gp_Ax2, a1: number, a2: number, a3: number): Raw_BRepPrim_Wedge;
+  new (a0: Raw_gp_Ax2, a1: number, a2: number, a3: number, a4: number): Raw_BRepPrim_Wedge;
+  new (a0: Raw_gp_Ax2, a1: number, a2: number, a3: number, a4: number, a5: number, a6: number, a7: number, a8: number, a9: number, a10: number): Raw_BRepPrim_Wedge;
+}
+
+/** Raw BRepOffset_MakeOffset (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_BRepOffset_MakeOffset {
+  delete(): void;
+  Clear(): void;
+  AllowLinearization(a0: number): void;
+  AddFace(a0: Raw_TopoDS_Face): void;
+  SetOffsetOnFace(a0: Raw_TopoDS_Face, a1: number): void;
+  MakeOffsetShape(a0: Raw_Message_ProgressRange): void;
+  MakeThickSolid(a0: Raw_Message_ProgressRange): void;
+  IsDone(): number;
+  Shape(): Raw_TopoDS_Shape;
+  InitShape(): Raw_TopoDS_Shape;
+  GetJoinType(): number;
+  ClosingFaces(): Raw_TopTools_IndexedMapOfShape;
+  CheckInputData(a0: Raw_Message_ProgressRange): number;
+  GetBadShape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  IsDeleted(a0: Raw_TopoDS_Shape): number;
+}
+
+export interface Ctor_BRepOffset_MakeOffset {
+  new (): Raw_BRepOffset_MakeOffset;
+}
+
+/** Raw GeomAPI_Interpolate (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_GeomAPI_Interpolate {
+  delete(): void;
+  Load(a0: Raw_gp_Vec, a1: Raw_gp_Vec, a2: number): void;
+  Perform(): void;
+  Curve(): Raw_Geom_BSplineCurve;
+  IsDone(): number;
+}
+
+export interface Ctor_GeomAPI_Interpolate {
+  new (a0: Raw_TColgp_HArray1OfPnt, a1: number, a2: number): Raw_GeomAPI_Interpolate;
+  new (a0: Raw_TColgp_HArray1OfPnt, a1: Raw_TColStd_HArray1OfReal, a2: number, a3: number): Raw_GeomAPI_Interpolate;
+}
+
+/** Raw GeomAPI_PointsToBSpline (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_GeomAPI_PointsToBSpline {
+  delete(): void;
+  Init(a0: Raw_TColgp_Array1OfPnt, a1: number, a2: number, a3: number, a4: number): void;
+  Init(a0: Raw_TColgp_Array1OfPnt, a1: Raw_TColStd_Array1OfReal, a2: number, a3: number, a4: number, a5: number): void;
+  Init(a0: Raw_TColgp_Array1OfPnt, a1: number, a2: number, a3: number, a4: number, a5: number, a6: number): void;
+  Curve(): Raw_Geom_BSplineCurve;
+  IsDone(): number;
+}
+
+export interface Ctor_GeomAPI_PointsToBSpline {
+  new (): Raw_GeomAPI_PointsToBSpline;
+  new (a0: Raw_TColgp_Array1OfPnt, a1: number, a2: number, a3: number, a4: number): Raw_GeomAPI_PointsToBSpline;
+  new (a0: Raw_TColgp_Array1OfPnt, a1: Raw_TColStd_Array1OfReal, a2: number, a3: number, a4: number, a5: number): Raw_GeomAPI_PointsToBSpline;
+  new (a0: Raw_TColgp_Array1OfPnt, a1: number, a2: number, a3: number, a4: number, a5: number, a6: number): Raw_GeomAPI_PointsToBSpline;
+}
+
+/** Raw GC_MakeSegment (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_GC_MakeSegment {
+  delete(): void;
+  IsDone(): number;
+  Status(): number;
+  Value(): Raw_Geom_TrimmedCurve;
+}
+
+export interface Ctor_GC_MakeSegment {
+  new (a0: Raw_gp_Pnt, a1: Raw_gp_Pnt): Raw_GC_MakeSegment;
+  new (a0: Raw_gp_Lin, a1: number, a2: number): Raw_GC_MakeSegment;
+  new (a0: Raw_gp_Lin, a1: Raw_gp_Pnt, a2: number): Raw_GC_MakeSegment;
+  new (a0: Raw_gp_Lin, a1: Raw_gp_Pnt, a2: Raw_gp_Pnt): Raw_GC_MakeSegment;
+}
+
+/** Raw GC_MakeArcOfCircle (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_GC_MakeArcOfCircle {
+  delete(): void;
+  IsDone(): number;
+  Status(): number;
+  Value(): Raw_Geom_TrimmedCurve;
+}
+
+export interface Ctor_GC_MakeArcOfCircle {
+  new (a0: Raw_gp_Circ, a1: number, a2: number, a3: number): Raw_GC_MakeArcOfCircle;
+  new (a0: Raw_gp_Circ, a1: Raw_gp_Pnt, a2: number, a3: number): Raw_GC_MakeArcOfCircle;
+  new (a0: Raw_gp_Circ, a1: Raw_gp_Pnt, a2: Raw_gp_Pnt, a3: number): Raw_GC_MakeArcOfCircle;
+  new (a0: Raw_gp_Pnt, a1: Raw_gp_Pnt, a2: Raw_gp_Pnt): Raw_GC_MakeArcOfCircle;
+  new (a0: Raw_gp_Pnt, a1: Raw_gp_Vec, a2: Raw_gp_Pnt): Raw_GC_MakeArcOfCircle;
+}
+
+/** Raw Poly_Triangulation (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Poly_Triangulation {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Copy(): Raw_Poly_Triangulation;
+  Deflection(): number;
+  Deflection(a0: number): void;
+  Clear(): void;
+  HasGeometry(): number;
+  NbNodes(): number;
+  NbTriangles(): number;
+  HasUVNodes(): number;
+  HasNormals(): number;
+  Node(a0: number): Raw_gp_Pnt;
+  SetNode(a0: number, a1: Raw_gp_Pnt): void;
+  UVNode(a0: number): Raw_gp_Pnt2d;
+  SetUVNode(a0: number, a1: Raw_gp_Pnt2d): void;
+  Triangle(a0: number): Raw_Poly_Triangle;
+  SetTriangle(a0: number, a1: Raw_Poly_Triangle): void;
+  Normal(a0: number): Raw_gp_Dir;
+  SetNormal(a0: number, a1: Raw_gp_Dir): void;
+  MeshPurpose(): number;
+  SetMeshPurpose(a0: number): void;
+  CachedMinMax(): Raw_Bnd_Box;
+  SetCachedMinMax(a0: Raw_Bnd_Box): void;
+  HasCachedMinMax(): number;
+  UpdateCachedMinMax(): void;
+  MinMax(a0: Raw_Bnd_Box, a1: Raw_gp_Trsf, a2: number): number;
+  IsDoublePrecision(): number;
+  SetDoublePrecision(a0: number): void;
+  ResizeNodes(a0: number, a1: number): void;
+  ResizeTriangles(a0: number, a1: number): void;
+  AddUVNodes(): void;
+  RemoveUVNodes(): void;
+  AddNormals(): void;
+  RemoveNormals(): void;
+  ComputeNormals(): void;
+  MapNodeArray(): Raw_TColgp_HArray1OfPnt;
+  ChangeTriangle(a0: number): Raw_Poly_Triangle;
+  NbDeferredNodes(): number;
+  NbDeferredTriangles(): number;
+  HasDeferredData(): number;
+  UnloadDeferredData(): number;
+}
+
+export interface Ctor_Poly_Triangulation {
+  new (): Raw_Poly_Triangulation;
+  new (a0: number, a1: number, a2: number, a3: number): Raw_Poly_Triangulation;
+  new (a0: Raw_Poly_Triangulation): Raw_Poly_Triangulation;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw Poly_Polygon3D (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Poly_Polygon3D {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Copy(): Raw_Poly_Polygon3D;
+  Deflection(): number;
+  Deflection(a0: number): void;
+  NbNodes(): number;
+  Nodes(): Raw_TColgp_Array1OfPnt;
+  ChangeNodes(): Raw_TColgp_Array1OfPnt;
+  HasParameters(): number;
+  Parameters(): Raw_TColStd_Array1OfReal;
+  ChangeParameters(): Raw_TColStd_Array1OfReal;
+}
+
+export interface Ctor_Poly_Polygon3D {
+  new (a0: number, a1: number): Raw_Poly_Polygon3D;
+  new (a0: Raw_TColgp_Array1OfPnt): Raw_Poly_Polygon3D;
+  new (a0: Raw_TColgp_Array1OfPnt, a1: Raw_TColStd_Array1OfReal): Raw_Poly_Polygon3D;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw TColgp_Array1OfPnt (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TColgp_Array1OfPnt {
+  delete(): void;
+  Init(a0: Raw_gp_Pnt): void;
+  Size(): number;
+  Length(): number;
+  IsEmpty(): number;
+  Lower(): number;
+  Upper(): number;
+  Assign(a0: Raw_TColgp_Array1OfPnt): Raw_TColgp_Array1OfPnt;
+  First(): Raw_gp_Pnt;
+  ChangeFirst(): Raw_gp_Pnt;
+  Last(): Raw_gp_Pnt;
+  ChangeLast(): Raw_gp_Pnt;
+  Value(a0: number): Raw_gp_Pnt;
+  ChangeValue(a0: number): Raw_gp_Pnt;
+  SetValue(a0: number, a1: Raw_gp_Pnt): void;
+  UpdateLowerBound(a0: number): void;
+  UpdateUpperBound(a0: number): void;
+  Resize(a0: number, a1: number, a2: number): void;
+  IsDeletable(): number;
+}
+
+export interface Ctor_TColgp_Array1OfPnt {
+  new (): Raw_TColgp_Array1OfPnt;
+  new (a0: Raw_TColgp_Array1OfPnt): Raw_TColgp_Array1OfPnt;
+}
+
+/** Raw TColgp_Array2OfPnt (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TColgp_Array2OfPnt {
+  delete(): void;
+  Size(): number;
+  Length(): number;
+  NbRows(): number;
+  NbColumns(): number;
+  RowLength(): number;
+  ColLength(): number;
+  LowerRow(): number;
+  UpperRow(): number;
+  LowerCol(): number;
+  UpperCol(): number;
+  Assign(a0: Raw_TColgp_Array2OfPnt): Raw_TColgp_Array2OfPnt;
+  Value(a0: number, a1: number): Raw_gp_Pnt;
+  ChangeValue(a0: number, a1: number): Raw_gp_Pnt;
+  SetValue(a0: number, a1: number, a2: Raw_gp_Pnt): void;
+  Resize(a0: number, a1: number, a2: number, a3: number, a4: number): void;
+  Init(a0: Raw_gp_Pnt): void;
+  IsEmpty(): number;
+  Lower(): number;
+  Upper(): number;
+  First(): Raw_gp_Pnt;
+  ChangeFirst(): Raw_gp_Pnt;
+  Last(): Raw_gp_Pnt;
+  ChangeLast(): Raw_gp_Pnt;
+  UpdateLowerBound(a0: number): void;
+  UpdateUpperBound(a0: number): void;
+  IsDeletable(): number;
+}
+
+export interface Ctor_TColgp_Array2OfPnt {
+  new (): Raw_TColgp_Array2OfPnt;
+  new (a0: Raw_TColgp_Array2OfPnt): Raw_TColgp_Array2OfPnt;
+  BeginPosition(a0: number, a1: number, a2: number, a3: number): number;
+  LastPosition(a0: number, a1: number, a2: number, a3: number): number;
+}
+
+/** Raw TColgp_HArray1OfPnt (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_TColgp_HArray1OfPnt {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Array1(): Raw_TColgp_Array1OfPnt;
+  ChangeArray1(): Raw_TColgp_Array1OfPnt;
+}
+
+export interface Ctor_TColgp_HArray1OfPnt {
+  new (): Raw_TColgp_HArray1OfPnt;
+  new (a0: number, a1: number): Raw_TColgp_HArray1OfPnt;
+  new (a0: Raw_TColgp_Array1OfPnt): Raw_TColgp_HArray1OfPnt;
+  get_type_name(): string;
+  get_type_name(): string;
 }
 
 /** Raw BRepGProp (see tools/codegen/SKIPPED.md for unmapped members). */
@@ -2073,13 +6458,264 @@ export interface Raw_GProp_GProps {
   Add(a0: Raw_GProp_GProps, a1: number): void;
   Mass(): number;
   CentreOfMass(): Raw_gp_Pnt;
+  MatrixOfInertia(): Raw_gp_Mat;
   MomentOfInertia(a0: Raw_gp_Ax1): number;
+  PrincipalProperties(): Raw_GProp_PrincipalProps;
   RadiusOfGyration(a0: Raw_gp_Ax1): number;
 }
 
 export interface Ctor_GProp_GProps {
   new (): Raw_GProp_GProps;
   new (a0: Raw_gp_Pnt): Raw_GProp_GProps;
+}
+
+/** Raw GProp_PrincipalProps (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_GProp_PrincipalProps {
+  delete(): void;
+  HasSymmetryAxis(): number;
+  HasSymmetryAxis(a0: number): number;
+  HasSymmetryPoint(): number;
+  HasSymmetryPoint(a0: number): number;
+  FirstAxisOfInertia(): Raw_gp_Vec;
+  SecondAxisOfInertia(): Raw_gp_Vec;
+  ThirdAxisOfInertia(): Raw_gp_Vec;
+}
+
+export interface Ctor_GProp_PrincipalProps {
+  new (): Raw_GProp_PrincipalProps;
+}
+
+/** Raw BRepCheck_Analyzer (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_BRepCheck_Analyzer {
+  delete(): void;
+  Init(a0: Raw_TopoDS_Shape, a1: number): void;
+  SetExactMethod(a0: number): void;
+  IsExactMethod(): number;
+  SetParallel(a0: number): void;
+  IsParallel(): number;
+  IsValid(a0: Raw_TopoDS_Shape): number;
+  IsValid(): number;
+}
+
+export interface Ctor_BRepCheck_Analyzer {
+  new (a0: Raw_TopoDS_Shape, a1: number, a2: number, a3: number): Raw_BRepCheck_Analyzer;
+}
+
+/** Raw BRepBndLib (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_BRepBndLib {
+  delete(): void;
+}
+
+export interface Ctor_BRepBndLib {
+  Add(a0: Raw_TopoDS_Shape, a1: Raw_Bnd_Box, a2: number): void;
+  AddClose(a0: Raw_TopoDS_Shape, a1: Raw_Bnd_Box): void;
+  AddOptimal(a0: Raw_TopoDS_Shape, a1: Raw_Bnd_Box, a2: number, a3: number): void;
+}
+
+/** Raw Bnd_Box (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_Bnd_Box {
+  delete(): void;
+  SetWhole(): void;
+  SetVoid(): void;
+  Set(a0: Raw_gp_Pnt): void;
+  Set(a0: Raw_gp_Pnt, a1: Raw_gp_Dir): void;
+  Update(a0: number, a1: number, a2: number, a3: number, a4: number, a5: number): void;
+  Update(a0: number, a1: number, a2: number): void;
+  GetGap(): number;
+  SetGap(a0: number): void;
+  Enlarge(a0: number): void;
+  CornerMin(): Raw_gp_Pnt;
+  CornerMax(): Raw_gp_Pnt;
+  OpenXmin(): void;
+  OpenXmax(): void;
+  OpenYmin(): void;
+  OpenYmax(): void;
+  OpenZmin(): void;
+  OpenZmax(): void;
+  IsOpen(): number;
+  IsOpenXmin(): number;
+  IsOpenXmax(): number;
+  IsOpenYmin(): number;
+  IsOpenYmax(): number;
+  IsOpenZmin(): number;
+  IsOpenZmax(): number;
+  IsWhole(): number;
+  IsVoid(): number;
+  IsXThin(a0: number): number;
+  IsYThin(a0: number): number;
+  IsZThin(a0: number): number;
+  IsThin(a0: number): number;
+  Transformed(a0: Raw_gp_Trsf): Raw_Bnd_Box;
+  Add(a0: Raw_Bnd_Box): void;
+  Add(a0: Raw_gp_Pnt): void;
+  Add(a0: Raw_gp_Pnt, a1: Raw_gp_Dir): void;
+  Add(a0: Raw_gp_Dir): void;
+  IsOut(a0: Raw_gp_Pnt): number;
+  IsOut(a0: Raw_gp_Lin): number;
+  IsOut(a0: Raw_gp_Pln): number;
+  IsOut(a0: Raw_Bnd_Box): number;
+  IsOut(a0: Raw_Bnd_Box, a1: Raw_gp_Trsf): number;
+  IsOut(a0: Raw_gp_Trsf, a1: Raw_Bnd_Box, a2: Raw_gp_Trsf): number;
+  IsOut(a0: Raw_gp_Pnt, a1: Raw_gp_Pnt, a2: Raw_gp_Dir): number;
+  Distance(a0: Raw_Bnd_Box): number;
+  Dump(): void;
+  SquareExtent(): number;
+  FinitePart(): Raw_Bnd_Box;
+  HasFinitePart(): number;
+}
+
+export interface Ctor_Bnd_Box {
+  new (): Raw_Bnd_Box;
+  new (a0: Raw_gp_Pnt, a1: Raw_gp_Pnt): Raw_Bnd_Box;
+}
+
+/** Raw ShapeUpgrade_UnifySameDomain (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_ShapeUpgrade_UnifySameDomain {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  Initialize(a0: Raw_TopoDS_Shape, a1: number, a2: number, a3: number): void;
+  AllowInternalEdges(a0: number): void;
+  KeepShape(a0: Raw_TopoDS_Shape): void;
+  KeepShapes(a0: Raw_TopTools_MapOfShape): void;
+  SetSafeInputMode(a0: number): void;
+  SetLinearTolerance(a0: number): void;
+  SetAngularTolerance(a0: number): void;
+  Build(): void;
+  Shape(): Raw_TopoDS_Shape;
+  History(): Raw_BRepTools_History;
+  History(): Raw_BRepTools_History;
+}
+
+export interface Ctor_ShapeUpgrade_UnifySameDomain {
+  new (): Raw_ShapeUpgrade_UnifySameDomain;
+  new (a0: Raw_TopoDS_Shape, a1: number, a2: number, a3: number): Raw_ShapeUpgrade_UnifySameDomain;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw ShapeFix_Shape (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_ShapeFix_Shape {
+  delete(): void;
+  IsInstance(a0: string): number;
+  IsKind(a0: string): number;
+  GetRefCount(): number;
+  IncrementRefCounter(): void;
+  DecrementRefCounter(): number;
+  Delete(): void;
+  SetPrecision(a0: number): void;
+  SetPrecision(a0: number): void;
+  Precision(): number;
+  SetMinTolerance(a0: number): void;
+  SetMinTolerance(a0: number): void;
+  MinTolerance(): number;
+  SetMaxTolerance(a0: number): void;
+  SetMaxTolerance(a0: number): void;
+  MaxTolerance(): number;
+  LimitTolerance(a0: number): number;
+  Init(a0: Raw_TopoDS_Shape): void;
+  Perform(a0: Raw_Message_ProgressRange): number;
+  Shape(): Raw_TopoDS_Shape;
+  FixSolidMode(): number;
+  FixFreeShellMode(): number;
+  FixFreeFaceMode(): number;
+  FixFreeWireMode(): number;
+  FixSameParameterMode(): number;
+  FixVertexPositionMode(): number;
+  FixVertexTolMode(): number;
+}
+
+export interface Ctor_ShapeFix_Shape {
+  new (): Raw_ShapeFix_Shape;
+  new (a0: Raw_TopoDS_Shape): Raw_ShapeFix_Shape;
+  get_type_name(): string;
+  get_type_name(): string;
+  get_type_name(): string;
+}
+
+/** Raw STEPControl_Reader (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_STEPControl_Reader {
+  delete(): void;
+  SetNorm(a0: string): number;
+  ReadFile(a0: string): number;
+  ReadFile(a0: string): number;
+  ReadFile(a0: string, a1: Raw_DESTEP_Parameters): number;
+  NbRootsForTransfer(): number;
+  NbRootsForTransfer(): number;
+  TransferOneRoot(a0: number, a1: Raw_Message_ProgressRange): number;
+  TransferOne(a0: number, a1: Raw_Message_ProgressRange): number;
+  TransferRoots(a0: Raw_Message_ProgressRange): number;
+  ClearShapes(): void;
+  NbShapes(): number;
+  Shape(a0: number): Raw_TopoDS_Shape;
+  OneShape(): Raw_TopoDS_Shape;
+  PrintStatsTransfer(a0: number, a1: number): void;
+  TransferRoot(a0: number, a1: Raw_Message_ProgressRange): number;
+  SetSystemLengthUnit(a0: number): void;
+  SystemLengthUnit(): number;
+}
+
+export interface Ctor_STEPControl_Reader {
+  new (): Raw_STEPControl_Reader;
+}
+
+/** Raw STEPControl_Writer (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_STEPControl_Writer {
+  delete(): void;
+  SetTolerance(a0: number): void;
+  UnsetTolerance(): void;
+  Transfer(a0: Raw_TopoDS_Shape, a1: number, a2: number, a3: Raw_Message_ProgressRange): number;
+  Transfer(a0: Raw_TopoDS_Shape, a1: number, a2: Raw_DESTEP_Parameters, a3: number, a4: Raw_Message_ProgressRange): number;
+  Write(a0: string): number;
+  PrintStatsTransfer(a0: number, a1: number): void;
+}
+
+export interface Ctor_STEPControl_Writer {
+  new (): Raw_STEPControl_Writer;
+}
+
+/** JS-owned wrapper around opencascade::handle<Adaptor3d_Curve> — delete() drops the refcount. */
+export interface Raw_Handle_Adaptor3d_Curve {
+  /** Borrowed pointee (the handle must outlive it). */
+  Get(): Raw_Adaptor3d_Curve;
+  IsNull(): boolean;
+  delete(): void;
+}
+
+/** JS-owned wrapper around opencascade::handle<Adaptor3d_Surface> — delete() drops the refcount. */
+export interface Raw_Handle_Adaptor3d_Surface {
+  /** Borrowed pointee (the handle must outlive it). */
+  Get(): Raw_Adaptor3d_Surface;
+  IsNull(): boolean;
+  delete(): void;
+}
+
+/** JS-owned wrapper around opencascade::handle<BRepTools_History> — delete() drops the refcount. */
+export interface Raw_Handle_BRepTools_History {
+  /** Borrowed pointee (the handle must outlive it). */
+  Get(): Raw_BRepTools_History;
+  IsNull(): boolean;
+  delete(): void;
+}
+
+/** JS-owned wrapper around opencascade::handle<Geom2d_Curve> — delete() drops the refcount. */
+export interface Raw_Handle_Geom2d_Curve {
+  /** Borrowed pointee (the handle must outlive it). */
+  Get(): Raw_Geom2d_Curve;
+  IsNull(): boolean;
+  delete(): void;
+}
+
+/** JS-owned wrapper around opencascade::handle<Geom2d_Geometry> — delete() drops the refcount. */
+export interface Raw_Handle_Geom2d_Geometry {
+  /** Borrowed pointee (the handle must outlive it). */
+  Get(): Raw_Geom2d_Geometry;
+  IsNull(): boolean;
+  delete(): void;
 }
 
 /** JS-owned wrapper around opencascade::handle<Geom_BSplineCurve> — delete() drops the refcount. */
@@ -2098,6 +6734,62 @@ export interface Raw_Handle_Geom_BSplineSurface {
   delete(): void;
 }
 
+/** JS-owned wrapper around opencascade::handle<Geom_BezierCurve> — delete() drops the refcount. */
+export interface Raw_Handle_Geom_BezierCurve {
+  /** Borrowed pointee (the handle must outlive it). */
+  Get(): Raw_Geom_BezierCurve;
+  IsNull(): boolean;
+  delete(): void;
+}
+
+/** JS-owned wrapper around opencascade::handle<Geom_Curve> — delete() drops the refcount. */
+export interface Raw_Handle_Geom_Curve {
+  /** Borrowed pointee (the handle must outlive it). */
+  Get(): Raw_Geom_Curve;
+  IsNull(): boolean;
+  delete(): void;
+}
+
+/** JS-owned wrapper around opencascade::handle<Geom_Geometry> — delete() drops the refcount. */
+export interface Raw_Handle_Geom_Geometry {
+  /** Borrowed pointee (the handle must outlive it). */
+  Get(): Raw_Geom_Geometry;
+  IsNull(): boolean;
+  delete(): void;
+}
+
+/** JS-owned wrapper around opencascade::handle<Geom_OffsetCurve> — delete() drops the refcount. */
+export interface Raw_Handle_Geom_OffsetCurve {
+  /** Borrowed pointee (the handle must outlive it). */
+  Get(): Raw_Geom_OffsetCurve;
+  IsNull(): boolean;
+  delete(): void;
+}
+
+/** JS-owned wrapper around opencascade::handle<Geom_Plane> — delete() drops the refcount. */
+export interface Raw_Handle_Geom_Plane {
+  /** Borrowed pointee (the handle must outlive it). */
+  Get(): Raw_Geom_Plane;
+  IsNull(): boolean;
+  delete(): void;
+}
+
+/** JS-owned wrapper around opencascade::handle<Geom_Surface> — delete() drops the refcount. */
+export interface Raw_Handle_Geom_Surface {
+  /** Borrowed pointee (the handle must outlive it). */
+  Get(): Raw_Geom_Surface;
+  IsNull(): boolean;
+  delete(): void;
+}
+
+/** JS-owned wrapper around opencascade::handle<Geom_TrimmedCurve> — delete() drops the refcount. */
+export interface Raw_Handle_Geom_TrimmedCurve {
+  /** Borrowed pointee (the handle must outlive it). */
+  Get(): Raw_Geom_TrimmedCurve;
+  IsNull(): boolean;
+  delete(): void;
+}
+
 /** JS-owned wrapper around opencascade::handle<Interface_Static> — delete() drops the refcount. */
 export interface Raw_Handle_Interface_Static {
   /** Borrowed pointee (the handle must outlive it). */
@@ -2106,8 +6798,113 @@ export interface Raw_Handle_Interface_Static {
   delete(): void;
 }
 
+/** JS-owned wrapper around opencascade::handle<Law_Function> — delete() drops the refcount. */
+export interface Raw_Handle_Law_Function {
+  /** Borrowed pointee (the handle must outlive it). */
+  Get(): Raw_Law_Function;
+  IsNull(): boolean;
+  delete(): void;
+}
+
+/** JS-owned wrapper around opencascade::handle<MoniTool_TypedValue> — delete() drops the refcount. */
+export interface Raw_Handle_MoniTool_TypedValue {
+  /** Borrowed pointee (the handle must outlive it). */
+  Get(): Raw_MoniTool_TypedValue;
+  IsNull(): boolean;
+  delete(): void;
+}
+
+/** JS-owned wrapper around opencascade::handle<Poly_Polygon2D> — delete() drops the refcount. */
+export interface Raw_Handle_Poly_Polygon2D {
+  /** Borrowed pointee (the handle must outlive it). */
+  Get(): Raw_Poly_Polygon2D;
+  IsNull(): boolean;
+  delete(): void;
+}
+
+/** JS-owned wrapper around opencascade::handle<Poly_Polygon3D> — delete() drops the refcount. */
+export interface Raw_Handle_Poly_Polygon3D {
+  /** Borrowed pointee (the handle must outlive it). */
+  Get(): Raw_Poly_Polygon3D;
+  IsNull(): boolean;
+  delete(): void;
+}
+
+/** JS-owned wrapper around opencascade::handle<Poly_Triangulation> — delete() drops the refcount. */
+export interface Raw_Handle_Poly_Triangulation {
+  /** Borrowed pointee (the handle must outlive it). */
+  Get(): Raw_Poly_Triangulation;
+  IsNull(): boolean;
+  delete(): void;
+}
+
+/** JS-owned wrapper around opencascade::handle<TColgp_HArray1OfPnt> — delete() drops the refcount. */
+export interface Raw_Handle_TColgp_HArray1OfPnt {
+  /** Borrowed pointee (the handle must outlive it). */
+  Get(): Raw_TColgp_HArray1OfPnt;
+  IsNull(): boolean;
+  delete(): void;
+}
+
+/** JS-owned wrapper around opencascade::handle<TCollection_HAsciiString> — delete() drops the refcount. */
+export interface Raw_Handle_TCollection_HAsciiString {
+  /** Borrowed pointee (the handle must outlive it). */
+  Get(): Raw_TCollection_HAsciiString;
+  IsNull(): boolean;
+  delete(): void;
+}
+
 /** The generated raw surface, mixed into the wasm module. */
 export interface RawBindings {
+  gp_XY: Ctor_gp_XY;
+  Law_Function: Ctor_Law_Function;
+  Law_Linear: Ctor_Law_Linear;
+  Law_S: Ctor_Law_S;
+  Law_Interpol: Ctor_Law_Interpol;
+  Law_Composite: Ctor_Law_Composite;
+  Poly_Triangle: Ctor_Poly_Triangle;
+  Poly_Polygon2D: Ctor_Poly_Polygon2D;
+  TColStd_Array1OfReal: Ctor_TColStd_Array1OfReal;
+  TColStd_Array1OfInteger: Ctor_TColStd_Array1OfInteger;
+  TColStd_HArray1OfReal: Ctor_TColStd_HArray1OfReal;
+  TColStd_HArray1OfInteger: Ctor_TColStd_HArray1OfInteger;
+  Message_ProgressRange: Ctor_Message_ProgressRange;
+  DESTEP_Parameters: Ctor_DESTEP_Parameters;
+  TCollection_AsciiString: Ctor_TCollection_AsciiString;
+  TCollection_HAsciiString: Ctor_TCollection_HAsciiString;
+  MoniTool_TypedValue: Ctor_MoniTool_TypedValue;
+  Interface_Static: Ctor_Interface_Static;
+  gp_Pnt: Ctor_gp_Pnt;
+  gp_Vec: Ctor_gp_Vec;
+  gp_Dir: Ctor_gp_Dir;
+  gp_XYZ: Ctor_gp_XYZ;
+  gp_Mat: Ctor_gp_Mat;
+  gp_Ax22d: Ctor_gp_Ax22d;
+  gp_Ax1: Ctor_gp_Ax1;
+  gp_Ax2: Ctor_gp_Ax2;
+  gp_Ax3: Ctor_gp_Ax3;
+  gp_Trsf: Ctor_gp_Trsf;
+  gp_GTrsf: Ctor_gp_GTrsf;
+  gp_Pln: Ctor_gp_Pln;
+  gp_Circ: Ctor_gp_Circ;
+  gp_Lin: Ctor_gp_Lin;
+  gp_Elips: Ctor_gp_Elips;
+  gp_Parab: Ctor_gp_Parab;
+  gp_Hypr: Ctor_gp_Hypr;
+  gp_Cylinder: Ctor_gp_Cylinder;
+  gp_Cone: Ctor_gp_Cone;
+  gp_Sphere: Ctor_gp_Sphere;
+  gp_Torus: Ctor_gp_Torus;
+  gp_Quaternion: Ctor_gp_Quaternion;
+  gp_Pnt2d: Ctor_gp_Pnt2d;
+  gp_Vec2d: Ctor_gp_Vec2d;
+  gp_Dir2d: Ctor_gp_Dir2d;
+  gp_Ax2d: Ctor_gp_Ax2d;
+  gp_Lin2d: Ctor_gp_Lin2d;
+  gp_Circ2d: Ctor_gp_Circ2d;
+  gp_Elips2d: Ctor_gp_Elips2d;
+  gp_Trsf2d: Ctor_gp_Trsf2d;
+  gp_GTrsf2d: Ctor_gp_GTrsf2d;
   TopoDS_Shape: Ctor_TopoDS_Shape;
   TopoDS_Builder: Record<string, never>;
   TopoDS_Iterator: Ctor_TopoDS_Iterator;
@@ -2121,35 +6918,17 @@ export interface RawBindings {
   TopoDS_Compound: Ctor_TopoDS_Compound;
   TopExp: Ctor_TopExp;
   TopExp_Explorer: Ctor_TopExp_Explorer;
-  BRepAlgoAPI_Fuse: Ctor_BRepAlgoAPI_Fuse;
-  BRepAlgoAPI_Cut: Ctor_BRepAlgoAPI_Cut;
-  BRepAlgoAPI_Common: Ctor_BRepAlgoAPI_Common;
-  BRepAlgoAPI_Splitter: Ctor_BRepAlgoAPI_Splitter;
-  BRepFilletAPI_MakeFillet: Record<string, never>;
-  BRepFilletAPI_MakeChamfer: Ctor_BRepFilletAPI_MakeChamfer;
-  BRepBuilderAPI_MakeWire: Ctor_BRepBuilderAPI_MakeWire;
-  BRepBuilderAPI_Sewing: Ctor_BRepBuilderAPI_Sewing;
-  BRepOffsetAPI_ThruSections: Ctor_BRepOffsetAPI_ThruSections;
-  BRepOffsetAPI_MakePipe: Ctor_BRepOffsetAPI_MakePipe;
-  BRepCheck_Analyzer: Ctor_BRepCheck_Analyzer;
-  STEPControl_Reader: Ctor_STEPControl_Reader;
-  STEPControl_Writer: Ctor_STEPControl_Writer;
-  Interface_Static: Ctor_Interface_Static;
-  gp_Pnt: Ctor_gp_Pnt;
-  gp_Vec: Ctor_gp_Vec;
-  gp_Dir: Ctor_gp_Dir;
-  gp_Ax1: Ctor_gp_Ax1;
-  gp_Ax2: Ctor_gp_Ax2;
-  gp_Ax3: Ctor_gp_Ax3;
-  gp_Trsf: Ctor_gp_Trsf;
-  gp_GTrsf: Ctor_gp_GTrsf;
-  gp_Pln: Ctor_gp_Pln;
-  gp_Circ: Ctor_gp_Circ;
-  gp_Lin: Ctor_gp_Lin;
+  TopLoc_Location: Ctor_TopLoc_Location;
+  TopTools_ListOfShape: Ctor_TopTools_ListOfShape;
+  TopTools_IndexedMapOfShape: Ctor_TopTools_IndexedMapOfShape;
+  TopTools_MapOfShape: Ctor_TopTools_MapOfShape;
   BRep_Tool: Ctor_BRep_Tool;
   BRep_Builder: Record<string, never>;
   BRepAdaptor_Curve: Ctor_BRepAdaptor_Curve;
   BRepAdaptor_Surface: Ctor_BRepAdaptor_Surface;
+  BRepLib: Ctor_BRepLib;
+  BRepTools: Ctor_BRepTools;
+  BRepTools_History: Ctor_BRepTools_History;
   BRepPrimAPI_MakeBox: Ctor_BRepPrimAPI_MakeBox;
   BRepPrimAPI_MakeCylinder: Ctor_BRepPrimAPI_MakeCylinder;
   BRepPrimAPI_MakeCone: Ctor_BRepPrimAPI_MakeCone;
@@ -2158,28 +6937,133 @@ export interface RawBindings {
   BRepPrimAPI_MakePrism: Ctor_BRepPrimAPI_MakePrism;
   BRepPrimAPI_MakeRevol: Ctor_BRepPrimAPI_MakeRevol;
   BRepPrimAPI_MakeWedge: Ctor_BRepPrimAPI_MakeWedge;
+  BRepAlgoAPI_Fuse: Ctor_BRepAlgoAPI_Fuse;
+  BRepAlgoAPI_Cut: Ctor_BRepAlgoAPI_Cut;
+  BRepAlgoAPI_Common: Ctor_BRepAlgoAPI_Common;
   BRepAlgoAPI_Section: Ctor_BRepAlgoAPI_Section;
+  BRepAlgoAPI_Splitter: Ctor_BRepAlgoAPI_Splitter;
+  BRepFilletAPI_MakeFillet: Ctor_BRepFilletAPI_MakeFillet;
+  BRepFilletAPI_MakeChamfer: Ctor_BRepFilletAPI_MakeChamfer;
   BRepBuilderAPI_MakeEdge: Ctor_BRepBuilderAPI_MakeEdge;
+  BRepBuilderAPI_MakeWire: Ctor_BRepBuilderAPI_MakeWire;
   BRepBuilderAPI_MakeFace: Ctor_BRepBuilderAPI_MakeFace;
   BRepBuilderAPI_MakePolygon: Ctor_BRepBuilderAPI_MakePolygon;
   BRepBuilderAPI_MakeVertex: Ctor_BRepBuilderAPI_MakeVertex;
+  BRepBuilderAPI_MakeSolid: Ctor_BRepBuilderAPI_MakeSolid;
   BRepBuilderAPI_Transform: Ctor_BRepBuilderAPI_Transform;
   BRepBuilderAPI_GTransform: Ctor_BRepBuilderAPI_GTransform;
+  BRepBuilderAPI_Sewing: Ctor_BRepBuilderAPI_Sewing;
+  BRepOffsetAPI_ThruSections: Ctor_BRepOffsetAPI_ThruSections;
+  BRepOffsetAPI_MakePipe: Ctor_BRepOffsetAPI_MakePipe;
   BRepOffsetAPI_MakePipeShell: Ctor_BRepOffsetAPI_MakePipeShell;
-  GeomAPI_Interpolate: Record<string, never>;
+  BRepOffsetAPI_MakeThickSolid: Ctor_BRepOffsetAPI_MakeThickSolid;
+  BRepOffsetAPI_MakeOffsetShape: Ctor_BRepOffsetAPI_MakeOffsetShape;
+  Geom_Geometry: Ctor_Geom_Geometry;
+  Geom_Curve: Ctor_Geom_Curve;
+  Geom_Line: Ctor_Geom_Line;
+  Geom_Circle: Ctor_Geom_Circle;
+  Geom_Ellipse: Ctor_Geom_Ellipse;
+  Geom_Hyperbola: Ctor_Geom_Hyperbola;
+  Geom_Parabola: Ctor_Geom_Parabola;
+  Geom_BezierCurve: Ctor_Geom_BezierCurve;
+  Geom_TrimmedCurve: Ctor_Geom_TrimmedCurve;
+  Geom_OffsetCurve: Ctor_Geom_OffsetCurve;
+  Geom_BSplineCurve: Ctor_Geom_BSplineCurve;
+  Geom_Surface: Ctor_Geom_Surface;
+  Geom_Plane: Ctor_Geom_Plane;
+  Geom_CylindricalSurface: Ctor_Geom_CylindricalSurface;
+  Geom_ConicalSurface: Ctor_Geom_ConicalSurface;
+  Geom_SphericalSurface: Ctor_Geom_SphericalSurface;
+  Geom_ToroidalSurface: Ctor_Geom_ToroidalSurface;
+  Geom_SurfaceOfRevolution: Ctor_Geom_SurfaceOfRevolution;
+  Geom_SurfaceOfLinearExtrusion: Ctor_Geom_SurfaceOfLinearExtrusion;
+  Geom_OffsetSurface: Ctor_Geom_OffsetSurface;
+  Geom_BSplineSurface: Ctor_Geom_BSplineSurface;
+  Geom2d_Geometry: Ctor_Geom2d_Geometry;
+  Geom2d_Curve: Ctor_Geom2d_Curve;
+  Geom2d_Line: Ctor_Geom2d_Line;
+  Geom2d_Circle: Ctor_Geom2d_Circle;
+  Geom2d_Ellipse: Ctor_Geom2d_Ellipse;
+  Geom2d_TrimmedCurve: Ctor_Geom2d_TrimmedCurve;
+  Adaptor3d_Curve: Ctor_Adaptor3d_Curve;
+  Adaptor3d_Surface: Ctor_Adaptor3d_Surface;
+  BRepPrim_Wedge: Ctor_BRepPrim_Wedge;
+  BRepOffset_MakeOffset: Ctor_BRepOffset_MakeOffset;
+  GeomAPI_Interpolate: Ctor_GeomAPI_Interpolate;
   GeomAPI_PointsToBSpline: Ctor_GeomAPI_PointsToBSpline;
   GC_MakeSegment: Ctor_GC_MakeSegment;
   GC_MakeArcOfCircle: Ctor_GC_MakeArcOfCircle;
-  Geom_BSplineCurve: Ctor_Geom_BSplineCurve;
-  Geom_BSplineSurface: Ctor_Geom_BSplineSurface;
+  Poly_Triangulation: Ctor_Poly_Triangulation;
+  Poly_Polygon3D: Ctor_Poly_Polygon3D;
+  TColgp_Array1OfPnt: Ctor_TColgp_Array1OfPnt;
+  TColgp_Array2OfPnt: Ctor_TColgp_Array2OfPnt;
+  TColgp_HArray1OfPnt: Ctor_TColgp_HArray1OfPnt;
   BRepGProp: Ctor_BRepGProp;
   GProp_GProps: Ctor_GProp_GProps;
+  GProp_PrincipalProps: Ctor_GProp_PrincipalProps;
+  BRepCheck_Analyzer: Ctor_BRepCheck_Analyzer;
+  BRepBndLib: Ctor_BRepBndLib;
+  Bnd_Box: Ctor_Bnd_Box;
+  ShapeUpgrade_UnifySameDomain: Ctor_ShapeUpgrade_UnifySameDomain;
+  ShapeFix_Shape: Ctor_ShapeFix_Shape;
+  STEPControl_Reader: Ctor_STEPControl_Reader;
+  STEPControl_Writer: Ctor_STEPControl_Writer;
+  Handle_Adaptor3d_Curve: new () => Raw_Handle_Adaptor3d_Curve;
+  Handle_Adaptor3d_Curve_adopt(pointee: Raw_Adaptor3d_Curve): Raw_Handle_Adaptor3d_Curve;
+  Handle_Adaptor3d_Surface: new () => Raw_Handle_Adaptor3d_Surface;
+  Handle_Adaptor3d_Surface_adopt(pointee: Raw_Adaptor3d_Surface): Raw_Handle_Adaptor3d_Surface;
+  Handle_BRepTools_History: new () => Raw_Handle_BRepTools_History;
+  Handle_BRepTools_History_adopt(pointee: Raw_BRepTools_History): Raw_Handle_BRepTools_History;
+  Handle_Geom2d_Curve: new () => Raw_Handle_Geom2d_Curve;
+  Handle_Geom2d_Curve_adopt(pointee: Raw_Geom2d_Curve): Raw_Handle_Geom2d_Curve;
+  Handle_Geom2d_Geometry: new () => Raw_Handle_Geom2d_Geometry;
+  Handle_Geom2d_Geometry_adopt(pointee: Raw_Geom2d_Geometry): Raw_Handle_Geom2d_Geometry;
   Handle_Geom_BSplineCurve: new () => Raw_Handle_Geom_BSplineCurve;
   Handle_Geom_BSplineCurve_adopt(pointee: Raw_Geom_BSplineCurve): Raw_Handle_Geom_BSplineCurve;
   Handle_Geom_BSplineSurface: new () => Raw_Handle_Geom_BSplineSurface;
   Handle_Geom_BSplineSurface_adopt(pointee: Raw_Geom_BSplineSurface): Raw_Handle_Geom_BSplineSurface;
+  Handle_Geom_BezierCurve: new () => Raw_Handle_Geom_BezierCurve;
+  Handle_Geom_BezierCurve_adopt(pointee: Raw_Geom_BezierCurve): Raw_Handle_Geom_BezierCurve;
+  Handle_Geom_Curve: new () => Raw_Handle_Geom_Curve;
+  Handle_Geom_Curve_adopt(pointee: Raw_Geom_Curve): Raw_Handle_Geom_Curve;
+  Handle_Geom_Geometry: new () => Raw_Handle_Geom_Geometry;
+  Handle_Geom_Geometry_adopt(pointee: Raw_Geom_Geometry): Raw_Handle_Geom_Geometry;
+  Handle_Geom_OffsetCurve: new () => Raw_Handle_Geom_OffsetCurve;
+  Handle_Geom_OffsetCurve_adopt(pointee: Raw_Geom_OffsetCurve): Raw_Handle_Geom_OffsetCurve;
+  Handle_Geom_Plane: new () => Raw_Handle_Geom_Plane;
+  Handle_Geom_Plane_adopt(pointee: Raw_Geom_Plane): Raw_Handle_Geom_Plane;
+  Handle_Geom_Surface: new () => Raw_Handle_Geom_Surface;
+  Handle_Geom_Surface_adopt(pointee: Raw_Geom_Surface): Raw_Handle_Geom_Surface;
+  Handle_Geom_TrimmedCurve: new () => Raw_Handle_Geom_TrimmedCurve;
+  Handle_Geom_TrimmedCurve_adopt(pointee: Raw_Geom_TrimmedCurve): Raw_Handle_Geom_TrimmedCurve;
   Handle_Interface_Static: new () => Raw_Handle_Interface_Static;
   Handle_Interface_Static_adopt(pointee: Raw_Interface_Static): Raw_Handle_Interface_Static;
+  Handle_Law_Function: new () => Raw_Handle_Law_Function;
+  Handle_Law_Function_adopt(pointee: Raw_Law_Function): Raw_Handle_Law_Function;
+  Handle_MoniTool_TypedValue: new () => Raw_Handle_MoniTool_TypedValue;
+  Handle_MoniTool_TypedValue_adopt(pointee: Raw_MoniTool_TypedValue): Raw_Handle_MoniTool_TypedValue;
+  Handle_Poly_Polygon2D: new () => Raw_Handle_Poly_Polygon2D;
+  Handle_Poly_Polygon2D_adopt(pointee: Raw_Poly_Polygon2D): Raw_Handle_Poly_Polygon2D;
+  Handle_Poly_Polygon3D: new () => Raw_Handle_Poly_Polygon3D;
+  Handle_Poly_Polygon3D_adopt(pointee: Raw_Poly_Polygon3D): Raw_Handle_Poly_Polygon3D;
+  Handle_Poly_Triangulation: new () => Raw_Handle_Poly_Triangulation;
+  Handle_Poly_Triangulation_adopt(pointee: Raw_Poly_Triangulation): Raw_Handle_Poly_Triangulation;
+  Handle_TColgp_HArray1OfPnt: new () => Raw_Handle_TColgp_HArray1OfPnt;
+  Handle_TColgp_HArray1OfPnt_adopt(pointee: Raw_TColgp_HArray1OfPnt): Raw_Handle_TColgp_HArray1OfPnt;
+  Handle_TCollection_HAsciiString: new () => Raw_Handle_TCollection_HAsciiString;
+  Handle_TCollection_HAsciiString_adopt(pointee: Raw_TCollection_HAsciiString): Raw_Handle_TCollection_HAsciiString;
+  /** handle<Geom_BSplineCurve>::DownCast from the family base handle. */
+  DownCast_Geom_BSplineCurve(from: Raw_Handle_Geom_Curve): Raw_Handle_Geom_BSplineCurve;
+  /** handle<Geom_BSplineSurface>::DownCast from the family base handle. */
+  DownCast_Geom_BSplineSurface(from: Raw_Handle_Geom_Surface): Raw_Handle_Geom_BSplineSurface;
+  /** handle<Geom_BezierCurve>::DownCast from the family base handle. */
+  DownCast_Geom_BezierCurve(from: Raw_Handle_Geom_Curve): Raw_Handle_Geom_BezierCurve;
+  /** handle<Geom_OffsetCurve>::DownCast from the family base handle. */
+  DownCast_Geom_OffsetCurve(from: Raw_Handle_Geom_Curve): Raw_Handle_Geom_OffsetCurve;
+  /** handle<Geom_Plane>::DownCast from the family base handle. */
+  DownCast_Geom_Plane(from: Raw_Handle_Geom_Surface): Raw_Handle_Geom_Plane;
+  /** handle<Geom_TrimmedCurve>::DownCast from the family base handle. */
+  DownCast_Geom_TrimmedCurve(from: Raw_Handle_Geom_Curve): Raw_Handle_Geom_TrimmedCurve;
   TopoDS_Vertex_s(a0: Raw_TopoDS_Shape): Raw_TopoDS_Vertex;
   TopoDS_Vertex_s(a0: Raw_TopoDS_Shape): Raw_TopoDS_Vertex;
   TopoDS_Edge_s(a0: Raw_TopoDS_Shape): Raw_TopoDS_Edge;
@@ -2196,8 +7080,15 @@ export interface RawBindings {
   TopoDS_CompSolid_s(a0: Raw_TopoDS_Shape): Raw_TopoDS_CompSolid;
   TopoDS_Compound_s(a0: Raw_TopoDS_Shape): Raw_TopoDS_Compound;
   TopoDS_Compound_s(a0: Raw_TopoDS_Shape): Raw_TopoDS_Compound;
-  TopAbs_ShapeEnum: { [value: string]: number };
-  IFSelect_ReturnStatus: { [value: string]: number };
+  gp_Identity: number;
+  gp_Rotation: number;
+  gp_Translation: number;
+  gp_PntMirror: number;
+  gp_Ax1Mirror: number;
+  gp_Ax2Mirror: number;
+  gp_Scale: number;
+  gp_CompoundTrsf: number;
+  gp_Other: number;
   TopAbs_COMPOUND: number;
   TopAbs_COMPSOLID: number;
   TopAbs_SOLID: number;
@@ -2207,9 +7098,144 @@ export interface RawBindings {
   TopAbs_EDGE: number;
   TopAbs_VERTEX: number;
   TopAbs_SHAPE: number;
+  TopAbs_FORWARD: number;
+  TopAbs_REVERSED: number;
+  TopAbs_INTERNAL: number;
+  TopAbs_EXTERNAL: number;
+  TopAbs_IN: number;
+  TopAbs_OUT: number;
+  TopAbs_ON: number;
+  TopAbs_UNKNOWN: number;
+  BOPAlgo_GlueOff: number;
+  BOPAlgo_GlueShift: number;
+  BOPAlgo_GlueFull: number;
+  BOPAlgo_COMMON: number;
+  BOPAlgo_FUSE: number;
+  BOPAlgo_CUT: number;
+  BOPAlgo_CUT21: number;
+  BOPAlgo_SECTION: number;
+  BOPAlgo_UNKNOWN: number;
+  ChFi3d_Rational: number;
+  ChFi3d_QuasiAngular: number;
+  ChFi3d_Polynomial: number;
+  ChFiDS_Ok: number;
+  ChFiDS_Error: number;
+  ChFiDS_WalkingFailure: number;
+  ChFiDS_StartsolFailure: number;
+  ChFiDS_TwistedSurface: number;
+  BRepBuilderAPI_EdgeDone: number;
+  BRepBuilderAPI_PointProjectionFailed: number;
+  BRepBuilderAPI_ParameterOutOfRange: number;
+  BRepBuilderAPI_DifferentPointsOnClosedCurve: number;
+  BRepBuilderAPI_PointWithInfiniteParameter: number;
+  BRepBuilderAPI_DifferentsPointAndParameter: number;
+  BRepBuilderAPI_LineThroughIdenticPoints: number;
+  BRepBuilderAPI_FaceDone: number;
+  BRepBuilderAPI_NoFace: number;
+  BRepBuilderAPI_NotPlanar: number;
+  BRepBuilderAPI_CurveProjectionFailed: number;
+  BRepBuilderAPI_ParametersOutOfRange: number;
+  BRepBuilderAPI_WireDone: number;
+  BRepBuilderAPI_EmptyWire: number;
+  BRepBuilderAPI_DisconnectedWire: number;
+  BRepBuilderAPI_NonManifoldWire: number;
+  BRepBuilderAPI_PipeDone: number;
+  BRepBuilderAPI_PipeNotDone: number;
+  BRepBuilderAPI_PlaneNotIntersectGuide: number;
+  BRepBuilderAPI_ImpossibleContact: number;
+  BRepFill_ThruSectionErrorStatus_Done: number;
+  BRepFill_ThruSectionErrorStatus_NotDone: number;
+  BRepFill_ThruSectionErrorStatus_NotSameTopology: number;
+  BRepFill_ThruSectionErrorStatus_ProfilesInconsistent: number;
+  BRepFill_ThruSectionErrorStatus_WrongUsage: number;
+  BRepFill_ThruSectionErrorStatus_Null3DCurve: number;
+  BRepFill_ThruSectionErrorStatus_Failed: number;
+  GeomAbs_Line: number;
+  GeomAbs_Circle: number;
+  GeomAbs_Ellipse: number;
+  GeomAbs_Hyperbola: number;
+  GeomAbs_Parabola: number;
+  GeomAbs_BezierCurve: number;
+  GeomAbs_BSplineCurve: number;
+  GeomAbs_OffsetCurve: number;
+  GeomAbs_OtherCurve: number;
+  GeomAbs_Plane: number;
+  GeomAbs_Cylinder: number;
+  GeomAbs_Cone: number;
+  GeomAbs_Sphere: number;
+  GeomAbs_Torus: number;
+  GeomAbs_BezierSurface: number;
+  GeomAbs_BSplineSurface: number;
+  GeomAbs_SurfaceOfRevolution: number;
+  GeomAbs_SurfaceOfExtrusion: number;
+  GeomAbs_OffsetSurface: number;
+  GeomAbs_OtherSurface: number;
+  GeomAbs_C0: number;
+  GeomAbs_G1: number;
+  GeomAbs_C1: number;
+  GeomAbs_G2: number;
+  GeomAbs_C2: number;
+  GeomAbs_C3: number;
+  GeomAbs_CN: number;
+  GeomAbs_Arc: number;
+  GeomAbs_Tangent: number;
+  GeomAbs_Intersection: number;
+  GeomAbs_NonUniform: number;
+  GeomAbs_Uniform: number;
+  GeomAbs_QuasiUniform: number;
+  GeomAbs_PiecewiseBezier: number;
+  gce_Done: number;
+  gce_ConfusedPoints: number;
+  gce_NegativeRadius: number;
+  gce_ColinearPoints: number;
+  gce_IntersectionError: number;
+  gce_NullAxis: number;
+  gce_NullAngle: number;
+  gce_NullRadius: number;
+  gce_InvertAxis: number;
+  gce_BadAngle: number;
+  gce_InvertRadius: number;
+  gce_NullFocusLength: number;
+  gce_NullVector: number;
+  gce_BadEquation: number;
+  Message_Trace: number;
+  Message_Info: number;
+  Message_Warning: number;
+  Message_Alarm: number;
+  Message_Fail: number;
+  STEPControl_AsIs: number;
+  STEPControl_ManifoldSolidBrep: number;
+  STEPControl_BrepWithVoids: number;
+  STEPControl_FacetedBrep: number;
+  STEPControl_FacetedBrepAndBrepWithVoids: number;
+  STEPControl_ShellBasedSurfaceModel: number;
+  STEPControl_GeometricCurveSet: number;
+  STEPControl_Hybrid: number;
   IFSelect_RetVoid: number;
   IFSelect_RetDone: number;
   IFSelect_RetError: number;
   IFSelect_RetFail: number;
   IFSelect_RetStop: number;
+  Interface_ParamMisc: number;
+  Interface_ParamInteger: number;
+  Interface_ParamReal: number;
+  Interface_ParamIdent: number;
+  Interface_ParamVoid: number;
+  Interface_ParamText: number;
+  Interface_ParamEnum: number;
+  Interface_ParamLogical: number;
+  Interface_ParamSub: number;
+  Interface_ParamHexa: number;
+  Interface_ParamBinary: number;
+  MoniTool_ValueMisc: number;
+  MoniTool_ValueInteger: number;
+  MoniTool_ValueReal: number;
+  MoniTool_ValueIdent: number;
+  MoniTool_ValueVoid: number;
+  MoniTool_ValueText: number;
+  MoniTool_ValueEnum: number;
+  MoniTool_ValueLogical: number;
+  MoniTool_ValueSub: number;
+  MoniTool_ValueHexa: number;
+  MoniTool_ValueBinary: number;
 }

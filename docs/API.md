@@ -369,9 +369,9 @@ Both line arrays use the same segment-pair convention as `MeshData.edges`.
 ## Raw OCCT bindings — the generated escape hatch
 
 The curated `OccSession` API covers the common path; the raw layer beneath it
-exposes ~70 OCCT classes verbatim (OCP-style naming) for everything else. It is
-**generated** from a whitelist (`tools/codegen/classes.json`) by parsing the
-OCCT headers with libclang — `npm run codegen` regenerates, the outputs are
+exposes **152 OCCT classes verbatim** (OCP-style naming) for everything else.
+It is **generated** from a whitelist (`tools/codegen/classes.json`) by parsing
+the OCCT headers with libclang — `npm run codegen` regenerates, the outputs are
 checked in and diff-reviewable, and every member that could not be mapped is
 listed in `tools/codegen/SKIPPED.md` (nothing is dropped silently).
 
@@ -385,14 +385,41 @@ props.Mass();                              // 60 — matches occ.makeBox(3, 4, 5
 shape.delete(); props.delete(); maker.delete();
 ```
 
-What's in the whitelist (build123d core set): `gp_*` (Pnt/Vec/Dir/Ax1/Ax2/Ax3/
-Trsf/GTrsf/Pln/Circ/Lin), the `TopoDS_*` family + `TopoDS_Edge_s`-style downcasts,
-`TopExp`/`TopExp_Explorer`, `BRep_Tool`/`BRep_Builder`, `BRepAdaptor_*`,
+**Bridging the layers** — `occ.toRaw(shape)` hands a raw `TopoDS_Shape` copy
+to the raw layer (JS-owned; `delete()` it when done), `occ.fromRaw(rawShape)`
+brings one back (session-adopted):
+
+```ts
+const rawBox = occ.toRaw(occ.makeBox(10, 20, 3));   // or occ.module.toRaw(shape.raw)
+const faces = new raw.TopTools_IndexedMapOfShape();
+raw.TopExp.MapShapes(rawBox, raw.TopAbs_FACE, faces);  // faces.Extent() === 6
+const face = raw.TopoDS_Face_s(faces.FindKey(1));      // OCP-style cast
+const surf = raw.BRep_Tool.Surface(face);              // Handle_Geom_Surface
+raw.DownCast_Geom_Plane(surf).Get();                   // the Geom_Plane pointee
+```
+
+Conventions: enums cross as **int** with their enumerators as module-level
+number constants (OCP-style: `raw.TopAbs_FACE`, `raw.IFSelect_RetDone`);
+container typedefs (`TopTools_ListOfShape`, `TopTools_IndexedMapOfShape`,
+`TColStd_Array1OfReal`, `TColgp_Array1OfPnt`, …) are first-class classes;
+`Handle_X` wrappers carry `Get()`/`IsNull()`/`delete()` and the
+`DownCast_X(fromBaseHandle)` functions downcast from the family's base handle;
+constructors are guarded factories, so string, enum and handle arguments
+convert exactly like method arguments. STEP files can be read and written
+entirely raw (`STEPControl_Reader.ReadFile` / `STEPControl_Writer.Write` —
+paths live in the wasm MEMFS, e.g. `/file.step`; the curated
+`readStep`/`writeStep` stage the bytes for you).
+
+The whitelist (build123d core set and its dependencies): `gp_*` values and
+transforms, the `TopoDS_*` family + `TopoDS_Face_s`-style casts,
+`TopExp`/`TopExp_Explorer`/`TopTools_*` containers, `TopLoc_Location`,
+`BRep_Tool`/`BRep_Builder`/`BRepLib`/`BRepTools`, `BRepAdaptor_*`,
 `BRepPrimAPI_*`, `BRepAlgoAPI_*`, `BRepFilletAPI_*`, `BRepBuilderAPI_*`,
-`BRepOffsetAPI_ThruSections`/`MakePipe`/`MakePipeShell`, `GeomAPI_Interpolate`/
-`PointsToBSpline`, `GC_MakeSegment`/`MakeArcOfCircle`, `Geom_BSplineCurve`/
-`Surface`, `BRepGProp`/`GProp_GProps`, `BRepCheck_Analyzer`, `STEPControl_Reader`/
-`Writer`, `Interface_Static`.
+`BRepOffsetAPI_*` (incl. `MakeThickSolid`/`MakeOffsetShape`),
+`ShapeUpgrade_UnifySameDomain`, `ShapeFix_Shape`, `Bnd_Box`/`BRepBndLib`,
+the `Geom_*`/`Geom2d_*` curve-and-surface families, `Poly_*` triangulations,
+`TCol*` arrays, `Law_*` functions, `GProp_GProps`/`BRepGProp`/
+`BRepCheck_Analyzer`, `STEPControl_Reader`/`Writer`, `Interface_Static`.
 
 Discipline (same as OCP / opencascade.js):
 

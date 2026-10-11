@@ -56,6 +56,7 @@ import type {
   VariableFilletSpec,
 } from "./types.js";
 import type { OccWasmModule, WasmShape, WasmShapeVector } from "./wasm-module.js";
+import type { Raw_TopoDS_Shape } from "./raw.generated.js";
 
 const DEFAULT_LINEAR_DEFLECTION = 0.1;
 const DEFAULT_ANGULAR_DEFLECTION_DEG = 20;
@@ -1204,6 +1205,20 @@ export class OccSession {
     const result = this.module.classifyPoint(shape.raw, point[0], point[1], point[2]);
     this.throwIfError();
     return result as PointClassification;
+  }
+
+  /**
+   * Bridge into the raw OCCT escape hatch: this shape as a raw
+   * `TopoDS_Shape`. JS-owned — call `.delete()` when done (raw-layer
+   * discipline). The raw classes ride the same module (`occ.module`).
+   */
+  toRaw(shape: OccShape): Raw_TopoDS_Shape {
+    return this.module.toRaw(shape.raw);
+  }
+
+  /** Bridge back: the session adopts the curated copy of a raw shape. */
+  fromRaw(raw: Raw_TopoDS_Shape): OccShape {
+    return this.adopt(this.module.fromRaw(raw));
   }
 
   // --- tessellation & hidden lines ---------------------------------------------------

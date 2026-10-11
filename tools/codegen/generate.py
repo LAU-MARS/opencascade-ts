@@ -29,7 +29,9 @@ import glob
 import json
 import os
 import re
+import shutil
 import sys
+import tempfile
 
 import clang.cindex as ci
 
@@ -102,13 +104,19 @@ def classify(type_: ci.Type, role="arg"):
       ("void", None)    return only
 
     Function-pointer typedefs (some embed handle<...> in their spelling) and
-    non-const primitive/handle references are rejected — v1 has no story for
+    non-const primitive references are rejected — v1 has no story for
     them. `role` distinguishes returns (references copy out by value) from
     arguments (non-const references stay mutable).
+
+    Container typedefs (TopTools_ListOfShape = NCollection_List<TopoDS_Shape>)
+    are matched three ways: the canonical template name via TYPEDEF_ALIASES,
+    the declared typedef spelling, or the plain whitelist — whichever names a
+    registered class first.
     """
     canonical = type_.get_canonical().spelling
-    if "(*)" in canonical or "(&" in canonical:
-        return None
+    canonical = re.sub(r"\*\s*const(?=\s|$)", "*", canonical)  # char* const → char*
+    if "(*)" in canonical or "(&" in canonical or "&&" in canonical:
+        return None  # fn pointers, lvalue-ref traps, move semantics
 
     handle = HANDLE_RE.match(canonical) or HANDLE_RE.match(type_.spelling)
     if handle:
@@ -124,8 +132,10 @@ def classify(type_: ci.Type, role="arg"):
     is_const = canonical.lstrip().startswith("const ")
 
     if is_pointer:
-        pointee = base_type_name(type_.get_pointee())
-        if pointee in ("char", "unsigned char") and is_const:
+        # get_pointee() needs a real pointer type — typedefs like
+        # Standard_CString only become one after canonicalization
+        pointee = base_type_name(type_.get_canonical().get_pointee())
+        if pointee in ("char", "unsigned char"):
             return ("string", "const char*")
         if pointee in WHITELIST_CLASSES:
             return ("pointer", pointee)
@@ -146,10 +156,15 @@ def classify(type_: ci.Type, role="arg"):
         return ("prim", "int")
     if name in WHITELIST_ENUMS:
         return ("enum", name)
-    if name in WHITELIST_CLASSES:
+
+    declared = (
+        type_.spelling.replace("const ", "").strip().rstrip("&*").strip()
+    )
+    alias = TYPEDEF_ALIASES.get(name, declared)
+    if alias in WHITELIST_CLASSES:
         if is_ref and not is_const and role == "arg":
-            return ("ref", name)
-        return ("class", name)
+            return ("ref", alias)
+        return ("class", alias)
     return None
 
 
@@ -254,6 +269,14 @@ def default_error_value(ret):
 
 SKIPPED = []
 EXCLUSIONS = {}
+# canonical template name → whitelisted typedef name (TopTools_ListOfShape →
+# NCollection_List<TopoDS_Shape>): filled during the first pass, consulted by
+# classify so signatures spelled either way resolve to the registered class
+TYPEDEF_ALIASES = {}
+# whitelist entries that resolved to container typedefs (TopTools_ListOfShape):
+# template specializations expose methods to libclang but not constructors,
+# so their default/copy ctors are synthesized at emission
+TYPEDEF_CLASSES = set()
 
 
 def skip(where, reason):
@@ -289,6 +312,187 @@ def parse_header(index, occt_include, name, clang_include=""):
                 target = cursor
                 break
     return tu, target
+
+
+def parse_typedef_target(index, occt_include, name, canonical_target, clang_include, tmp_dir):
+    """The primary template definition behind a container typedef.
+
+    libclang does not expose members on template specializations, so the
+    template's own definition is collected and its dependent types
+    substituted (see collect_container_members). Parsing a synthetic header
+    that includes the typedef's header guarantees the definition is in the
+    TU.
+    """
+    template_name = canonical_target.split("<")[0]
+    synthetic = os.path.join(tmp_dir, f"{name}_force.hxx")
+    with open(synthetic, "w", encoding="utf-8") as fh:
+        fh.write(f"#include <{name}.hxx>\n")
+    parse_args = ["-std=c++17", "-x", "c++", f"-I{occt_include}", f"-I{os.path.dirname(occt_include)}"]
+    if clang_include:
+        parse_args.append(f"-I{clang_include}")
+    tu = index.parse(synthetic, args=parse_args)
+    errors = [d for d in tu.diagnostics if d.severity >= ci.Diagnostic.Error]
+    for d in errors[:3]:
+        print(f"  [clang] {d}", file=sys.stderr)
+    if errors:
+        return None
+    found = []
+
+    def walk(cursor):
+        for child in cursor.get_children():
+            if (
+                child.kind == ci.CursorKind.CLASS_TEMPLATE
+                and child.spelling == template_name
+                and child.is_definition()
+            ):
+                found.append(child)
+            walk(child)
+
+    walk(tu.cursor)
+    return found[0] if found else None
+
+
+def split_first_template_arg(canonical_target):
+    """'NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>' → TopoDS_Shape."""
+    inner = canonical_target[canonical_target.index("<") + 1 : canonical_target.rindex(">")]
+    depth, current = 0, []
+    for ch in inner:
+        if ch == "<":
+            depth += 1
+        elif ch == ">":
+            depth -= 1
+        if ch == "," and depth == 0:
+            return "".join(current).strip()
+        current.append(ch)
+    return inner.strip()
+
+
+def _dependent_param_index(leaf_type):
+    """Index of a dependent template parameter, or None.
+
+    clang exposes dependent parameter types as UNEXPOSED with the spelling
+    'type-parameter-<depth>-<index>' and no declaration cursor (const-qualified
+    spellings keep their 'const ' prefix); member typedefs (value_type) need
+    one more desugaring step.
+    """
+    spelling = leaf_type.spelling.strip().replace("const ", "").strip()
+    m = re.match(r"type-parameter-(\d+)-(\d+)$", spelling)
+    if m:
+        return int(m.group(2))
+    decl = leaf_type.get_declaration()
+    if decl.kind == ci.CursorKind.TYPEDEF_DECL:
+        spelling = decl.type.get_canonical().spelling.strip().replace("const ", "").strip()
+        m = re.match(r"type-parameter-(\d+)-(\d+)$", spelling)
+        if m:
+            return int(m.group(2))
+    return None
+
+
+def collect_container_members(template_cursor, typedef_name, template_name, value_arg):
+    """Template members with dependent types substituted: T/value_type → the
+    container's value type, injected self-references (chained Append...) →
+    the typedef itself (returned as a copy)."""
+    methods, statics = [], []
+
+    def classify_t(type_, role="arg"):
+        canonical = type_.get_canonical().spelling
+        if "(*)" in canonical or "(&" in canonical or "&&" in canonical:
+            return None
+        leaf = type_.get_canonical()
+        if leaf.kind in (ci.TypeKind.POINTER, ci.TypeKind.LVALUEREFERENCE, ci.TypeKind.RVALUEREFERENCE):
+            leaf = leaf.get_pointee()
+        is_const = canonical.lstrip().startswith("const ")
+        is_ref = canonical.endswith("&")
+        # injected self-reference (chained Assign/Append returning the list)
+        bare = canonical.replace("const ", "").rstrip("&* ").strip()
+        if bare == template_name or bare.startswith(template_name + "<"):
+            if is_ref and not is_const and role == "arg":
+                return ("ref", typedef_name)
+            return ("class", typedef_name)
+        # dependent types: the value type reaches signatures as the bare
+        # parameter ('type-parameter-0-0') or through the known value member
+        # typedefs ('typename Base<T>::value_type/const_reference/reference').
+        # Iterators and anything else dependent stay unmappable.
+        spelling = leaf.spelling.replace("const ", "").strip()
+        is_value_form = spelling == "type-parameter-0-0" or spelling.endswith((
+            "::value_type",
+            "::const_reference",
+            "::reference",
+            "::item_type",
+            "::const_item_type",
+        ))
+        if is_value_form:
+            if value_arg in PRIMITIVES:
+                return ("prim", PRIMITIVES[value_arg])
+            if value_arg in WHITELIST_CLASSES:
+                return ("class", value_arg)
+            return None
+        if "type-parameter-" in spelling:
+            return None
+        return classify(type_, role)
+
+    seen_names = set()
+
+    def method_children(class_cursor):
+        out = []
+        for child in class_cursor.get_children():
+            if child.access_specifier not in (ci.AccessSpecifier.PUBLIC, ci.AccessSpecifier.INVALID):
+                continue
+            if child.kind != ci.CursorKind.CXX_METHOD:
+                continue
+            if child.spelling.startswith("operator") or child.spelling.startswith("~"):
+                continue
+            out.append(child)
+        return out
+
+    def base_children(class_cursor):
+        out = []
+        for child in class_cursor.get_children():
+            if child.kind == ci.CursorKind.CXX_BASE_SPECIFIER:
+                base_cursor = child.type.get_declaration()
+                if base_cursor.is_definition():
+                    out.append(base_cursor)
+        return out
+
+    def bind(child):
+        # a derived declaration HIDES every same-name base overload (C++
+        # name hiding) — the nearest declaration wins, base versions are not
+        # callable on this type
+        if child.spelling in seen_names:
+            return
+        seen_names.add(child.spelling)
+        params = [p for p in child.get_children() if p.kind == ci.CursorKind.PARM_DECL]
+        args, ok = [], True
+        for p in params:
+            mapped = classify_t(p.type)
+            if mapped is None or mapped[0] == "void":
+                ok = False
+                break
+            args.append((mapped[0], mapped[1], p.spelling, has_default_arg(p)))
+        ret = (
+            classify_t(child.result_type, role="ret")
+            if child.result_type.kind != ci.TypeKind.VOID
+            else ("void", None)
+        )
+        if not ok or ret is None:
+            skip(f"{typedef_name}.{child.spelling}", "container member unmappable")
+            return
+        entry = (child, args, ret)
+        (statics if child.is_static_method() else methods).append(entry)
+
+    def visit(class_cursor):
+        for child in method_children(class_cursor):
+            bind(child)
+        for base in base_children(class_cursor):
+            visit(base)
+
+    # the template's own declarations shadow the bases (never the reverse),
+    # so bind the root first and only then walk the base chain
+    for child in method_children(template_cursor):
+        bind(child)
+    for base in base_children(template_cursor):
+        visit(base)
+    return methods, statics
 
 
 def collect_namespace_functions(ns_cursor):
@@ -369,7 +573,10 @@ def collect_members(class_cursor, class_name, _depth=0):
             args, ok = [], True
             for p in params:
                 mapped = classify(p.type)
-                if mapped is None or mapped[0] in ("void", "handle", "enum"):
+                # constructors go through guarded factory wrappers (like
+                # methods), so every mappable kind works — strings convert
+                # via c_str(), enums via static_cast, handles adopt pointers
+                if mapped is None or mapped[0] == "void":
                     ok = False
                     break
                 args.append((mapped[0], mapped[1], p.spelling, has_default_arg(p)))
@@ -469,6 +676,55 @@ def needs_raw_pointers(args, ret):
     return ret[0] in ("pointer", "handle")
 
 
+def ctor_wrapper_cpp(cls, args, suffix):
+    """Guarded factory for one constructor overload — the wrapper form lets
+    the same argument conversions methods use (c_str, handle(ptr),
+    static_cast) reach constructors, which embind's direct
+    .constructor<T...>() template cannot do."""
+    sig = ", ".join(param_cpp((a[0], a[1]), f"a{i}") for i, a in enumerate(args))
+    call = ", ".join(call_arg(i, (a[0], a[1])) for i, a in enumerate(args))
+    return (
+        f"static {cls}* {cls}_ctor{suffix}_wrap({sig}) {{\n"
+        f'  return occ_ts::guarded("{cls}::ctor", [&]() -> {cls}* {{\n'
+        f"    return new {cls}({call});\n"
+        f"  }}, ({cls}*)nullptr);\n"
+        f"}}"
+    )
+
+
+# families whose handle::DownCast is worth exposing: class → the base handle
+# users hold (OCP code downcasts from the abstract root of the family)
+DOWNCAST_BASES = {
+    "Geom_Line": "Geom_Curve",
+    "Geom_Circle": "Geom_Curve",
+    "Geom_Ellipse": "Geom_Curve",
+    "Geom_Hyperbola": "Geom_Curve",
+    "Geom_Parabola": "Geom_Curve",
+    "Geom_BezierCurve": "Geom_Curve",
+    "Geom_BSplineCurve": "Geom_Curve",
+    "Geom_TrimmedCurve": "Geom_Curve",
+    "Geom_OffsetCurve": "Geom_Curve",
+    "Geom_Plane": "Geom_Surface",
+    "Geom_CylindricalSurface": "Geom_Surface",
+    "Geom_ConicalSurface": "Geom_Surface",
+    "Geom_SphericalSurface": "Geom_Surface",
+    "Geom_ToroidalSurface": "Geom_Surface",
+    "Geom_SurfaceOfRevolution": "Geom_Surface",
+    "Geom_SurfaceOfLinearExtrusion": "Geom_Surface",
+    "Geom_OffsetSurface": "Geom_Surface",
+    "Geom_BezierSurface": "Geom_Surface",
+    "Geom_BSplineSurface": "Geom_Surface",
+    "Geom2d_Line": "Geom2d_Curve",
+    "Geom2d_Circle": "Geom2d_Curve",
+    "Geom2d_Ellipse": "Geom2d_Curve",
+    "Geom2d_TrimmedCurve": "Geom2d_Curve",
+    "Law_Linear": "Law_Function",
+    "Law_S": "Law_Function",
+    "Law_Interpol": "Law_Function",
+    "Law_Composite": "Law_Function",
+}
+
+
 def emit_cpp(classes, enums_global, handle_classes, class_data, enum_values, namespaces):
     out = []
     out.append(
@@ -483,12 +739,41 @@ def emit_cpp(classes, enums_global, handle_classes, class_data, enum_values, nam
     for name in sorted(set(list(classes) + list(handle_classes) + list(namespaces))):
         out.append(f"#include <{name}.hxx>\n")
     out.append("\n" + '#include "../error.h"\n')
+    out.append('#include "../occ.h"\n')
     out.append("\nusing namespace emscripten;\n\nnamespace {\n\n")
 
     for cls in classes:
         ctors, methods, statics, enums, bases = class_data[cls]
         reg = []
         seen_mcounts = set()
+        # constructor factories (guarded wrappers — see ctor_wrapper_cpp)
+        seen_ctor_counts = set()
+        for oi, (cursor, args) in enumerate(ctors):
+            variants = [args]
+            first_default = next((i for i, a in enumerate(args) if a[3]), None)
+            if first_default is not None:
+                i = first_default
+                while i < len(args) and args[i][3]:
+                    i += 1
+                for cut in range(i - 1, first_default - 1, -1):
+                    variants.append(args[:cut])
+            for vi, variant in enumerate(variants):
+                if len(variant) in seen_ctor_counts:
+                    skip(
+                        f"{cls}::ctor({', '.join(a[2] or '?' for a in variant)})",
+                        "a constructor with this parameter count is already bound (embind picks by count)",
+                    )
+                    continue
+                seen_ctor_counts.add(len(variant))
+                suffix = f"_c{oi}v{vi}"
+                out.append(ctor_wrapper_cpp(cls, variant, suffix))
+                out.append("\n")
+                policy = (
+                    ", allow_raw_pointers()"
+                    if any(a[0] in ("pointer", "handle") for a in variant)
+                    else ""
+                )
+                reg.append(f"      .constructor(&{cls}_ctor{suffix}_wrap{policy})")
         for oi, (cursor, args, ret) in enumerate(methods + statics):
             variants = [args]
             # default arguments → truncated overloads, longest first
@@ -610,51 +895,53 @@ def emit_cpp(classes, enums_global, handle_classes, class_data, enum_values, nam
                 policy = ", allow_raw_pointers()" if needs_raw_pointers(variant, ret) else ""
                 ns_reg.append(f'  function("{js_name}", &{ns}_{name}{suffix}_wrap{policy});\n')
 
+    # handle<T>::DownCast lives on the handle template, not the class header —
+    # expose it as a module function per family member, taking the family's
+    # root handle (what BRep_Tool and friends hand back)
+    downcast_reg = []
+    for cls in sorted(DOWNCAST_BASES):
+        base = DOWNCAST_BASES[cls]
+        if cls not in handle_classes or base not in handle_classes:
+            continue
+        out.append(
+            f"static opencascade::handle<{cls}>* DownCast_{cls}_wrap(opencascade::handle<{base}>* a0) {{\n"
+            f'  return occ_ts::guarded("DownCast_{cls}", [&]() -> opencascade::handle<{cls}>* {{\n'
+            f"    return new opencascade::handle<{cls}>(opencascade::handle<{cls}>::DownCast(a0 ? *a0 : opencascade::handle<{base}>()));\n"
+            f"  }}, (opencascade::handle<{cls}>*)nullptr);\n"
+            f"}}\n\n"
+        )
+        downcast_reg.append(f'  function("DownCast_{cls}", &DownCast_{cls}_wrap, allow_raw_pointers());\n')
+
     out.append("} // namespace\n\n")
+
+    # Bridge to/from the curated layer (glue.cpp's embind "Shape"). The
+    # bridge lives in this generated file because it needs the raw TopoDS_Shape
+    # registration; it may reference OccShape because build-glue.sh links
+    # glue.o (which registers "Shape") before raw_bindings.o.
+    out.append(
+        "TopoDS_Shape toRaw_wrap(const OccShape& shape) {\n"
+        '  return occ_ts::guarded("toRaw", [&]() -> TopoDS_Shape { return shape.get(); },\n'
+        "                         TopoDS_Shape());\n"
+        "}\n\n"
+        "OccShape fromRaw_wrap(const TopoDS_Shape& shape) {\n"
+        '  return occ_ts::guarded("fromRaw", [&]() -> OccShape { return OccShape(shape); },\n'
+        "                         OccShape());\n"
+        "}\n\n"
+    )
     out.append("EMSCRIPTEN_BINDINGS(occt_ts_raw) {\n")
 
     for cls in classes:
         ctors, methods, statics, enums, bases, reg = class_data[cls]
         tmpl = f"{cls}, base<{bases[0]}>" if bases else cls
         out.append(f'  class_<{tmpl}>("{cls}")\n')
-        # embind resolves constructor overloads by PARAMETER COUNT ONLY —
-        # keep the first declaration of each count, report the rest.
-        seen_ctor_counts = set()
-        for cursor, args in ctors:
-            variants = [args]
-            first_default = next((i for i, a in enumerate(args) if a[3]), None)
-            if first_default is not None:
-                i = first_default
-                while i < len(args) and args[i][3]:
-                    i += 1
-                for cut in range(i - 1, first_default - 1, -1):
-                    variants.append(args[:cut])
-            for variant in variants:
-                if len(variant) in seen_ctor_counts:
-                    skip(
-                        f"{cls}::ctor({', '.join(a[2] or '?' for a in variant)})",
-                        "a constructor with this parameter count is already bound (embind picks by count)",
-                    )
-                    continue
-                seen_ctor_counts.add(len(variant))
-                tmpl = ", ".join(
-                    t for t in [
-                        {"prim": lambda p: p, "string": lambda p: "std::string",
-                         "class": lambda p: f"const {p}&", "pointer": lambda p: f"{p}*",
-                         "enum": lambda p: "int"}.get(variant[j][0], lambda p: None)(variant[j][1])
-                        for j in range(len(variant))
-                    ] if t is not None
-                )
-                policy = ", allow_raw_pointers()" if any(a[0] == "pointer" for a in variant) else ""
-                out.append(f"      .constructor<{tmpl}>(){policy}\n")
+        # constructors were emitted as guarded factories in the namespace
+        # section (reg carries their .constructor registrations)
         for line in reg:
             out.append(line + "\n")
-        for enum in enums:
-            out.append(f'      .enum_<{enum.spelling}>("{enum.spelling}")\n')
-            for value in enum.get_children():
-                if value.kind == ci.CursorKind.ENUM_CONSTANT_DECL:
-                    out.append(f'          .value("{value.spelling}", {enum.spelling}::{value.spelling})\n')
-            out.append("      ;\n")
+        # NOTE: nested enums are not emitted — the pinned embind has no
+        # class-scoped .enum_; whitelisted top-level enums cross as int with
+        # their enumerators exported as module constants, which covers the
+        # OCP-style access that matters.
         out.append("  ;\n\n")
 
     for cls in sorted(handle_classes):
@@ -668,16 +955,17 @@ def emit_cpp(classes, enums_global, handle_classes, class_data, enum_values, nam
             f"\n"
         )
 
-    for enum_name in enum_values:
-        out.append(f'  enum_<{enum_name}>("{enum_name}")\n')
-        for value_name, cpp in enum_values[enum_name]:
-            out.append(f'      .value("{value_name}", {cpp})\n')
-        out.append("  ;\n")
-
+    # enums cross as int with their enumerators as module-level number
+    # constants (OCP-style: module.TopAbs_SOLID). The pinned embind's
+    # enum_<> objects hand back wrapped instances instead of numbers, so
+    # they are deliberately not registered.
     for const_name, cpp in CONSTANT_EXPORTS:
         out.append(f'  constant("{const_name}", {cpp});\n')
 
     out.extend(ns_reg)
+    out.extend(downcast_reg)
+    out.append('  function("toRaw", &toRaw_wrap);\n')
+    out.append('  function("fromRaw", &fromRaw_wrap);\n')
     out.append("}\n")
     return "".join(out)
 
@@ -751,6 +1039,14 @@ def emit_ts(classes, enums_global, handle_classes, class_data, enum_values, name
             f"  Handle_{cls}: new () => Raw_Handle_{cls};\n"
             f"  Handle_{cls}_adopt(pointee: Raw_{cls}): Raw_Handle_{cls};\n"
         )
+    for cls in sorted(DOWNCAST_BASES):
+        base = DOWNCAST_BASES[cls]
+        if cls not in handle_classes or base not in handle_classes:
+            continue
+        out.append(
+            f"  /** handle<{cls}>::DownCast from the family base handle. */\n"
+            f"  DownCast_{cls}(from: Raw_Handle_{base}): Raw_Handle_{cls};\n"
+        )
     for ns, functions in namespaces.items():
         by_name = {}
         for cursor, args, ret in functions:
@@ -761,8 +1057,6 @@ def emit_ts(classes, enums_global, handle_classes, class_data, enum_values, name
                 js_name = f"{js_name}_s"
             for args, ret in overloads:
                 out.append(f"  {js_name}{ts_method_sig(args, ret)};\n")
-    for enum_name in enum_values:
-        out.append(f"  {enum_name}: {{ [value: string]: number }};\n")
     for const_name, _ in CONSTANT_EXPORTS:
         out.append(f"  {const_name}: number;\n")
     out.append("}\n")
@@ -797,12 +1091,14 @@ def main():
 
     load_libclang()
     index = ci.Index.create()
+    tmp_dir = tempfile.mkdtemp(prefix="occt_ts_codegen_")
 
     # First pass: which whitelist entries resolve to classes, enums or
     # namespaces (the whitelist does not distinguish; the headers do).
     WHITELIST_CLASSES, WHITELIST_ENUMS, enums_global = [], [], []
     namespaces = {}
     parsed = {}
+    container_info = {}
     for name in whitelist:
         tu, cursor = parse_header(index, args.occt_include, name, clang_include)
         if cursor is None:
@@ -814,16 +1110,50 @@ def main():
             enums_global.append(cursor)
         elif cursor.kind == ci.CursorKind.NAMESPACE:
             namespaces[name] = collect_namespace_functions(cursor)
+        elif cursor.kind == ci.CursorKind.TYPEDEF_DECL:
+            # container typedefs (TopTools_ListOfShape = NCollection_List<TopoDS_Shape>):
+            # register under the typedef name, collect members from the
+            # template definition with dependent types substituted
+            canonical_target = base_type_name(cursor.type)
+            TYPEDEF_ALIASES[canonical_target] = name
+            template_def = parse_typedef_target(
+                index, args.occt_include, name, canonical_target, clang_include, tmp_dir
+            )
+            if template_def is not None:
+                WHITELIST_CLASSES.append(name)
+                parsed[name] = template_def
+                TYPEDEF_CLASSES.add(name)
+                container_info[name] = (
+                    canonical_target.split("<")[0],
+                    split_first_template_arg(canonical_target),
+                )
+            else:
+                print(f"warning: {name} template definition not found — skipped", file=sys.stderr)
+                skip(name, "typedef template definition not found")
         else:
             WHITELIST_CLASSES.append(name)
-        parsed[name] = cursor
+        parsed.setdefault(name, cursor)
 
     # registration order: every class referenced (as a base, argument, return
     # or handle payload) must be registered before its user — embind resolves
     # types at registration time.
     raw_data = {}
     for cls in WHITELIST_CLASSES:
+        if cls in TYPEDEF_CLASSES:
+            continue  # collected separately below (template + substitution)
         raw_data[cls] = collect_members(parsed[cls], cls)
+
+    # container typedefs: members come from the template definition with
+    # substituted types; constructors are synthesized (NCollection containers
+    # all have default + copy ctors)
+    for cls in TYPEDEF_CLASSES:
+        template_name, value_arg = container_info[cls]
+        methods, statics = collect_container_members(parsed[cls], cls, template_name, value_arg)
+        ctors = []
+        if not any(len(args) == 0 for _, args in ctors):
+            ctors.append((None, []))
+        ctors.append((None, [(("class", cls, "other", False))]))
+        raw_data[cls] = (ctors, methods, statics, [], [])
 
     def referenced(cls):
         ctors, methods, statics, enums, bases = raw_data[cls]
@@ -889,7 +1219,9 @@ def main():
         enum_values[cursor.spelling] = values
     for enum_name, values in enum_values.items():
         for value_name, cpp in values:
-            CONSTANT_EXPORTS.append((value_name, cpp))
+            # the int cast matters: a raw enum value crosses as an object,
+            # the number is what JS callers compare against
+            CONSTANT_EXPORTS.append((value_name, f"(int){cpp}"))
 
     # stash for the emitters (they read the globals this module manages)
     globals()["WHITELIST_CLASSES"] = WHITELIST_CLASSES
@@ -904,6 +1236,7 @@ def main():
     ts = emit_ts(ordered, enums_global, handle_classes, class_data, enum_values, namespaces)
 
     os.makedirs(args.out_dir, exist_ok=True)
+    shutil.rmtree(tmp_dir, ignore_errors=True)
     with open(os.path.join(args.out_dir, "raw_bindings.cpp"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write(cpp)
     with open(os.path.join(args.out_dir, "raw.generated.ts"), "w", encoding="utf-8", newline="\n") as fh:
