@@ -48,9 +48,33 @@ OccShape makeHelixWire(double radius, double pitch, double height,
                        bool leftHanded);
 // Concatenate connected wires/edges into one wire, in order.
 OccShape assembleWire(const std::vector<OccShape>& parts);
+// Ellipse arc on (R1 ≥ R2, axis system) between ellipse parameters u1 < u2
+// (radians, counterclockwise around the normal); span must be < 2π. The
+// trimmed Geom_Ellipse stays analytic — no sampled-spline approximation.
+OccShape makeEllipseArcWire(double radius1, double radius2,
+                            double nx, double ny, double nz,
+                            double ox, double oy, double oz,
+                            double u1, double u2);
+// Bézier wire from control points (flat coordinates, one polynomial segment,
+// degree = poleCount - 1); optional positive weights (empty = non-rational).
+// 2..25 poles.
+OccShape makeBezierWire(const std::vector<double>& coordinates,
+                        const std::vector<double>& weights);
 // Planar face from an outer wire, with optional hole wires inside it (the
 // face-with-holes section for extrude/revolve/loft).
 OccShape makeFaceShape(const OccShape& outer, const std::vector<OccShape>& holes);
+
+// 2D offset of a planar wire or face (BRepOffsetAPI_MakeOffset): grows the
+// profile outwards for positive `distance` (hole wires shrink correspondingly
+// when a face is given). join: 0 = arc (rounded corners), 1 = tangent,
+// 2 = intersection (sharp). Throws std::runtime_error on failure.
+OccShape offsetWireShape(const OccShape& profile, double distance, int join);
+
+// Project a wire/edge onto a face or shell (BRepProj_Projection), planar
+// along the given unit direction ("cylindrical" projection). Result: a wire
+// or compound of wires on the target surface. Throws on failure.
+OccShape projectShape(const OccShape& shape, const OccShape& target,
+                      double dx, double dy, double dz);
 
 // Booleans: op 0 = fuse, 1 = cut, 2 = common. With `clean` the result is
 // passed through UnifySameDomain (coplanar faces merge, collinear edges join)

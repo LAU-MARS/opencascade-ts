@@ -166,6 +166,40 @@ OccShape makeWireWrap(const std::vector<OccShape>& parts) {
   return guarded("makeWire", [&] { return assembleWire(parts); }, OccShape());
 }
 
+OccShape makeEllipseArcWrap(double radius1, double radius2,
+                            double nx, double ny, double nz,
+                            double ox, double oy, double oz,
+                            double u1, double u2) {
+  return guarded(
+      "makeEllipseArc",
+      [&] { return makeEllipseArcWire(radius1, radius2, nx, ny, nz, ox, oy, oz, u1, u2); },
+      OccShape());
+}
+
+OccShape makeBezierWrap(unsigned int polesPtr, int poleCount, unsigned int weightsPtr) {
+  return guarded(
+      "makeBezier",
+      [&] {
+        std::vector<double> weights =
+            weightsPtr ? doublesFromHeap(weightsPtr, poleCount) : std::vector<double>();
+        return makeBezierWire(doublesFromHeap(polesPtr, poleCount * 3), weights);
+      },
+      OccShape());
+}
+
+OccShape offsetWireWrap(const OccShape& profile, double distance, int join) {
+  return guarded(
+      "offsetWire", [&] { return offsetWireShape(profile, distance, join); }, OccShape());
+}
+
+OccShape projectWrap(const OccShape& shape, const OccShape& target,
+                     double dx, double dy, double dz) {
+  return guarded(
+      "project",
+      [&] { return projectShape(shape, target, dx, dy, dz); },
+      OccShape());
+}
+
 OccShape makeFaceWrap(const OccShape& outer, const std::vector<OccShape>& holes) {
   return guarded("makeFace", [&] { return makeFaceShape(outer, holes); }, OccShape());
 }
@@ -537,6 +571,10 @@ EMSCRIPTEN_BINDINGS(opencascade_ts) {
   function("makeBspline", &makeBsplineWrap);
   function("makeBsplineThrough", &makeBsplineThroughWrap);
   function("makeWire", &makeWireWrap);
+  function("makeEllipseArc", &makeEllipseArcWrap);
+  function("makeBezier", &makeBezierWrap);
+  function("offsetWire", &offsetWireWrap);
+  function("project", &projectWrap);
   function("makeFace", &makeFaceWrap);
 
   function("fuse", &fuseWrap);

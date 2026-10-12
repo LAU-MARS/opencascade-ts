@@ -43,6 +43,7 @@ export {
 export type { GlbExportOptions, SvgExportOptions } from "./exporters.js";
 export type {
   ArcOptions,
+  BezierOptions,
   BooleanOptions,
   BoundingBox,
   BsplineOptions,
@@ -53,6 +54,7 @@ export type {
   CircularPatternOptions,
   DraftOptions,
   EdgeBlendOptions,
+  EllipseArcOptions,
   EllipseOptions,
   HealOptions,
   HelixOptions,
@@ -62,10 +64,12 @@ export type {
   LoftOptions,
   MeshData,
   MirrorOptions,
+  OffsetWireOptions,
   PipeShellOptions,
   PointClassification,
   PolygonOptions,
   PrimitiveOptions,
+  ProjectOptions,
   RectangularPatternOptions,
   RevolveOptions,
   ShapeTypeName,

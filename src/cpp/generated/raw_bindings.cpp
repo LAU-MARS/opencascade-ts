@@ -29,6 +29,7 @@
 #include <BRepFilletAPI_MakeFillet.hxx>
 #include <BRepGProp.hxx>
 #include <BRepLib.hxx>
+#include <BRepOffsetAPI_MakeOffset.hxx>
 #include <BRepOffsetAPI_MakeOffsetShape.hxx>
 #include <BRepOffsetAPI_MakePipe.hxx>
 #include <BRepOffsetAPI_MakePipeShell.hxx>
@@ -44,6 +45,7 @@
 #include <BRepPrimAPI_MakeTorus.hxx>
 #include <BRepPrimAPI_MakeWedge.hxx>
 #include <BRepPrim_Wedge.hxx>
+#include <BRepProj_Projection.hxx>
 #include <BRepTools.hxx>
 #include <BRepTools_History.hxx>
 #include <BRep_Builder.hxx>
@@ -51,6 +53,7 @@
 #include <Bnd_Box.hxx>
 #include <DESTEP_Parameters.hxx>
 #include <GC_MakeArcOfCircle.hxx>
+#include <GC_MakeArcOfEllipse.hxx>
 #include <GC_MakeSegment.hxx>
 #include <GProp_GProps.hxx>
 #include <GProp_PrincipalProps.hxx>
@@ -15461,6 +15464,179 @@ static int BRepOffsetAPI_MakeOffsetShape_GetJoinType_o13v0_wrap(const BRepOffset
     return self.GetJoinType();
   }, 0);
 }
+static BRepOffsetAPI_MakeOffset* BRepOffsetAPI_MakeOffset_ctor_c0v0_wrap() {
+  return occ_ts::guarded("BRepOffsetAPI_MakeOffset::ctor", [&]() -> BRepOffsetAPI_MakeOffset* {
+    return new BRepOffsetAPI_MakeOffset();
+  }, (BRepOffsetAPI_MakeOffset*)nullptr);
+}
+static BRepOffsetAPI_MakeOffset* BRepOffsetAPI_MakeOffset_ctor_c1v0_wrap(const TopoDS_Face& a0, int a1, bool a2) {
+  return occ_ts::guarded("BRepOffsetAPI_MakeOffset::ctor", [&]() -> BRepOffsetAPI_MakeOffset* {
+    return new BRepOffsetAPI_MakeOffset(a0, static_cast<GeomAbs_JoinType>(a1), a2);
+  }, (BRepOffsetAPI_MakeOffset*)nullptr);
+}
+static BRepOffsetAPI_MakeOffset* BRepOffsetAPI_MakeOffset_ctor_c1v1_wrap(const TopoDS_Face& a0, int a1) {
+  return occ_ts::guarded("BRepOffsetAPI_MakeOffset::ctor", [&]() -> BRepOffsetAPI_MakeOffset* {
+    return new BRepOffsetAPI_MakeOffset(a0, static_cast<GeomAbs_JoinType>(a1));
+  }, (BRepOffsetAPI_MakeOffset*)nullptr);
+}
+static BRepOffsetAPI_MakeOffset* BRepOffsetAPI_MakeOffset_ctor_c1v2_wrap(const TopoDS_Face& a0) {
+  return occ_ts::guarded("BRepOffsetAPI_MakeOffset::ctor", [&]() -> BRepOffsetAPI_MakeOffset* {
+    return new BRepOffsetAPI_MakeOffset(a0);
+  }, (BRepOffsetAPI_MakeOffset*)nullptr);
+}
+static bool BRepOffsetAPI_MakeOffset_IsDone_wrap(const BRepOffsetAPI_MakeOffset& self) {
+  return occ_ts::guarded("BRepOffsetAPI_MakeOffset.IsDone", [&]() -> bool {
+    return self.IsDone();
+  }, false);
+}
+static void BRepOffsetAPI_MakeOffset_Check_o1v0_wrap(const BRepOffsetAPI_MakeOffset& self) {
+  occ_ts::guarded("BRepOffsetAPI_MakeOffset.Check", [&]() -> int {
+    self.Check();
+    return 0;
+  }, 0);
+}
+static void BRepOffsetAPI_MakeOffset_Build_o2v0_wrap(BRepOffsetAPI_MakeOffset& self, const Message_ProgressRange& a0) {
+  occ_ts::guarded("BRepOffsetAPI_MakeOffset.Build", [&]() -> int {
+    self.Build(a0);
+    return 0;
+  }, 0);
+}
+static void BRepOffsetAPI_MakeOffset_Build_o2v1_wrap(BRepOffsetAPI_MakeOffset& self) {
+  occ_ts::guarded("BRepOffsetAPI_MakeOffset.Build", [&]() -> int {
+    self.Build();
+    return 0;
+  }, 0);
+}
+static TopoDS_Shape BRepOffsetAPI_MakeOffset_Shape_o3v0_wrap(BRepOffsetAPI_MakeOffset& self) {
+  return occ_ts::guarded("BRepOffsetAPI_MakeOffset.Shape", [&]() -> TopoDS_Shape {
+    return self.Shape();
+  }, TopoDS_Shape());
+}
+static TopTools_ListOfShape BRepOffsetAPI_MakeOffset_Generated_o4v0_wrap(BRepOffsetAPI_MakeOffset& self, const TopoDS_Shape& a0) {
+  return occ_ts::guarded("BRepOffsetAPI_MakeOffset.Generated", [&]() -> TopTools_ListOfShape {
+    return self.Generated(a0);
+  }, TopTools_ListOfShape());
+}
+static TopTools_ListOfShape BRepOffsetAPI_MakeOffset_Modified_o5v0_wrap(BRepOffsetAPI_MakeOffset& self, const TopoDS_Shape& a0) {
+  return occ_ts::guarded("BRepOffsetAPI_MakeOffset.Modified", [&]() -> TopTools_ListOfShape {
+    return self.Modified(a0);
+  }, TopTools_ListOfShape());
+}
+static bool BRepOffsetAPI_MakeOffset_IsDeleted_o6v0_wrap(BRepOffsetAPI_MakeOffset& self, const TopoDS_Shape& a0) {
+  return occ_ts::guarded("BRepOffsetAPI_MakeOffset.IsDeleted", [&]() -> bool {
+    return self.IsDeleted(a0);
+  }, false);
+}
+static void BRepOffsetAPI_MakeOffset_Init_o7v0_wrap(BRepOffsetAPI_MakeOffset& self, const TopoDS_Face& a0, int a1, bool a2) {
+  occ_ts::guarded("BRepOffsetAPI_MakeOffset.Init", [&]() -> int {
+    self.Init(a0, static_cast<GeomAbs_JoinType>(a1), a2);
+    return 0;
+  }, 0);
+}
+static void BRepOffsetAPI_MakeOffset_Init_o7v1_wrap(BRepOffsetAPI_MakeOffset& self, const TopoDS_Face& a0, int a1) {
+  occ_ts::guarded("BRepOffsetAPI_MakeOffset.Init", [&]() -> int {
+    self.Init(a0, static_cast<GeomAbs_JoinType>(a1));
+    return 0;
+  }, 0);
+}
+static void BRepOffsetAPI_MakeOffset_Init_o7v2_wrap(BRepOffsetAPI_MakeOffset& self, const TopoDS_Face& a0) {
+  occ_ts::guarded("BRepOffsetAPI_MakeOffset.Init", [&]() -> int {
+    self.Init(a0);
+    return 0;
+  }, 0);
+}
+static void BRepOffsetAPI_MakeOffset_Init_o8v0_wrap(BRepOffsetAPI_MakeOffset& self) {
+  occ_ts::guarded("BRepOffsetAPI_MakeOffset.Init", [&]() -> int {
+    self.Init();
+    return 0;
+  }, 0);
+}
+static void BRepOffsetAPI_MakeOffset_SetApprox_o9v0_wrap(BRepOffsetAPI_MakeOffset& self, bool a0) {
+  occ_ts::guarded("BRepOffsetAPI_MakeOffset.SetApprox", [&]() -> int {
+    self.SetApprox(a0);
+    return 0;
+  }, 0);
+}
+static void BRepOffsetAPI_MakeOffset_AddWire_o10v0_wrap(BRepOffsetAPI_MakeOffset& self, const TopoDS_Wire& a0) {
+  occ_ts::guarded("BRepOffsetAPI_MakeOffset.AddWire", [&]() -> int {
+    self.AddWire(a0);
+    return 0;
+  }, 0);
+}
+static void BRepOffsetAPI_MakeOffset_Perform_o11v0_wrap(BRepOffsetAPI_MakeOffset& self, double a0, double a1) {
+  occ_ts::guarded("BRepOffsetAPI_MakeOffset.Perform", [&]() -> int {
+    self.Perform(a0, a1);
+    return 0;
+  }, 0);
+}
+static void BRepOffsetAPI_MakeOffset_Perform_o11v1_wrap(BRepOffsetAPI_MakeOffset& self, double a0) {
+  occ_ts::guarded("BRepOffsetAPI_MakeOffset.Perform", [&]() -> int {
+    self.Perform(a0);
+    return 0;
+  }, 0);
+}
+static TopoDS_Face BRepOffsetAPI_MakeOffset_ConvertFace_o14v0_wrap(const TopoDS_Face& a0, double a1) {
+  return occ_ts::guarded("BRepOffsetAPI_MakeOffset.ConvertFace", [&]() -> TopoDS_Face {
+    return BRepOffsetAPI_MakeOffset::ConvertFace(a0, a1);
+  }, TopoDS_Face());
+}
+static BRepProj_Projection* BRepProj_Projection_ctor_c0v0_wrap(const TopoDS_Shape& a0, const TopoDS_Shape& a1, const gp_Dir& a2) {
+  return occ_ts::guarded("BRepProj_Projection::ctor", [&]() -> BRepProj_Projection* {
+    return new BRepProj_Projection(a0, a1, a2);
+  }, (BRepProj_Projection*)nullptr);
+}
+static bool BRepProj_Projection_IsDone_wrap(const BRepProj_Projection& self) {
+  return occ_ts::guarded("BRepProj_Projection.IsDone", [&]() -> bool {
+    return self.IsDone();
+  }, false);
+}
+static void BRepProj_Projection_Init_o1v0_wrap(BRepProj_Projection& self) {
+  occ_ts::guarded("BRepProj_Projection.Init", [&]() -> int {
+    self.Init();
+    return 0;
+  }, 0);
+}
+static bool BRepProj_Projection_More_o2v0_wrap(const BRepProj_Projection& self) {
+  return occ_ts::guarded("BRepProj_Projection.More", [&]() -> bool {
+    return self.More();
+  }, false);
+}
+static void BRepProj_Projection_Next_o3v0_wrap(BRepProj_Projection& self) {
+  occ_ts::guarded("BRepProj_Projection.Next", [&]() -> int {
+    self.Next();
+    return 0;
+  }, 0);
+}
+static TopoDS_Wire BRepProj_Projection_Current_o4v0_wrap(const BRepProj_Projection& self) {
+  return occ_ts::guarded("BRepProj_Projection.Current", [&]() -> TopoDS_Wire {
+    return self.Current();
+  }, TopoDS_Wire());
+}
+static TopoDS_Compound BRepProj_Projection_Shape_o5v0_wrap(const BRepProj_Projection& self) {
+  return occ_ts::guarded("BRepProj_Projection.Shape", [&]() -> TopoDS_Compound {
+    return self.Shape();
+  }, TopoDS_Compound());
+}
+static GC_MakeArcOfEllipse* GC_MakeArcOfEllipse_ctor_c0v0_wrap(const gp_Elips& a0, double a1, double a2, bool a3) {
+  return occ_ts::guarded("GC_MakeArcOfEllipse::ctor", [&]() -> GC_MakeArcOfEllipse* {
+    return new GC_MakeArcOfEllipse(a0, a1, a2, a3);
+  }, (GC_MakeArcOfEllipse*)nullptr);
+}
+static bool GC_MakeArcOfEllipse_IsDone_wrap(const GC_MakeArcOfEllipse& self) {
+  return occ_ts::guarded("GC_MakeArcOfEllipse.IsDone", [&]() -> bool {
+    return self.IsDone();
+  }, false);
+}
+static int GC_MakeArcOfEllipse_Status_o1v0_wrap(const GC_MakeArcOfEllipse& self) {
+  return occ_ts::guarded("GC_MakeArcOfEllipse.Status", [&]() -> int {
+    return self.Status();
+  }, 0);
+}
+static opencascade::handle<Geom_TrimmedCurve>* GC_MakeArcOfEllipse_Value_o2v0_wrap(const GC_MakeArcOfEllipse& self) {
+  return occ_ts::guarded("GC_MakeArcOfEllipse.Value", [&]() -> opencascade::handle<Geom_TrimmedCurve>* {
+    return new opencascade::handle<Geom_TrimmedCurve>(self.Value());
+  }, (opencascade::handle<Geom_TrimmedCurve>*)nullptr);
+}
 static bool Geom_Geometry_IsInstance_wrap(const Geom_Geometry& self, std::string a0) {
   return occ_ts::guarded("Geom_Geometry.IsInstance", [&]() -> bool {
     return self.IsInstance(a0.c_str());
@@ -29376,6 +29552,47 @@ EMSCRIPTEN_BINDINGS(occt_ts_raw) {
       .function("PerformBySimple", &BRepOffsetAPI_MakeOffsetShape_PerformBySimple_o7v0_wrap)
       .function("MakeOffset", &BRepOffsetAPI_MakeOffsetShape_MakeOffset_o8v0_wrap)
       .function("GetJoinType", &BRepOffsetAPI_MakeOffsetShape_GetJoinType_o13v0_wrap)
+  ;
+
+  class_<BRepOffsetAPI_MakeOffset>("BRepOffsetAPI_MakeOffset")
+      .constructor(&BRepOffsetAPI_MakeOffset_ctor_c0v0_wrap)
+      .constructor(&BRepOffsetAPI_MakeOffset_ctor_c1v0_wrap)
+      .constructor(&BRepOffsetAPI_MakeOffset_ctor_c1v1_wrap)
+      .constructor(&BRepOffsetAPI_MakeOffset_ctor_c1v2_wrap)
+      .function("IsDone", &BRepOffsetAPI_MakeOffset_IsDone_wrap)
+      .function("Check", &BRepOffsetAPI_MakeOffset_Check_o1v0_wrap)
+      .function("Build", &BRepOffsetAPI_MakeOffset_Build_o2v0_wrap)
+      .function("Build", &BRepOffsetAPI_MakeOffset_Build_o2v1_wrap)
+      .function("Shape", &BRepOffsetAPI_MakeOffset_Shape_o3v0_wrap)
+      .function("Generated", &BRepOffsetAPI_MakeOffset_Generated_o4v0_wrap)
+      .function("Modified", &BRepOffsetAPI_MakeOffset_Modified_o5v0_wrap)
+      .function("IsDeleted", &BRepOffsetAPI_MakeOffset_IsDeleted_o6v0_wrap)
+      .function("Init", &BRepOffsetAPI_MakeOffset_Init_o7v0_wrap)
+      .function("Init", &BRepOffsetAPI_MakeOffset_Init_o7v1_wrap)
+      .function("Init", &BRepOffsetAPI_MakeOffset_Init_o7v2_wrap)
+      .function("Init", &BRepOffsetAPI_MakeOffset_Init_o8v0_wrap)
+      .function("SetApprox", &BRepOffsetAPI_MakeOffset_SetApprox_o9v0_wrap)
+      .function("AddWire", &BRepOffsetAPI_MakeOffset_AddWire_o10v0_wrap)
+      .function("Perform", &BRepOffsetAPI_MakeOffset_Perform_o11v0_wrap)
+      .function("Perform", &BRepOffsetAPI_MakeOffset_Perform_o11v1_wrap)
+      .class_function("ConvertFace", &BRepOffsetAPI_MakeOffset_ConvertFace_o14v0_wrap)
+  ;
+
+  class_<BRepProj_Projection>("BRepProj_Projection")
+      .constructor(&BRepProj_Projection_ctor_c0v0_wrap)
+      .function("IsDone", &BRepProj_Projection_IsDone_wrap)
+      .function("Init", &BRepProj_Projection_Init_o1v0_wrap)
+      .function("More", &BRepProj_Projection_More_o2v0_wrap)
+      .function("Next", &BRepProj_Projection_Next_o3v0_wrap)
+      .function("Current", &BRepProj_Projection_Current_o4v0_wrap)
+      .function("Shape", &BRepProj_Projection_Shape_o5v0_wrap)
+  ;
+
+  class_<GC_MakeArcOfEllipse>("GC_MakeArcOfEllipse")
+      .constructor(&GC_MakeArcOfEllipse_ctor_c0v0_wrap)
+      .function("IsDone", &GC_MakeArcOfEllipse_IsDone_wrap)
+      .function("Status", &GC_MakeArcOfEllipse_Status_o1v0_wrap)
+      .function("Value", &GC_MakeArcOfEllipse_Value_o2v0_wrap, allow_raw_pointers())
   ;
 
   class_<Geom_Geometry>("Geom_Geometry")

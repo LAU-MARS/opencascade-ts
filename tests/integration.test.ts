@@ -507,6 +507,123 @@ describeWasm("opencascade-ts kernel (wasm integration)", () => {
     expectVec3Close(solid.bounds().max, [10, 4, 5]);
   });
 
+  it("makes analytic elliptical arcs (not sampled splines)", () => {
+    const half = occ.makeEllipseArc(10, 5, { startDegrees: 0, endDegrees: 180 });
+    const edge = occ.describe(half).edges[0]!;
+    expect(edge.curve).toBe("ellipse"); // the conic itself, not a bspline
+    // close the half ellipse with its chord: area = πab/2
+    const closed = occ.makeWire([half, occ.makeLine([-10, 0, 0], [10, 0, 0])]);
+    expect(occ.makeFace(closed).area()).toBeCloseTo((Math.PI * 10 * 5) / 2, 2);
+    expect(occ.extrude(occ.makeFace(closed), [0, 0, 4]).volume())
+      .toBeCloseTo(((Math.PI * 10 * 5) / 2) * 4, 1);
+
+    // quarter arc endpoints: (10, 0) and (0, 5)
+    const quarter = occ.makeEllipseArc(10, 5, { startDegrees: 0, endDegrees: 90 });
+    const verts = occ.describe(quarter).vertices.map((v) => v.position);
+    expect(verts).toHaveLength(2);
+    expectVec3Close(verts[0]!, [10, 0, 0]);
+    expectVec3Close(verts[1]!, [0, 5, 0]);
+
+    expect(() => occ.makeEllipseArc(10, 5, { startDegrees: 0, endDegrees: 360 })).toThrow(/360/);
+    expect(() => occ.makeEllipseArc(5, 10, { startDegrees: 0, endDegrees: 90 })).toThrow(/major/);
+  });
+
+  it("makes bezier wires from control points and weights", () => {
+    const line = occ.makeBezier([[0, 0, 0], [10, 0, 0]]);
+    expect(occ.describe(line).edges[0]!.curve).toBe("bezier");
+    expect(occ.describe(line).edges[0]!.length).toBeCloseTo(10, 6);
+
+    // collinear poles degenerate to the straight span
+    const flat = occ.makeBezier([[0, 0, 0], [5, 0, 0], [10, 0, 0]]);
+    expect(occ.describe(flat).edges[0]!.length).toBeCloseTo(10, 4);
+
+    // a quadratic passes through (p0 + 2·p1 + p2)/4 at mid-parameter
+    const bump = occ.makeBezier([[0, 0, 0], [5, 5, 0], [10, 0, 0]]);
+    const probe = occ.makeLine([5, 2.5, -5], [5, 2.5, 5]);
+    expect(occ.distance(bump, probe).distance).toBeCloseTo(0, 4);
+    const solid = occ.extrude(occ.makeFace(occ.makeWire([bump, occ.makeLine([10, 0, 0], [0, 0, 0])])), [0, 0, 2]);
+    // area under a quadratic bezier — Simpson: (b-a)/6 · (y0 + 4·ymid + yend)
+    expect(solid.volume()).toBeCloseTo((10 / 6) * (0 + 4 * 2.5 + 0) * 2, 0);
+
+    // rational weights represent exact conics: a quarter circle
+    const w = Math.SQRT1_2;
+    const quarter = occ.makeBezier(
+      [[10, 0, 0], [10, 10, 0], [0, 10, 0]], { weights: [1, w, 1] },
+    );
+    expect(occ.describe(quarter).edges[0]!.length).toBeCloseTo((2 * Math.PI * 10) / 4, 3);
+
+    expect(() => occ.makeBezier([[0, 0, 0]])).toThrow(/at least 2 poles/);
+    expect(() => occ.makeBezier([[0, 0, 0], [1, 0, 0]], { weights: [1] })).toThrow(/match/);
+    expect(() => occ.makeBezier([[0, 0, 0], [1, 0, 0]], { weights: [1, -1] })).toThrow(/positive/);
+  });
+
+  it("2D-offsets wires and faces (sketch wall construction)", () => {
+    // circle wire: +2 grows to r=12, -2 shrinks to r=8
+    const grown = occ.offsetWire(occ.makeCircle(10), 2);
+    expect(occ.makeFace(grown).area()).toBeCloseTo(Math.PI * 144, 1);
+    const shrunk = occ.offsetWire(occ.makeCircle(10), -2);
+    expect(occ.makeFace(shrunk).area()).toBeCloseTo(Math.PI * 64, 1);
+
+    // the gasket: face with a bore — wall +1 grows the outer rim to r=11 and
+    // shrinks the bore to r=3 (the result is two wires, not one)
+    const gasket = occ.makeFace(occ.makeCircle(10), [occ.makeCircle(4)]);
+    const radii = (result: ReturnType<typeof occ.describe>) =>
+      result.edges
+        .filter((e) => e.curve === "circle" && e.closed)
+        .map((e) => (e.curve === "circle" ? e.radius : 0))
+        .sort((a, b) => a - b);
+    expect(radii(occ.describe(occ.offsetWire(gasket, 1)))).toEqual([
+      expect.closeTo(3, 4), expect.closeTo(11, 4),
+    ]);
+    expect(radii(occ.describe(occ.offsetWire(gasket, -1)))).toEqual([
+      expect.closeTo(5, 4), expect.closeTo(9, 4),
+    ]);
+
+    // rectangle corners: arc join rounds them (4 quarter discs replace the
+    // square corners), intersection join keeps the sharp box
+    const rect = occ.makePolygon([[0, 0, 0], [20, 0, 0], [20, 10, 0], [0, 10, 0]]);
+    const rounded = occ.offsetWire(rect, 2);
+    expect(occ.makeFace(rounded).area()).toBeCloseTo(24 * 14 - (4 - Math.PI) * 4, 1);
+    const sharp = occ.offsetWire(rect, 2, { join: "intersection" });
+    expect(occ.makeFace(sharp).area()).toBeCloseTo(24 * 14, 1);
+
+    expect(() => occ.offsetWire(occ.makeCircle(5), 0)).toThrow(/non-zero/);
+    expect(() => occ.offsetWire(occ.makeBox(1, 1, 1), 1)).toThrow(/Wire or Face/);
+  });
+
+  it("projects wires onto faces along a direction", () => {
+    // a circle hovering above a plane projects to the same circle on it
+    const plane = occ.makeFace(
+      occ.makePolygon([[-20, -20, 0], [20, -20, 0], [20, 20, 0], [-20, 20, 0]]),
+    );
+    const hovering = occ.makeCircle(5, { origin: [3, 4, 6] });
+    const onPlane = occ.project(hovering, plane, { direction: [0, 0, -1] });
+
+    const d = occ.describe(onPlane);
+    const circles = d.edges.filter((e) => e.curve === "circle");
+    expect(circles).toHaveLength(1);
+    expect(circles[0]!.length).toBeCloseTo(2 * Math.PI * 5, 3);
+    expectVec3Close(circles[0]!.axisPoint!, [3, 4, 0]);
+    expect(d.vertices.every((v) => Math.abs(v.position[2]) < 1e-6)).toBe(true);
+
+    // a straight line onto a cylinder's side, along its axis
+    const cylinderFace = occ.faces(occ.makeCylinder(5, 10)).find((f) => {
+      const info = occ.describe(f).faces[0]!;
+      return info.surface === "cylinder";
+    })!;
+    const line = occ.makeLine([5, 0, -5], [5, 0, 15]);
+    const onCylinder = occ.project(line, cylinderFace, { direction: [0, 0, 1] });
+    const cd = occ.describe(onCylinder);
+    expect(cd.edges).toHaveLength(1);
+    // every point lands on the r=5 cylinder — the projection does not clip
+    expect(cd.vertices.every((v) =>
+      Math.abs(Math.hypot(v.position[0], v.position[1]) - 5) < 1e-6,
+    )).toBe(true);
+
+    expect(() => occ.project(occ.makeBox(1, 1, 1), plane, { direction: [0, 0, -1] })).toThrow(/Wire or Edge/);
+    expect(() => occ.project(line, occ.makeBox(1, 1, 1), { direction: [0, 0, -1] })).toThrow(/Face or Shell/);
+  });
+
   it("assembles arcs and lines into a slot profile and extrudes it", () => {
     const left = occ.makeArc(5, { startDegrees: 90, endDegrees: 270 }); // (0,5) → (0,-5)
     const bottom = occ.makeLine([0, -5, 0], [20, -5, 0]);

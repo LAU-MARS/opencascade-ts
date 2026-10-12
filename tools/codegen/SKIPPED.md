@@ -118,6 +118,9 @@ BRepLib.BuildPCurveForEdgeOnPlane — unmappable parameter type
 BRepLib.FindValidRange — unmappable parameter type
 BRepLib.SameParameter — unmappable parameter type
 BRepLib.UpdateTolerances — unmappable parameter type
+BRepOffsetAPI_MakeOffset::ctor(Spine) — a constructor with this parameter count is already bound (embind picks by count)
+BRepOffsetAPI_MakeOffset::ctor(Spine, Join) — a constructor with this parameter count is already bound (embind picks by count)
+BRepOffsetAPI_MakeOffset::ctor(Spine, Join, IsOpenResult) — a constructor with this parameter count is already bound (embind picks by count)
 BRepOffsetAPI_MakeOffsetShape.PerformByJoin — unmappable parameter type
 BRepOffsetAPI_MakePipe.Pipe — unmappable return type const BRepFill_Pipe &
 BRepOffsetAPI_MakePipe::ctor — unmappable constructor parameter
@@ -176,6 +179,7 @@ BRepPrim_Wedge.Point — unmappable parameter type
 BRepPrim_Wedge.Vertex — unmappable parameter type
 BRepPrim_Wedge.Wire — unmappable parameter type
 BRepPrim_Wedge::ctor — unmappable constructor parameter
+BRepProj_Projection::ctor(Wire, Shape, P) — a constructor with this parameter count is already bound (embind picks by count)
 BRepTools.AddUVBounds — unmappable parameter type
 BRepTools.DetectClosedness — unmappable parameter type
 BRepTools.Dump — unmappable parameter type
@@ -211,6 +215,8 @@ DESTEP_Parameters.GetString — unmappable parameter type
 GC_MakeArcOfCircle::ctor(Circ, P, Alpha, Sense) — a constructor with this parameter count is already bound (embind picks by count)
 GC_MakeArcOfCircle::ctor(Circ, P1, P2, Sense) — a constructor with this parameter count is already bound (embind picks by count)
 GC_MakeArcOfCircle::ctor(P1, V, P2) — a constructor with this parameter count is already bound (embind picks by count)
+GC_MakeArcOfEllipse::ctor(Elips, P, Alpha, Sense) — a constructor with this parameter count is already bound (embind picks by count)
+GC_MakeArcOfEllipse::ctor(Elips, P1, P2, Sense) — a constructor with this parameter count is already bound (embind picks by count)
 GC_MakeSegment::ctor(Line, P1, P2) — a constructor with this parameter count is already bound (embind picks by count)
 GC_MakeSegment::ctor(Line, Point, Ulast) — a constructor with this parameter count is already bound (embind picks by count)
 GProp_GProps.StaticMoments — unmappable parameter type

@@ -34,12 +34,15 @@ output, e.g. an MCP stdio transport). Toggle at runtime with `session.setVerbose
 | `makeLine(start, end)` | Line-segment wire. |
 | `makeArc(radius, { startDegrees, endDegrees, origin?, normal? })` | Circular arc wire, counterclockwise around `normal`; span < 360°. |
 | `makeEllipse(majorR, minorR, { origin?, normal? })` | Ellipse wire (major axis along the plane's in-plane X). |
+| `makeEllipseArc(majorR, minorR, { startDegrees, endDegrees, origin?, normal? })` | Elliptical **arc** wire — the analytic conic (`describe` reports `"ellipse"`), span < 360°. |
+| `makeBezier(poles, { weights? })` | Bézier wire from control points — one polynomial segment (degree = poles − 1); optional positive weights make it rational (exact conic arcs). |
 | `makeBspline(poles, { degree? })` | B-spline wire from control points — clamped uniform knots, runs from the first pole to the last. |
 | `makeBsplineThrough(points, { periodic?, tolerance? })` | Smooth B-spline interpolated **through** every point. |
 | `makeWire(parts)` | Concatenate connected wires/edges into one wire, in order. |
 | `makeFace(outer, holes?)` | Cap a planar outer wire into a face, with optional hole wires — the section for plates, flanges and gaskets (also the base for 2D trim/intersect via `cut`/`common` on faces). |
 | `fuse(a, b, { clean? })` / `cut(a, b, { clean? })` / `common(a, b, { clean? })` | Boolean union / difference / intersection. Results are **cleaned** by default (`clean: true`): coplanar faces merge and collinear edges join (UnifySameDomain — build123d/CadQuery's "clean"). `clean: false` keeps the raw fragment topology. |
 | `unify(shape)` | Same cleaning pass on demand — for sloppy imports, `split` fragments, patterns. |
+| `offsetWire(profile, distance, { join? })` | **2D offset** of a planar wire or face (BRepOffsetAPI_MakeOffset): positive grows the material — outer boundary out, holes in; `offsetWire(face, -t)` is the sketch-wall construction. Corners join by `"arc"` (default) / `"tangent"` / `"intersection"`. Face results come back as a compound of boundary wires. |
 | `compound(shapes)` | A compound holding several shapes side by side — the multi-body container for disjoint parts. `describe`/`tessellate`/measurements walk the whole tree. |
 | `split(shape, tools)` | Cut into pieces but keep **every** fragment — they reassemble the original (the region under a tool becomes its own piece). |
 | `translate(shape, [x,y,z])` | Rigid move. |
@@ -74,6 +77,7 @@ output, e.g. an MCP stdio transport). Toggle at runtime with `session.setVerbose
 | `describe(shape)` | Analytic faces/edges + heuristic holes → `PartDescription`. |
 | `distance(a, b)` | `{distance, points: [[onA, onB], …]}` — minimum distance, up to 8 pairs. |
 | `section(a, b)` | Intersection curve(s) of two shapes' surfaces (an edge/compound shape). |
+| `project(shape, target, { direction })` | Project a wire/edge onto a face/shell, planar along `direction` (BRepProj_Projection) — handle paths, engraving curves on curved faces. Result: wire/compound on the surface. |
 | `classifyPoint(shape, [x,y,z])` | `"in"` / `"out"` / `"on"` / `"unknown"` against all solids. |
 | `tessellate(shape, opts?)` | → `MeshData`. |
 | `hiddenLines(shape, { direction, up?, deflection? })` | HLR → `HiddenLineResult`. |

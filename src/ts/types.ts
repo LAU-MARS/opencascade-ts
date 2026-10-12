@@ -126,6 +126,44 @@ export interface EllipseOptions {
   normal?: Vec3;
 }
 
+/** Options of `makeEllipseArc` beyond the placement. */
+export interface EllipseArcOptions {
+  /** Center. Default `[0, 0, 0]`. */
+  origin?: Vec3;
+  /** Plane normal — the arc sweeps counterclockwise around it. Default `[0, 0, 1]`. */
+  normal?: Vec3;
+  /** Start angle in degrees. Required. */
+  startDegrees: number;
+  /** End angle in degrees; must satisfy `start < end < start + 360`. Required. */
+  endDegrees: number;
+}
+
+/** Options of `makeBezier`. */
+export interface BezierOptions {
+  /**
+   * Per-pole weights (all positive), same length as `poles` — rational
+   * Béziers represent exact conic arcs (circles, ellipses). Omit for the
+   * plain polynomial curve.
+   */
+  weights?: readonly number[];
+}
+
+/** Options of `offsetWire`. */
+export interface OffsetWireOptions {
+  /**
+   * How corners resolve where the offset curves meet: `"arc"` (default)
+   * rounds them with an arc of radius |distance|, `"tangent"` extends the
+   * tangent, `"intersection"` intersects sharp.
+   */
+  join?: "arc" | "tangent" | "intersection";
+}
+
+/** Options of `project`. */
+export interface ProjectOptions {
+  /** Projection direction (the projection is planar along it). Required. */
+  direction: Vec3;
+}
+
 export interface BsplineOptions {
   /**
    * Polynomial degree. Default `3`. Knots are clamped and uniform: the curve

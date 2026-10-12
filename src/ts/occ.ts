@@ -21,6 +21,7 @@ import {
 } from "./interrogate.js";
 import type {
   ArcOptions,
+  BezierOptions,
   BooleanOptions,
   BoundingBox,
   BsplineOptions,
@@ -31,6 +32,7 @@ import type {
   CircularPatternOptions,
   DraftOptions,
   EdgeBlendOptions,
+  EllipseArcOptions,
   EllipseOptions,
   HealOptions,
   HelixOptions,
@@ -40,10 +42,12 @@ import type {
   LoftOptions,
   MeshData,
   MirrorOptions,
+  OffsetWireOptions,
   PipeShellOptions,
   PointClassification,
   PolygonOptions,
   PrimitiveOptions,
+  ProjectOptions,
   RectangularPatternOptions,
   RevolveOptions,
   ShapeTypeName,
@@ -333,6 +337,67 @@ export class OccSession {
   }
 
   /**
+   * Elliptical arc wire from `startDegrees` to `endDegrees`, counterclockwise
+   * around `normal` — the analytic conic, not a sampled approximation
+   * (`describe` reports `"ellipse"`; it re-edits exactly). The span must be
+   * under 360° — `makeEllipse` makes the full ellipse.
+   */
+  makeEllipseArc(majorRadius: number, minorRadius: number, options: EllipseArcOptions): OccShape {
+    if (!(minorRadius > 0)) throw new Error("makeEllipseArc: minorRadius must be a positive number");
+    if (majorRadius < minorRadius) {
+      throw new Error("makeEllipseArc: majorRadius must be at least minorRadius (swap them?)");
+    }
+    const [dx, dy, dz] = options.normal ?? [0, 0, 1];
+    const len = Math.hypot(dx, dy, dz);
+    if (len < 1e-12) throw new Error("makeEllipseArc: normal must be a non-zero vector");
+    const span = options.endDegrees - options.startDegrees;
+    if (!(span > 0)) throw new Error("makeEllipseArc: endDegrees must be greater than startDegrees");
+    if (span >= 360) {
+      throw new Error("makeEllipseArc: span must be under 360° — use makeEllipse for the full ellipse");
+    }
+    const [ox, oy, oz] = options.origin ?? [0, 0, 0];
+    const radians = (degrees: number) => (degrees * Math.PI) / 180;
+    return this.adopt(
+      this.module.makeEllipseArc(
+        majorRadius, minorRadius, dx / len, dy / len, dz / len, ox, oy, oz,
+        radians(options.startDegrees), radians(options.endDegrees),
+      ),
+    );
+  }
+
+  /**
+   * Bézier wire from control points (`poles`) — one polynomial segment of
+   * degree `poles.length - 1`: the curve starts at the first pole, ends at
+   * the last, and stays inside their convex hull. Optional `weights` make it
+   * rational (exact conic arcs).
+   */
+  makeBezier(poles: readonly Vec3[], options: BezierOptions = {}): OccShape {
+    if (poles.length < 2) throw new Error("makeBezier: needs at least 2 poles");
+    if (poles.length > 26) {
+      throw new Error(`makeBezier: ${poles.length} poles exceed the degree-25 limit (26 poles)`);
+    }
+    if (!allFinite(poles)) throw new Error("makeBezier: poles must be finite numbers");
+    const weights = options.weights;
+    if (weights !== undefined) {
+      if (weights.length !== poles.length) {
+        throw new Error(`makeBezier: ${weights.length} weights do not match ${poles.length} poles`);
+      }
+      if (!weights.every((w) => w > 0)) {
+        throw new Error("makeBezier: weights must all be positive");
+      }
+    }
+    const flat = flatten(poles);
+    const weightList = weights ?? [];
+    return this.adopt(
+      this.withFloats(flat, (polesPtr, _) =>
+        this.withFloats([...weightList], (weightsPtr, __) =>
+          this.module.makeBezier(polesPtr, poles.length, weightList.length > 0 ? weightsPtr : 0),
+        ),
+      ),
+    );
+  }
+
+  /**
    * B-spline wire from control points (`poles`), with clamped uniform knots:
    * the curve starts at the first pole and ends at the last, approaching the
    * others. `degree` defaults to 3.
@@ -582,6 +647,34 @@ export class OccSession {
    */
   unify(shape: OccShape): OccShape {
     return this.adopt(this.module.unify(shape.raw));
+  }
+
+  /**
+   * 2D offset of a planar wire or face (BRepOffsetAPI_MakeOffset): positive
+   * `distance` grows the profile outward — wall `t` comes in as
+   * `offsetWire(face, -t)` so holes shrink with the boundary. Corners join
+   * by arc (default), tangent or intersection. This is sketch-level
+   * offsetting; `offsetSolid` grows a solid's whole skin in 3D.
+   */
+  offsetWire(profile: OccShape, distance: number, options: OffsetWireOptions = {}): OccShape {
+    if (distance === 0) throw new Error("offsetWire: distance must be non-zero");
+    const join = options.join === "tangent" ? 1 : options.join === "intersection" ? 2 : 0;
+    return this.adopt(this.module.offsetWire(profile.raw, distance, join));
+  }
+
+  /**
+   * Project a wire or edge onto a face or shell (BRepProj_Projection), planar
+   * along `direction` — the path a handle follows on a surface, or the
+   * engraving curve for text on a curved face. Returns a wire (or compound
+   * of wires) lying on the surface.
+   */
+  project(shape: OccShape, target: OccShape, options: ProjectOptions): OccShape {
+    const [dx, dy, dz] = options.direction;
+    const len = Math.hypot(dx, dy, dz);
+    if (len < 1e-12) throw new Error("project: direction must be a non-zero vector");
+    return this.adopt(
+      this.module.project(shape.raw, target.raw, dx / len, dy / len, dz / len),
+    );
   }
 
   /**

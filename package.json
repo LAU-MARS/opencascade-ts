@@ -1,6 +1,6 @@
 {
   "name": "occt.ts",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Open CASCADE for the agent era — a modern OCCT (7.9+) compiled to WebAssembly with first-class TypeScript bindings, STEP/BRep import, hidden-line removal, and a zero-dependency WebGL2 viewer. No Qt, no native build: runs headless in Node and in the browser.",
   "type": "module",
   "license": "LGPL-2.1",

@@ -3948,6 +3948,62 @@ export interface Ctor_BRepOffsetAPI_MakeOffsetShape {
   new (): Raw_BRepOffsetAPI_MakeOffsetShape;
 }
 
+/** Raw BRepOffsetAPI_MakeOffset (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_BRepOffsetAPI_MakeOffset {
+  delete(): void;
+  IsDone(): number;
+  Check(): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Build(a0: Raw_Message_ProgressRange): void;
+  Shape(): Raw_TopoDS_Shape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Generated(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  Modified(a0: Raw_TopoDS_Shape): Raw_TopTools_ListOfShape;
+  IsDeleted(a0: Raw_TopoDS_Shape): number;
+  Init(a0: Raw_TopoDS_Face, a1: number, a2: number): void;
+  Init(a0: number, a1: number): void;
+  SetApprox(a0: number): void;
+  AddWire(a0: Raw_TopoDS_Wire): void;
+  Perform(a0: number, a1: number): void;
+}
+
+export interface Ctor_BRepOffsetAPI_MakeOffset {
+  new (): Raw_BRepOffsetAPI_MakeOffset;
+  new (a0: Raw_TopoDS_Face, a1: number, a2: number): Raw_BRepOffsetAPI_MakeOffset;
+  new (a0: Raw_TopoDS_Wire, a1: number, a2: number): Raw_BRepOffsetAPI_MakeOffset;
+  ConvertFace(a0: Raw_TopoDS_Face, a1: number): Raw_TopoDS_Face;
+}
+
+/** Raw BRepProj_Projection (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_BRepProj_Projection {
+  delete(): void;
+  IsDone(): number;
+  Init(): void;
+  More(): number;
+  Next(): void;
+  Current(): Raw_TopoDS_Wire;
+  Shape(): Raw_TopoDS_Compound;
+}
+
+export interface Ctor_BRepProj_Projection {
+  new (a0: Raw_TopoDS_Shape, a1: Raw_TopoDS_Shape, a2: Raw_gp_Dir): Raw_BRepProj_Projection;
+  new (a0: Raw_TopoDS_Shape, a1: Raw_TopoDS_Shape, a2: Raw_gp_Pnt): Raw_BRepProj_Projection;
+}
+
+/** Raw GC_MakeArcOfEllipse (see tools/codegen/SKIPPED.md for unmapped members). */
+export interface Raw_GC_MakeArcOfEllipse {
+  delete(): void;
+  IsDone(): number;
+  Status(): number;
+  Value(): Raw_Geom_TrimmedCurve;
+}
+
+export interface Ctor_GC_MakeArcOfEllipse {
+  new (a0: Raw_gp_Elips, a1: number, a2: number, a3: number): Raw_GC_MakeArcOfEllipse;
+  new (a0: Raw_gp_Elips, a1: Raw_gp_Pnt, a2: number, a3: number): Raw_GC_MakeArcOfEllipse;
+  new (a0: Raw_gp_Elips, a1: Raw_gp_Pnt, a2: Raw_gp_Pnt, a3: number): Raw_GC_MakeArcOfEllipse;
+}
+
 /** Raw Geom_Geometry (see tools/codegen/SKIPPED.md for unmapped members). */
 export interface Raw_Geom_Geometry {
   delete(): void;
@@ -6958,6 +7014,9 @@ export interface RawBindings {
   BRepOffsetAPI_MakePipeShell: Ctor_BRepOffsetAPI_MakePipeShell;
   BRepOffsetAPI_MakeThickSolid: Ctor_BRepOffsetAPI_MakeThickSolid;
   BRepOffsetAPI_MakeOffsetShape: Ctor_BRepOffsetAPI_MakeOffsetShape;
+  BRepOffsetAPI_MakeOffset: Ctor_BRepOffsetAPI_MakeOffset;
+  BRepProj_Projection: Ctor_BRepProj_Projection;
+  GC_MakeArcOfEllipse: Ctor_GC_MakeArcOfEllipse;
   Geom_Geometry: Ctor_Geom_Geometry;
   Geom_Curve: Ctor_Geom_Curve;
   Geom_Line: Ctor_Geom_Line;

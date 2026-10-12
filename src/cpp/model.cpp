@@ -21,6 +21,7 @@
 #include <BRepGProp.hxx>
 #include <BRepOffsetAPI_DraftAngle.hxx>
 #include <BRepOffsetAPI_MakeOffsetShape.hxx>
+#include <BRepOffsetAPI_MakeOffset.hxx>
 #include <BRepOffsetAPI_MakePipe.hxx>
 #include <BRepOffsetAPI_MakePipeShell.hxx>
 #include <BRepOffsetAPI_MakeThickSolid.hxx>
@@ -44,11 +45,15 @@
 #include <GProp_GProps.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <GeomAbs_SurfaceType.hxx>
+#include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include <Geom_Ellipse.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <GeomAPI_Interpolate.hxx>
 #include <GeomAPI_PointsToBSplineSurface.hxx>
 #include <Geom_CylindricalSurface.hxx>
+#include <BRepProj_Projection.hxx>
 #include <ShapeFix_Shape.hxx>
 #include <ShapeUpgrade_UnifySameDomain.hxx>
 #include <Standard_Version.hxx>
@@ -424,6 +429,133 @@ OccShape assembleWire(const std::vector<OccShape>& parts) {
     throw std::runtime_error("wire assembly failed");
   }
   return OccShape(maker.Wire());
+}
+
+OccShape makeEllipseArcWire(double radius1, double radius2,
+                            double nx, double ny, double nz,
+                            double ox, double oy, double oz,
+                            double u1, double u2) {
+  if (radius1 < radius2) {
+    throw std::runtime_error("ellipse arc: major radius must be at least the minor radius (swap them?)");
+  }
+  if (!(u2 > u1)) {
+    throw std::runtime_error("ellipse arc: u2 must be greater than u1");
+  }
+  if (u2 - u1 >= TWO_PI) {
+    throw std::runtime_error("ellipse arc: span must be under 360° — use makeEllipse for the full ellipse");
+  }
+  // Trim the analytic Geom_Ellipse instead of approximating: the edge stays a
+  // conic (describe reports "ellipse"), so edits and measurements are exact.
+  Handle(Geom_Ellipse) ellipse =
+      new Geom_Ellipse(gp_Elips(makeAxis(ox, oy, oz, nx, ny, nz), radius1, radius2));
+  Handle(Geom_TrimmedCurve) trimmed = new Geom_TrimmedCurve(ellipse, u1, u2);
+  BRepBuilderAPI_MakeEdge edge(trimmed);
+  BRepBuilderAPI_MakeWire maker(edge.Edge());
+  if (!edge.IsDone() || !maker.IsDone() || maker.Wire().IsNull()) {
+    throw std::runtime_error("ellipse arc construction failed");
+  }
+  return OccShape(maker.Wire());
+}
+
+OccShape makeBezierWire(const std::vector<double>& coordinates,
+                        const std::vector<double>& weights) {
+  const int poleCount = static_cast<int>(coordinates.size() / 3);
+  if (poleCount < 2) throw std::runtime_error("bezier needs at least 2 poles");
+  // OCCT caps Bézier curves at degree 25
+  if (poleCount > 26) {
+    throw std::runtime_error("bezier supports at most 26 poles (degree 25)");
+  }
+  if (!weights.empty() && static_cast<int>(weights.size()) != poleCount) {
+    throw std::runtime_error("bezier: weights must match the pole count");
+  }
+  TColgp_Array1OfPnt poles(1, poleCount);
+  for (int i = 0; i < poleCount; ++i) {
+    poles.SetValue(i + 1, gp_Pnt(coordinates[i * 3], coordinates[i * 3 + 1], coordinates[i * 3 + 2]));
+  }
+  Handle(Geom_BezierCurve) curve;
+  if (weights.empty()) {
+    curve = new Geom_BezierCurve(poles);
+  } else {
+    TColStd_Array1OfReal weightArray(1, poleCount);
+    for (int i = 0; i < poleCount; ++i) {
+      if (!(weights[i] > 0)) {
+        throw std::runtime_error("bezier: weights must be positive");
+      }
+      weightArray.SetValue(i + 1, weights[i]);
+    }
+    curve = new Geom_BezierCurve(poles, weightArray);
+  }
+  BRepBuilderAPI_MakeEdge edge(curve);
+  BRepBuilderAPI_MakeWire maker(edge.Edge());
+  if (!edge.IsDone() || !maker.IsDone() || maker.Wire().IsNull()) {
+    throw std::runtime_error("bezier construction failed");
+  }
+  return OccShape(maker.Wire());
+}
+
+OccShape offsetWireShape(const OccShape& profile, double distance, int join) {
+  if (distance == 0) {
+    throw std::runtime_error("offsetWire: distance must be non-zero");
+  }
+  const GeomAbs_JoinType joinType =
+      join == 1 ? GeomAbs_Tangent : join == 2 ? GeomAbs_Intersection : GeomAbs_Arc;
+  const TopoDS_Shape& shape = profile.get();
+  // wires enter through the constructor (Init has no wire overload)
+  TopoDS_Shape result;
+  if (shape.ShapeType() == TopAbs_FACE) {
+    // Face-based Perform() crashes inside OCCT for negative offsets on faces
+    // with holes — offset each boundary wire instead. Holes are stored
+    // reversed, so the SAME signed distance moves every boundary along the
+    // material normal: positive grows the part, negative eats into it.
+    const TopoDS_Face face = TopoDS::Face(shape);
+    TopTools_IndexedMapOfShape wireMap;
+    TopExp::MapShapes(face, TopAbs_WIRE, wireMap);
+    TopoDS_Compound compound;
+    BRep_Builder builder;
+    builder.MakeCompound(compound);
+    for (int i = 1; i <= wireMap.Extent(); ++i) {
+      BRepOffsetAPI_MakeOffset maker(TopoDS::Wire(wireMap(i)), joinType);
+      maker.Perform(distance);
+      if (maker.Shape().IsNull()) {
+        throw std::runtime_error("2D offset failed (distance too large for the profile?)");
+      }
+      builder.Add(compound, maker.Shape());
+    }
+    result = compound;
+  } else if (shape.ShapeType() == TopAbs_WIRE) {
+    BRepOffsetAPI_MakeOffset maker(TopoDS::Wire(shape), joinType);
+    maker.Perform(distance);
+    result = maker.Shape();
+  } else {
+    throw std::runtime_error("offsetWire: expected a Wire or Face profile (e.g. makeCircle / makeFace output)");
+  }
+  if (result.IsNull()) {
+    throw std::runtime_error("2D offset failed (distance too large for the profile?)");
+  }
+  return OccShape(result);
+}
+
+// Project a wire/edge onto a face or shell (BRepProj_Projection), planar
+// along the given unit direction ("cylindrical" projection). Throws on failure.
+OccShape projectShape(const OccShape& shape, const OccShape& target,
+                      double dx, double dy, double dz) {
+  const TopoDS_Shape& wire = shape.get();
+  const TopoDS_Shape& surface = target.get();
+  if (wire.ShapeType() != TopAbs_WIRE && wire.ShapeType() != TopAbs_EDGE) {
+    throw std::runtime_error("project: expected a Wire or Edge to project (e.g. makeCircle / makeWire output)");
+  }
+  if (surface.ShapeType() != TopAbs_FACE && surface.ShapeType() != TopAbs_SHELL) {
+    throw std::runtime_error("project: target must be a Face or Shell (e.g. faces(shape) or makeFace output)");
+  }
+  BRepProj_Projection projection(wire, surface, gp_Dir(dx, dy, dz));
+  if (!projection.IsDone()) {
+    throw std::runtime_error("projection failed (curve does not land on the surface?)");
+  }
+  const TopoDS_Shape result = projection.Shape();
+  if (result.IsNull()) {
+    throw std::runtime_error("projection produced no result (curve does not land on the surface?)");
+  }
+  return OccShape(result);
 }
 
 OccShape makeFaceShape(const OccShape& outer, const std::vector<OccShape>& holes) {

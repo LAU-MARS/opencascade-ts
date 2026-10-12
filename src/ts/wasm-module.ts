@@ -159,6 +159,22 @@ export interface OccWasmModule extends RawBindings {
   setBsplineSurfacePoles(s: WasmShape, polesPtr: number, uCount: number, vCount: number): WasmShape;
   /** Concatenate connected wires/edges, in order. */
   makeWire(parts: WasmShapeVector): WasmShape;
+  /** Ellipse arc (R1 ≥ R2) between ellipse parameters u1 < u2 (radians). */
+  makeEllipseArc(
+    radius1: number, radius2: number,
+    nx: number, ny: number, nz: number,
+    ox: number, oy: number, oz: number,
+    u1: number, u2: number,
+  ): WasmShape;
+  /**
+   * Bézier wire from `poleCount` control-point triples (float64) at `polesPtr`;
+   * `weightsPtr` = 0 for non-rational, else `poleCount` positive weights.
+   */
+  makeBezier(polesPtr: number, poleCount: number, weightsPtr: number): WasmShape;
+  /** 2D offset of a wire/face; join 0 = arc, 1 = tangent, 2 = intersection. */
+  offsetWire(s: WasmShape, distance: number, join: number): WasmShape;
+  /** Project a wire/edge onto a face/shell, planar along the unit direction. */
+  project(s: WasmShape, target: WasmShape, dx: number, dy: number, dz: number): WasmShape;
   /** Planar face from an outer wire with optional hole wires (all planar). */
   makeFace(outer: WasmShape, holes: WasmShapeVector): WasmShape;
   /** Split the shape by tools, keeping every piece (compound result). */
