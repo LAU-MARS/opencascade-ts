@@ -14,8 +14,9 @@ Binding rules (the raw layer shares the curated layer's contracts):
 
   * every method body runs inside occ_ts::guarded() — failures land in
     hasError()/lastError() exactly like the curated API;
-  * handle<C> arguments accept C* (the handle adopts the pointee), handle<C>
-    results return a JS-owned Handle_C wrapper (delete() drops the refcount);
+  * handle<C> arguments accept C* (borrowed for the call — the wrapper pins
+    the pointee's refcount), handle<C> results return a JS-owned Handle_C
+    wrapper (delete() drops the refcount; Get() lends the pointee);
   * enums cross as int; their enumerators are exported as module constants
     (constant("IFSelect_RetDone", ...));
   * default arguments become truncated overloads (embind has no native
@@ -168,8 +169,10 @@ def classify(type_: ci.Type, role="arg"):
     return None
 
 
-# TS names for kinds
-def ts_type(kind, payload) -> str:
+# TS names for kinds. Parameters and returns differ for handles: an argument
+# crosses as the pointee (Raw_C, borrowed for the call), a result crosses as
+# the JS-owned wrapper (Raw_Handle_C — delete() drops the refcount).
+def ts_param_type(kind, payload) -> str:
     if kind in ("prim", "enum"):
         return "number"
     if kind == "string":
@@ -177,6 +180,12 @@ def ts_type(kind, payload) -> str:
     if kind in ("class", "ref", "pointer", "handle"):
         return f"Raw_{payload}"
     return "void"
+
+
+def ts_ret_type(kind, payload) -> str:
+    if kind == "handle":
+        return f"Raw_Handle_{payload}"
+    return ts_param_type(kind, payload)
 
 
 # ---------------------------------------------------------------------------
@@ -210,7 +219,7 @@ def param_cpp(arg, name):
     if kind == "pointer":
         return f"{payload}* {name}"
     if kind == "handle":
-        return f"{payload}* {name}"  # adopts the pointee into a handle
+        return f"{payload}* {name}"  # borrowed pointee; call_arg() pins its refcount
     if kind == "enum":
         return f"int {name}"
     raise AssertionError(kind)
@@ -225,7 +234,11 @@ def call_arg(i, arg):
     if kind in ("class", "ref", "pointer"):
         return f"a{i}"
     if kind == "handle":
-        return f"opencascade::handle<{payload}>(a{i})"
+        # Borrow, never adopt: the embind instance owns the pointee, so pin it
+        # with a refcount bump for the handle's lifetime. Without this the
+        # temporary handle's destructor frees the caller's object (handle<C>
+        # payloads must derive from Standard_Transport, which OCCT guarantees).
+        return f"(a{i}->IncrementRefCounter(), opencascade::handle<{payload}>(a{i}))"
     if kind == "enum":
         return f"static_cast<{payload}>(a{i})"
     raise AssertionError(kind)
@@ -975,8 +988,8 @@ def emit_cpp(classes, enums_global, handle_classes, class_data, enum_values, nam
 
 
 def ts_method_sig(args, ret, is_static=False):
-    params = [f"a{i}: {ts_type(a[0], a[1])}" for i, a in enumerate(args)]
-    return f"({', '.join(params)}): {ts_type(ret[0], ret[1])}"
+    params = [f"a{i}: {ts_param_type(a[0], a[1])}" for i, a in enumerate(args)]
+    return f"({', '.join(params)}): {ts_ret_type(ret[0], ret[1])}"
 
 
 def emit_ts(classes, enums_global, handle_classes, class_data, enum_values, namespaces):
@@ -1000,7 +1013,7 @@ def emit_ts(classes, enums_global, handle_classes, class_data, enum_values, name
         out.append("}\n\n")
         ctor_lines = []
         for cursor, args in ctors:
-            params = [f"a{i}: {ts_type(a[0], a[1])}" for i, a in enumerate(args)]
+            params = [f"a{i}: {ts_param_type(a[0], a[1])}" for i, a in enumerate(args)]
             ctor_lines.append(f"  new ({', '.join(params)}): Raw_{cls};\n")
         static_lines = []
         by_name_static = {}

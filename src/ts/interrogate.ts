@@ -194,7 +194,11 @@ export interface DocumentNode {
   name: string | null;
   /** `"#RRGGBB"` or null. */
   color: string | null;
-  /** 12 numbers, row-major 3×4 (rotation + translation), or null for identity. */
+  /**
+   * The node's own placement in its PARENT's frame (top-level nodes: world
+   * frame), as 12 row-major 3×4 numbers — or null for identity. Same
+   * convention as `writeStepDocument`'s `transform` input.
+   */
   transform: number[] | null;
   shape?: number;
   children?: DocumentNode[];

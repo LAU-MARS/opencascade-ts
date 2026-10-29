@@ -81,7 +81,11 @@ export interface WriteDocumentNode {
   /**
    * Instance placement as 12 row-major 3×4 numbers
    * (`[r11,r12,r13,t1, r21,r22,r23,t2, r31,r32,r33,t3]`), matching
-   * `readStepDocument`'s `transform` output. Identity when omitted.
+   * `readStepDocument`'s `transform` output. The placement is relative to the
+   * node's PARENT (top-level nodes: world frame) and composes under any
+   * location the shape itself carries —
+   * world = parent chain ∘ transform ∘ shape's own TopLoc. Identity when
+   * omitted. Works at every depth, including top-level nodes.
    */
   transform?: readonly number[];
 }
@@ -1129,8 +1133,14 @@ export class OccSession {
 
   /**
    * Import a STEP file as an XCAF document: assembly tree with names, colors
-   * and instance transforms. Leaf shapes (world-positioned) are available via
-   * `documentShape(index)` until the next `readStepDocument` call.
+   * and instance transforms. Each node's `transform` is its own placement in
+   * the PARENT's frame (top-level nodes: world frame) — the same convention
+   * `writeStepDocument` accepts, so trees round-trip unchanged. An assembly
+   * wrapping a single unnamed, uncolored shape is a placement wrapper and
+   * collapses into one node. The order of multiple top-level nodes follows
+   * the file, not any particular input order. Leaf shapes (world-positioned:
+   * the full ancestor chain applied) are available via `documentShape(index)`
+   * until the next `readStepDocument` call.
    */
   readStepDocument(bytes: Uint8Array, options: { unit?: UnitOption } = {}): ShapeDocument {
     const json = this.withHeapBytes(
@@ -1166,7 +1176,13 @@ export class OccSession {
   /**
    * Export an XCAF document — the mirror of `readStepDocument`: an assembly
    * tree of named, colored, positioned shapes. A node carries either a
-   * `shape` or `children`.
+   * `shape` or `children`. A node's `transform` places it in its parent's
+   * frame (top-level nodes: world frame) at every depth; shapes are stored
+   * with their own TopLoc composed into the node placement, so a shape that
+   * carries a location (e.g. one returned by `documentShape`) writes out at
+   * its world position without spawning extra tree levels. Colors apply to
+   * shape (leaf) nodes only — STEP styles attach to geometry, so a color on
+   * an assembly node is rejected with an error rather than silently dropped.
    */
   writeStepDocument(tree: readonly WriteDocumentNode[], options: { unit?: UnitOption } = {}): Uint8Array {
     const shapes: OccShape[] = [];
@@ -1196,6 +1212,12 @@ export class OccSession {
         if (node.color) {
           if (!/^#[0-9a-fA-F]{6}$/.test(node.color)) {
             throw new Error(`writeStepDocument: color "${node.color}" is not #RRGGBB`);
+          }
+          if (node.children?.length) {
+            throw new Error(
+              `writeStepDocument: colors apply to shape nodes, not assemblies — ` +
+              `move the color from "${node.name ?? "unnamed assembly"}" onto its shape nodes`,
+            );
           }
           colors[index] = node.color.toUpperCase();
         }
@@ -1264,6 +1286,23 @@ export class OccSession {
   /** Export as BRep text. Set `withTriangles` to carry the tessellation along. */
   writeBrep(shape: OccShape, withTriangles = false): Uint8Array {
     const text = this.module.writeBrep(shape.raw, withTriangles);
+    this.throwIfError();
+    return new TextEncoder().encode(text);
+  }
+
+  /**
+   * Stage bytes on the wasm in-memory filesystem so raw-layer classes with
+   * path-based APIs can use them (e.g. `STEPCAFControl_Reader.ReadFile`).
+   * Absolute paths only ("/mem/in.step"); nothing touches the host FS.
+   */
+  memWriteFile(path: string, bytes: Uint8Array): void {
+    this.withHeapBytes(bytes, (ptr, len) => this.module.memWriteFile(path, ptr, len));
+    this.throwIfError();
+  }
+
+  /** Read a MEMFS file back out (written by `memWriteFile` or raw writers). */
+  memReadFile(path: string): Uint8Array {
+    const text = this.module.memReadFile(path);
     this.throwIfError();
     return new TextEncoder().encode(text);
   }

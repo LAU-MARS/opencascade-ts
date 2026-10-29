@@ -305,6 +305,10 @@ export interface OccWasmModule extends RawBindings {
   ): string;
   writeBrep(s: WasmShape, withTriangles: boolean): string;
   writeIges(s: WasmShape): string;
+  /** MEMFS bridge for the raw layer: stage bytes at an absolute path. */
+  memWriteFile(path: string, ptr: number, length: number): void;
+  /** Read a MEMFS file back (crosses as string, like the STEP writers). */
+  memReadFile(path: string): string;
 
   /** JSON: GeometryDescription (faces/edges with analytic parameters). */
   describe(s: WasmShape): string;

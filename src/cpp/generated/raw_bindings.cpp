@@ -98,6 +98,9 @@
 #include <Poly_Polygon3D.hxx>
 #include <Poly_Triangle.hxx>
 #include <Poly_Triangulation.hxx>
+#include <Quantity_Color.hxx>
+#include <STEPCAFControl_Reader.hxx>
+#include <STEPCAFControl_Writer.hxx>
 #include <STEPControl_Reader.hxx>
 #include <STEPControl_Writer.hxx>
 #include <ShapeFix_Shape.hxx>
@@ -110,7 +113,12 @@
 #include <TColgp_Array2OfPnt.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <TDF_Label.hxx>
+#include <TDF_LabelSequence.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDocStd_Document.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
@@ -129,6 +137,9 @@
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
+#include <XCAFDoc_ColorTool.hxx>
+#include <XCAFDoc_DocumentTool.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Ax22d.hxx>
@@ -1208,1427 +1219,254 @@ static void DESTEP_Parameters_Reset_o1v0_wrap(DESTEP_Parameters& self) {
     return 0;
   }, 0);
 }
-static TCollection_AsciiString* TCollection_AsciiString_ctor_c0v0_wrap() {
-  return occ_ts::guarded("TCollection_AsciiString::ctor", [&]() -> TCollection_AsciiString* {
-    return new TCollection_AsciiString();
-  }, (TCollection_AsciiString*)nullptr);
+static TDF_Label* TDF_Label_ctor_c0v0_wrap() {
+  return occ_ts::guarded("TDF_Label::ctor", [&]() -> TDF_Label* {
+    return new TDF_Label();
+  }, (TDF_Label*)nullptr);
 }
-static TCollection_AsciiString* TCollection_AsciiString_ctor_c1v0_wrap(std::string a0) {
-  return occ_ts::guarded("TCollection_AsciiString::ctor", [&]() -> TCollection_AsciiString* {
-    return new TCollection_AsciiString(a0.c_str());
-  }, (TCollection_AsciiString*)nullptr);
-}
-static TCollection_AsciiString* TCollection_AsciiString_ctor_c2v0_wrap(std::string a0, int a1) {
-  return occ_ts::guarded("TCollection_AsciiString::ctor", [&]() -> TCollection_AsciiString* {
-    return new TCollection_AsciiString(a0.c_str(), a1);
-  }, (TCollection_AsciiString*)nullptr);
-}
-static void TCollection_AsciiString_AssignCat_wrap(TCollection_AsciiString& self, int a0) {
-  occ_ts::guarded("TCollection_AsciiString.AssignCat", [&]() -> int {
-    self.AssignCat(a0);
+static void TDF_Label_Nullify_wrap(TDF_Label& self) {
+  occ_ts::guarded("TDF_Label.Nullify", [&]() -> int {
+    self.Nullify();
     return 0;
   }, 0);
 }
-static void TCollection_AsciiString_Capitalize_o5v0_wrap(TCollection_AsciiString& self) {
-  occ_ts::guarded("TCollection_AsciiString.Capitalize", [&]() -> int {
-    self.Capitalize();
-    return 0;
+static int TDF_Label_Tag_o1v0_wrap(const TDF_Label& self) {
+  return occ_ts::guarded("TDF_Label.Tag", [&]() -> int {
+    return self.Tag();
   }, 0);
 }
-static TCollection_AsciiString TCollection_AsciiString_Cat_o6v0_wrap(const TCollection_AsciiString& self, int a0) {
-  return occ_ts::guarded("TCollection_AsciiString.Cat", [&]() -> TCollection_AsciiString {
-    return self.Cat(a0);
-  }, TCollection_AsciiString());
+static TDF_Label TDF_Label_Father_o2v0_wrap(const TDF_Label& self) {
+  return occ_ts::guarded("TDF_Label.Father", [&]() -> TDF_Label {
+    return self.Father();
+  }, TDF_Label());
 }
-static void TCollection_AsciiString_Center_o11v0_wrap(TCollection_AsciiString& self, int a0, int a1) {
-  occ_ts::guarded("TCollection_AsciiString.Center", [&]() -> int {
-    self.Center(a0, a1);
-    return 0;
-  }, 0);
-}
-static void TCollection_AsciiString_ChangeAll_o12v0_wrap(TCollection_AsciiString& self, int a0, int a1, bool a2) {
-  occ_ts::guarded("TCollection_AsciiString.ChangeAll", [&]() -> int {
-    self.ChangeAll(a0, a1, a2);
-    return 0;
-  }, 0);
-}
-static void TCollection_AsciiString_ChangeAll_o12v1_wrap(TCollection_AsciiString& self, int a0, int a1) {
-  occ_ts::guarded("TCollection_AsciiString.ChangeAll", [&]() -> int {
-    self.ChangeAll(a0, a1);
-    return 0;
-  }, 0);
-}
-static void TCollection_AsciiString_Clear_o13v0_wrap(TCollection_AsciiString& self) {
-  occ_ts::guarded("TCollection_AsciiString.Clear", [&]() -> int {
-    self.Clear();
-    return 0;
-  }, 0);
-}
-static void TCollection_AsciiString_Copy_o14v0_wrap(TCollection_AsciiString& self, std::string a0) {
-  occ_ts::guarded("TCollection_AsciiString.Copy", [&]() -> int {
-    self.Copy(a0.c_str());
-    return 0;
-  }, 0);
-}
-static void TCollection_AsciiString_Swap_o16v0_wrap(TCollection_AsciiString& self, TCollection_AsciiString& a0) {
-  occ_ts::guarded("TCollection_AsciiString.Swap", [&]() -> int {
-    self.Swap(a0);
-    return 0;
-  }, 0);
-}
-static int TCollection_AsciiString_FirstLocationInSet_o17v0_wrap(const TCollection_AsciiString& self, const TCollection_AsciiString& a0, int a1, int a2) {
-  return occ_ts::guarded("TCollection_AsciiString.FirstLocationInSet", [&]() -> int {
-    return self.FirstLocationInSet(a0, a1, a2);
-  }, 0);
-}
-static int TCollection_AsciiString_FirstLocationNotInSet_o18v0_wrap(const TCollection_AsciiString& self, const TCollection_AsciiString& a0, int a1, int a2) {
-  return occ_ts::guarded("TCollection_AsciiString.FirstLocationNotInSet", [&]() -> int {
-    return self.FirstLocationNotInSet(a0, a1, a2);
-  }, 0);
-}
-static void TCollection_AsciiString_Insert_o19v0_wrap(TCollection_AsciiString& self, int a0, int a1) {
-  occ_ts::guarded("TCollection_AsciiString.Insert", [&]() -> int {
-    self.Insert(a0, a1);
-    return 0;
-  }, 0);
-}
-static void TCollection_AsciiString_InsertAfter_o22v0_wrap(TCollection_AsciiString& self, int a0, const TCollection_AsciiString& a1) {
-  occ_ts::guarded("TCollection_AsciiString.InsertAfter", [&]() -> int {
-    self.InsertAfter(a0, a1);
-    return 0;
-  }, 0);
-}
-static void TCollection_AsciiString_InsertBefore_o23v0_wrap(TCollection_AsciiString& self, int a0, const TCollection_AsciiString& a1) {
-  occ_ts::guarded("TCollection_AsciiString.InsertBefore", [&]() -> int {
-    self.InsertBefore(a0, a1);
-    return 0;
-  }, 0);
-}
-static bool TCollection_AsciiString_IsEmpty_o24v0_wrap(const TCollection_AsciiString& self) {
-  return occ_ts::guarded("TCollection_AsciiString.IsEmpty", [&]() -> bool {
-    return self.IsEmpty();
+static bool TDF_Label_IsNull_o3v0_wrap(const TDF_Label& self) {
+  return occ_ts::guarded("TDF_Label.IsNull", [&]() -> bool {
+    return self.IsNull();
   }, false);
 }
-static bool TCollection_AsciiString_IsEqual_o25v0_wrap(const TCollection_AsciiString& self, std::string a0) {
-  return occ_ts::guarded("TCollection_AsciiString.IsEqual", [&]() -> bool {
-    return self.IsEqual(a0.c_str());
-  }, false);
-}
-static bool TCollection_AsciiString_IsDifferent_o27v0_wrap(const TCollection_AsciiString& self, std::string a0) {
-  return occ_ts::guarded("TCollection_AsciiString.IsDifferent", [&]() -> bool {
-    return self.IsDifferent(a0.c_str());
-  }, false);
-}
-static bool TCollection_AsciiString_IsLess_o29v0_wrap(const TCollection_AsciiString& self, std::string a0) {
-  return occ_ts::guarded("TCollection_AsciiString.IsLess", [&]() -> bool {
-    return self.IsLess(a0.c_str());
-  }, false);
-}
-static bool TCollection_AsciiString_IsGreater_o31v0_wrap(const TCollection_AsciiString& self, std::string a0) {
-  return occ_ts::guarded("TCollection_AsciiString.IsGreater", [&]() -> bool {
-    return self.IsGreater(a0.c_str());
-  }, false);
-}
-static bool TCollection_AsciiString_StartsWith_o33v0_wrap(const TCollection_AsciiString& self, const TCollection_AsciiString& a0) {
-  return occ_ts::guarded("TCollection_AsciiString.StartsWith", [&]() -> bool {
-    return self.StartsWith(a0);
-  }, false);
-}
-static bool TCollection_AsciiString_EndsWith_o34v0_wrap(const TCollection_AsciiString& self, const TCollection_AsciiString& a0) {
-  return occ_ts::guarded("TCollection_AsciiString.EndsWith", [&]() -> bool {
-    return self.EndsWith(a0);
-  }, false);
-}
-static int TCollection_AsciiString_IntegerValue_o35v0_wrap(const TCollection_AsciiString& self) {
-  return occ_ts::guarded("TCollection_AsciiString.IntegerValue", [&]() -> int {
-    return self.IntegerValue();
-  }, 0);
-}
-static bool TCollection_AsciiString_IsIntegerValue_o36v0_wrap(const TCollection_AsciiString& self) {
-  return occ_ts::guarded("TCollection_AsciiString.IsIntegerValue", [&]() -> bool {
-    return self.IsIntegerValue();
-  }, false);
-}
-static bool TCollection_AsciiString_IsRealValue_o37v0_wrap(const TCollection_AsciiString& self, bool a0) {
-  return occ_ts::guarded("TCollection_AsciiString.IsRealValue", [&]() -> bool {
-    return self.IsRealValue(a0);
-  }, false);
-}
-static bool TCollection_AsciiString_IsRealValue_o37v1_wrap(const TCollection_AsciiString& self) {
-  return occ_ts::guarded("TCollection_AsciiString.IsRealValue", [&]() -> bool {
-    return self.IsRealValue();
-  }, false);
-}
-static bool TCollection_AsciiString_IsAscii_o38v0_wrap(const TCollection_AsciiString& self) {
-  return occ_ts::guarded("TCollection_AsciiString.IsAscii", [&]() -> bool {
-    return self.IsAscii();
-  }, false);
-}
-static void TCollection_AsciiString_LeftAdjust_o39v0_wrap(TCollection_AsciiString& self) {
-  occ_ts::guarded("TCollection_AsciiString.LeftAdjust", [&]() -> int {
-    self.LeftAdjust();
+static void TDF_Label_Imported_o4v0_wrap(const TDF_Label& self, bool a0) {
+  occ_ts::guarded("TDF_Label.Imported", [&]() -> int {
+    self.Imported(a0);
     return 0;
   }, 0);
 }
-static void TCollection_AsciiString_LeftJustify_o40v0_wrap(TCollection_AsciiString& self, int a0, int a1) {
-  occ_ts::guarded("TCollection_AsciiString.LeftJustify", [&]() -> int {
-    self.LeftJustify(a0, a1);
+static bool TDF_Label_IsImported_o5v0_wrap(const TDF_Label& self) {
+  return occ_ts::guarded("TDF_Label.IsImported", [&]() -> bool {
+    return self.IsImported();
+  }, false);
+}
+static bool TDF_Label_IsEqual_o6v0_wrap(const TDF_Label& self, const TDF_Label& a0) {
+  return occ_ts::guarded("TDF_Label.IsEqual", [&]() -> bool {
+    return self.IsEqual(a0);
+  }, false);
+}
+static bool TDF_Label_IsDifferent_o7v0_wrap(const TDF_Label& self, const TDF_Label& a0) {
+  return occ_ts::guarded("TDF_Label.IsDifferent", [&]() -> bool {
+    return self.IsDifferent(a0);
+  }, false);
+}
+static bool TDF_Label_IsRoot_o8v0_wrap(const TDF_Label& self) {
+  return occ_ts::guarded("TDF_Label.IsRoot", [&]() -> bool {
+    return self.IsRoot();
+  }, false);
+}
+static void TDF_Label_ForgetAllAttributes_o9v0_wrap(const TDF_Label& self, bool a0) {
+  occ_ts::guarded("TDF_Label.ForgetAllAttributes", [&]() -> int {
+    self.ForgetAllAttributes(a0);
     return 0;
   }, 0);
 }
-static int TCollection_AsciiString_Length_o41v0_wrap(const TCollection_AsciiString& self) {
-  return occ_ts::guarded("TCollection_AsciiString.Length", [&]() -> int {
+static void TDF_Label_ForgetAllAttributes_o9v1_wrap(const TDF_Label& self) {
+  occ_ts::guarded("TDF_Label.ForgetAllAttributes", [&]() -> int {
+    self.ForgetAllAttributes();
+    return 0;
+  }, 0);
+}
+static bool TDF_Label_MayBeModified_o10v0_wrap(const TDF_Label& self) {
+  return occ_ts::guarded("TDF_Label.MayBeModified", [&]() -> bool {
+    return self.MayBeModified();
+  }, false);
+}
+static bool TDF_Label_AttributesModified_o11v0_wrap(const TDF_Label& self) {
+  return occ_ts::guarded("TDF_Label.AttributesModified", [&]() -> bool {
+    return self.AttributesModified();
+  }, false);
+}
+static bool TDF_Label_HasAttribute_o12v0_wrap(const TDF_Label& self) {
+  return occ_ts::guarded("TDF_Label.HasAttribute", [&]() -> bool {
+    return self.HasAttribute();
+  }, false);
+}
+static int TDF_Label_NbAttributes_o13v0_wrap(const TDF_Label& self) {
+  return occ_ts::guarded("TDF_Label.NbAttributes", [&]() -> int {
+    return self.NbAttributes();
+  }, 0);
+}
+static int TDF_Label_Depth_o14v0_wrap(const TDF_Label& self) {
+  return occ_ts::guarded("TDF_Label.Depth", [&]() -> int {
+    return self.Depth();
+  }, 0);
+}
+static bool TDF_Label_IsDescendant_o15v0_wrap(const TDF_Label& self, const TDF_Label& a0) {
+  return occ_ts::guarded("TDF_Label.IsDescendant", [&]() -> bool {
+    return self.IsDescendant(a0);
+  }, false);
+}
+static TDF_Label TDF_Label_Root_o16v0_wrap(const TDF_Label& self) {
+  return occ_ts::guarded("TDF_Label.Root", [&]() -> TDF_Label {
+    return self.Root();
+  }, TDF_Label());
+}
+static bool TDF_Label_HasChild_o17v0_wrap(const TDF_Label& self) {
+  return occ_ts::guarded("TDF_Label.HasChild", [&]() -> bool {
+    return self.HasChild();
+  }, false);
+}
+static int TDF_Label_NbChildren_o18v0_wrap(const TDF_Label& self) {
+  return occ_ts::guarded("TDF_Label.NbChildren", [&]() -> int {
+    return self.NbChildren();
+  }, 0);
+}
+static TDF_Label TDF_Label_FindChild_o19v0_wrap(const TDF_Label& self, int a0, bool a1) {
+  return occ_ts::guarded("TDF_Label.FindChild", [&]() -> TDF_Label {
+    return self.FindChild(a0, a1);
+  }, TDF_Label());
+}
+static TDF_Label TDF_Label_FindChild_o19v1_wrap(const TDF_Label& self, int a0) {
+  return occ_ts::guarded("TDF_Label.FindChild", [&]() -> TDF_Label {
+    return self.FindChild(a0);
+  }, TDF_Label());
+}
+static TDF_Label TDF_Label_NewChild_o20v0_wrap(const TDF_Label& self) {
+  return occ_ts::guarded("TDF_Label.NewChild", [&]() -> TDF_Label {
+    return self.NewChild();
+  }, TDF_Label());
+}
+static int TDF_Label_Transaction_o21v0_wrap(const TDF_Label& self) {
+  return occ_ts::guarded("TDF_Label.Transaction", [&]() -> int {
+    return self.Transaction();
+  }, 0);
+}
+static bool TDF_Label_HasLowerNode_o22v0_wrap(const TDF_Label& self, const TDF_Label& a0) {
+  return occ_ts::guarded("TDF_Label.HasLowerNode", [&]() -> bool {
+    return self.HasLowerNode(a0);
+  }, false);
+}
+static bool TDF_Label_HasGreaterNode_o23v0_wrap(const TDF_Label& self, const TDF_Label& a0) {
+  return occ_ts::guarded("TDF_Label.HasGreaterNode", [&]() -> bool {
+    return self.HasGreaterNode(a0);
+  }, false);
+}
+static TDF_LabelSequence* TDF_LabelSequence_ctor_c0v0_wrap() {
+  return occ_ts::guarded("TDF_LabelSequence::ctor", [&]() -> TDF_LabelSequence* {
+    return new TDF_LabelSequence();
+  }, (TDF_LabelSequence*)nullptr);
+}
+static TDF_LabelSequence* TDF_LabelSequence_ctor_c1v0_wrap(const TDF_LabelSequence& a0) {
+  return occ_ts::guarded("TDF_LabelSequence::ctor", [&]() -> TDF_LabelSequence* {
+    return new TDF_LabelSequence(a0);
+  }, (TDF_LabelSequence*)nullptr);
+}
+static int TDF_LabelSequence_Size_wrap(const TDF_LabelSequence& self) {
+  return occ_ts::guarded("TDF_LabelSequence.Size", [&]() -> int {
+    return self.Size();
+  }, 0);
+}
+static int TDF_LabelSequence_Length_o1v0_wrap(const TDF_LabelSequence& self) {
+  return occ_ts::guarded("TDF_LabelSequence.Length", [&]() -> int {
     return self.Length();
   }, 0);
 }
-static int TCollection_AsciiString_Location_o42v0_wrap(const TCollection_AsciiString& self, const TCollection_AsciiString& a0, int a1, int a2) {
-  return occ_ts::guarded("TCollection_AsciiString.Location", [&]() -> int {
-    return self.Location(a0, a1, a2);
+static int TDF_LabelSequence_Lower_o2v0_wrap(const TDF_LabelSequence& self) {
+  return occ_ts::guarded("TDF_LabelSequence.Lower", [&]() -> int {
+    return self.Lower();
   }, 0);
 }
-static int TCollection_AsciiString_Location_o43v0_wrap(const TCollection_AsciiString& self, int a0, int a1, int a2, int a3) {
-  return occ_ts::guarded("TCollection_AsciiString.Location", [&]() -> int {
-    return self.Location(a0, a1, a2, a3);
+static int TDF_LabelSequence_Upper_o3v0_wrap(const TDF_LabelSequence& self) {
+  return occ_ts::guarded("TDF_LabelSequence.Upper", [&]() -> int {
+    return self.Upper();
   }, 0);
 }
-static void TCollection_AsciiString_LowerCase_o44v0_wrap(TCollection_AsciiString& self) {
-  occ_ts::guarded("TCollection_AsciiString.LowerCase", [&]() -> int {
-    self.LowerCase();
+static bool TDF_LabelSequence_IsEmpty_o4v0_wrap(const TDF_LabelSequence& self) {
+  return occ_ts::guarded("TDF_LabelSequence.IsEmpty", [&]() -> bool {
+    return self.IsEmpty();
+  }, false);
+}
+static void TDF_LabelSequence_Reverse_o5v0_wrap(TDF_LabelSequence& self) {
+  occ_ts::guarded("TDF_LabelSequence.Reverse", [&]() -> int {
+    self.Reverse();
     return 0;
   }, 0);
 }
-static void TCollection_AsciiString_Prepend_o45v0_wrap(TCollection_AsciiString& self, const TCollection_AsciiString& a0) {
-  occ_ts::guarded("TCollection_AsciiString.Prepend", [&]() -> int {
+static void TDF_LabelSequence_Exchange_o6v0_wrap(TDF_LabelSequence& self, int a0, int a1) {
+  occ_ts::guarded("TDF_LabelSequence.Exchange", [&]() -> int {
+    self.Exchange(a0, a1);
+    return 0;
+  }, 0);
+}
+static TDF_LabelSequence TDF_LabelSequence_Assign_o7v0_wrap(TDF_LabelSequence& self, const TDF_LabelSequence& a0) {
+  return occ_ts::guarded("TDF_LabelSequence.Assign", [&]() -> TDF_LabelSequence {
+    return self.Assign(a0);
+  }, TDF_LabelSequence());
+}
+static void TDF_LabelSequence_Append_o8v0_wrap(TDF_LabelSequence& self, const TDF_Label& a0) {
+  occ_ts::guarded("TDF_LabelSequence.Append", [&]() -> int {
+    self.Append(a0);
+    return 0;
+  }, 0);
+}
+static void TDF_LabelSequence_Prepend_o9v0_wrap(TDF_LabelSequence& self, const TDF_Label& a0) {
+  occ_ts::guarded("TDF_LabelSequence.Prepend", [&]() -> int {
     self.Prepend(a0);
     return 0;
   }, 0);
 }
-static double TCollection_AsciiString_RealValue_o46v0_wrap(const TCollection_AsciiString& self) {
-  return occ_ts::guarded("TCollection_AsciiString.RealValue", [&]() -> double {
-    return self.RealValue();
-  }, 0);
-}
-static void TCollection_AsciiString_RemoveAll_o47v0_wrap(TCollection_AsciiString& self, int a0, bool a1) {
-  occ_ts::guarded("TCollection_AsciiString.RemoveAll", [&]() -> int {
-    self.RemoveAll(a0, a1);
+static void TDF_LabelSequence_InsertBefore_o10v0_wrap(TDF_LabelSequence& self, int a0, const TDF_Label& a1) {
+  occ_ts::guarded("TDF_LabelSequence.InsertBefore", [&]() -> int {
+    self.InsertBefore(a0, a1);
     return 0;
   }, 0);
 }
-static void TCollection_AsciiString_RemoveAll_o48v0_wrap(TCollection_AsciiString& self, int a0) {
-  occ_ts::guarded("TCollection_AsciiString.RemoveAll", [&]() -> int {
-    self.RemoveAll(a0);
+static void TDF_LabelSequence_Split_o11v0_wrap(TDF_LabelSequence& self, int a0, TDF_LabelSequence& a1) {
+  occ_ts::guarded("TDF_LabelSequence.Split", [&]() -> int {
+    self.Split(a0, a1);
     return 0;
   }, 0);
 }
-static void TCollection_AsciiString_Remove_o49v0_wrap(TCollection_AsciiString& self, int a0, int a1) {
-  occ_ts::guarded("TCollection_AsciiString.Remove", [&]() -> int {
-    self.Remove(a0, a1);
-    return 0;
-  }, 0);
+static TDF_Label TDF_LabelSequence_First_o12v0_wrap(const TDF_LabelSequence& self) {
+  return occ_ts::guarded("TDF_LabelSequence.First", [&]() -> TDF_Label {
+    return self.First();
+  }, TDF_Label());
 }
-static void TCollection_AsciiString_Remove_o49v1_wrap(TCollection_AsciiString& self, int a0) {
-  occ_ts::guarded("TCollection_AsciiString.Remove", [&]() -> int {
-    self.Remove(a0);
-    return 0;
-  }, 0);
+static TDF_Label TDF_LabelSequence_ChangeFirst_o13v0_wrap(TDF_LabelSequence& self) {
+  return occ_ts::guarded("TDF_LabelSequence.ChangeFirst", [&]() -> TDF_Label {
+    return self.ChangeFirst();
+  }, TDF_Label());
 }
-static void TCollection_AsciiString_RightAdjust_o50v0_wrap(TCollection_AsciiString& self) {
-  occ_ts::guarded("TCollection_AsciiString.RightAdjust", [&]() -> int {
-    self.RightAdjust();
-    return 0;
-  }, 0);
+static TDF_Label TDF_LabelSequence_Last_o14v0_wrap(const TDF_LabelSequence& self) {
+  return occ_ts::guarded("TDF_LabelSequence.Last", [&]() -> TDF_Label {
+    return self.Last();
+  }, TDF_Label());
 }
-static void TCollection_AsciiString_RightJustify_o51v0_wrap(TCollection_AsciiString& self, int a0, int a1) {
-  occ_ts::guarded("TCollection_AsciiString.RightJustify", [&]() -> int {
-    self.RightJustify(a0, a1);
-    return 0;
-  }, 0);
+static TDF_Label TDF_LabelSequence_ChangeLast_o15v0_wrap(TDF_LabelSequence& self) {
+  return occ_ts::guarded("TDF_LabelSequence.ChangeLast", [&]() -> TDF_Label {
+    return self.ChangeLast();
+  }, TDF_Label());
 }
-static int TCollection_AsciiString_Search_o52v0_wrap(const TCollection_AsciiString& self, std::string a0) {
-  return occ_ts::guarded("TCollection_AsciiString.Search", [&]() -> int {
-    return self.Search(a0.c_str());
-  }, 0);
-}
-static int TCollection_AsciiString_SearchFromEnd_o54v0_wrap(const TCollection_AsciiString& self, std::string a0) {
-  return occ_ts::guarded("TCollection_AsciiString.SearchFromEnd", [&]() -> int {
-    return self.SearchFromEnd(a0.c_str());
-  }, 0);
-}
-static void TCollection_AsciiString_SetValue_o56v0_wrap(TCollection_AsciiString& self, int a0, int a1) {
-  occ_ts::guarded("TCollection_AsciiString.SetValue", [&]() -> int {
-    self.SetValue(a0, a1);
-    return 0;
-  }, 0);
-}
-static TCollection_AsciiString TCollection_AsciiString_Split_o59v0_wrap(TCollection_AsciiString& self, int a0) {
-  return occ_ts::guarded("TCollection_AsciiString.Split", [&]() -> TCollection_AsciiString {
-    return self.Split(a0);
-  }, TCollection_AsciiString());
-}
-static TCollection_AsciiString TCollection_AsciiString_SubString_o60v0_wrap(const TCollection_AsciiString& self, int a0, int a1) {
-  return occ_ts::guarded("TCollection_AsciiString.SubString", [&]() -> TCollection_AsciiString {
-    return self.SubString(a0, a1);
-  }, TCollection_AsciiString());
-}
-static std::string TCollection_AsciiString_ToCString_o61v0_wrap(const TCollection_AsciiString& self) {
-  return occ_ts::guarded("TCollection_AsciiString.ToCString", [&]() -> std::string {
-    return self.ToCString();
-  }, std::string());
-}
-static TCollection_AsciiString TCollection_AsciiString_Token_o62v0_wrap(const TCollection_AsciiString& self, std::string a0, int a1) {
-  return occ_ts::guarded("TCollection_AsciiString.Token", [&]() -> TCollection_AsciiString {
-    return self.Token(a0.c_str(), a1);
-  }, TCollection_AsciiString());
-}
-static TCollection_AsciiString TCollection_AsciiString_Token_o62v1_wrap(const TCollection_AsciiString& self, std::string a0) {
-  return occ_ts::guarded("TCollection_AsciiString.Token", [&]() -> TCollection_AsciiString {
-    return self.Token(a0.c_str());
-  }, TCollection_AsciiString());
-}
-static TCollection_AsciiString TCollection_AsciiString_Token_o62v2_wrap(const TCollection_AsciiString& self) {
-  return occ_ts::guarded("TCollection_AsciiString.Token", [&]() -> TCollection_AsciiString {
-    return self.Token();
-  }, TCollection_AsciiString());
-}
-static void TCollection_AsciiString_Trunc_o63v0_wrap(TCollection_AsciiString& self, int a0) {
-  occ_ts::guarded("TCollection_AsciiString.Trunc", [&]() -> int {
-    self.Trunc(a0);
-    return 0;
-  }, 0);
-}
-static void TCollection_AsciiString_UpperCase_o64v0_wrap(TCollection_AsciiString& self) {
-  occ_ts::guarded("TCollection_AsciiString.UpperCase", [&]() -> int {
-    self.UpperCase();
-    return 0;
-  }, 0);
-}
-static int TCollection_AsciiString_UsefullLength_o65v0_wrap(const TCollection_AsciiString& self) {
-  return occ_ts::guarded("TCollection_AsciiString.UsefullLength", [&]() -> int {
-    return self.UsefullLength();
-  }, 0);
-}
-static int TCollection_AsciiString_Value_o66v0_wrap(const TCollection_AsciiString& self, int a0) {
-  return occ_ts::guarded("TCollection_AsciiString.Value", [&]() -> int {
+static TDF_Label TDF_LabelSequence_Value_o16v0_wrap(const TDF_LabelSequence& self, int a0) {
+  return occ_ts::guarded("TDF_LabelSequence.Value", [&]() -> TDF_Label {
     return self.Value(a0);
-  }, 0);
+  }, TDF_Label());
 }
-static int TCollection_AsciiString_HashCode_o67v0_wrap(const TCollection_AsciiString& self) {
-  return occ_ts::guarded("TCollection_AsciiString.HashCode", [&]() -> int {
-    return self.HashCode();
-  }, 0);
+static TDF_Label TDF_LabelSequence_ChangeValue_o17v0_wrap(TDF_LabelSequence& self, int a0) {
+  return occ_ts::guarded("TDF_LabelSequence.ChangeValue", [&]() -> TDF_Label {
+    return self.ChangeValue(a0);
+  }, TDF_Label());
 }
-static bool TCollection_AsciiString_IsEqual_o68v0_wrap(const TCollection_AsciiString& a0, const TCollection_AsciiString& a1) {
-  return occ_ts::guarded("TCollection_AsciiString.IsEqual", [&]() -> bool {
-    return TCollection_AsciiString::IsEqual(a0, a1);
-  }, false);
-}
-static bool TCollection_AsciiString_IsSameString_o70v0_wrap(const TCollection_AsciiString& a0, const TCollection_AsciiString& a1, bool a2) {
-  return occ_ts::guarded("TCollection_AsciiString.IsSameString", [&]() -> bool {
-    return TCollection_AsciiString::IsSameString(a0, a1, a2);
-  }, false);
-}
-static TCollection_HAsciiString* TCollection_HAsciiString_ctor_c0v0_wrap() {
-  return occ_ts::guarded("TCollection_HAsciiString::ctor", [&]() -> TCollection_HAsciiString* {
-    return new TCollection_HAsciiString();
-  }, (TCollection_HAsciiString*)nullptr);
-}
-static TCollection_HAsciiString* TCollection_HAsciiString_ctor_c1v0_wrap(std::string a0) {
-  return occ_ts::guarded("TCollection_HAsciiString::ctor", [&]() -> TCollection_HAsciiString* {
-    return new TCollection_HAsciiString(a0.c_str());
-  }, (TCollection_HAsciiString*)nullptr);
-}
-static TCollection_HAsciiString* TCollection_HAsciiString_ctor_c3v0_wrap(int a0, int a1) {
-  return occ_ts::guarded("TCollection_HAsciiString::ctor", [&]() -> TCollection_HAsciiString* {
-    return new TCollection_HAsciiString(a0, a1);
-  }, (TCollection_HAsciiString*)nullptr);
-}
-static bool TCollection_HAsciiString_IsInstance_wrap(const TCollection_HAsciiString& self, std::string a0) {
-  return occ_ts::guarded("TCollection_HAsciiString.IsInstance", [&]() -> bool {
-    return self.IsInstance(a0.c_str());
-  }, false);
-}
-static bool TCollection_HAsciiString_IsKind_o1v0_wrap(const TCollection_HAsciiString& self, std::string a0) {
-  return occ_ts::guarded("TCollection_HAsciiString.IsKind", [&]() -> bool {
-    return self.IsKind(a0.c_str());
-  }, false);
-}
-static int TCollection_HAsciiString_GetRefCount_o2v0_wrap(const TCollection_HAsciiString& self) {
-  return occ_ts::guarded("TCollection_HAsciiString.GetRefCount", [&]() -> int {
-    return self.GetRefCount();
-  }, 0);
-}
-static void TCollection_HAsciiString_IncrementRefCounter_o3v0_wrap(TCollection_HAsciiString& self) {
-  occ_ts::guarded("TCollection_HAsciiString.IncrementRefCounter", [&]() -> int {
-    self.IncrementRefCounter();
-    return 0;
-  }, 0);
-}
-static int TCollection_HAsciiString_DecrementRefCounter_o4v0_wrap(TCollection_HAsciiString& self) {
-  return occ_ts::guarded("TCollection_HAsciiString.DecrementRefCounter", [&]() -> int {
-    return self.DecrementRefCounter();
-  }, 0);
-}
-static void TCollection_HAsciiString_Delete_o5v0_wrap(const TCollection_HAsciiString& self) {
-  occ_ts::guarded("TCollection_HAsciiString.Delete", [&]() -> int {
-    self.Delete();
-    return 0;
-  }, 0);
-}
-static void TCollection_HAsciiString_AssignCat_o6v0_wrap(TCollection_HAsciiString& self, std::string a0) {
-  occ_ts::guarded("TCollection_HAsciiString.AssignCat", [&]() -> int {
-    self.AssignCat(a0.c_str());
-    return 0;
-  }, 0);
-}
-static void TCollection_HAsciiString_Capitalize_o8v0_wrap(TCollection_HAsciiString& self) {
-  occ_ts::guarded("TCollection_HAsciiString.Capitalize", [&]() -> int {
-    self.Capitalize();
-    return 0;
-  }, 0);
-}
-static opencascade::handle<TCollection_HAsciiString>* TCollection_HAsciiString_Cat_o9v0_wrap(const TCollection_HAsciiString& self, std::string a0) {
-  return occ_ts::guarded("TCollection_HAsciiString.Cat", [&]() -> opencascade::handle<TCollection_HAsciiString>* {
-    return new opencascade::handle<TCollection_HAsciiString>(self.Cat(a0.c_str()));
-  }, (opencascade::handle<TCollection_HAsciiString>*)nullptr);
-}
-static void TCollection_HAsciiString_Center_o11v0_wrap(TCollection_HAsciiString& self, int a0, int a1) {
-  occ_ts::guarded("TCollection_HAsciiString.Center", [&]() -> int {
-    self.Center(a0, a1);
-    return 0;
-  }, 0);
-}
-static void TCollection_HAsciiString_ChangeAll_o12v0_wrap(TCollection_HAsciiString& self, int a0, int a1, bool a2) {
-  occ_ts::guarded("TCollection_HAsciiString.ChangeAll", [&]() -> int {
-    self.ChangeAll(a0, a1, a2);
-    return 0;
-  }, 0);
-}
-static void TCollection_HAsciiString_ChangeAll_o12v1_wrap(TCollection_HAsciiString& self, int a0, int a1) {
-  occ_ts::guarded("TCollection_HAsciiString.ChangeAll", [&]() -> int {
-    self.ChangeAll(a0, a1);
-    return 0;
-  }, 0);
-}
-static void TCollection_HAsciiString_Clear_o13v0_wrap(TCollection_HAsciiString& self) {
-  occ_ts::guarded("TCollection_HAsciiString.Clear", [&]() -> int {
-    self.Clear();
-    return 0;
-  }, 0);
-}
-static int TCollection_HAsciiString_FirstLocationInSet_o14v0_wrap(const TCollection_HAsciiString& self, TCollection_HAsciiString* a0, int a1, int a2) {
-  return occ_ts::guarded("TCollection_HAsciiString.FirstLocationInSet", [&]() -> int {
-    return self.FirstLocationInSet(opencascade::handle<TCollection_HAsciiString>(a0), a1, a2);
-  }, 0);
-}
-static int TCollection_HAsciiString_FirstLocationNotInSet_o15v0_wrap(const TCollection_HAsciiString& self, TCollection_HAsciiString* a0, int a1, int a2) {
-  return occ_ts::guarded("TCollection_HAsciiString.FirstLocationNotInSet", [&]() -> int {
-    return self.FirstLocationNotInSet(opencascade::handle<TCollection_HAsciiString>(a0), a1, a2);
-  }, 0);
-}
-static void TCollection_HAsciiString_Insert_o16v0_wrap(TCollection_HAsciiString& self, int a0, int a1) {
-  occ_ts::guarded("TCollection_HAsciiString.Insert", [&]() -> int {
-    self.Insert(a0, a1);
-    return 0;
-  }, 0);
-}
-static void TCollection_HAsciiString_InsertAfter_o19v0_wrap(TCollection_HAsciiString& self, int a0, TCollection_HAsciiString* a1) {
-  occ_ts::guarded("TCollection_HAsciiString.InsertAfter", [&]() -> int {
-    self.InsertAfter(a0, opencascade::handle<TCollection_HAsciiString>(a1));
-    return 0;
-  }, 0);
-}
-static void TCollection_HAsciiString_InsertBefore_o20v0_wrap(TCollection_HAsciiString& self, int a0, TCollection_HAsciiString* a1) {
-  occ_ts::guarded("TCollection_HAsciiString.InsertBefore", [&]() -> int {
-    self.InsertBefore(a0, opencascade::handle<TCollection_HAsciiString>(a1));
-    return 0;
-  }, 0);
-}
-static bool TCollection_HAsciiString_IsEmpty_o21v0_wrap(const TCollection_HAsciiString& self) {
-  return occ_ts::guarded("TCollection_HAsciiString.IsEmpty", [&]() -> bool {
-    return self.IsEmpty();
-  }, false);
-}
-static bool TCollection_HAsciiString_IsLess_o22v0_wrap(const TCollection_HAsciiString& self, TCollection_HAsciiString* a0) {
-  return occ_ts::guarded("TCollection_HAsciiString.IsLess", [&]() -> bool {
-    return self.IsLess(opencascade::handle<TCollection_HAsciiString>(a0));
-  }, false);
-}
-static bool TCollection_HAsciiString_IsGreater_o23v0_wrap(const TCollection_HAsciiString& self, TCollection_HAsciiString* a0) {
-  return occ_ts::guarded("TCollection_HAsciiString.IsGreater", [&]() -> bool {
-    return self.IsGreater(opencascade::handle<TCollection_HAsciiString>(a0));
-  }, false);
-}
-static int TCollection_HAsciiString_IntegerValue_o24v0_wrap(const TCollection_HAsciiString& self) {
-  return occ_ts::guarded("TCollection_HAsciiString.IntegerValue", [&]() -> int {
-    return self.IntegerValue();
-  }, 0);
-}
-static bool TCollection_HAsciiString_IsIntegerValue_o25v0_wrap(const TCollection_HAsciiString& self) {
-  return occ_ts::guarded("TCollection_HAsciiString.IsIntegerValue", [&]() -> bool {
-    return self.IsIntegerValue();
-  }, false);
-}
-static bool TCollection_HAsciiString_IsRealValue_o26v0_wrap(const TCollection_HAsciiString& self) {
-  return occ_ts::guarded("TCollection_HAsciiString.IsRealValue", [&]() -> bool {
-    return self.IsRealValue();
-  }, false);
-}
-static bool TCollection_HAsciiString_IsAscii_o27v0_wrap(const TCollection_HAsciiString& self) {
-  return occ_ts::guarded("TCollection_HAsciiString.IsAscii", [&]() -> bool {
-    return self.IsAscii();
-  }, false);
-}
-static bool TCollection_HAsciiString_IsDifferent_o28v0_wrap(const TCollection_HAsciiString& self, TCollection_HAsciiString* a0) {
-  return occ_ts::guarded("TCollection_HAsciiString.IsDifferent", [&]() -> bool {
-    return self.IsDifferent(opencascade::handle<TCollection_HAsciiString>(a0));
-  }, false);
-}
-static bool TCollection_HAsciiString_IsSameString_o29v0_wrap(const TCollection_HAsciiString& self, TCollection_HAsciiString* a0) {
-  return occ_ts::guarded("TCollection_HAsciiString.IsSameString", [&]() -> bool {
-    return self.IsSameString(opencascade::handle<TCollection_HAsciiString>(a0));
-  }, false);
-}
-static bool TCollection_HAsciiString_IsSameString_o30v0_wrap(const TCollection_HAsciiString& self, TCollection_HAsciiString* a0, bool a1) {
-  return occ_ts::guarded("TCollection_HAsciiString.IsSameString", [&]() -> bool {
-    return self.IsSameString(opencascade::handle<TCollection_HAsciiString>(a0), a1);
-  }, false);
-}
-static void TCollection_HAsciiString_LeftAdjust_o31v0_wrap(TCollection_HAsciiString& self) {
-  occ_ts::guarded("TCollection_HAsciiString.LeftAdjust", [&]() -> int {
-    self.LeftAdjust();
-    return 0;
-  }, 0);
-}
-static void TCollection_HAsciiString_LeftJustify_o32v0_wrap(TCollection_HAsciiString& self, int a0, int a1) {
-  occ_ts::guarded("TCollection_HAsciiString.LeftJustify", [&]() -> int {
-    self.LeftJustify(a0, a1);
-    return 0;
-  }, 0);
-}
-static int TCollection_HAsciiString_Length_o33v0_wrap(const TCollection_HAsciiString& self) {
-  return occ_ts::guarded("TCollection_HAsciiString.Length", [&]() -> int {
-    return self.Length();
-  }, 0);
-}
-static int TCollection_HAsciiString_Location_o34v0_wrap(const TCollection_HAsciiString& self, TCollection_HAsciiString* a0, int a1, int a2) {
-  return occ_ts::guarded("TCollection_HAsciiString.Location", [&]() -> int {
-    return self.Location(opencascade::handle<TCollection_HAsciiString>(a0), a1, a2);
-  }, 0);
-}
-static int TCollection_HAsciiString_Location_o35v0_wrap(const TCollection_HAsciiString& self, int a0, int a1, int a2, int a3) {
-  return occ_ts::guarded("TCollection_HAsciiString.Location", [&]() -> int {
-    return self.Location(a0, a1, a2, a3);
-  }, 0);
-}
-static void TCollection_HAsciiString_LowerCase_o36v0_wrap(TCollection_HAsciiString& self) {
-  occ_ts::guarded("TCollection_HAsciiString.LowerCase", [&]() -> int {
-    self.LowerCase();
-    return 0;
-  }, 0);
-}
-static void TCollection_HAsciiString_Prepend_o37v0_wrap(TCollection_HAsciiString& self, TCollection_HAsciiString* a0) {
-  occ_ts::guarded("TCollection_HAsciiString.Prepend", [&]() -> int {
-    self.Prepend(opencascade::handle<TCollection_HAsciiString>(a0));
-    return 0;
-  }, 0);
-}
-static double TCollection_HAsciiString_RealValue_o38v0_wrap(const TCollection_HAsciiString& self) {
-  return occ_ts::guarded("TCollection_HAsciiString.RealValue", [&]() -> double {
-    return self.RealValue();
-  }, 0);
-}
-static void TCollection_HAsciiString_RemoveAll_o39v0_wrap(TCollection_HAsciiString& self, int a0, bool a1) {
-  occ_ts::guarded("TCollection_HAsciiString.RemoveAll", [&]() -> int {
-    self.RemoveAll(a0, a1);
-    return 0;
-  }, 0);
-}
-static void TCollection_HAsciiString_RemoveAll_o40v0_wrap(TCollection_HAsciiString& self, int a0) {
-  occ_ts::guarded("TCollection_HAsciiString.RemoveAll", [&]() -> int {
-    self.RemoveAll(a0);
-    return 0;
-  }, 0);
-}
-static void TCollection_HAsciiString_Remove_o41v0_wrap(TCollection_HAsciiString& self, int a0, int a1) {
-  occ_ts::guarded("TCollection_HAsciiString.Remove", [&]() -> int {
-    self.Remove(a0, a1);
-    return 0;
-  }, 0);
-}
-static void TCollection_HAsciiString_Remove_o41v1_wrap(TCollection_HAsciiString& self, int a0) {
-  occ_ts::guarded("TCollection_HAsciiString.Remove", [&]() -> int {
-    self.Remove(a0);
-    return 0;
-  }, 0);
-}
-static void TCollection_HAsciiString_RightAdjust_o42v0_wrap(TCollection_HAsciiString& self) {
-  occ_ts::guarded("TCollection_HAsciiString.RightAdjust", [&]() -> int {
-    self.RightAdjust();
-    return 0;
-  }, 0);
-}
-static void TCollection_HAsciiString_RightJustify_o43v0_wrap(TCollection_HAsciiString& self, int a0, int a1) {
-  occ_ts::guarded("TCollection_HAsciiString.RightJustify", [&]() -> int {
-    self.RightJustify(a0, a1);
-    return 0;
-  }, 0);
-}
-static int TCollection_HAsciiString_Search_o44v0_wrap(const TCollection_HAsciiString& self, std::string a0) {
-  return occ_ts::guarded("TCollection_HAsciiString.Search", [&]() -> int {
-    return self.Search(a0.c_str());
-  }, 0);
-}
-static int TCollection_HAsciiString_SearchFromEnd_o46v0_wrap(const TCollection_HAsciiString& self, std::string a0) {
-  return occ_ts::guarded("TCollection_HAsciiString.SearchFromEnd", [&]() -> int {
-    return self.SearchFromEnd(a0.c_str());
-  }, 0);
-}
-static void TCollection_HAsciiString_SetValue_o48v0_wrap(TCollection_HAsciiString& self, int a0, int a1) {
-  occ_ts::guarded("TCollection_HAsciiString.SetValue", [&]() -> int {
+static void TDF_LabelSequence_SetValue_o18v0_wrap(TDF_LabelSequence& self, int a0, const TDF_Label& a1) {
+  occ_ts::guarded("TDF_LabelSequence.SetValue", [&]() -> int {
     self.SetValue(a0, a1);
-    return 0;
-  }, 0);
-}
-static opencascade::handle<TCollection_HAsciiString>* TCollection_HAsciiString_Split_o51v0_wrap(TCollection_HAsciiString& self, int a0) {
-  return occ_ts::guarded("TCollection_HAsciiString.Split", [&]() -> opencascade::handle<TCollection_HAsciiString>* {
-    return new opencascade::handle<TCollection_HAsciiString>(self.Split(a0));
-  }, (opencascade::handle<TCollection_HAsciiString>*)nullptr);
-}
-static opencascade::handle<TCollection_HAsciiString>* TCollection_HAsciiString_SubString_o52v0_wrap(const TCollection_HAsciiString& self, int a0, int a1) {
-  return occ_ts::guarded("TCollection_HAsciiString.SubString", [&]() -> opencascade::handle<TCollection_HAsciiString>* {
-    return new opencascade::handle<TCollection_HAsciiString>(self.SubString(a0, a1));
-  }, (opencascade::handle<TCollection_HAsciiString>*)nullptr);
-}
-static std::string TCollection_HAsciiString_ToCString_o53v0_wrap(const TCollection_HAsciiString& self) {
-  return occ_ts::guarded("TCollection_HAsciiString.ToCString", [&]() -> std::string {
-    return self.ToCString();
-  }, std::string());
-}
-static opencascade::handle<TCollection_HAsciiString>* TCollection_HAsciiString_Token_o54v0_wrap(const TCollection_HAsciiString& self, std::string a0, int a1) {
-  return occ_ts::guarded("TCollection_HAsciiString.Token", [&]() -> opencascade::handle<TCollection_HAsciiString>* {
-    return new opencascade::handle<TCollection_HAsciiString>(self.Token(a0.c_str(), a1));
-  }, (opencascade::handle<TCollection_HAsciiString>*)nullptr);
-}
-static opencascade::handle<TCollection_HAsciiString>* TCollection_HAsciiString_Token_o54v1_wrap(const TCollection_HAsciiString& self, std::string a0) {
-  return occ_ts::guarded("TCollection_HAsciiString.Token", [&]() -> opencascade::handle<TCollection_HAsciiString>* {
-    return new opencascade::handle<TCollection_HAsciiString>(self.Token(a0.c_str()));
-  }, (opencascade::handle<TCollection_HAsciiString>*)nullptr);
-}
-static opencascade::handle<TCollection_HAsciiString>* TCollection_HAsciiString_Token_o54v2_wrap(const TCollection_HAsciiString& self) {
-  return occ_ts::guarded("TCollection_HAsciiString.Token", [&]() -> opencascade::handle<TCollection_HAsciiString>* {
-    return new opencascade::handle<TCollection_HAsciiString>(self.Token());
-  }, (opencascade::handle<TCollection_HAsciiString>*)nullptr);
-}
-static void TCollection_HAsciiString_Trunc_o55v0_wrap(TCollection_HAsciiString& self, int a0) {
-  occ_ts::guarded("TCollection_HAsciiString.Trunc", [&]() -> int {
-    self.Trunc(a0);
-    return 0;
-  }, 0);
-}
-static void TCollection_HAsciiString_UpperCase_o56v0_wrap(TCollection_HAsciiString& self) {
-  occ_ts::guarded("TCollection_HAsciiString.UpperCase", [&]() -> int {
-    self.UpperCase();
-    return 0;
-  }, 0);
-}
-static int TCollection_HAsciiString_UsefullLength_o57v0_wrap(const TCollection_HAsciiString& self) {
-  return occ_ts::guarded("TCollection_HAsciiString.UsefullLength", [&]() -> int {
-    return self.UsefullLength();
-  }, 0);
-}
-static int TCollection_HAsciiString_Value_o58v0_wrap(const TCollection_HAsciiString& self, int a0) {
-  return occ_ts::guarded("TCollection_HAsciiString.Value", [&]() -> int {
-    return self.Value(a0);
-  }, 0);
-}
-static TCollection_AsciiString TCollection_HAsciiString_String_o59v0_wrap(const TCollection_HAsciiString& self) {
-  return occ_ts::guarded("TCollection_HAsciiString.String", [&]() -> TCollection_AsciiString {
-    return self.String();
-  }, TCollection_AsciiString());
-}
-static bool TCollection_HAsciiString_IsSameState_o60v0_wrap(const TCollection_HAsciiString& self, TCollection_HAsciiString* a0) {
-  return occ_ts::guarded("TCollection_HAsciiString.IsSameState", [&]() -> bool {
-    return self.IsSameState(opencascade::handle<TCollection_HAsciiString>(a0));
-  }, false);
-}
-static std::string TCollection_HAsciiString_get_type_name_o61v0_wrap() {
-  return occ_ts::guarded("TCollection_HAsciiString.get_type_name", [&]() -> std::string {
-    return TCollection_HAsciiString::get_type_name();
-  }, std::string());
-}
-static MoniTool_TypedValue* MoniTool_TypedValue_ctor_c0v0_wrap(std::string a0, int a1, std::string a2) {
-  return occ_ts::guarded("MoniTool_TypedValue::ctor", [&]() -> MoniTool_TypedValue* {
-    return new MoniTool_TypedValue(a0.c_str(), static_cast<MoniTool_ValueType>(a1), a2.c_str());
-  }, (MoniTool_TypedValue*)nullptr);
-}
-static MoniTool_TypedValue* MoniTool_TypedValue_ctor_c0v1_wrap(std::string a0, int a1) {
-  return occ_ts::guarded("MoniTool_TypedValue::ctor", [&]() -> MoniTool_TypedValue* {
-    return new MoniTool_TypedValue(a0.c_str(), static_cast<MoniTool_ValueType>(a1));
-  }, (MoniTool_TypedValue*)nullptr);
-}
-static MoniTool_TypedValue* MoniTool_TypedValue_ctor_c0v2_wrap(std::string a0) {
-  return occ_ts::guarded("MoniTool_TypedValue::ctor", [&]() -> MoniTool_TypedValue* {
-    return new MoniTool_TypedValue(a0.c_str());
-  }, (MoniTool_TypedValue*)nullptr);
-}
-static bool MoniTool_TypedValue_IsInstance_wrap(const MoniTool_TypedValue& self, std::string a0) {
-  return occ_ts::guarded("MoniTool_TypedValue.IsInstance", [&]() -> bool {
-    return self.IsInstance(a0.c_str());
-  }, false);
-}
-static bool MoniTool_TypedValue_IsKind_o1v0_wrap(const MoniTool_TypedValue& self, std::string a0) {
-  return occ_ts::guarded("MoniTool_TypedValue.IsKind", [&]() -> bool {
-    return self.IsKind(a0.c_str());
-  }, false);
-}
-static int MoniTool_TypedValue_GetRefCount_o2v0_wrap(const MoniTool_TypedValue& self) {
-  return occ_ts::guarded("MoniTool_TypedValue.GetRefCount", [&]() -> int {
-    return self.GetRefCount();
-  }, 0);
-}
-static void MoniTool_TypedValue_IncrementRefCounter_o3v0_wrap(MoniTool_TypedValue& self) {
-  occ_ts::guarded("MoniTool_TypedValue.IncrementRefCounter", [&]() -> int {
-    self.IncrementRefCounter();
-    return 0;
-  }, 0);
-}
-static int MoniTool_TypedValue_DecrementRefCounter_o4v0_wrap(MoniTool_TypedValue& self) {
-  return occ_ts::guarded("MoniTool_TypedValue.DecrementRefCounter", [&]() -> int {
-    return self.DecrementRefCounter();
-  }, 0);
-}
-static void MoniTool_TypedValue_Delete_o5v0_wrap(const MoniTool_TypedValue& self) {
-  occ_ts::guarded("MoniTool_TypedValue.Delete", [&]() -> int {
-    self.Delete();
-    return 0;
-  }, 0);
-}
-static std::string MoniTool_TypedValue_Name_o6v0_wrap(const MoniTool_TypedValue& self) {
-  return occ_ts::guarded("MoniTool_TypedValue.Name", [&]() -> std::string {
-    return self.Name();
-  }, std::string());
-}
-static int MoniTool_TypedValue_ValueType_o7v0_wrap(const MoniTool_TypedValue& self) {
-  return occ_ts::guarded("MoniTool_TypedValue.ValueType", [&]() -> int {
-    return self.ValueType();
-  }, 0);
-}
-static TCollection_AsciiString MoniTool_TypedValue_Definition_o8v0_wrap(const MoniTool_TypedValue& self) {
-  return occ_ts::guarded("MoniTool_TypedValue.Definition", [&]() -> TCollection_AsciiString {
-    return self.Definition();
-  }, TCollection_AsciiString());
-}
-static void MoniTool_TypedValue_SetDefinition_o9v0_wrap(MoniTool_TypedValue& self, std::string a0) {
-  occ_ts::guarded("MoniTool_TypedValue.SetDefinition", [&]() -> int {
-    self.SetDefinition(a0.c_str());
-    return 0;
-  }, 0);
-}
-static bool MoniTool_TypedValue_AddDef_o10v0_wrap(MoniTool_TypedValue& self, std::string a0) {
-  return occ_ts::guarded("MoniTool_TypedValue.AddDef", [&]() -> bool {
-    return self.AddDef(a0.c_str());
-  }, false);
-}
-static void MoniTool_TypedValue_SetLabel_o11v0_wrap(MoniTool_TypedValue& self, std::string a0) {
-  occ_ts::guarded("MoniTool_TypedValue.SetLabel", [&]() -> int {
-    self.SetLabel(a0.c_str());
-    return 0;
-  }, 0);
-}
-static std::string MoniTool_TypedValue_Label_o12v0_wrap(const MoniTool_TypedValue& self) {
-  return occ_ts::guarded("MoniTool_TypedValue.Label", [&]() -> std::string {
-    return self.Label();
-  }, std::string());
-}
-static void MoniTool_TypedValue_SetMaxLength_o13v0_wrap(MoniTool_TypedValue& self, int a0) {
-  occ_ts::guarded("MoniTool_TypedValue.SetMaxLength", [&]() -> int {
-    self.SetMaxLength(a0);
-    return 0;
-  }, 0);
-}
-static int MoniTool_TypedValue_MaxLength_o14v0_wrap(const MoniTool_TypedValue& self) {
-  return occ_ts::guarded("MoniTool_TypedValue.MaxLength", [&]() -> int {
-    return self.MaxLength();
-  }, 0);
-}
-static void MoniTool_TypedValue_SetIntegerLimit_o15v0_wrap(MoniTool_TypedValue& self, bool a0, int a1) {
-  occ_ts::guarded("MoniTool_TypedValue.SetIntegerLimit", [&]() -> int {
-    self.SetIntegerLimit(a0, a1);
-    return 0;
-  }, 0);
-}
-static void MoniTool_TypedValue_SetRealLimit_o16v0_wrap(MoniTool_TypedValue& self, bool a0, double a1) {
-  occ_ts::guarded("MoniTool_TypedValue.SetRealLimit", [&]() -> int {
-    self.SetRealLimit(a0, a1);
-    return 0;
-  }, 0);
-}
-static void MoniTool_TypedValue_SetUnitDef_o17v0_wrap(MoniTool_TypedValue& self, std::string a0) {
-  occ_ts::guarded("MoniTool_TypedValue.SetUnitDef", [&]() -> int {
-    self.SetUnitDef(a0.c_str());
-    return 0;
-  }, 0);
-}
-static std::string MoniTool_TypedValue_UnitDef_o18v0_wrap(const MoniTool_TypedValue& self) {
-  return occ_ts::guarded("MoniTool_TypedValue.UnitDef", [&]() -> std::string {
-    return self.UnitDef();
-  }, std::string());
-}
-static void MoniTool_TypedValue_StartEnum_o19v0_wrap(MoniTool_TypedValue& self, int a0, bool a1) {
-  occ_ts::guarded("MoniTool_TypedValue.StartEnum", [&]() -> int {
-    self.StartEnum(a0, a1);
-    return 0;
-  }, 0);
-}
-static void MoniTool_TypedValue_StartEnum_o19v1_wrap(MoniTool_TypedValue& self, int a0) {
-  occ_ts::guarded("MoniTool_TypedValue.StartEnum", [&]() -> int {
-    self.StartEnum(a0);
-    return 0;
-  }, 0);
-}
-static void MoniTool_TypedValue_StartEnum_o19v2_wrap(MoniTool_TypedValue& self) {
-  occ_ts::guarded("MoniTool_TypedValue.StartEnum", [&]() -> int {
-    self.StartEnum();
-    return 0;
-  }, 0);
-}
-static void MoniTool_TypedValue_AddEnum_o20v0_wrap(MoniTool_TypedValue& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4, std::string a5, std::string a6, std::string a7, std::string a8, std::string a9) {
-  occ_ts::guarded("MoniTool_TypedValue.AddEnum", [&]() -> int {
-    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str(), a5.c_str(), a6.c_str(), a7.c_str(), a8.c_str(), a9.c_str());
-    return 0;
-  }, 0);
-}
-static void MoniTool_TypedValue_AddEnum_o20v1_wrap(MoniTool_TypedValue& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4, std::string a5, std::string a6, std::string a7, std::string a8) {
-  occ_ts::guarded("MoniTool_TypedValue.AddEnum", [&]() -> int {
-    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str(), a5.c_str(), a6.c_str(), a7.c_str(), a8.c_str());
-    return 0;
-  }, 0);
-}
-static void MoniTool_TypedValue_AddEnum_o20v2_wrap(MoniTool_TypedValue& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4, std::string a5, std::string a6, std::string a7) {
-  occ_ts::guarded("MoniTool_TypedValue.AddEnum", [&]() -> int {
-    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str(), a5.c_str(), a6.c_str(), a7.c_str());
-    return 0;
-  }, 0);
-}
-static void MoniTool_TypedValue_AddEnum_o20v3_wrap(MoniTool_TypedValue& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4, std::string a5, std::string a6) {
-  occ_ts::guarded("MoniTool_TypedValue.AddEnum", [&]() -> int {
-    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str(), a5.c_str(), a6.c_str());
-    return 0;
-  }, 0);
-}
-static void MoniTool_TypedValue_AddEnum_o20v4_wrap(MoniTool_TypedValue& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4, std::string a5) {
-  occ_ts::guarded("MoniTool_TypedValue.AddEnum", [&]() -> int {
-    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str(), a5.c_str());
-    return 0;
-  }, 0);
-}
-static void MoniTool_TypedValue_AddEnum_o20v5_wrap(MoniTool_TypedValue& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4) {
-  occ_ts::guarded("MoniTool_TypedValue.AddEnum", [&]() -> int {
-    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str());
-    return 0;
-  }, 0);
-}
-static void MoniTool_TypedValue_AddEnum_o20v6_wrap(MoniTool_TypedValue& self, std::string a0, std::string a1, std::string a2, std::string a3) {
-  occ_ts::guarded("MoniTool_TypedValue.AddEnum", [&]() -> int {
-    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str());
-    return 0;
-  }, 0);
-}
-static void MoniTool_TypedValue_AddEnum_o20v7_wrap(MoniTool_TypedValue& self, std::string a0, std::string a1, std::string a2) {
-  occ_ts::guarded("MoniTool_TypedValue.AddEnum", [&]() -> int {
-    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str());
-    return 0;
-  }, 0);
-}
-static void MoniTool_TypedValue_AddEnum_o20v8_wrap(MoniTool_TypedValue& self, std::string a0, std::string a1) {
-  occ_ts::guarded("MoniTool_TypedValue.AddEnum", [&]() -> int {
-    self.AddEnum(a0.c_str(), a1.c_str());
-    return 0;
-  }, 0);
-}
-static void MoniTool_TypedValue_AddEnum_o20v9_wrap(MoniTool_TypedValue& self, std::string a0) {
-  occ_ts::guarded("MoniTool_TypedValue.AddEnum", [&]() -> int {
-    self.AddEnum(a0.c_str());
-    return 0;
-  }, 0);
-}
-static void MoniTool_TypedValue_AddEnum_o20v10_wrap(MoniTool_TypedValue& self) {
-  occ_ts::guarded("MoniTool_TypedValue.AddEnum", [&]() -> int {
-    self.AddEnum();
-    return 0;
-  }, 0);
-}
-static void MoniTool_TypedValue_AddEnumValue_o21v0_wrap(MoniTool_TypedValue& self, std::string a0, int a1) {
-  occ_ts::guarded("MoniTool_TypedValue.AddEnumValue", [&]() -> int {
-    self.AddEnumValue(a0.c_str(), a1);
-    return 0;
-  }, 0);
-}
-static std::string MoniTool_TypedValue_EnumVal_o22v0_wrap(const MoniTool_TypedValue& self, int a0) {
-  return occ_ts::guarded("MoniTool_TypedValue.EnumVal", [&]() -> std::string {
-    return self.EnumVal(a0);
-  }, std::string());
-}
-static int MoniTool_TypedValue_EnumCase_o23v0_wrap(const MoniTool_TypedValue& self, std::string a0) {
-  return occ_ts::guarded("MoniTool_TypedValue.EnumCase", [&]() -> int {
-    return self.EnumCase(a0.c_str());
-  }, 0);
-}
-static bool MoniTool_TypedValue_HasInterpret_o24v0_wrap(const MoniTool_TypedValue& self) {
-  return occ_ts::guarded("MoniTool_TypedValue.HasInterpret", [&]() -> bool {
-    return self.HasInterpret();
-  }, false);
-}
-static std::string MoniTool_TypedValue_SatisfiesName_o25v0_wrap(const MoniTool_TypedValue& self) {
-  return occ_ts::guarded("MoniTool_TypedValue.SatisfiesName", [&]() -> std::string {
-    return self.SatisfiesName();
-  }, std::string());
-}
-static bool MoniTool_TypedValue_IsSetValue_o26v0_wrap(const MoniTool_TypedValue& self) {
-  return occ_ts::guarded("MoniTool_TypedValue.IsSetValue", [&]() -> bool {
-    return self.IsSetValue();
-  }, false);
-}
-static std::string MoniTool_TypedValue_CStringValue_o27v0_wrap(const MoniTool_TypedValue& self) {
-  return occ_ts::guarded("MoniTool_TypedValue.CStringValue", [&]() -> std::string {
-    return self.CStringValue();
-  }, std::string());
-}
-static opencascade::handle<TCollection_HAsciiString>* MoniTool_TypedValue_HStringValue_o28v0_wrap(const MoniTool_TypedValue& self) {
-  return occ_ts::guarded("MoniTool_TypedValue.HStringValue", [&]() -> opencascade::handle<TCollection_HAsciiString>* {
-    return new opencascade::handle<TCollection_HAsciiString>(self.HStringValue());
-  }, (opencascade::handle<TCollection_HAsciiString>*)nullptr);
-}
-static opencascade::handle<TCollection_HAsciiString>* MoniTool_TypedValue_Interpret_o29v0_wrap(const MoniTool_TypedValue& self, TCollection_HAsciiString* a0, bool a1) {
-  return occ_ts::guarded("MoniTool_TypedValue.Interpret", [&]() -> opencascade::handle<TCollection_HAsciiString>* {
-    return new opencascade::handle<TCollection_HAsciiString>(self.Interpret(opencascade::handle<TCollection_HAsciiString>(a0), a1));
-  }, (opencascade::handle<TCollection_HAsciiString>*)nullptr);
-}
-static bool MoniTool_TypedValue_Satisfies_o30v0_wrap(const MoniTool_TypedValue& self, TCollection_HAsciiString* a0) {
-  return occ_ts::guarded("MoniTool_TypedValue.Satisfies", [&]() -> bool {
-    return self.Satisfies(opencascade::handle<TCollection_HAsciiString>(a0));
-  }, false);
-}
-static void MoniTool_TypedValue_ClearValue_o31v0_wrap(MoniTool_TypedValue& self) {
-  occ_ts::guarded("MoniTool_TypedValue.ClearValue", [&]() -> int {
-    self.ClearValue();
-    return 0;
-  }, 0);
-}
-static bool MoniTool_TypedValue_SetCStringValue_o32v0_wrap(MoniTool_TypedValue& self, std::string a0) {
-  return occ_ts::guarded("MoniTool_TypedValue.SetCStringValue", [&]() -> bool {
-    return self.SetCStringValue(a0.c_str());
-  }, false);
-}
-static bool MoniTool_TypedValue_SetHStringValue_o33v0_wrap(MoniTool_TypedValue& self, TCollection_HAsciiString* a0) {
-  return occ_ts::guarded("MoniTool_TypedValue.SetHStringValue", [&]() -> bool {
-    return self.SetHStringValue(opencascade::handle<TCollection_HAsciiString>(a0));
-  }, false);
-}
-static int MoniTool_TypedValue_IntegerValue_o34v0_wrap(const MoniTool_TypedValue& self) {
-  return occ_ts::guarded("MoniTool_TypedValue.IntegerValue", [&]() -> int {
-    return self.IntegerValue();
-  }, 0);
-}
-static bool MoniTool_TypedValue_SetIntegerValue_o35v0_wrap(MoniTool_TypedValue& self, int a0) {
-  return occ_ts::guarded("MoniTool_TypedValue.SetIntegerValue", [&]() -> bool {
-    return self.SetIntegerValue(a0);
-  }, false);
-}
-static double MoniTool_TypedValue_RealValue_o36v0_wrap(const MoniTool_TypedValue& self) {
-  return occ_ts::guarded("MoniTool_TypedValue.RealValue", [&]() -> double {
-    return self.RealValue();
-  }, 0);
-}
-static bool MoniTool_TypedValue_SetRealValue_o37v0_wrap(MoniTool_TypedValue& self, double a0) {
-  return occ_ts::guarded("MoniTool_TypedValue.SetRealValue", [&]() -> bool {
-    return self.SetRealValue(a0);
-  }, false);
-}
-static std::string MoniTool_TypedValue_ObjectTypeName_o38v0_wrap(const MoniTool_TypedValue& self) {
-  return occ_ts::guarded("MoniTool_TypedValue.ObjectTypeName", [&]() -> std::string {
-    return self.ObjectTypeName();
-  }, std::string());
-}
-static std::string MoniTool_TypedValue_get_type_name_o39v0_wrap() {
-  return occ_ts::guarded("MoniTool_TypedValue.get_type_name", [&]() -> std::string {
-    return MoniTool_TypedValue::get_type_name();
-  }, std::string());
-}
-static bool MoniTool_TypedValue_AddLib_o40v0_wrap(MoniTool_TypedValue* a0, std::string a1) {
-  return occ_ts::guarded("MoniTool_TypedValue.AddLib", [&]() -> bool {
-    return MoniTool_TypedValue::AddLib(opencascade::handle<MoniTool_TypedValue>(a0), a1.c_str());
-  }, false);
-}
-static bool MoniTool_TypedValue_AddLib_o40v1_wrap(MoniTool_TypedValue* a0) {
-  return occ_ts::guarded("MoniTool_TypedValue.AddLib", [&]() -> bool {
-    return MoniTool_TypedValue::AddLib(opencascade::handle<MoniTool_TypedValue>(a0));
-  }, false);
-}
-static opencascade::handle<MoniTool_TypedValue>* MoniTool_TypedValue_Lib_o41v0_wrap(std::string a0) {
-  return occ_ts::guarded("MoniTool_TypedValue.Lib", [&]() -> opencascade::handle<MoniTool_TypedValue>* {
-    return new opencascade::handle<MoniTool_TypedValue>(MoniTool_TypedValue::Lib(a0.c_str()));
-  }, (opencascade::handle<MoniTool_TypedValue>*)nullptr);
-}
-static opencascade::handle<MoniTool_TypedValue>* MoniTool_TypedValue_FromLib_o42v0_wrap(std::string a0) {
-  return occ_ts::guarded("MoniTool_TypedValue.FromLib", [&]() -> opencascade::handle<MoniTool_TypedValue>* {
-    return new opencascade::handle<MoniTool_TypedValue>(MoniTool_TypedValue::FromLib(a0.c_str()));
-  }, (opencascade::handle<MoniTool_TypedValue>*)nullptr);
-}
-static opencascade::handle<MoniTool_TypedValue>* MoniTool_TypedValue_StaticValue_o43v0_wrap(std::string a0) {
-  return occ_ts::guarded("MoniTool_TypedValue.StaticValue", [&]() -> opencascade::handle<MoniTool_TypedValue>* {
-    return new opencascade::handle<MoniTool_TypedValue>(MoniTool_TypedValue::StaticValue(a0.c_str()));
-  }, (opencascade::handle<MoniTool_TypedValue>*)nullptr);
-}
-static Interface_Static* Interface_Static_ctor_c0v0_wrap(std::string a0, std::string a1, int a2, std::string a3) {
-  return occ_ts::guarded("Interface_Static::ctor", [&]() -> Interface_Static* {
-    return new Interface_Static(a0.c_str(), a1.c_str(), static_cast<Interface_ParamType>(a2), a3.c_str());
-  }, (Interface_Static*)nullptr);
-}
-static Interface_Static* Interface_Static_ctor_c0v1_wrap(std::string a0, std::string a1, int a2) {
-  return occ_ts::guarded("Interface_Static::ctor", [&]() -> Interface_Static* {
-    return new Interface_Static(a0.c_str(), a1.c_str(), static_cast<Interface_ParamType>(a2));
-  }, (Interface_Static*)nullptr);
-}
-static Interface_Static* Interface_Static_ctor_c0v2_wrap(std::string a0, std::string a1) {
-  return occ_ts::guarded("Interface_Static::ctor", [&]() -> Interface_Static* {
-    return new Interface_Static(a0.c_str(), a1.c_str());
-  }, (Interface_Static*)nullptr);
-}
-static bool Interface_Static_IsInstance_wrap(const Interface_Static& self, std::string a0) {
-  return occ_ts::guarded("Interface_Static.IsInstance", [&]() -> bool {
-    return self.IsInstance(a0.c_str());
-  }, false);
-}
-static bool Interface_Static_IsKind_o1v0_wrap(const Interface_Static& self, std::string a0) {
-  return occ_ts::guarded("Interface_Static.IsKind", [&]() -> bool {
-    return self.IsKind(a0.c_str());
-  }, false);
-}
-static int Interface_Static_GetRefCount_o2v0_wrap(const Interface_Static& self) {
-  return occ_ts::guarded("Interface_Static.GetRefCount", [&]() -> int {
-    return self.GetRefCount();
-  }, 0);
-}
-static void Interface_Static_IncrementRefCounter_o3v0_wrap(Interface_Static& self) {
-  occ_ts::guarded("Interface_Static.IncrementRefCounter", [&]() -> int {
-    self.IncrementRefCounter();
-    return 0;
-  }, 0);
-}
-static int Interface_Static_DecrementRefCounter_o4v0_wrap(Interface_Static& self) {
-  return occ_ts::guarded("Interface_Static.DecrementRefCounter", [&]() -> int {
-    return self.DecrementRefCounter();
-  }, 0);
-}
-static void Interface_Static_Delete_o5v0_wrap(const Interface_Static& self) {
-  occ_ts::guarded("Interface_Static.Delete", [&]() -> int {
-    self.Delete();
-    return 0;
-  }, 0);
-}
-static std::string Interface_Static_Name_o6v0_wrap(const Interface_Static& self) {
-  return occ_ts::guarded("Interface_Static.Name", [&]() -> std::string {
-    return self.Name();
-  }, std::string());
-}
-static int Interface_Static_ValueType_o7v0_wrap(const Interface_Static& self) {
-  return occ_ts::guarded("Interface_Static.ValueType", [&]() -> int {
-    return self.ValueType();
-  }, 0);
-}
-static TCollection_AsciiString Interface_Static_Definition_o8v0_wrap(const Interface_Static& self) {
-  return occ_ts::guarded("Interface_Static.Definition", [&]() -> TCollection_AsciiString {
-    return self.Definition();
-  }, TCollection_AsciiString());
-}
-static void Interface_Static_SetDefinition_o9v0_wrap(Interface_Static& self, std::string a0) {
-  occ_ts::guarded("Interface_Static.SetDefinition", [&]() -> int {
-    self.SetDefinition(a0.c_str());
-    return 0;
-  }, 0);
-}
-static bool Interface_Static_AddDef_o10v0_wrap(Interface_Static& self, std::string a0) {
-  return occ_ts::guarded("Interface_Static.AddDef", [&]() -> bool {
-    return self.AddDef(a0.c_str());
-  }, false);
-}
-static void Interface_Static_SetLabel_o11v0_wrap(Interface_Static& self, std::string a0) {
-  occ_ts::guarded("Interface_Static.SetLabel", [&]() -> int {
-    self.SetLabel(a0.c_str());
-    return 0;
-  }, 0);
-}
-static std::string Interface_Static_Label_o12v0_wrap(const Interface_Static& self) {
-  return occ_ts::guarded("Interface_Static.Label", [&]() -> std::string {
-    return self.Label();
-  }, std::string());
-}
-static void Interface_Static_SetMaxLength_o13v0_wrap(Interface_Static& self, int a0) {
-  occ_ts::guarded("Interface_Static.SetMaxLength", [&]() -> int {
-    self.SetMaxLength(a0);
-    return 0;
-  }, 0);
-}
-static int Interface_Static_MaxLength_o14v0_wrap(const Interface_Static& self) {
-  return occ_ts::guarded("Interface_Static.MaxLength", [&]() -> int {
-    return self.MaxLength();
-  }, 0);
-}
-static void Interface_Static_SetIntegerLimit_o15v0_wrap(Interface_Static& self, bool a0, int a1) {
-  occ_ts::guarded("Interface_Static.SetIntegerLimit", [&]() -> int {
-    self.SetIntegerLimit(a0, a1);
-    return 0;
-  }, 0);
-}
-static void Interface_Static_SetRealLimit_o16v0_wrap(Interface_Static& self, bool a0, double a1) {
-  occ_ts::guarded("Interface_Static.SetRealLimit", [&]() -> int {
-    self.SetRealLimit(a0, a1);
-    return 0;
-  }, 0);
-}
-static void Interface_Static_SetUnitDef_o17v0_wrap(Interface_Static& self, std::string a0) {
-  occ_ts::guarded("Interface_Static.SetUnitDef", [&]() -> int {
-    self.SetUnitDef(a0.c_str());
-    return 0;
-  }, 0);
-}
-static std::string Interface_Static_UnitDef_o18v0_wrap(const Interface_Static& self) {
-  return occ_ts::guarded("Interface_Static.UnitDef", [&]() -> std::string {
-    return self.UnitDef();
-  }, std::string());
-}
-static void Interface_Static_StartEnum_o19v0_wrap(Interface_Static& self, int a0, bool a1) {
-  occ_ts::guarded("Interface_Static.StartEnum", [&]() -> int {
-    self.StartEnum(a0, a1);
-    return 0;
-  }, 0);
-}
-static void Interface_Static_StartEnum_o19v1_wrap(Interface_Static& self, int a0) {
-  occ_ts::guarded("Interface_Static.StartEnum", [&]() -> int {
-    self.StartEnum(a0);
-    return 0;
-  }, 0);
-}
-static void Interface_Static_StartEnum_o19v2_wrap(Interface_Static& self) {
-  occ_ts::guarded("Interface_Static.StartEnum", [&]() -> int {
-    self.StartEnum();
-    return 0;
-  }, 0);
-}
-static void Interface_Static_AddEnum_o20v0_wrap(Interface_Static& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4, std::string a5, std::string a6, std::string a7, std::string a8, std::string a9) {
-  occ_ts::guarded("Interface_Static.AddEnum", [&]() -> int {
-    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str(), a5.c_str(), a6.c_str(), a7.c_str(), a8.c_str(), a9.c_str());
-    return 0;
-  }, 0);
-}
-static void Interface_Static_AddEnum_o20v1_wrap(Interface_Static& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4, std::string a5, std::string a6, std::string a7, std::string a8) {
-  occ_ts::guarded("Interface_Static.AddEnum", [&]() -> int {
-    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str(), a5.c_str(), a6.c_str(), a7.c_str(), a8.c_str());
-    return 0;
-  }, 0);
-}
-static void Interface_Static_AddEnum_o20v2_wrap(Interface_Static& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4, std::string a5, std::string a6, std::string a7) {
-  occ_ts::guarded("Interface_Static.AddEnum", [&]() -> int {
-    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str(), a5.c_str(), a6.c_str(), a7.c_str());
-    return 0;
-  }, 0);
-}
-static void Interface_Static_AddEnum_o20v3_wrap(Interface_Static& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4, std::string a5, std::string a6) {
-  occ_ts::guarded("Interface_Static.AddEnum", [&]() -> int {
-    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str(), a5.c_str(), a6.c_str());
-    return 0;
-  }, 0);
-}
-static void Interface_Static_AddEnum_o20v4_wrap(Interface_Static& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4, std::string a5) {
-  occ_ts::guarded("Interface_Static.AddEnum", [&]() -> int {
-    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str(), a5.c_str());
-    return 0;
-  }, 0);
-}
-static void Interface_Static_AddEnum_o20v5_wrap(Interface_Static& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4) {
-  occ_ts::guarded("Interface_Static.AddEnum", [&]() -> int {
-    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str());
-    return 0;
-  }, 0);
-}
-static void Interface_Static_AddEnum_o20v6_wrap(Interface_Static& self, std::string a0, std::string a1, std::string a2, std::string a3) {
-  occ_ts::guarded("Interface_Static.AddEnum", [&]() -> int {
-    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str());
-    return 0;
-  }, 0);
-}
-static void Interface_Static_AddEnum_o20v7_wrap(Interface_Static& self, std::string a0, std::string a1, std::string a2) {
-  occ_ts::guarded("Interface_Static.AddEnum", [&]() -> int {
-    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str());
-    return 0;
-  }, 0);
-}
-static void Interface_Static_AddEnum_o20v8_wrap(Interface_Static& self, std::string a0, std::string a1) {
-  occ_ts::guarded("Interface_Static.AddEnum", [&]() -> int {
-    self.AddEnum(a0.c_str(), a1.c_str());
-    return 0;
-  }, 0);
-}
-static void Interface_Static_AddEnum_o20v9_wrap(Interface_Static& self, std::string a0) {
-  occ_ts::guarded("Interface_Static.AddEnum", [&]() -> int {
-    self.AddEnum(a0.c_str());
-    return 0;
-  }, 0);
-}
-static void Interface_Static_AddEnum_o20v10_wrap(Interface_Static& self) {
-  occ_ts::guarded("Interface_Static.AddEnum", [&]() -> int {
-    self.AddEnum();
-    return 0;
-  }, 0);
-}
-static void Interface_Static_AddEnumValue_o21v0_wrap(Interface_Static& self, std::string a0, int a1) {
-  occ_ts::guarded("Interface_Static.AddEnumValue", [&]() -> int {
-    self.AddEnumValue(a0.c_str(), a1);
-    return 0;
-  }, 0);
-}
-static std::string Interface_Static_EnumVal_o22v0_wrap(const Interface_Static& self, int a0) {
-  return occ_ts::guarded("Interface_Static.EnumVal", [&]() -> std::string {
-    return self.EnumVal(a0);
-  }, std::string());
-}
-static int Interface_Static_EnumCase_o23v0_wrap(const Interface_Static& self, std::string a0) {
-  return occ_ts::guarded("Interface_Static.EnumCase", [&]() -> int {
-    return self.EnumCase(a0.c_str());
-  }, 0);
-}
-static bool Interface_Static_HasInterpret_o24v0_wrap(const Interface_Static& self) {
-  return occ_ts::guarded("Interface_Static.HasInterpret", [&]() -> bool {
-    return self.HasInterpret();
-  }, false);
-}
-static std::string Interface_Static_SatisfiesName_o25v0_wrap(const Interface_Static& self) {
-  return occ_ts::guarded("Interface_Static.SatisfiesName", [&]() -> std::string {
-    return self.SatisfiesName();
-  }, std::string());
-}
-static bool Interface_Static_IsSetValue_o26v0_wrap(const Interface_Static& self) {
-  return occ_ts::guarded("Interface_Static.IsSetValue", [&]() -> bool {
-    return self.IsSetValue();
-  }, false);
-}
-static std::string Interface_Static_CStringValue_o27v0_wrap(const Interface_Static& self) {
-  return occ_ts::guarded("Interface_Static.CStringValue", [&]() -> std::string {
-    return self.CStringValue();
-  }, std::string());
-}
-static opencascade::handle<TCollection_HAsciiString>* Interface_Static_HStringValue_o28v0_wrap(const Interface_Static& self) {
-  return occ_ts::guarded("Interface_Static.HStringValue", [&]() -> opencascade::handle<TCollection_HAsciiString>* {
-    return new opencascade::handle<TCollection_HAsciiString>(self.HStringValue());
-  }, (opencascade::handle<TCollection_HAsciiString>*)nullptr);
-}
-static opencascade::handle<TCollection_HAsciiString>* Interface_Static_Interpret_o29v0_wrap(const Interface_Static& self, TCollection_HAsciiString* a0, bool a1) {
-  return occ_ts::guarded("Interface_Static.Interpret", [&]() -> opencascade::handle<TCollection_HAsciiString>* {
-    return new opencascade::handle<TCollection_HAsciiString>(self.Interpret(opencascade::handle<TCollection_HAsciiString>(a0), a1));
-  }, (opencascade::handle<TCollection_HAsciiString>*)nullptr);
-}
-static bool Interface_Static_Satisfies_o30v0_wrap(const Interface_Static& self, TCollection_HAsciiString* a0) {
-  return occ_ts::guarded("Interface_Static.Satisfies", [&]() -> bool {
-    return self.Satisfies(opencascade::handle<TCollection_HAsciiString>(a0));
-  }, false);
-}
-static void Interface_Static_ClearValue_o31v0_wrap(Interface_Static& self) {
-  occ_ts::guarded("Interface_Static.ClearValue", [&]() -> int {
-    self.ClearValue();
-    return 0;
-  }, 0);
-}
-static bool Interface_Static_SetCStringValue_o32v0_wrap(Interface_Static& self, std::string a0) {
-  return occ_ts::guarded("Interface_Static.SetCStringValue", [&]() -> bool {
-    return self.SetCStringValue(a0.c_str());
-  }, false);
-}
-static bool Interface_Static_SetHStringValue_o33v0_wrap(Interface_Static& self, TCollection_HAsciiString* a0) {
-  return occ_ts::guarded("Interface_Static.SetHStringValue", [&]() -> bool {
-    return self.SetHStringValue(opencascade::handle<TCollection_HAsciiString>(a0));
-  }, false);
-}
-static int Interface_Static_IntegerValue_o34v0_wrap(const Interface_Static& self) {
-  return occ_ts::guarded("Interface_Static.IntegerValue", [&]() -> int {
-    return self.IntegerValue();
-  }, 0);
-}
-static bool Interface_Static_SetIntegerValue_o35v0_wrap(Interface_Static& self, int a0) {
-  return occ_ts::guarded("Interface_Static.SetIntegerValue", [&]() -> bool {
-    return self.SetIntegerValue(a0);
-  }, false);
-}
-static double Interface_Static_RealValue_o36v0_wrap(const Interface_Static& self) {
-  return occ_ts::guarded("Interface_Static.RealValue", [&]() -> double {
-    return self.RealValue();
-  }, 0);
-}
-static bool Interface_Static_SetRealValue_o37v0_wrap(Interface_Static& self, double a0) {
-  return occ_ts::guarded("Interface_Static.SetRealValue", [&]() -> bool {
-    return self.SetRealValue(a0);
-  }, false);
-}
-static std::string Interface_Static_ObjectTypeName_o38v0_wrap(const Interface_Static& self) {
-  return occ_ts::guarded("Interface_Static.ObjectTypeName", [&]() -> std::string {
-    return self.ObjectTypeName();
-  }, std::string());
-}
-static int Interface_Static_Type_o39v0_wrap(const Interface_Static& self) {
-  return occ_ts::guarded("Interface_Static.Type", [&]() -> int {
-    return self.Type();
-  }, 0);
-}
-static std::string Interface_Static_Family_o40v0_wrap(const Interface_Static& self) {
-  return occ_ts::guarded("Interface_Static.Family", [&]() -> std::string {
-    return self.Family();
-  }, std::string());
-}
-static void Interface_Static_SetWild_o41v0_wrap(Interface_Static& self, Interface_Static* a0) {
-  occ_ts::guarded("Interface_Static.SetWild", [&]() -> int {
-    self.SetWild(opencascade::handle<Interface_Static>(a0));
-    return 0;
-  }, 0);
-}
-static opencascade::handle<Interface_Static>* Interface_Static_Wild_o42v0_wrap(const Interface_Static& self) {
-  return occ_ts::guarded("Interface_Static.Wild", [&]() -> opencascade::handle<Interface_Static>* {
-    return new opencascade::handle<Interface_Static>(self.Wild());
-  }, (opencascade::handle<Interface_Static>*)nullptr);
-}
-static void Interface_Static_SetUptodate_o43v0_wrap(Interface_Static& self) {
-  occ_ts::guarded("Interface_Static.SetUptodate", [&]() -> int {
-    self.SetUptodate();
-    return 0;
-  }, 0);
-}
-static bool Interface_Static_UpdatedStatus_o44v0_wrap(const Interface_Static& self) {
-  return occ_ts::guarded("Interface_Static.UpdatedStatus", [&]() -> bool {
-    return self.UpdatedStatus();
-  }, false);
-}
-static std::string Interface_Static_get_type_name_o45v0_wrap() {
-  return occ_ts::guarded("Interface_Static.get_type_name", [&]() -> std::string {
-    return Interface_Static::get_type_name();
-  }, std::string());
-}
-static bool Interface_Static_AddLib_o46v0_wrap(MoniTool_TypedValue* a0, std::string a1) {
-  return occ_ts::guarded("Interface_Static.AddLib", [&]() -> bool {
-    return Interface_Static::AddLib(opencascade::handle<MoniTool_TypedValue>(a0), a1.c_str());
-  }, false);
-}
-static bool Interface_Static_AddLib_o46v1_wrap(MoniTool_TypedValue* a0) {
-  return occ_ts::guarded("Interface_Static.AddLib", [&]() -> bool {
-    return Interface_Static::AddLib(opencascade::handle<MoniTool_TypedValue>(a0));
-  }, false);
-}
-static opencascade::handle<MoniTool_TypedValue>* Interface_Static_Lib_o47v0_wrap(std::string a0) {
-  return occ_ts::guarded("Interface_Static.Lib", [&]() -> opencascade::handle<MoniTool_TypedValue>* {
-    return new opencascade::handle<MoniTool_TypedValue>(Interface_Static::Lib(a0.c_str()));
-  }, (opencascade::handle<MoniTool_TypedValue>*)nullptr);
-}
-static opencascade::handle<MoniTool_TypedValue>* Interface_Static_FromLib_o48v0_wrap(std::string a0) {
-  return occ_ts::guarded("Interface_Static.FromLib", [&]() -> opencascade::handle<MoniTool_TypedValue>* {
-    return new opencascade::handle<MoniTool_TypedValue>(Interface_Static::FromLib(a0.c_str()));
-  }, (opencascade::handle<MoniTool_TypedValue>*)nullptr);
-}
-static opencascade::handle<MoniTool_TypedValue>* Interface_Static_StaticValue_o49v0_wrap(std::string a0) {
-  return occ_ts::guarded("Interface_Static.StaticValue", [&]() -> opencascade::handle<MoniTool_TypedValue>* {
-    return new opencascade::handle<MoniTool_TypedValue>(Interface_Static::StaticValue(a0.c_str()));
-  }, (opencascade::handle<MoniTool_TypedValue>*)nullptr);
-}
-static int Interface_Static_ParamTypeToValueType_o51v0_wrap(int a0) {
-  return occ_ts::guarded("Interface_Static.ParamTypeToValueType", [&]() -> int {
-    return Interface_Static::ParamTypeToValueType(static_cast<Interface_ParamType>(a0));
-  }, 0);
-}
-static int Interface_Static_ValueTypeToParamType_o52v0_wrap(int a0) {
-  return occ_ts::guarded("Interface_Static.ValueTypeToParamType", [&]() -> int {
-    return Interface_Static::ValueTypeToParamType(static_cast<MoniTool_ValueType>(a0));
-  }, 0);
-}
-static bool Interface_Static_Init_o54v0_wrap(std::string a0, std::string a1, int a2, std::string a3) {
-  return occ_ts::guarded("Interface_Static.Init", [&]() -> bool {
-    return Interface_Static::Init(a0.c_str(), a1.c_str(), static_cast<Interface_ParamType>(a2), a3.c_str());
-  }, false);
-}
-static bool Interface_Static_Init_o54v1_wrap(std::string a0, std::string a1, int a2) {
-  return occ_ts::guarded("Interface_Static.Init", [&]() -> bool {
-    return Interface_Static::Init(a0.c_str(), a1.c_str(), static_cast<Interface_ParamType>(a2));
-  }, false);
-}
-static opencascade::handle<Interface_Static>* Interface_Static_Static_o56v0_wrap(std::string a0) {
-  return occ_ts::guarded("Interface_Static.Static", [&]() -> opencascade::handle<Interface_Static>* {
-    return new opencascade::handle<Interface_Static>(Interface_Static::Static(a0.c_str()));
-  }, (opencascade::handle<Interface_Static>*)nullptr);
-}
-static bool Interface_Static_IsPresent_o57v0_wrap(std::string a0) {
-  return occ_ts::guarded("Interface_Static.IsPresent", [&]() -> bool {
-    return Interface_Static::IsPresent(a0.c_str());
-  }, false);
-}
-static std::string Interface_Static_CDef_o58v0_wrap(std::string a0, std::string a1) {
-  return occ_ts::guarded("Interface_Static.CDef", [&]() -> std::string {
-    return Interface_Static::CDef(a0.c_str(), a1.c_str());
-  }, std::string());
-}
-static int Interface_Static_IDef_o59v0_wrap(std::string a0, std::string a1) {
-  return occ_ts::guarded("Interface_Static.IDef", [&]() -> int {
-    return Interface_Static::IDef(a0.c_str(), a1.c_str());
-  }, 0);
-}
-static bool Interface_Static_IsSet_o60v0_wrap(std::string a0, bool a1) {
-  return occ_ts::guarded("Interface_Static.IsSet", [&]() -> bool {
-    return Interface_Static::IsSet(a0.c_str(), a1);
-  }, false);
-}
-static bool Interface_Static_IsSet_o60v1_wrap(std::string a0) {
-  return occ_ts::guarded("Interface_Static.IsSet", [&]() -> bool {
-    return Interface_Static::IsSet(a0.c_str());
-  }, false);
-}
-static std::string Interface_Static_CVal_o61v0_wrap(std::string a0) {
-  return occ_ts::guarded("Interface_Static.CVal", [&]() -> std::string {
-    return Interface_Static::CVal(a0.c_str());
-  }, std::string());
-}
-static int Interface_Static_IVal_o62v0_wrap(std::string a0) {
-  return occ_ts::guarded("Interface_Static.IVal", [&]() -> int {
-    return Interface_Static::IVal(a0.c_str());
-  }, 0);
-}
-static double Interface_Static_RVal_o63v0_wrap(std::string a0) {
-  return occ_ts::guarded("Interface_Static.RVal", [&]() -> double {
-    return Interface_Static::RVal(a0.c_str());
-  }, 0);
-}
-static bool Interface_Static_SetCVal_o64v0_wrap(std::string a0, std::string a1) {
-  return occ_ts::guarded("Interface_Static.SetCVal", [&]() -> bool {
-    return Interface_Static::SetCVal(a0.c_str(), a1.c_str());
-  }, false);
-}
-static bool Interface_Static_SetIVal_o65v0_wrap(std::string a0, int a1) {
-  return occ_ts::guarded("Interface_Static.SetIVal", [&]() -> bool {
-    return Interface_Static::SetIVal(a0.c_str(), a1);
-  }, false);
-}
-static bool Interface_Static_SetRVal_o66v0_wrap(std::string a0, double a1) {
-  return occ_ts::guarded("Interface_Static.SetRVal", [&]() -> bool {
-    return Interface_Static::SetRVal(a0.c_str(), a1);
-  }, false);
-}
-static bool Interface_Static_Update_o67v0_wrap(std::string a0) {
-  return occ_ts::guarded("Interface_Static.Update", [&]() -> bool {
-    return Interface_Static::Update(a0.c_str());
-  }, false);
-}
-static bool Interface_Static_IsUpdated_o68v0_wrap(std::string a0) {
-  return occ_ts::guarded("Interface_Static.IsUpdated", [&]() -> bool {
-    return Interface_Static::IsUpdated(a0.c_str());
-  }, false);
-}
-static void Interface_Static_Standards_o69v0_wrap() {
-  occ_ts::guarded("Interface_Static.Standards", [&]() -> int {
-    Interface_Static::Standards();
     return 0;
   }, 0);
 }
@@ -10264,7 +9102,7 @@ static opencascade::handle<Poly_Polygon2D>* BRep_Tool_PolygonOnSurface_o9v0_wrap
 }
 static opencascade::handle<Poly_Polygon2D>* BRep_Tool_PolygonOnSurface_o10v0_wrap(const TopoDS_Edge& a0, Geom_Surface* a1, const TopLoc_Location& a2) {
   return occ_ts::guarded("BRep_Tool.PolygonOnSurface", [&]() -> opencascade::handle<Poly_Polygon2D>* {
-    return new opencascade::handle<Poly_Polygon2D>(BRep_Tool::PolygonOnSurface(a0, opencascade::handle<Geom_Surface>(a1), a2));
+    return new opencascade::handle<Poly_Polygon2D>(BRep_Tool::PolygonOnSurface(a0, (a1->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a1)), a2));
   }, (opencascade::handle<Poly_Polygon2D>*)nullptr);
 }
 static bool BRep_Tool_IsClosed_o11v0_wrap(const TopoDS_Edge& a0, const TopoDS_Face& a1) {
@@ -10274,7 +9112,7 @@ static bool BRep_Tool_IsClosed_o11v0_wrap(const TopoDS_Edge& a0, const TopoDS_Fa
 }
 static bool BRep_Tool_IsClosed_o12v0_wrap(const TopoDS_Edge& a0, Geom_Surface* a1, const TopLoc_Location& a2) {
   return occ_ts::guarded("BRep_Tool.IsClosed", [&]() -> bool {
-    return BRep_Tool::IsClosed(a0, opencascade::handle<Geom_Surface>(a1), a2);
+    return BRep_Tool::IsClosed(a0, (a1->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a1)), a2);
   }, false);
 }
 static bool BRep_Tool_SameParameter_o15v0_wrap(const TopoDS_Edge& a0) {
@@ -10294,7 +9132,7 @@ static bool BRep_Tool_Degenerated_o17v0_wrap(const TopoDS_Edge& a0) {
 }
 static void BRep_Tool_UVPoints_o18v0_wrap(const TopoDS_Edge& a0, Geom_Surface* a1, const TopLoc_Location& a2, gp_Pnt2d& a3, gp_Pnt2d& a4) {
   occ_ts::guarded("BRep_Tool.UVPoints", [&]() -> int {
-    BRep_Tool::UVPoints(a0, opencascade::handle<Geom_Surface>(a1), a2, a3, a4);
+    BRep_Tool::UVPoints(a0, (a1->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a1)), a2, a3, a4);
     return 0;
   }, 0);
 }
@@ -10306,7 +9144,7 @@ static void BRep_Tool_UVPoints_o19v0_wrap(const TopoDS_Edge& a0, const TopoDS_Fa
 }
 static void BRep_Tool_SetUVPoints_o20v0_wrap(const TopoDS_Edge& a0, Geom_Surface* a1, const TopLoc_Location& a2, const gp_Pnt2d& a3, const gp_Pnt2d& a4) {
   occ_ts::guarded("BRep_Tool.SetUVPoints", [&]() -> int {
-    BRep_Tool::SetUVPoints(a0, opencascade::handle<Geom_Surface>(a1), a2, a3, a4);
+    BRep_Tool::SetUVPoints(a0, (a1->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a1)), a2, a3, a4);
     return 0;
   }, 0);
 }
@@ -10328,12 +9166,12 @@ static int BRep_Tool_Continuity_o23v0_wrap(const TopoDS_Edge& a0, const TopoDS_F
 }
 static bool BRep_Tool_HasContinuity_o24v0_wrap(const TopoDS_Edge& a0, Geom_Surface* a1, Geom_Surface* a2, const TopLoc_Location& a3, const TopLoc_Location& a4) {
   return occ_ts::guarded("BRep_Tool.HasContinuity", [&]() -> bool {
-    return BRep_Tool::HasContinuity(a0, opencascade::handle<Geom_Surface>(a1), opencascade::handle<Geom_Surface>(a2), a3, a4);
+    return BRep_Tool::HasContinuity(a0, (a1->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a1)), (a2->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a2)), a3, a4);
   }, false);
 }
 static int BRep_Tool_Continuity_o25v0_wrap(const TopoDS_Edge& a0, Geom_Surface* a1, Geom_Surface* a2, const TopLoc_Location& a3, const TopLoc_Location& a4) {
   return occ_ts::guarded("BRep_Tool.Continuity", [&]() -> int {
-    return BRep_Tool::Continuity(a0, opencascade::handle<Geom_Surface>(a1), opencascade::handle<Geom_Surface>(a2), a3, a4);
+    return BRep_Tool::Continuity(a0, (a1->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a1)), (a2->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a2)), a3, a4);
   }, 0);
 }
 static bool BRep_Tool_HasContinuity_o26v0_wrap(const TopoDS_Edge& a0) {
@@ -10363,7 +9201,7 @@ static double BRep_Tool_Parameter_o31v0_wrap(const TopoDS_Vertex& a0, const Topo
 }
 static double BRep_Tool_Parameter_o32v0_wrap(const TopoDS_Vertex& a0, const TopoDS_Edge& a1, Geom_Surface* a2, const TopLoc_Location& a3) {
   return occ_ts::guarded("BRep_Tool.Parameter", [&]() -> double {
-    return BRep_Tool::Parameter(a0, a1, opencascade::handle<Geom_Surface>(a2), a3);
+    return BRep_Tool::Parameter(a0, a1, (a2->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a2)), a3);
   }, 0);
 }
 static gp_Pnt2d BRep_Tool_Parameters_o33v0_wrap(const TopoDS_Vertex& a0, const TopoDS_Face& a1) {
@@ -10426,37 +9264,37 @@ static void BRep_Builder_MakeFace_o7v0_wrap(const BRep_Builder& self, TopoDS_Fac
 }
 static void BRep_Builder_MakeFace_o8v0_wrap(const BRep_Builder& self, TopoDS_Face& a0, Geom_Surface* a1, double a2) {
   occ_ts::guarded("BRep_Builder.MakeFace", [&]() -> int {
-    self.MakeFace(a0, opencascade::handle<Geom_Surface>(a1), a2);
+    self.MakeFace(a0, (a1->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a1)), a2);
     return 0;
   }, 0);
 }
 static void BRep_Builder_MakeFace_o9v0_wrap(const BRep_Builder& self, TopoDS_Face& a0, Geom_Surface* a1, const TopLoc_Location& a2, double a3) {
   occ_ts::guarded("BRep_Builder.MakeFace", [&]() -> int {
-    self.MakeFace(a0, opencascade::handle<Geom_Surface>(a1), a2, a3);
+    self.MakeFace(a0, (a1->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a1)), a2, a3);
     return 0;
   }, 0);
 }
 static void BRep_Builder_MakeFace_o10v0_wrap(const BRep_Builder& self, TopoDS_Face& a0, Poly_Triangulation* a1) {
   occ_ts::guarded("BRep_Builder.MakeFace", [&]() -> int {
-    self.MakeFace(a0, opencascade::handle<Poly_Triangulation>(a1));
+    self.MakeFace(a0, (a1->IncrementRefCounter(), opencascade::handle<Poly_Triangulation>(a1)));
     return 0;
   }, 0);
 }
 static void BRep_Builder_UpdateFace_o11v0_wrap(const BRep_Builder& self, const TopoDS_Face& a0, Geom_Surface* a1, const TopLoc_Location& a2, double a3) {
   occ_ts::guarded("BRep_Builder.UpdateFace", [&]() -> int {
-    self.UpdateFace(a0, opencascade::handle<Geom_Surface>(a1), a2, a3);
+    self.UpdateFace(a0, (a1->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a1)), a2, a3);
     return 0;
   }, 0);
 }
 static void BRep_Builder_UpdateFace_o12v0_wrap(const BRep_Builder& self, const TopoDS_Face& a0, Poly_Triangulation* a1, bool a2) {
   occ_ts::guarded("BRep_Builder.UpdateFace", [&]() -> int {
-    self.UpdateFace(a0, opencascade::handle<Poly_Triangulation>(a1), a2);
+    self.UpdateFace(a0, (a1->IncrementRefCounter(), opencascade::handle<Poly_Triangulation>(a1)), a2);
     return 0;
   }, 0);
 }
 static void BRep_Builder_UpdateFace_o12v1_wrap(const BRep_Builder& self, const TopoDS_Face& a0, Poly_Triangulation* a1) {
   occ_ts::guarded("BRep_Builder.UpdateFace", [&]() -> int {
-    self.UpdateFace(a0, opencascade::handle<Poly_Triangulation>(a1));
+    self.UpdateFace(a0, (a1->IncrementRefCounter(), opencascade::handle<Poly_Triangulation>(a1)));
     return 0;
   }, 0);
 }
@@ -10474,61 +9312,61 @@ static void BRep_Builder_MakeEdge_o15v0_wrap(const BRep_Builder& self, TopoDS_Ed
 }
 static void BRep_Builder_MakeEdge_o16v0_wrap(const BRep_Builder& self, TopoDS_Edge& a0, Geom_Curve* a1, double a2) {
   occ_ts::guarded("BRep_Builder.MakeEdge", [&]() -> int {
-    self.MakeEdge(a0, opencascade::handle<Geom_Curve>(a1), a2);
+    self.MakeEdge(a0, (a1->IncrementRefCounter(), opencascade::handle<Geom_Curve>(a1)), a2);
     return 0;
   }, 0);
 }
 static void BRep_Builder_MakeEdge_o17v0_wrap(const BRep_Builder& self, TopoDS_Edge& a0, Geom_Curve* a1, const TopLoc_Location& a2, double a3) {
   occ_ts::guarded("BRep_Builder.MakeEdge", [&]() -> int {
-    self.MakeEdge(a0, opencascade::handle<Geom_Curve>(a1), a2, a3);
+    self.MakeEdge(a0, (a1->IncrementRefCounter(), opencascade::handle<Geom_Curve>(a1)), a2, a3);
     return 0;
   }, 0);
 }
 static void BRep_Builder_MakeEdge_o18v0_wrap(const BRep_Builder& self, TopoDS_Edge& a0, Poly_Polygon3D* a1) {
   occ_ts::guarded("BRep_Builder.MakeEdge", [&]() -> int {
-    self.MakeEdge(a0, opencascade::handle<Poly_Polygon3D>(a1));
+    self.MakeEdge(a0, (a1->IncrementRefCounter(), opencascade::handle<Poly_Polygon3D>(a1)));
     return 0;
   }, 0);
 }
 static void BRep_Builder_UpdateEdge_o19v0_wrap(const BRep_Builder& self, const TopoDS_Edge& a0, Geom_Curve* a1, double a2) {
   occ_ts::guarded("BRep_Builder.UpdateEdge", [&]() -> int {
-    self.UpdateEdge(a0, opencascade::handle<Geom_Curve>(a1), a2);
+    self.UpdateEdge(a0, (a1->IncrementRefCounter(), opencascade::handle<Geom_Curve>(a1)), a2);
     return 0;
   }, 0);
 }
 static void BRep_Builder_UpdateEdge_o20v0_wrap(const BRep_Builder& self, const TopoDS_Edge& a0, Geom_Curve* a1, const TopLoc_Location& a2, double a3) {
   occ_ts::guarded("BRep_Builder.UpdateEdge", [&]() -> int {
-    self.UpdateEdge(a0, opencascade::handle<Geom_Curve>(a1), a2, a3);
+    self.UpdateEdge(a0, (a1->IncrementRefCounter(), opencascade::handle<Geom_Curve>(a1)), a2, a3);
     return 0;
   }, 0);
 }
 static void BRep_Builder_UpdateEdge_o22v0_wrap(const BRep_Builder& self, const TopoDS_Edge& a0, Geom2d_Curve* a1, Geom2d_Curve* a2, const TopoDS_Face& a3, double a4) {
   occ_ts::guarded("BRep_Builder.UpdateEdge", [&]() -> int {
-    self.UpdateEdge(a0, opencascade::handle<Geom2d_Curve>(a1), opencascade::handle<Geom2d_Curve>(a2), a3, a4);
+    self.UpdateEdge(a0, (a1->IncrementRefCounter(), opencascade::handle<Geom2d_Curve>(a1)), (a2->IncrementRefCounter(), opencascade::handle<Geom2d_Curve>(a2)), a3, a4);
     return 0;
   }, 0);
 }
 static void BRep_Builder_UpdateEdge_o24v0_wrap(const BRep_Builder& self, const TopoDS_Edge& a0, Geom2d_Curve* a1, Geom_Surface* a2, const TopLoc_Location& a3, double a4, const gp_Pnt2d& a5, const gp_Pnt2d& a6) {
   occ_ts::guarded("BRep_Builder.UpdateEdge", [&]() -> int {
-    self.UpdateEdge(a0, opencascade::handle<Geom2d_Curve>(a1), opencascade::handle<Geom_Surface>(a2), a3, a4, a5, a6);
+    self.UpdateEdge(a0, (a1->IncrementRefCounter(), opencascade::handle<Geom2d_Curve>(a1)), (a2->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a2)), a3, a4, a5, a6);
     return 0;
   }, 0);
 }
 static void BRep_Builder_UpdateEdge_o25v0_wrap(const BRep_Builder& self, const TopoDS_Edge& a0, Geom2d_Curve* a1, Geom2d_Curve* a2, Geom_Surface* a3, const TopLoc_Location& a4, double a5) {
   occ_ts::guarded("BRep_Builder.UpdateEdge", [&]() -> int {
-    self.UpdateEdge(a0, opencascade::handle<Geom2d_Curve>(a1), opencascade::handle<Geom2d_Curve>(a2), opencascade::handle<Geom_Surface>(a3), a4, a5);
+    self.UpdateEdge(a0, (a1->IncrementRefCounter(), opencascade::handle<Geom2d_Curve>(a1)), (a2->IncrementRefCounter(), opencascade::handle<Geom2d_Curve>(a2)), (a3->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a3)), a4, a5);
     return 0;
   }, 0);
 }
 static void BRep_Builder_UpdateEdge_o26v0_wrap(const BRep_Builder& self, const TopoDS_Edge& a0, Geom2d_Curve* a1, Geom2d_Curve* a2, Geom_Surface* a3, const TopLoc_Location& a4, double a5, const gp_Pnt2d& a6, const gp_Pnt2d& a7) {
   occ_ts::guarded("BRep_Builder.UpdateEdge", [&]() -> int {
-    self.UpdateEdge(a0, opencascade::handle<Geom2d_Curve>(a1), opencascade::handle<Geom2d_Curve>(a2), opencascade::handle<Geom_Surface>(a3), a4, a5, a6, a7);
+    self.UpdateEdge(a0, (a1->IncrementRefCounter(), opencascade::handle<Geom2d_Curve>(a1)), (a2->IncrementRefCounter(), opencascade::handle<Geom2d_Curve>(a2)), (a3->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a3)), a4, a5, a6, a7);
     return 0;
   }, 0);
 }
 static void BRep_Builder_UpdateEdge_o27v0_wrap(const BRep_Builder& self, const TopoDS_Edge& a0, Poly_Polygon3D* a1) {
   occ_ts::guarded("BRep_Builder.UpdateEdge", [&]() -> int {
-    self.UpdateEdge(a0, opencascade::handle<Poly_Polygon3D>(a1));
+    self.UpdateEdge(a0, (a1->IncrementRefCounter(), opencascade::handle<Poly_Polygon3D>(a1)));
     return 0;
   }, 0);
 }
@@ -10540,7 +9378,7 @@ static void BRep_Builder_Continuity_o34v0_wrap(const BRep_Builder& self, const T
 }
 static void BRep_Builder_Continuity_o35v0_wrap(const BRep_Builder& self, const TopoDS_Edge& a0, Geom_Surface* a1, Geom_Surface* a2, const TopLoc_Location& a3, const TopLoc_Location& a4, int a5) {
   occ_ts::guarded("BRep_Builder.Continuity", [&]() -> int {
-    self.Continuity(a0, opencascade::handle<Geom_Surface>(a1), opencascade::handle<Geom_Surface>(a2), a3, a4, static_cast<GeomAbs_Shape>(a5));
+    self.Continuity(a0, (a1->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a1)), (a2->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a2)), a3, a4, static_cast<GeomAbs_Shape>(a5));
     return 0;
   }, 0);
 }
@@ -10576,7 +9414,7 @@ static void BRep_Builder_Range_o39v1_wrap(const BRep_Builder& self, const TopoDS
 }
 static void BRep_Builder_Range_o40v0_wrap(const BRep_Builder& self, const TopoDS_Edge& a0, Geom_Surface* a1, const TopLoc_Location& a2, double a3, double a4) {
   occ_ts::guarded("BRep_Builder.Range", [&]() -> int {
-    self.Range(a0, opencascade::handle<Geom_Surface>(a1), a2, a3, a4);
+    self.Range(a0, (a1->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a1)), a2, a3, a4);
     return 0;
   }, 0);
 }
@@ -10618,7 +9456,7 @@ static void BRep_Builder_UpdateVertex_o47v0_wrap(const BRep_Builder& self, const
 }
 static void BRep_Builder_UpdateVertex_o48v0_wrap(const BRep_Builder& self, const TopoDS_Vertex& a0, double a1, const TopoDS_Edge& a2, Geom_Surface* a3, const TopLoc_Location& a4, double a5) {
   occ_ts::guarded("BRep_Builder.UpdateVertex", [&]() -> int {
-    self.UpdateVertex(a0, a1, a2, opencascade::handle<Geom_Surface>(a3), a4, a5);
+    self.UpdateVertex(a0, a1, a2, (a3->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a3)), a4, a5);
     return 0;
   }, 0);
 }
@@ -11217,7 +10055,7 @@ static double BRepLib_Precision_o1v0_wrap() {
 }
 static void BRepLib_Plane_o2v0_wrap(Geom_Plane* a0) {
   occ_ts::guarded("BRepLib.Plane", [&]() -> int {
-    BRepLib::Plane(opencascade::handle<Geom_Plane>(a0));
+    BRepLib::Plane((a0->IncrementRefCounter(), opencascade::handle<Geom_Plane>(a0)));
     return 0;
   }, 0);
 }
@@ -11537,7 +10375,7 @@ static bool BRepTools_Read_o23v1_wrap(TopoDS_Shape& a0, std::string a1, const BR
 }
 static double BRepTools_EvalAndUpdateTol_o24v0_wrap(const TopoDS_Edge& a0, Geom_Curve* a1, Geom2d_Curve* a2, Geom_Surface* a3, double a4, double a5) {
   return occ_ts::guarded("BRepTools.EvalAndUpdateTol", [&]() -> double {
-    return BRepTools::EvalAndUpdateTol(a0, opencascade::handle<Geom_Curve>(a1), opencascade::handle<Geom2d_Curve>(a2), opencascade::handle<Geom_Surface>(a3), a4, a5);
+    return BRepTools::EvalAndUpdateTol(a0, (a1->IncrementRefCounter(), opencascade::handle<Geom_Curve>(a1)), (a2->IncrementRefCounter(), opencascade::handle<Geom2d_Curve>(a2)), (a3->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a3)), a4, a5);
   }, 0);
 }
 static int BRepTools_OriEdgeInFace_o25v0_wrap(const TopoDS_Edge& a0, const TopoDS_Face& a1) {
@@ -11668,7 +10506,7 @@ static bool BRepTools_History_HasRemoved_o17v0_wrap(const BRepTools_History& sel
 }
 static void BRepTools_History_Merge_o18v0_wrap(BRepTools_History& self, BRepTools_History* a0) {
   occ_ts::guarded("BRepTools_History.Merge", [&]() -> int {
-    self.Merge(opencascade::handle<BRepTools_History>(a0));
+    self.Merge((a0->IncrementRefCounter(), opencascade::handle<BRepTools_History>(a0)));
     return 0;
   }, 0);
 }
@@ -13554,7 +12392,7 @@ static opencascade::handle<Law_Function>* BRepFilletAPI_MakeFillet_GetLaw_o40v0_
 }
 static void BRepFilletAPI_MakeFillet_SetLaw_o41v0_wrap(BRepFilletAPI_MakeFillet& self, int a0, const TopoDS_Edge& a1, Law_Function* a2) {
   occ_ts::guarded("BRepFilletAPI_MakeFillet.SetLaw", [&]() -> int {
-    self.SetLaw(a0, a1, opencascade::handle<Law_Function>(a2));
+    self.SetLaw(a0, a1, (a2->IncrementRefCounter(), opencascade::handle<Law_Function>(a2)));
     return 0;
   }, 0);
 }
@@ -13835,17 +12673,17 @@ static BRepBuilderAPI_MakeEdge* BRepBuilderAPI_MakeEdge_ctor_c4v0_wrap(const gp_
 }
 static BRepBuilderAPI_MakeEdge* BRepBuilderAPI_MakeEdge_ctor_c27v0_wrap(Geom_Curve* a0, const gp_Pnt& a1, const gp_Pnt& a2, double a3, double a4) {
   return occ_ts::guarded("BRepBuilderAPI_MakeEdge::ctor", [&]() -> BRepBuilderAPI_MakeEdge* {
-    return new BRepBuilderAPI_MakeEdge(opencascade::handle<Geom_Curve>(a0), a1, a2, a3, a4);
+    return new BRepBuilderAPI_MakeEdge((a0->IncrementRefCounter(), opencascade::handle<Geom_Curve>(a0)), a1, a2, a3, a4);
   }, (BRepBuilderAPI_MakeEdge*)nullptr);
 }
 static BRepBuilderAPI_MakeEdge* BRepBuilderAPI_MakeEdge_ctor_c30v0_wrap(Geom2d_Curve* a0, Geom_Surface* a1, double a2, double a3) {
   return occ_ts::guarded("BRepBuilderAPI_MakeEdge::ctor", [&]() -> BRepBuilderAPI_MakeEdge* {
-    return new BRepBuilderAPI_MakeEdge(opencascade::handle<Geom2d_Curve>(a0), opencascade::handle<Geom_Surface>(a1), a2, a3);
+    return new BRepBuilderAPI_MakeEdge((a0->IncrementRefCounter(), opencascade::handle<Geom2d_Curve>(a0)), (a1->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a1)), a2, a3);
   }, (BRepBuilderAPI_MakeEdge*)nullptr);
 }
 static BRepBuilderAPI_MakeEdge* BRepBuilderAPI_MakeEdge_ctor_c33v0_wrap(Geom2d_Curve* a0, Geom_Surface* a1, const gp_Pnt& a2, const gp_Pnt& a3, double a4, double a5) {
   return occ_ts::guarded("BRepBuilderAPI_MakeEdge::ctor", [&]() -> BRepBuilderAPI_MakeEdge* {
-    return new BRepBuilderAPI_MakeEdge(opencascade::handle<Geom2d_Curve>(a0), opencascade::handle<Geom_Surface>(a1), a2, a3, a4, a5);
+    return new BRepBuilderAPI_MakeEdge((a0->IncrementRefCounter(), opencascade::handle<Geom2d_Curve>(a0)), (a1->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a1)), a2, a3, a4, a5);
   }, (BRepBuilderAPI_MakeEdge*)nullptr);
 }
 static bool BRepBuilderAPI_MakeEdge_IsDone_wrap(const BRepBuilderAPI_MakeEdge& self) {
@@ -13893,37 +12731,37 @@ static bool BRepBuilderAPI_MakeEdge_IsDeleted_o6v0_wrap(BRepBuilderAPI_MakeEdge&
 }
 static void BRepBuilderAPI_MakeEdge_Init_o7v0_wrap(BRepBuilderAPI_MakeEdge& self, Geom_Curve* a0) {
   occ_ts::guarded("BRepBuilderAPI_MakeEdge.Init", [&]() -> int {
-    self.Init(opencascade::handle<Geom_Curve>(a0));
+    self.Init((a0->IncrementRefCounter(), opencascade::handle<Geom_Curve>(a0)));
     return 0;
   }, 0);
 }
 static void BRepBuilderAPI_MakeEdge_Init_o8v0_wrap(BRepBuilderAPI_MakeEdge& self, Geom_Curve* a0, double a1, double a2) {
   occ_ts::guarded("BRepBuilderAPI_MakeEdge.Init", [&]() -> int {
-    self.Init(opencascade::handle<Geom_Curve>(a0), a1, a2);
+    self.Init((a0->IncrementRefCounter(), opencascade::handle<Geom_Curve>(a0)), a1, a2);
     return 0;
   }, 0);
 }
 static void BRepBuilderAPI_MakeEdge_Init_o11v0_wrap(BRepBuilderAPI_MakeEdge& self, Geom_Curve* a0, const gp_Pnt& a1, const gp_Pnt& a2, double a3, double a4) {
   occ_ts::guarded("BRepBuilderAPI_MakeEdge.Init", [&]() -> int {
-    self.Init(opencascade::handle<Geom_Curve>(a0), a1, a2, a3, a4);
+    self.Init((a0->IncrementRefCounter(), opencascade::handle<Geom_Curve>(a0)), a1, a2, a3, a4);
     return 0;
   }, 0);
 }
 static void BRepBuilderAPI_MakeEdge_Init_o13v0_wrap(BRepBuilderAPI_MakeEdge& self, Geom2d_Curve* a0, Geom_Surface* a1) {
   occ_ts::guarded("BRepBuilderAPI_MakeEdge.Init", [&]() -> int {
-    self.Init(opencascade::handle<Geom2d_Curve>(a0), opencascade::handle<Geom_Surface>(a1));
+    self.Init((a0->IncrementRefCounter(), opencascade::handle<Geom2d_Curve>(a0)), (a1->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a1)));
     return 0;
   }, 0);
 }
 static void BRepBuilderAPI_MakeEdge_Init_o14v0_wrap(BRepBuilderAPI_MakeEdge& self, Geom2d_Curve* a0, Geom_Surface* a1, double a2, double a3) {
   occ_ts::guarded("BRepBuilderAPI_MakeEdge.Init", [&]() -> int {
-    self.Init(opencascade::handle<Geom2d_Curve>(a0), opencascade::handle<Geom_Surface>(a1), a2, a3);
+    self.Init((a0->IncrementRefCounter(), opencascade::handle<Geom2d_Curve>(a0)), (a1->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a1)), a2, a3);
     return 0;
   }, 0);
 }
 static void BRepBuilderAPI_MakeEdge_Init_o17v0_wrap(BRepBuilderAPI_MakeEdge& self, Geom2d_Curve* a0, Geom_Surface* a1, const gp_Pnt& a2, const gp_Pnt& a3, double a4, double a5) {
   occ_ts::guarded("BRepBuilderAPI_MakeEdge.Init", [&]() -> int {
-    self.Init(opencascade::handle<Geom2d_Curve>(a0), opencascade::handle<Geom_Surface>(a1), a2, a3, a4, a5);
+    self.Init((a0->IncrementRefCounter(), opencascade::handle<Geom2d_Curve>(a0)), (a1->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a1)), a2, a3, a4, a5);
     return 0;
   }, 0);
 }
@@ -14053,7 +12891,7 @@ static BRepBuilderAPI_MakeFace* BRepBuilderAPI_MakeFace_ctor_c1v0_wrap(const Top
 }
 static BRepBuilderAPI_MakeFace* BRepBuilderAPI_MakeFace_ctor_c7v0_wrap(Geom_Surface* a0, double a1) {
   return occ_ts::guarded("BRepBuilderAPI_MakeFace::ctor", [&]() -> BRepBuilderAPI_MakeFace* {
-    return new BRepBuilderAPI_MakeFace(opencascade::handle<Geom_Surface>(a0), a1);
+    return new BRepBuilderAPI_MakeFace((a0->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a0)), a1);
   }, (BRepBuilderAPI_MakeFace*)nullptr);
 }
 static BRepBuilderAPI_MakeFace* BRepBuilderAPI_MakeFace_ctor_c8v0_wrap(const gp_Pln& a0, double a1, double a2, double a3, double a4) {
@@ -14063,7 +12901,7 @@ static BRepBuilderAPI_MakeFace* BRepBuilderAPI_MakeFace_ctor_c8v0_wrap(const gp_
 }
 static BRepBuilderAPI_MakeFace* BRepBuilderAPI_MakeFace_ctor_c13v0_wrap(Geom_Surface* a0, double a1, double a2, double a3, double a4, double a5) {
   return occ_ts::guarded("BRepBuilderAPI_MakeFace::ctor", [&]() -> BRepBuilderAPI_MakeFace* {
-    return new BRepBuilderAPI_MakeFace(opencascade::handle<Geom_Surface>(a0), a1, a2, a3, a4, a5);
+    return new BRepBuilderAPI_MakeFace((a0->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a0)), a1, a2, a3, a4, a5);
   }, (BRepBuilderAPI_MakeFace*)nullptr);
 }
 static BRepBuilderAPI_MakeFace* BRepBuilderAPI_MakeFace_ctor_c15v0_wrap(const gp_Pln& a0, const TopoDS_Wire& a1, bool a2) {
@@ -14122,13 +12960,13 @@ static void BRepBuilderAPI_MakeFace_Init_o7v0_wrap(BRepBuilderAPI_MakeFace& self
 }
 static void BRepBuilderAPI_MakeFace_Init_o8v0_wrap(BRepBuilderAPI_MakeFace& self, Geom_Surface* a0, bool a1, double a2) {
   occ_ts::guarded("BRepBuilderAPI_MakeFace.Init", [&]() -> int {
-    self.Init(opencascade::handle<Geom_Surface>(a0), a1, a2);
+    self.Init((a0->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a0)), a1, a2);
     return 0;
   }, 0);
 }
 static void BRepBuilderAPI_MakeFace_Init_o9v0_wrap(BRepBuilderAPI_MakeFace& self, Geom_Surface* a0, double a1, double a2, double a3, double a4, double a5) {
   occ_ts::guarded("BRepBuilderAPI_MakeFace.Init", [&]() -> int {
-    self.Init(opencascade::handle<Geom_Surface>(a0), a1, a2, a3, a4, a5);
+    self.Init((a0->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a0)), a1, a2, a3, a4, a5);
     return 0;
   }, 0);
 }
@@ -15223,25 +14061,25 @@ static void BRepOffsetAPI_MakePipeShell_Add_o15v0_wrap(BRepOffsetAPI_MakePipeShe
 }
 static void BRepOffsetAPI_MakePipeShell_SetLaw_o16v0_wrap(BRepOffsetAPI_MakePipeShell& self, const TopoDS_Shape& a0, Law_Function* a1, bool a2, bool a3) {
   occ_ts::guarded("BRepOffsetAPI_MakePipeShell.SetLaw", [&]() -> int {
-    self.SetLaw(a0, opencascade::handle<Law_Function>(a1), a2, a3);
+    self.SetLaw(a0, (a1->IncrementRefCounter(), opencascade::handle<Law_Function>(a1)), a2, a3);
     return 0;
   }, 0);
 }
 static void BRepOffsetAPI_MakePipeShell_SetLaw_o16v1_wrap(BRepOffsetAPI_MakePipeShell& self, const TopoDS_Shape& a0, Law_Function* a1, bool a2) {
   occ_ts::guarded("BRepOffsetAPI_MakePipeShell.SetLaw", [&]() -> int {
-    self.SetLaw(a0, opencascade::handle<Law_Function>(a1), a2);
+    self.SetLaw(a0, (a1->IncrementRefCounter(), opencascade::handle<Law_Function>(a1)), a2);
     return 0;
   }, 0);
 }
 static void BRepOffsetAPI_MakePipeShell_SetLaw_o16v2_wrap(BRepOffsetAPI_MakePipeShell& self, const TopoDS_Shape& a0, Law_Function* a1) {
   occ_ts::guarded("BRepOffsetAPI_MakePipeShell.SetLaw", [&]() -> int {
-    self.SetLaw(a0, opencascade::handle<Law_Function>(a1));
+    self.SetLaw(a0, (a1->IncrementRefCounter(), opencascade::handle<Law_Function>(a1)));
     return 0;
   }, 0);
 }
 static void BRepOffsetAPI_MakePipeShell_SetLaw_o17v0_wrap(BRepOffsetAPI_MakePipeShell& self, const TopoDS_Shape& a0, Law_Function* a1, const TopoDS_Vertex& a2, bool a3, bool a4) {
   occ_ts::guarded("BRepOffsetAPI_MakePipeShell.SetLaw", [&]() -> int {
-    self.SetLaw(a0, opencascade::handle<Law_Function>(a1), a2, a3, a4);
+    self.SetLaw(a0, (a1->IncrementRefCounter(), opencascade::handle<Law_Function>(a1)), a2, a3, a4);
     return 0;
   }, 0);
 }
@@ -17704,17 +16542,17 @@ static int Geom_BezierCurve_MaxDegree_o76v0_wrap() {
 }
 static Geom_TrimmedCurve* Geom_TrimmedCurve_ctor_c0v0_wrap(Geom_Curve* a0, double a1, double a2, bool a3, bool a4) {
   return occ_ts::guarded("Geom_TrimmedCurve::ctor", [&]() -> Geom_TrimmedCurve* {
-    return new Geom_TrimmedCurve(opencascade::handle<Geom_Curve>(a0), a1, a2, a3, a4);
+    return new Geom_TrimmedCurve((a0->IncrementRefCounter(), opencascade::handle<Geom_Curve>(a0)), a1, a2, a3, a4);
   }, (Geom_TrimmedCurve*)nullptr);
 }
 static Geom_TrimmedCurve* Geom_TrimmedCurve_ctor_c0v1_wrap(Geom_Curve* a0, double a1, double a2, bool a3) {
   return occ_ts::guarded("Geom_TrimmedCurve::ctor", [&]() -> Geom_TrimmedCurve* {
-    return new Geom_TrimmedCurve(opencascade::handle<Geom_Curve>(a0), a1, a2, a3);
+    return new Geom_TrimmedCurve((a0->IncrementRefCounter(), opencascade::handle<Geom_Curve>(a0)), a1, a2, a3);
   }, (Geom_TrimmedCurve*)nullptr);
 }
 static Geom_TrimmedCurve* Geom_TrimmedCurve_ctor_c0v2_wrap(Geom_Curve* a0, double a1, double a2) {
   return occ_ts::guarded("Geom_TrimmedCurve::ctor", [&]() -> Geom_TrimmedCurve* {
-    return new Geom_TrimmedCurve(opencascade::handle<Geom_Curve>(a0), a1, a2);
+    return new Geom_TrimmedCurve((a0->IncrementRefCounter(), opencascade::handle<Geom_Curve>(a0)), a1, a2);
   }, (Geom_TrimmedCurve*)nullptr);
 }
 static bool Geom_TrimmedCurve_IsInstance_wrap(const Geom_TrimmedCurve& self, std::string a0) {
@@ -17944,12 +16782,12 @@ static std::string Geom_TrimmedCurve_get_type_name_o59v0_wrap() {
 }
 static Geom_OffsetCurve* Geom_OffsetCurve_ctor_c0v0_wrap(Geom_Curve* a0, double a1, const gp_Dir& a2, bool a3) {
   return occ_ts::guarded("Geom_OffsetCurve::ctor", [&]() -> Geom_OffsetCurve* {
-    return new Geom_OffsetCurve(opencascade::handle<Geom_Curve>(a0), a1, a2, a3);
+    return new Geom_OffsetCurve((a0->IncrementRefCounter(), opencascade::handle<Geom_Curve>(a0)), a1, a2, a3);
   }, (Geom_OffsetCurve*)nullptr);
 }
 static Geom_OffsetCurve* Geom_OffsetCurve_ctor_c0v1_wrap(Geom_Curve* a0, double a1, const gp_Dir& a2) {
   return occ_ts::guarded("Geom_OffsetCurve::ctor", [&]() -> Geom_OffsetCurve* {
-    return new Geom_OffsetCurve(opencascade::handle<Geom_Curve>(a0), a1, a2);
+    return new Geom_OffsetCurve((a0->IncrementRefCounter(), opencascade::handle<Geom_Curve>(a0)), a1, a2);
   }, (Geom_OffsetCurve*)nullptr);
 }
 static bool Geom_OffsetCurve_IsInstance_wrap(const Geom_OffsetCurve& self, std::string a0) {
@@ -18141,13 +16979,13 @@ static gp_Pnt Geom_OffsetCurve_Value_o34v0_wrap(const Geom_OffsetCurve& self, do
 }
 static void Geom_OffsetCurve_SetBasisCurve_o37v0_wrap(Geom_OffsetCurve& self, Geom_Curve* a0, bool a1) {
   occ_ts::guarded("Geom_OffsetCurve.SetBasisCurve", [&]() -> int {
-    self.SetBasisCurve(opencascade::handle<Geom_Curve>(a0), a1);
+    self.SetBasisCurve((a0->IncrementRefCounter(), opencascade::handle<Geom_Curve>(a0)), a1);
     return 0;
   }, 0);
 }
 static void Geom_OffsetCurve_SetBasisCurve_o37v1_wrap(Geom_OffsetCurve& self, Geom_Curve* a0) {
   occ_ts::guarded("Geom_OffsetCurve.SetBasisCurve", [&]() -> int {
-    self.SetBasisCurve(opencascade::handle<Geom_Curve>(a0));
+    self.SetBasisCurve((a0->IncrementRefCounter(), opencascade::handle<Geom_Curve>(a0)));
     return 0;
   }, 0);
 }
@@ -18694,7 +17532,7 @@ static void Geom_BSplineCurve_Weights_o96v0_wrap(const Geom_BSplineCurve& self, 
 }
 static bool Geom_BSplineCurve_IsEqual_o99v0_wrap(const Geom_BSplineCurve& self, Geom_BSplineCurve* a0, double a1) {
   return occ_ts::guarded("Geom_BSplineCurve.IsEqual", [&]() -> bool {
-    return self.IsEqual(opencascade::handle<Geom_BSplineCurve>(a0), a1);
+    return self.IsEqual((a0->IncrementRefCounter(), opencascade::handle<Geom_BSplineCurve>(a0)), a1);
   }, false);
 }
 static std::string Geom_BSplineCurve_get_type_name_o100v0_wrap() {
@@ -20419,7 +19257,7 @@ static std::string Geom_ToroidalSurface_get_type_name_o71v0_wrap() {
 }
 static Geom_SurfaceOfRevolution* Geom_SurfaceOfRevolution_ctor_c0v0_wrap(Geom_Curve* a0, const gp_Ax1& a1) {
   return occ_ts::guarded("Geom_SurfaceOfRevolution::ctor", [&]() -> Geom_SurfaceOfRevolution* {
-    return new Geom_SurfaceOfRevolution(opencascade::handle<Geom_Curve>(a0), a1);
+    return new Geom_SurfaceOfRevolution((a0->IncrementRefCounter(), opencascade::handle<Geom_Curve>(a0)), a1);
   }, (Geom_SurfaceOfRevolution*)nullptr);
 }
 static bool Geom_SurfaceOfRevolution_IsInstance_wrap(const Geom_SurfaceOfRevolution& self, std::string a0) {
@@ -20664,7 +19502,7 @@ static void Geom_SurfaceOfRevolution_SetDirection_o44v0_wrap(Geom_SurfaceOfRevol
 }
 static void Geom_SurfaceOfRevolution_SetBasisCurve_o45v0_wrap(Geom_SurfaceOfRevolution& self, Geom_Curve* a0) {
   occ_ts::guarded("Geom_SurfaceOfRevolution.SetBasisCurve", [&]() -> int {
-    self.SetBasisCurve(opencascade::handle<Geom_Curve>(a0));
+    self.SetBasisCurve((a0->IncrementRefCounter(), opencascade::handle<Geom_Curve>(a0)));
     return 0;
   }, 0);
 }
@@ -20696,7 +19534,7 @@ static std::string Geom_SurfaceOfRevolution_get_type_name_o70v0_wrap() {
 }
 static Geom_SurfaceOfLinearExtrusion* Geom_SurfaceOfLinearExtrusion_ctor_c0v0_wrap(Geom_Curve* a0, const gp_Dir& a1) {
   return occ_ts::guarded("Geom_SurfaceOfLinearExtrusion::ctor", [&]() -> Geom_SurfaceOfLinearExtrusion* {
-    return new Geom_SurfaceOfLinearExtrusion(opencascade::handle<Geom_Curve>(a0), a1);
+    return new Geom_SurfaceOfLinearExtrusion((a0->IncrementRefCounter(), opencascade::handle<Geom_Curve>(a0)), a1);
   }, (Geom_SurfaceOfLinearExtrusion*)nullptr);
 }
 static bool Geom_SurfaceOfLinearExtrusion_IsInstance_wrap(const Geom_SurfaceOfLinearExtrusion& self, std::string a0) {
@@ -20935,7 +19773,7 @@ static void Geom_SurfaceOfLinearExtrusion_SetDirection_o43v0_wrap(Geom_SurfaceOf
 }
 static void Geom_SurfaceOfLinearExtrusion_SetBasisCurve_o44v0_wrap(Geom_SurfaceOfLinearExtrusion& self, Geom_Curve* a0) {
   occ_ts::guarded("Geom_SurfaceOfLinearExtrusion.SetBasisCurve", [&]() -> int {
-    self.SetBasisCurve(opencascade::handle<Geom_Curve>(a0));
+    self.SetBasisCurve((a0->IncrementRefCounter(), opencascade::handle<Geom_Curve>(a0)));
     return 0;
   }, 0);
 }
@@ -20946,12 +19784,12 @@ static std::string Geom_SurfaceOfLinearExtrusion_get_type_name_o65v0_wrap() {
 }
 static Geom_OffsetSurface* Geom_OffsetSurface_ctor_c0v0_wrap(Geom_Surface* a0, double a1, bool a2) {
   return occ_ts::guarded("Geom_OffsetSurface::ctor", [&]() -> Geom_OffsetSurface* {
-    return new Geom_OffsetSurface(opencascade::handle<Geom_Surface>(a0), a1, a2);
+    return new Geom_OffsetSurface((a0->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a0)), a1, a2);
   }, (Geom_OffsetSurface*)nullptr);
 }
 static Geom_OffsetSurface* Geom_OffsetSurface_ctor_c0v1_wrap(Geom_Surface* a0, double a1) {
   return occ_ts::guarded("Geom_OffsetSurface::ctor", [&]() -> Geom_OffsetSurface* {
-    return new Geom_OffsetSurface(opencascade::handle<Geom_Surface>(a0), a1);
+    return new Geom_OffsetSurface((a0->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a0)), a1);
   }, (Geom_OffsetSurface*)nullptr);
 }
 static bool Geom_OffsetSurface_IsInstance_wrap(const Geom_OffsetSurface& self, std::string a0) {
@@ -21174,13 +20012,13 @@ static gp_Pnt Geom_OffsetSurface_Value_o40v0_wrap(const Geom_OffsetSurface& self
 }
 static void Geom_OffsetSurface_SetBasisSurface_o41v0_wrap(Geom_OffsetSurface& self, Geom_Surface* a0, bool a1) {
   occ_ts::guarded("Geom_OffsetSurface.SetBasisSurface", [&]() -> int {
-    self.SetBasisSurface(opencascade::handle<Geom_Surface>(a0), a1);
+    self.SetBasisSurface((a0->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a0)), a1);
     return 0;
   }, 0);
 }
 static void Geom_OffsetSurface_SetBasisSurface_o41v1_wrap(Geom_OffsetSurface& self, Geom_Surface* a0) {
   occ_ts::guarded("Geom_OffsetSurface.SetBasisSurface", [&]() -> int {
-    self.SetBasisSurface(opencascade::handle<Geom_Surface>(a0));
+    self.SetBasisSurface((a0->IncrementRefCounter(), opencascade::handle<Geom_Surface>(a0)));
     return 0;
   }, 0);
 }
@@ -23109,17 +21947,17 @@ static std::string Geom2d_Ellipse_get_type_name_o69v0_wrap() {
 }
 static Geom2d_TrimmedCurve* Geom2d_TrimmedCurve_ctor_c0v0_wrap(Geom2d_Curve* a0, double a1, double a2, bool a3, bool a4) {
   return occ_ts::guarded("Geom2d_TrimmedCurve::ctor", [&]() -> Geom2d_TrimmedCurve* {
-    return new Geom2d_TrimmedCurve(opencascade::handle<Geom2d_Curve>(a0), a1, a2, a3, a4);
+    return new Geom2d_TrimmedCurve((a0->IncrementRefCounter(), opencascade::handle<Geom2d_Curve>(a0)), a1, a2, a3, a4);
   }, (Geom2d_TrimmedCurve*)nullptr);
 }
 static Geom2d_TrimmedCurve* Geom2d_TrimmedCurve_ctor_c0v1_wrap(Geom2d_Curve* a0, double a1, double a2, bool a3) {
   return occ_ts::guarded("Geom2d_TrimmedCurve::ctor", [&]() -> Geom2d_TrimmedCurve* {
-    return new Geom2d_TrimmedCurve(opencascade::handle<Geom2d_Curve>(a0), a1, a2, a3);
+    return new Geom2d_TrimmedCurve((a0->IncrementRefCounter(), opencascade::handle<Geom2d_Curve>(a0)), a1, a2, a3);
   }, (Geom2d_TrimmedCurve*)nullptr);
 }
 static Geom2d_TrimmedCurve* Geom2d_TrimmedCurve_ctor_c0v2_wrap(Geom2d_Curve* a0, double a1, double a2) {
   return occ_ts::guarded("Geom2d_TrimmedCurve::ctor", [&]() -> Geom2d_TrimmedCurve* {
-    return new Geom2d_TrimmedCurve(opencascade::handle<Geom2d_Curve>(a0), a1, a2);
+    return new Geom2d_TrimmedCurve((a0->IncrementRefCounter(), opencascade::handle<Geom2d_Curve>(a0)), a1, a2);
   }, (Geom2d_TrimmedCurve*)nullptr);
 }
 static bool Geom2d_TrimmedCurve_IsInstance_wrap(const Geom2d_TrimmedCurve& self, std::string a0) {
@@ -24005,14 +22843,338 @@ static bool BRepOffset_MakeOffset_IsDeleted_o15v0_wrap(BRepOffset_MakeOffset& se
     return self.IsDeleted(a0);
   }, false);
 }
+static MoniTool_TypedValue* MoniTool_TypedValue_ctor_c0v0_wrap(std::string a0, int a1, std::string a2) {
+  return occ_ts::guarded("MoniTool_TypedValue::ctor", [&]() -> MoniTool_TypedValue* {
+    return new MoniTool_TypedValue(a0.c_str(), static_cast<MoniTool_ValueType>(a1), a2.c_str());
+  }, (MoniTool_TypedValue*)nullptr);
+}
+static MoniTool_TypedValue* MoniTool_TypedValue_ctor_c0v1_wrap(std::string a0, int a1) {
+  return occ_ts::guarded("MoniTool_TypedValue::ctor", [&]() -> MoniTool_TypedValue* {
+    return new MoniTool_TypedValue(a0.c_str(), static_cast<MoniTool_ValueType>(a1));
+  }, (MoniTool_TypedValue*)nullptr);
+}
+static MoniTool_TypedValue* MoniTool_TypedValue_ctor_c0v2_wrap(std::string a0) {
+  return occ_ts::guarded("MoniTool_TypedValue::ctor", [&]() -> MoniTool_TypedValue* {
+    return new MoniTool_TypedValue(a0.c_str());
+  }, (MoniTool_TypedValue*)nullptr);
+}
+static bool MoniTool_TypedValue_IsInstance_wrap(const MoniTool_TypedValue& self, std::string a0) {
+  return occ_ts::guarded("MoniTool_TypedValue.IsInstance", [&]() -> bool {
+    return self.IsInstance(a0.c_str());
+  }, false);
+}
+static bool MoniTool_TypedValue_IsKind_o1v0_wrap(const MoniTool_TypedValue& self, std::string a0) {
+  return occ_ts::guarded("MoniTool_TypedValue.IsKind", [&]() -> bool {
+    return self.IsKind(a0.c_str());
+  }, false);
+}
+static int MoniTool_TypedValue_GetRefCount_o2v0_wrap(const MoniTool_TypedValue& self) {
+  return occ_ts::guarded("MoniTool_TypedValue.GetRefCount", [&]() -> int {
+    return self.GetRefCount();
+  }, 0);
+}
+static void MoniTool_TypedValue_IncrementRefCounter_o3v0_wrap(MoniTool_TypedValue& self) {
+  occ_ts::guarded("MoniTool_TypedValue.IncrementRefCounter", [&]() -> int {
+    self.IncrementRefCounter();
+    return 0;
+  }, 0);
+}
+static int MoniTool_TypedValue_DecrementRefCounter_o4v0_wrap(MoniTool_TypedValue& self) {
+  return occ_ts::guarded("MoniTool_TypedValue.DecrementRefCounter", [&]() -> int {
+    return self.DecrementRefCounter();
+  }, 0);
+}
+static void MoniTool_TypedValue_Delete_o5v0_wrap(const MoniTool_TypedValue& self) {
+  occ_ts::guarded("MoniTool_TypedValue.Delete", [&]() -> int {
+    self.Delete();
+    return 0;
+  }, 0);
+}
+static std::string MoniTool_TypedValue_Name_o6v0_wrap(const MoniTool_TypedValue& self) {
+  return occ_ts::guarded("MoniTool_TypedValue.Name", [&]() -> std::string {
+    return self.Name();
+  }, std::string());
+}
+static int MoniTool_TypedValue_ValueType_o7v0_wrap(const MoniTool_TypedValue& self) {
+  return occ_ts::guarded("MoniTool_TypedValue.ValueType", [&]() -> int {
+    return self.ValueType();
+  }, 0);
+}
+static TCollection_AsciiString MoniTool_TypedValue_Definition_o8v0_wrap(const MoniTool_TypedValue& self) {
+  return occ_ts::guarded("MoniTool_TypedValue.Definition", [&]() -> TCollection_AsciiString {
+    return self.Definition();
+  }, TCollection_AsciiString());
+}
+static void MoniTool_TypedValue_SetDefinition_o9v0_wrap(MoniTool_TypedValue& self, std::string a0) {
+  occ_ts::guarded("MoniTool_TypedValue.SetDefinition", [&]() -> int {
+    self.SetDefinition(a0.c_str());
+    return 0;
+  }, 0);
+}
+static bool MoniTool_TypedValue_AddDef_o10v0_wrap(MoniTool_TypedValue& self, std::string a0) {
+  return occ_ts::guarded("MoniTool_TypedValue.AddDef", [&]() -> bool {
+    return self.AddDef(a0.c_str());
+  }, false);
+}
+static void MoniTool_TypedValue_SetLabel_o11v0_wrap(MoniTool_TypedValue& self, std::string a0) {
+  occ_ts::guarded("MoniTool_TypedValue.SetLabel", [&]() -> int {
+    self.SetLabel(a0.c_str());
+    return 0;
+  }, 0);
+}
+static std::string MoniTool_TypedValue_Label_o12v0_wrap(const MoniTool_TypedValue& self) {
+  return occ_ts::guarded("MoniTool_TypedValue.Label", [&]() -> std::string {
+    return self.Label();
+  }, std::string());
+}
+static void MoniTool_TypedValue_SetMaxLength_o13v0_wrap(MoniTool_TypedValue& self, int a0) {
+  occ_ts::guarded("MoniTool_TypedValue.SetMaxLength", [&]() -> int {
+    self.SetMaxLength(a0);
+    return 0;
+  }, 0);
+}
+static int MoniTool_TypedValue_MaxLength_o14v0_wrap(const MoniTool_TypedValue& self) {
+  return occ_ts::guarded("MoniTool_TypedValue.MaxLength", [&]() -> int {
+    return self.MaxLength();
+  }, 0);
+}
+static void MoniTool_TypedValue_SetIntegerLimit_o15v0_wrap(MoniTool_TypedValue& self, bool a0, int a1) {
+  occ_ts::guarded("MoniTool_TypedValue.SetIntegerLimit", [&]() -> int {
+    self.SetIntegerLimit(a0, a1);
+    return 0;
+  }, 0);
+}
+static void MoniTool_TypedValue_SetRealLimit_o16v0_wrap(MoniTool_TypedValue& self, bool a0, double a1) {
+  occ_ts::guarded("MoniTool_TypedValue.SetRealLimit", [&]() -> int {
+    self.SetRealLimit(a0, a1);
+    return 0;
+  }, 0);
+}
+static void MoniTool_TypedValue_SetUnitDef_o17v0_wrap(MoniTool_TypedValue& self, std::string a0) {
+  occ_ts::guarded("MoniTool_TypedValue.SetUnitDef", [&]() -> int {
+    self.SetUnitDef(a0.c_str());
+    return 0;
+  }, 0);
+}
+static std::string MoniTool_TypedValue_UnitDef_o18v0_wrap(const MoniTool_TypedValue& self) {
+  return occ_ts::guarded("MoniTool_TypedValue.UnitDef", [&]() -> std::string {
+    return self.UnitDef();
+  }, std::string());
+}
+static void MoniTool_TypedValue_StartEnum_o19v0_wrap(MoniTool_TypedValue& self, int a0, bool a1) {
+  occ_ts::guarded("MoniTool_TypedValue.StartEnum", [&]() -> int {
+    self.StartEnum(a0, a1);
+    return 0;
+  }, 0);
+}
+static void MoniTool_TypedValue_StartEnum_o19v1_wrap(MoniTool_TypedValue& self, int a0) {
+  occ_ts::guarded("MoniTool_TypedValue.StartEnum", [&]() -> int {
+    self.StartEnum(a0);
+    return 0;
+  }, 0);
+}
+static void MoniTool_TypedValue_StartEnum_o19v2_wrap(MoniTool_TypedValue& self) {
+  occ_ts::guarded("MoniTool_TypedValue.StartEnum", [&]() -> int {
+    self.StartEnum();
+    return 0;
+  }, 0);
+}
+static void MoniTool_TypedValue_AddEnum_o20v0_wrap(MoniTool_TypedValue& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4, std::string a5, std::string a6, std::string a7, std::string a8, std::string a9) {
+  occ_ts::guarded("MoniTool_TypedValue.AddEnum", [&]() -> int {
+    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str(), a5.c_str(), a6.c_str(), a7.c_str(), a8.c_str(), a9.c_str());
+    return 0;
+  }, 0);
+}
+static void MoniTool_TypedValue_AddEnum_o20v1_wrap(MoniTool_TypedValue& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4, std::string a5, std::string a6, std::string a7, std::string a8) {
+  occ_ts::guarded("MoniTool_TypedValue.AddEnum", [&]() -> int {
+    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str(), a5.c_str(), a6.c_str(), a7.c_str(), a8.c_str());
+    return 0;
+  }, 0);
+}
+static void MoniTool_TypedValue_AddEnum_o20v2_wrap(MoniTool_TypedValue& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4, std::string a5, std::string a6, std::string a7) {
+  occ_ts::guarded("MoniTool_TypedValue.AddEnum", [&]() -> int {
+    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str(), a5.c_str(), a6.c_str(), a7.c_str());
+    return 0;
+  }, 0);
+}
+static void MoniTool_TypedValue_AddEnum_o20v3_wrap(MoniTool_TypedValue& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4, std::string a5, std::string a6) {
+  occ_ts::guarded("MoniTool_TypedValue.AddEnum", [&]() -> int {
+    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str(), a5.c_str(), a6.c_str());
+    return 0;
+  }, 0);
+}
+static void MoniTool_TypedValue_AddEnum_o20v4_wrap(MoniTool_TypedValue& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4, std::string a5) {
+  occ_ts::guarded("MoniTool_TypedValue.AddEnum", [&]() -> int {
+    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str(), a5.c_str());
+    return 0;
+  }, 0);
+}
+static void MoniTool_TypedValue_AddEnum_o20v5_wrap(MoniTool_TypedValue& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4) {
+  occ_ts::guarded("MoniTool_TypedValue.AddEnum", [&]() -> int {
+    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str());
+    return 0;
+  }, 0);
+}
+static void MoniTool_TypedValue_AddEnum_o20v6_wrap(MoniTool_TypedValue& self, std::string a0, std::string a1, std::string a2, std::string a3) {
+  occ_ts::guarded("MoniTool_TypedValue.AddEnum", [&]() -> int {
+    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str());
+    return 0;
+  }, 0);
+}
+static void MoniTool_TypedValue_AddEnum_o20v7_wrap(MoniTool_TypedValue& self, std::string a0, std::string a1, std::string a2) {
+  occ_ts::guarded("MoniTool_TypedValue.AddEnum", [&]() -> int {
+    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str());
+    return 0;
+  }, 0);
+}
+static void MoniTool_TypedValue_AddEnum_o20v8_wrap(MoniTool_TypedValue& self, std::string a0, std::string a1) {
+  occ_ts::guarded("MoniTool_TypedValue.AddEnum", [&]() -> int {
+    self.AddEnum(a0.c_str(), a1.c_str());
+    return 0;
+  }, 0);
+}
+static void MoniTool_TypedValue_AddEnum_o20v9_wrap(MoniTool_TypedValue& self, std::string a0) {
+  occ_ts::guarded("MoniTool_TypedValue.AddEnum", [&]() -> int {
+    self.AddEnum(a0.c_str());
+    return 0;
+  }, 0);
+}
+static void MoniTool_TypedValue_AddEnum_o20v10_wrap(MoniTool_TypedValue& self) {
+  occ_ts::guarded("MoniTool_TypedValue.AddEnum", [&]() -> int {
+    self.AddEnum();
+    return 0;
+  }, 0);
+}
+static void MoniTool_TypedValue_AddEnumValue_o21v0_wrap(MoniTool_TypedValue& self, std::string a0, int a1) {
+  occ_ts::guarded("MoniTool_TypedValue.AddEnumValue", [&]() -> int {
+    self.AddEnumValue(a0.c_str(), a1);
+    return 0;
+  }, 0);
+}
+static std::string MoniTool_TypedValue_EnumVal_o22v0_wrap(const MoniTool_TypedValue& self, int a0) {
+  return occ_ts::guarded("MoniTool_TypedValue.EnumVal", [&]() -> std::string {
+    return self.EnumVal(a0);
+  }, std::string());
+}
+static int MoniTool_TypedValue_EnumCase_o23v0_wrap(const MoniTool_TypedValue& self, std::string a0) {
+  return occ_ts::guarded("MoniTool_TypedValue.EnumCase", [&]() -> int {
+    return self.EnumCase(a0.c_str());
+  }, 0);
+}
+static bool MoniTool_TypedValue_HasInterpret_o24v0_wrap(const MoniTool_TypedValue& self) {
+  return occ_ts::guarded("MoniTool_TypedValue.HasInterpret", [&]() -> bool {
+    return self.HasInterpret();
+  }, false);
+}
+static std::string MoniTool_TypedValue_SatisfiesName_o25v0_wrap(const MoniTool_TypedValue& self) {
+  return occ_ts::guarded("MoniTool_TypedValue.SatisfiesName", [&]() -> std::string {
+    return self.SatisfiesName();
+  }, std::string());
+}
+static bool MoniTool_TypedValue_IsSetValue_o26v0_wrap(const MoniTool_TypedValue& self) {
+  return occ_ts::guarded("MoniTool_TypedValue.IsSetValue", [&]() -> bool {
+    return self.IsSetValue();
+  }, false);
+}
+static std::string MoniTool_TypedValue_CStringValue_o27v0_wrap(const MoniTool_TypedValue& self) {
+  return occ_ts::guarded("MoniTool_TypedValue.CStringValue", [&]() -> std::string {
+    return self.CStringValue();
+  }, std::string());
+}
+static opencascade::handle<TCollection_HAsciiString>* MoniTool_TypedValue_HStringValue_o28v0_wrap(const MoniTool_TypedValue& self) {
+  return occ_ts::guarded("MoniTool_TypedValue.HStringValue", [&]() -> opencascade::handle<TCollection_HAsciiString>* {
+    return new opencascade::handle<TCollection_HAsciiString>(self.HStringValue());
+  }, (opencascade::handle<TCollection_HAsciiString>*)nullptr);
+}
+static opencascade::handle<TCollection_HAsciiString>* MoniTool_TypedValue_Interpret_o29v0_wrap(const MoniTool_TypedValue& self, TCollection_HAsciiString* a0, bool a1) {
+  return occ_ts::guarded("MoniTool_TypedValue.Interpret", [&]() -> opencascade::handle<TCollection_HAsciiString>* {
+    return new opencascade::handle<TCollection_HAsciiString>(self.Interpret((a0->IncrementRefCounter(), opencascade::handle<TCollection_HAsciiString>(a0)), a1));
+  }, (opencascade::handle<TCollection_HAsciiString>*)nullptr);
+}
+static bool MoniTool_TypedValue_Satisfies_o30v0_wrap(const MoniTool_TypedValue& self, TCollection_HAsciiString* a0) {
+  return occ_ts::guarded("MoniTool_TypedValue.Satisfies", [&]() -> bool {
+    return self.Satisfies((a0->IncrementRefCounter(), opencascade::handle<TCollection_HAsciiString>(a0)));
+  }, false);
+}
+static void MoniTool_TypedValue_ClearValue_o31v0_wrap(MoniTool_TypedValue& self) {
+  occ_ts::guarded("MoniTool_TypedValue.ClearValue", [&]() -> int {
+    self.ClearValue();
+    return 0;
+  }, 0);
+}
+static bool MoniTool_TypedValue_SetCStringValue_o32v0_wrap(MoniTool_TypedValue& self, std::string a0) {
+  return occ_ts::guarded("MoniTool_TypedValue.SetCStringValue", [&]() -> bool {
+    return self.SetCStringValue(a0.c_str());
+  }, false);
+}
+static bool MoniTool_TypedValue_SetHStringValue_o33v0_wrap(MoniTool_TypedValue& self, TCollection_HAsciiString* a0) {
+  return occ_ts::guarded("MoniTool_TypedValue.SetHStringValue", [&]() -> bool {
+    return self.SetHStringValue((a0->IncrementRefCounter(), opencascade::handle<TCollection_HAsciiString>(a0)));
+  }, false);
+}
+static int MoniTool_TypedValue_IntegerValue_o34v0_wrap(const MoniTool_TypedValue& self) {
+  return occ_ts::guarded("MoniTool_TypedValue.IntegerValue", [&]() -> int {
+    return self.IntegerValue();
+  }, 0);
+}
+static bool MoniTool_TypedValue_SetIntegerValue_o35v0_wrap(MoniTool_TypedValue& self, int a0) {
+  return occ_ts::guarded("MoniTool_TypedValue.SetIntegerValue", [&]() -> bool {
+    return self.SetIntegerValue(a0);
+  }, false);
+}
+static double MoniTool_TypedValue_RealValue_o36v0_wrap(const MoniTool_TypedValue& self) {
+  return occ_ts::guarded("MoniTool_TypedValue.RealValue", [&]() -> double {
+    return self.RealValue();
+  }, 0);
+}
+static bool MoniTool_TypedValue_SetRealValue_o37v0_wrap(MoniTool_TypedValue& self, double a0) {
+  return occ_ts::guarded("MoniTool_TypedValue.SetRealValue", [&]() -> bool {
+    return self.SetRealValue(a0);
+  }, false);
+}
+static std::string MoniTool_TypedValue_ObjectTypeName_o38v0_wrap(const MoniTool_TypedValue& self) {
+  return occ_ts::guarded("MoniTool_TypedValue.ObjectTypeName", [&]() -> std::string {
+    return self.ObjectTypeName();
+  }, std::string());
+}
+static std::string MoniTool_TypedValue_get_type_name_o39v0_wrap() {
+  return occ_ts::guarded("MoniTool_TypedValue.get_type_name", [&]() -> std::string {
+    return MoniTool_TypedValue::get_type_name();
+  }, std::string());
+}
+static bool MoniTool_TypedValue_AddLib_o40v0_wrap(MoniTool_TypedValue* a0, std::string a1) {
+  return occ_ts::guarded("MoniTool_TypedValue.AddLib", [&]() -> bool {
+    return MoniTool_TypedValue::AddLib((a0->IncrementRefCounter(), opencascade::handle<MoniTool_TypedValue>(a0)), a1.c_str());
+  }, false);
+}
+static bool MoniTool_TypedValue_AddLib_o40v1_wrap(MoniTool_TypedValue* a0) {
+  return occ_ts::guarded("MoniTool_TypedValue.AddLib", [&]() -> bool {
+    return MoniTool_TypedValue::AddLib((a0->IncrementRefCounter(), opencascade::handle<MoniTool_TypedValue>(a0)));
+  }, false);
+}
+static opencascade::handle<MoniTool_TypedValue>* MoniTool_TypedValue_Lib_o41v0_wrap(std::string a0) {
+  return occ_ts::guarded("MoniTool_TypedValue.Lib", [&]() -> opencascade::handle<MoniTool_TypedValue>* {
+    return new opencascade::handle<MoniTool_TypedValue>(MoniTool_TypedValue::Lib(a0.c_str()));
+  }, (opencascade::handle<MoniTool_TypedValue>*)nullptr);
+}
+static opencascade::handle<MoniTool_TypedValue>* MoniTool_TypedValue_FromLib_o42v0_wrap(std::string a0) {
+  return occ_ts::guarded("MoniTool_TypedValue.FromLib", [&]() -> opencascade::handle<MoniTool_TypedValue>* {
+    return new opencascade::handle<MoniTool_TypedValue>(MoniTool_TypedValue::FromLib(a0.c_str()));
+  }, (opencascade::handle<MoniTool_TypedValue>*)nullptr);
+}
+static opencascade::handle<MoniTool_TypedValue>* MoniTool_TypedValue_StaticValue_o43v0_wrap(std::string a0) {
+  return occ_ts::guarded("MoniTool_TypedValue.StaticValue", [&]() -> opencascade::handle<MoniTool_TypedValue>* {
+    return new opencascade::handle<MoniTool_TypedValue>(MoniTool_TypedValue::StaticValue(a0.c_str()));
+  }, (opencascade::handle<MoniTool_TypedValue>*)nullptr);
+}
 static GeomAPI_Interpolate* GeomAPI_Interpolate_ctor_c0v0_wrap(TColgp_HArray1OfPnt* a0, bool a1, double a2) {
   return occ_ts::guarded("GeomAPI_Interpolate::ctor", [&]() -> GeomAPI_Interpolate* {
-    return new GeomAPI_Interpolate(opencascade::handle<TColgp_HArray1OfPnt>(a0), a1, a2);
+    return new GeomAPI_Interpolate((a0->IncrementRefCounter(), opencascade::handle<TColgp_HArray1OfPnt>(a0)), a1, a2);
   }, (GeomAPI_Interpolate*)nullptr);
 }
 static GeomAPI_Interpolate* GeomAPI_Interpolate_ctor_c1v0_wrap(TColgp_HArray1OfPnt* a0, TColStd_HArray1OfReal* a1, bool a2, double a3) {
   return occ_ts::guarded("GeomAPI_Interpolate::ctor", [&]() -> GeomAPI_Interpolate* {
-    return new GeomAPI_Interpolate(opencascade::handle<TColgp_HArray1OfPnt>(a0), opencascade::handle<TColStd_HArray1OfReal>(a1), a2, a3);
+    return new GeomAPI_Interpolate((a0->IncrementRefCounter(), opencascade::handle<TColgp_HArray1OfPnt>(a0)), (a1->IncrementRefCounter(), opencascade::handle<TColStd_HArray1OfReal>(a1)), a2, a3);
   }, (GeomAPI_Interpolate*)nullptr);
 }
 static void GeomAPI_Interpolate_Load_wrap(GeomAPI_Interpolate& self, const gp_Vec& a0, const gp_Vec& a1, bool a2) {
@@ -24202,7 +23364,7 @@ static Poly_Triangulation* Poly_Triangulation_ctor_c1v1_wrap(int a0, int a1, boo
 }
 static Poly_Triangulation* Poly_Triangulation_ctor_c2v0_wrap(Poly_Triangulation* a0) {
   return occ_ts::guarded("Poly_Triangulation::ctor", [&]() -> Poly_Triangulation* {
-    return new Poly_Triangulation(opencascade::handle<Poly_Triangulation>(a0));
+    return new Poly_Triangulation((a0->IncrementRefCounter(), opencascade::handle<Poly_Triangulation>(a0)));
   }, (Poly_Triangulation*)nullptr);
 }
 static bool Poly_Triangulation_IsInstance_wrap(const Poly_Triangulation& self, std::string a0) {
@@ -25855,6 +25017,3406 @@ static void STEPControl_Writer_PrintStatsTransfer_o5v1_wrap(const STEPControl_Wr
     return 0;
   }, 0);
 }
+static Interface_Static* Interface_Static_ctor_c0v0_wrap(std::string a0, std::string a1, int a2, std::string a3) {
+  return occ_ts::guarded("Interface_Static::ctor", [&]() -> Interface_Static* {
+    return new Interface_Static(a0.c_str(), a1.c_str(), static_cast<Interface_ParamType>(a2), a3.c_str());
+  }, (Interface_Static*)nullptr);
+}
+static Interface_Static* Interface_Static_ctor_c0v1_wrap(std::string a0, std::string a1, int a2) {
+  return occ_ts::guarded("Interface_Static::ctor", [&]() -> Interface_Static* {
+    return new Interface_Static(a0.c_str(), a1.c_str(), static_cast<Interface_ParamType>(a2));
+  }, (Interface_Static*)nullptr);
+}
+static Interface_Static* Interface_Static_ctor_c0v2_wrap(std::string a0, std::string a1) {
+  return occ_ts::guarded("Interface_Static::ctor", [&]() -> Interface_Static* {
+    return new Interface_Static(a0.c_str(), a1.c_str());
+  }, (Interface_Static*)nullptr);
+}
+static bool Interface_Static_IsInstance_wrap(const Interface_Static& self, std::string a0) {
+  return occ_ts::guarded("Interface_Static.IsInstance", [&]() -> bool {
+    return self.IsInstance(a0.c_str());
+  }, false);
+}
+static bool Interface_Static_IsKind_o1v0_wrap(const Interface_Static& self, std::string a0) {
+  return occ_ts::guarded("Interface_Static.IsKind", [&]() -> bool {
+    return self.IsKind(a0.c_str());
+  }, false);
+}
+static int Interface_Static_GetRefCount_o2v0_wrap(const Interface_Static& self) {
+  return occ_ts::guarded("Interface_Static.GetRefCount", [&]() -> int {
+    return self.GetRefCount();
+  }, 0);
+}
+static void Interface_Static_IncrementRefCounter_o3v0_wrap(Interface_Static& self) {
+  occ_ts::guarded("Interface_Static.IncrementRefCounter", [&]() -> int {
+    self.IncrementRefCounter();
+    return 0;
+  }, 0);
+}
+static int Interface_Static_DecrementRefCounter_o4v0_wrap(Interface_Static& self) {
+  return occ_ts::guarded("Interface_Static.DecrementRefCounter", [&]() -> int {
+    return self.DecrementRefCounter();
+  }, 0);
+}
+static void Interface_Static_Delete_o5v0_wrap(const Interface_Static& self) {
+  occ_ts::guarded("Interface_Static.Delete", [&]() -> int {
+    self.Delete();
+    return 0;
+  }, 0);
+}
+static std::string Interface_Static_Name_o6v0_wrap(const Interface_Static& self) {
+  return occ_ts::guarded("Interface_Static.Name", [&]() -> std::string {
+    return self.Name();
+  }, std::string());
+}
+static int Interface_Static_ValueType_o7v0_wrap(const Interface_Static& self) {
+  return occ_ts::guarded("Interface_Static.ValueType", [&]() -> int {
+    return self.ValueType();
+  }, 0);
+}
+static TCollection_AsciiString Interface_Static_Definition_o8v0_wrap(const Interface_Static& self) {
+  return occ_ts::guarded("Interface_Static.Definition", [&]() -> TCollection_AsciiString {
+    return self.Definition();
+  }, TCollection_AsciiString());
+}
+static void Interface_Static_SetDefinition_o9v0_wrap(Interface_Static& self, std::string a0) {
+  occ_ts::guarded("Interface_Static.SetDefinition", [&]() -> int {
+    self.SetDefinition(a0.c_str());
+    return 0;
+  }, 0);
+}
+static bool Interface_Static_AddDef_o10v0_wrap(Interface_Static& self, std::string a0) {
+  return occ_ts::guarded("Interface_Static.AddDef", [&]() -> bool {
+    return self.AddDef(a0.c_str());
+  }, false);
+}
+static void Interface_Static_SetLabel_o11v0_wrap(Interface_Static& self, std::string a0) {
+  occ_ts::guarded("Interface_Static.SetLabel", [&]() -> int {
+    self.SetLabel(a0.c_str());
+    return 0;
+  }, 0);
+}
+static std::string Interface_Static_Label_o12v0_wrap(const Interface_Static& self) {
+  return occ_ts::guarded("Interface_Static.Label", [&]() -> std::string {
+    return self.Label();
+  }, std::string());
+}
+static void Interface_Static_SetMaxLength_o13v0_wrap(Interface_Static& self, int a0) {
+  occ_ts::guarded("Interface_Static.SetMaxLength", [&]() -> int {
+    self.SetMaxLength(a0);
+    return 0;
+  }, 0);
+}
+static int Interface_Static_MaxLength_o14v0_wrap(const Interface_Static& self) {
+  return occ_ts::guarded("Interface_Static.MaxLength", [&]() -> int {
+    return self.MaxLength();
+  }, 0);
+}
+static void Interface_Static_SetIntegerLimit_o15v0_wrap(Interface_Static& self, bool a0, int a1) {
+  occ_ts::guarded("Interface_Static.SetIntegerLimit", [&]() -> int {
+    self.SetIntegerLimit(a0, a1);
+    return 0;
+  }, 0);
+}
+static void Interface_Static_SetRealLimit_o16v0_wrap(Interface_Static& self, bool a0, double a1) {
+  occ_ts::guarded("Interface_Static.SetRealLimit", [&]() -> int {
+    self.SetRealLimit(a0, a1);
+    return 0;
+  }, 0);
+}
+static void Interface_Static_SetUnitDef_o17v0_wrap(Interface_Static& self, std::string a0) {
+  occ_ts::guarded("Interface_Static.SetUnitDef", [&]() -> int {
+    self.SetUnitDef(a0.c_str());
+    return 0;
+  }, 0);
+}
+static std::string Interface_Static_UnitDef_o18v0_wrap(const Interface_Static& self) {
+  return occ_ts::guarded("Interface_Static.UnitDef", [&]() -> std::string {
+    return self.UnitDef();
+  }, std::string());
+}
+static void Interface_Static_StartEnum_o19v0_wrap(Interface_Static& self, int a0, bool a1) {
+  occ_ts::guarded("Interface_Static.StartEnum", [&]() -> int {
+    self.StartEnum(a0, a1);
+    return 0;
+  }, 0);
+}
+static void Interface_Static_StartEnum_o19v1_wrap(Interface_Static& self, int a0) {
+  occ_ts::guarded("Interface_Static.StartEnum", [&]() -> int {
+    self.StartEnum(a0);
+    return 0;
+  }, 0);
+}
+static void Interface_Static_StartEnum_o19v2_wrap(Interface_Static& self) {
+  occ_ts::guarded("Interface_Static.StartEnum", [&]() -> int {
+    self.StartEnum();
+    return 0;
+  }, 0);
+}
+static void Interface_Static_AddEnum_o20v0_wrap(Interface_Static& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4, std::string a5, std::string a6, std::string a7, std::string a8, std::string a9) {
+  occ_ts::guarded("Interface_Static.AddEnum", [&]() -> int {
+    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str(), a5.c_str(), a6.c_str(), a7.c_str(), a8.c_str(), a9.c_str());
+    return 0;
+  }, 0);
+}
+static void Interface_Static_AddEnum_o20v1_wrap(Interface_Static& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4, std::string a5, std::string a6, std::string a7, std::string a8) {
+  occ_ts::guarded("Interface_Static.AddEnum", [&]() -> int {
+    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str(), a5.c_str(), a6.c_str(), a7.c_str(), a8.c_str());
+    return 0;
+  }, 0);
+}
+static void Interface_Static_AddEnum_o20v2_wrap(Interface_Static& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4, std::string a5, std::string a6, std::string a7) {
+  occ_ts::guarded("Interface_Static.AddEnum", [&]() -> int {
+    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str(), a5.c_str(), a6.c_str(), a7.c_str());
+    return 0;
+  }, 0);
+}
+static void Interface_Static_AddEnum_o20v3_wrap(Interface_Static& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4, std::string a5, std::string a6) {
+  occ_ts::guarded("Interface_Static.AddEnum", [&]() -> int {
+    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str(), a5.c_str(), a6.c_str());
+    return 0;
+  }, 0);
+}
+static void Interface_Static_AddEnum_o20v4_wrap(Interface_Static& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4, std::string a5) {
+  occ_ts::guarded("Interface_Static.AddEnum", [&]() -> int {
+    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str(), a5.c_str());
+    return 0;
+  }, 0);
+}
+static void Interface_Static_AddEnum_o20v5_wrap(Interface_Static& self, std::string a0, std::string a1, std::string a2, std::string a3, std::string a4) {
+  occ_ts::guarded("Interface_Static.AddEnum", [&]() -> int {
+    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str(), a4.c_str());
+    return 0;
+  }, 0);
+}
+static void Interface_Static_AddEnum_o20v6_wrap(Interface_Static& self, std::string a0, std::string a1, std::string a2, std::string a3) {
+  occ_ts::guarded("Interface_Static.AddEnum", [&]() -> int {
+    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str(), a3.c_str());
+    return 0;
+  }, 0);
+}
+static void Interface_Static_AddEnum_o20v7_wrap(Interface_Static& self, std::string a0, std::string a1, std::string a2) {
+  occ_ts::guarded("Interface_Static.AddEnum", [&]() -> int {
+    self.AddEnum(a0.c_str(), a1.c_str(), a2.c_str());
+    return 0;
+  }, 0);
+}
+static void Interface_Static_AddEnum_o20v8_wrap(Interface_Static& self, std::string a0, std::string a1) {
+  occ_ts::guarded("Interface_Static.AddEnum", [&]() -> int {
+    self.AddEnum(a0.c_str(), a1.c_str());
+    return 0;
+  }, 0);
+}
+static void Interface_Static_AddEnum_o20v9_wrap(Interface_Static& self, std::string a0) {
+  occ_ts::guarded("Interface_Static.AddEnum", [&]() -> int {
+    self.AddEnum(a0.c_str());
+    return 0;
+  }, 0);
+}
+static void Interface_Static_AddEnum_o20v10_wrap(Interface_Static& self) {
+  occ_ts::guarded("Interface_Static.AddEnum", [&]() -> int {
+    self.AddEnum();
+    return 0;
+  }, 0);
+}
+static void Interface_Static_AddEnumValue_o21v0_wrap(Interface_Static& self, std::string a0, int a1) {
+  occ_ts::guarded("Interface_Static.AddEnumValue", [&]() -> int {
+    self.AddEnumValue(a0.c_str(), a1);
+    return 0;
+  }, 0);
+}
+static std::string Interface_Static_EnumVal_o22v0_wrap(const Interface_Static& self, int a0) {
+  return occ_ts::guarded("Interface_Static.EnumVal", [&]() -> std::string {
+    return self.EnumVal(a0);
+  }, std::string());
+}
+static int Interface_Static_EnumCase_o23v0_wrap(const Interface_Static& self, std::string a0) {
+  return occ_ts::guarded("Interface_Static.EnumCase", [&]() -> int {
+    return self.EnumCase(a0.c_str());
+  }, 0);
+}
+static bool Interface_Static_HasInterpret_o24v0_wrap(const Interface_Static& self) {
+  return occ_ts::guarded("Interface_Static.HasInterpret", [&]() -> bool {
+    return self.HasInterpret();
+  }, false);
+}
+static std::string Interface_Static_SatisfiesName_o25v0_wrap(const Interface_Static& self) {
+  return occ_ts::guarded("Interface_Static.SatisfiesName", [&]() -> std::string {
+    return self.SatisfiesName();
+  }, std::string());
+}
+static bool Interface_Static_IsSetValue_o26v0_wrap(const Interface_Static& self) {
+  return occ_ts::guarded("Interface_Static.IsSetValue", [&]() -> bool {
+    return self.IsSetValue();
+  }, false);
+}
+static std::string Interface_Static_CStringValue_o27v0_wrap(const Interface_Static& self) {
+  return occ_ts::guarded("Interface_Static.CStringValue", [&]() -> std::string {
+    return self.CStringValue();
+  }, std::string());
+}
+static opencascade::handle<TCollection_HAsciiString>* Interface_Static_HStringValue_o28v0_wrap(const Interface_Static& self) {
+  return occ_ts::guarded("Interface_Static.HStringValue", [&]() -> opencascade::handle<TCollection_HAsciiString>* {
+    return new opencascade::handle<TCollection_HAsciiString>(self.HStringValue());
+  }, (opencascade::handle<TCollection_HAsciiString>*)nullptr);
+}
+static opencascade::handle<TCollection_HAsciiString>* Interface_Static_Interpret_o29v0_wrap(const Interface_Static& self, TCollection_HAsciiString* a0, bool a1) {
+  return occ_ts::guarded("Interface_Static.Interpret", [&]() -> opencascade::handle<TCollection_HAsciiString>* {
+    return new opencascade::handle<TCollection_HAsciiString>(self.Interpret((a0->IncrementRefCounter(), opencascade::handle<TCollection_HAsciiString>(a0)), a1));
+  }, (opencascade::handle<TCollection_HAsciiString>*)nullptr);
+}
+static bool Interface_Static_Satisfies_o30v0_wrap(const Interface_Static& self, TCollection_HAsciiString* a0) {
+  return occ_ts::guarded("Interface_Static.Satisfies", [&]() -> bool {
+    return self.Satisfies((a0->IncrementRefCounter(), opencascade::handle<TCollection_HAsciiString>(a0)));
+  }, false);
+}
+static void Interface_Static_ClearValue_o31v0_wrap(Interface_Static& self) {
+  occ_ts::guarded("Interface_Static.ClearValue", [&]() -> int {
+    self.ClearValue();
+    return 0;
+  }, 0);
+}
+static bool Interface_Static_SetCStringValue_o32v0_wrap(Interface_Static& self, std::string a0) {
+  return occ_ts::guarded("Interface_Static.SetCStringValue", [&]() -> bool {
+    return self.SetCStringValue(a0.c_str());
+  }, false);
+}
+static bool Interface_Static_SetHStringValue_o33v0_wrap(Interface_Static& self, TCollection_HAsciiString* a0) {
+  return occ_ts::guarded("Interface_Static.SetHStringValue", [&]() -> bool {
+    return self.SetHStringValue((a0->IncrementRefCounter(), opencascade::handle<TCollection_HAsciiString>(a0)));
+  }, false);
+}
+static int Interface_Static_IntegerValue_o34v0_wrap(const Interface_Static& self) {
+  return occ_ts::guarded("Interface_Static.IntegerValue", [&]() -> int {
+    return self.IntegerValue();
+  }, 0);
+}
+static bool Interface_Static_SetIntegerValue_o35v0_wrap(Interface_Static& self, int a0) {
+  return occ_ts::guarded("Interface_Static.SetIntegerValue", [&]() -> bool {
+    return self.SetIntegerValue(a0);
+  }, false);
+}
+static double Interface_Static_RealValue_o36v0_wrap(const Interface_Static& self) {
+  return occ_ts::guarded("Interface_Static.RealValue", [&]() -> double {
+    return self.RealValue();
+  }, 0);
+}
+static bool Interface_Static_SetRealValue_o37v0_wrap(Interface_Static& self, double a0) {
+  return occ_ts::guarded("Interface_Static.SetRealValue", [&]() -> bool {
+    return self.SetRealValue(a0);
+  }, false);
+}
+static std::string Interface_Static_ObjectTypeName_o38v0_wrap(const Interface_Static& self) {
+  return occ_ts::guarded("Interface_Static.ObjectTypeName", [&]() -> std::string {
+    return self.ObjectTypeName();
+  }, std::string());
+}
+static int Interface_Static_Type_o39v0_wrap(const Interface_Static& self) {
+  return occ_ts::guarded("Interface_Static.Type", [&]() -> int {
+    return self.Type();
+  }, 0);
+}
+static std::string Interface_Static_Family_o40v0_wrap(const Interface_Static& self) {
+  return occ_ts::guarded("Interface_Static.Family", [&]() -> std::string {
+    return self.Family();
+  }, std::string());
+}
+static void Interface_Static_SetWild_o41v0_wrap(Interface_Static& self, Interface_Static* a0) {
+  occ_ts::guarded("Interface_Static.SetWild", [&]() -> int {
+    self.SetWild((a0->IncrementRefCounter(), opencascade::handle<Interface_Static>(a0)));
+    return 0;
+  }, 0);
+}
+static opencascade::handle<Interface_Static>* Interface_Static_Wild_o42v0_wrap(const Interface_Static& self) {
+  return occ_ts::guarded("Interface_Static.Wild", [&]() -> opencascade::handle<Interface_Static>* {
+    return new opencascade::handle<Interface_Static>(self.Wild());
+  }, (opencascade::handle<Interface_Static>*)nullptr);
+}
+static void Interface_Static_SetUptodate_o43v0_wrap(Interface_Static& self) {
+  occ_ts::guarded("Interface_Static.SetUptodate", [&]() -> int {
+    self.SetUptodate();
+    return 0;
+  }, 0);
+}
+static bool Interface_Static_UpdatedStatus_o44v0_wrap(const Interface_Static& self) {
+  return occ_ts::guarded("Interface_Static.UpdatedStatus", [&]() -> bool {
+    return self.UpdatedStatus();
+  }, false);
+}
+static std::string Interface_Static_get_type_name_o45v0_wrap() {
+  return occ_ts::guarded("Interface_Static.get_type_name", [&]() -> std::string {
+    return Interface_Static::get_type_name();
+  }, std::string());
+}
+static bool Interface_Static_AddLib_o46v0_wrap(MoniTool_TypedValue* a0, std::string a1) {
+  return occ_ts::guarded("Interface_Static.AddLib", [&]() -> bool {
+    return Interface_Static::AddLib((a0->IncrementRefCounter(), opencascade::handle<MoniTool_TypedValue>(a0)), a1.c_str());
+  }, false);
+}
+static bool Interface_Static_AddLib_o46v1_wrap(MoniTool_TypedValue* a0) {
+  return occ_ts::guarded("Interface_Static.AddLib", [&]() -> bool {
+    return Interface_Static::AddLib((a0->IncrementRefCounter(), opencascade::handle<MoniTool_TypedValue>(a0)));
+  }, false);
+}
+static opencascade::handle<MoniTool_TypedValue>* Interface_Static_Lib_o47v0_wrap(std::string a0) {
+  return occ_ts::guarded("Interface_Static.Lib", [&]() -> opencascade::handle<MoniTool_TypedValue>* {
+    return new opencascade::handle<MoniTool_TypedValue>(Interface_Static::Lib(a0.c_str()));
+  }, (opencascade::handle<MoniTool_TypedValue>*)nullptr);
+}
+static opencascade::handle<MoniTool_TypedValue>* Interface_Static_FromLib_o48v0_wrap(std::string a0) {
+  return occ_ts::guarded("Interface_Static.FromLib", [&]() -> opencascade::handle<MoniTool_TypedValue>* {
+    return new opencascade::handle<MoniTool_TypedValue>(Interface_Static::FromLib(a0.c_str()));
+  }, (opencascade::handle<MoniTool_TypedValue>*)nullptr);
+}
+static opencascade::handle<MoniTool_TypedValue>* Interface_Static_StaticValue_o49v0_wrap(std::string a0) {
+  return occ_ts::guarded("Interface_Static.StaticValue", [&]() -> opencascade::handle<MoniTool_TypedValue>* {
+    return new opencascade::handle<MoniTool_TypedValue>(Interface_Static::StaticValue(a0.c_str()));
+  }, (opencascade::handle<MoniTool_TypedValue>*)nullptr);
+}
+static int Interface_Static_ParamTypeToValueType_o51v0_wrap(int a0) {
+  return occ_ts::guarded("Interface_Static.ParamTypeToValueType", [&]() -> int {
+    return Interface_Static::ParamTypeToValueType(static_cast<Interface_ParamType>(a0));
+  }, 0);
+}
+static int Interface_Static_ValueTypeToParamType_o52v0_wrap(int a0) {
+  return occ_ts::guarded("Interface_Static.ValueTypeToParamType", [&]() -> int {
+    return Interface_Static::ValueTypeToParamType(static_cast<MoniTool_ValueType>(a0));
+  }, 0);
+}
+static bool Interface_Static_Init_o54v0_wrap(std::string a0, std::string a1, int a2, std::string a3) {
+  return occ_ts::guarded("Interface_Static.Init", [&]() -> bool {
+    return Interface_Static::Init(a0.c_str(), a1.c_str(), static_cast<Interface_ParamType>(a2), a3.c_str());
+  }, false);
+}
+static bool Interface_Static_Init_o54v1_wrap(std::string a0, std::string a1, int a2) {
+  return occ_ts::guarded("Interface_Static.Init", [&]() -> bool {
+    return Interface_Static::Init(a0.c_str(), a1.c_str(), static_cast<Interface_ParamType>(a2));
+  }, false);
+}
+static opencascade::handle<Interface_Static>* Interface_Static_Static_o56v0_wrap(std::string a0) {
+  return occ_ts::guarded("Interface_Static.Static", [&]() -> opencascade::handle<Interface_Static>* {
+    return new opencascade::handle<Interface_Static>(Interface_Static::Static(a0.c_str()));
+  }, (opencascade::handle<Interface_Static>*)nullptr);
+}
+static bool Interface_Static_IsPresent_o57v0_wrap(std::string a0) {
+  return occ_ts::guarded("Interface_Static.IsPresent", [&]() -> bool {
+    return Interface_Static::IsPresent(a0.c_str());
+  }, false);
+}
+static std::string Interface_Static_CDef_o58v0_wrap(std::string a0, std::string a1) {
+  return occ_ts::guarded("Interface_Static.CDef", [&]() -> std::string {
+    return Interface_Static::CDef(a0.c_str(), a1.c_str());
+  }, std::string());
+}
+static int Interface_Static_IDef_o59v0_wrap(std::string a0, std::string a1) {
+  return occ_ts::guarded("Interface_Static.IDef", [&]() -> int {
+    return Interface_Static::IDef(a0.c_str(), a1.c_str());
+  }, 0);
+}
+static bool Interface_Static_IsSet_o60v0_wrap(std::string a0, bool a1) {
+  return occ_ts::guarded("Interface_Static.IsSet", [&]() -> bool {
+    return Interface_Static::IsSet(a0.c_str(), a1);
+  }, false);
+}
+static bool Interface_Static_IsSet_o60v1_wrap(std::string a0) {
+  return occ_ts::guarded("Interface_Static.IsSet", [&]() -> bool {
+    return Interface_Static::IsSet(a0.c_str());
+  }, false);
+}
+static std::string Interface_Static_CVal_o61v0_wrap(std::string a0) {
+  return occ_ts::guarded("Interface_Static.CVal", [&]() -> std::string {
+    return Interface_Static::CVal(a0.c_str());
+  }, std::string());
+}
+static int Interface_Static_IVal_o62v0_wrap(std::string a0) {
+  return occ_ts::guarded("Interface_Static.IVal", [&]() -> int {
+    return Interface_Static::IVal(a0.c_str());
+  }, 0);
+}
+static double Interface_Static_RVal_o63v0_wrap(std::string a0) {
+  return occ_ts::guarded("Interface_Static.RVal", [&]() -> double {
+    return Interface_Static::RVal(a0.c_str());
+  }, 0);
+}
+static bool Interface_Static_SetCVal_o64v0_wrap(std::string a0, std::string a1) {
+  return occ_ts::guarded("Interface_Static.SetCVal", [&]() -> bool {
+    return Interface_Static::SetCVal(a0.c_str(), a1.c_str());
+  }, false);
+}
+static bool Interface_Static_SetIVal_o65v0_wrap(std::string a0, int a1) {
+  return occ_ts::guarded("Interface_Static.SetIVal", [&]() -> bool {
+    return Interface_Static::SetIVal(a0.c_str(), a1);
+  }, false);
+}
+static bool Interface_Static_SetRVal_o66v0_wrap(std::string a0, double a1) {
+  return occ_ts::guarded("Interface_Static.SetRVal", [&]() -> bool {
+    return Interface_Static::SetRVal(a0.c_str(), a1);
+  }, false);
+}
+static bool Interface_Static_Update_o67v0_wrap(std::string a0) {
+  return occ_ts::guarded("Interface_Static.Update", [&]() -> bool {
+    return Interface_Static::Update(a0.c_str());
+  }, false);
+}
+static bool Interface_Static_IsUpdated_o68v0_wrap(std::string a0) {
+  return occ_ts::guarded("Interface_Static.IsUpdated", [&]() -> bool {
+    return Interface_Static::IsUpdated(a0.c_str());
+  }, false);
+}
+static void Interface_Static_Standards_o69v0_wrap() {
+  occ_ts::guarded("Interface_Static.Standards", [&]() -> int {
+    Interface_Static::Standards();
+    return 0;
+  }, 0);
+}
+static TCollection_AsciiString* TCollection_AsciiString_ctor_c0v0_wrap() {
+  return occ_ts::guarded("TCollection_AsciiString::ctor", [&]() -> TCollection_AsciiString* {
+    return new TCollection_AsciiString();
+  }, (TCollection_AsciiString*)nullptr);
+}
+static TCollection_AsciiString* TCollection_AsciiString_ctor_c1v0_wrap(std::string a0) {
+  return occ_ts::guarded("TCollection_AsciiString::ctor", [&]() -> TCollection_AsciiString* {
+    return new TCollection_AsciiString(a0.c_str());
+  }, (TCollection_AsciiString*)nullptr);
+}
+static TCollection_AsciiString* TCollection_AsciiString_ctor_c2v0_wrap(std::string a0, int a1) {
+  return occ_ts::guarded("TCollection_AsciiString::ctor", [&]() -> TCollection_AsciiString* {
+    return new TCollection_AsciiString(a0.c_str(), a1);
+  }, (TCollection_AsciiString*)nullptr);
+}
+static void TCollection_AsciiString_AssignCat_wrap(TCollection_AsciiString& self, int a0) {
+  occ_ts::guarded("TCollection_AsciiString.AssignCat", [&]() -> int {
+    self.AssignCat(a0);
+    return 0;
+  }, 0);
+}
+static void TCollection_AsciiString_Capitalize_o5v0_wrap(TCollection_AsciiString& self) {
+  occ_ts::guarded("TCollection_AsciiString.Capitalize", [&]() -> int {
+    self.Capitalize();
+    return 0;
+  }, 0);
+}
+static TCollection_AsciiString TCollection_AsciiString_Cat_o6v0_wrap(const TCollection_AsciiString& self, int a0) {
+  return occ_ts::guarded("TCollection_AsciiString.Cat", [&]() -> TCollection_AsciiString {
+    return self.Cat(a0);
+  }, TCollection_AsciiString());
+}
+static void TCollection_AsciiString_Center_o11v0_wrap(TCollection_AsciiString& self, int a0, int a1) {
+  occ_ts::guarded("TCollection_AsciiString.Center", [&]() -> int {
+    self.Center(a0, a1);
+    return 0;
+  }, 0);
+}
+static void TCollection_AsciiString_ChangeAll_o12v0_wrap(TCollection_AsciiString& self, int a0, int a1, bool a2) {
+  occ_ts::guarded("TCollection_AsciiString.ChangeAll", [&]() -> int {
+    self.ChangeAll(a0, a1, a2);
+    return 0;
+  }, 0);
+}
+static void TCollection_AsciiString_ChangeAll_o12v1_wrap(TCollection_AsciiString& self, int a0, int a1) {
+  occ_ts::guarded("TCollection_AsciiString.ChangeAll", [&]() -> int {
+    self.ChangeAll(a0, a1);
+    return 0;
+  }, 0);
+}
+static void TCollection_AsciiString_Clear_o13v0_wrap(TCollection_AsciiString& self) {
+  occ_ts::guarded("TCollection_AsciiString.Clear", [&]() -> int {
+    self.Clear();
+    return 0;
+  }, 0);
+}
+static void TCollection_AsciiString_Copy_o14v0_wrap(TCollection_AsciiString& self, std::string a0) {
+  occ_ts::guarded("TCollection_AsciiString.Copy", [&]() -> int {
+    self.Copy(a0.c_str());
+    return 0;
+  }, 0);
+}
+static void TCollection_AsciiString_Swap_o16v0_wrap(TCollection_AsciiString& self, TCollection_AsciiString& a0) {
+  occ_ts::guarded("TCollection_AsciiString.Swap", [&]() -> int {
+    self.Swap(a0);
+    return 0;
+  }, 0);
+}
+static int TCollection_AsciiString_FirstLocationInSet_o17v0_wrap(const TCollection_AsciiString& self, const TCollection_AsciiString& a0, int a1, int a2) {
+  return occ_ts::guarded("TCollection_AsciiString.FirstLocationInSet", [&]() -> int {
+    return self.FirstLocationInSet(a0, a1, a2);
+  }, 0);
+}
+static int TCollection_AsciiString_FirstLocationNotInSet_o18v0_wrap(const TCollection_AsciiString& self, const TCollection_AsciiString& a0, int a1, int a2) {
+  return occ_ts::guarded("TCollection_AsciiString.FirstLocationNotInSet", [&]() -> int {
+    return self.FirstLocationNotInSet(a0, a1, a2);
+  }, 0);
+}
+static void TCollection_AsciiString_Insert_o19v0_wrap(TCollection_AsciiString& self, int a0, int a1) {
+  occ_ts::guarded("TCollection_AsciiString.Insert", [&]() -> int {
+    self.Insert(a0, a1);
+    return 0;
+  }, 0);
+}
+static void TCollection_AsciiString_InsertAfter_o22v0_wrap(TCollection_AsciiString& self, int a0, const TCollection_AsciiString& a1) {
+  occ_ts::guarded("TCollection_AsciiString.InsertAfter", [&]() -> int {
+    self.InsertAfter(a0, a1);
+    return 0;
+  }, 0);
+}
+static void TCollection_AsciiString_InsertBefore_o23v0_wrap(TCollection_AsciiString& self, int a0, const TCollection_AsciiString& a1) {
+  occ_ts::guarded("TCollection_AsciiString.InsertBefore", [&]() -> int {
+    self.InsertBefore(a0, a1);
+    return 0;
+  }, 0);
+}
+static bool TCollection_AsciiString_IsEmpty_o24v0_wrap(const TCollection_AsciiString& self) {
+  return occ_ts::guarded("TCollection_AsciiString.IsEmpty", [&]() -> bool {
+    return self.IsEmpty();
+  }, false);
+}
+static bool TCollection_AsciiString_IsEqual_o25v0_wrap(const TCollection_AsciiString& self, std::string a0) {
+  return occ_ts::guarded("TCollection_AsciiString.IsEqual", [&]() -> bool {
+    return self.IsEqual(a0.c_str());
+  }, false);
+}
+static bool TCollection_AsciiString_IsDifferent_o27v0_wrap(const TCollection_AsciiString& self, std::string a0) {
+  return occ_ts::guarded("TCollection_AsciiString.IsDifferent", [&]() -> bool {
+    return self.IsDifferent(a0.c_str());
+  }, false);
+}
+static bool TCollection_AsciiString_IsLess_o29v0_wrap(const TCollection_AsciiString& self, std::string a0) {
+  return occ_ts::guarded("TCollection_AsciiString.IsLess", [&]() -> bool {
+    return self.IsLess(a0.c_str());
+  }, false);
+}
+static bool TCollection_AsciiString_IsGreater_o31v0_wrap(const TCollection_AsciiString& self, std::string a0) {
+  return occ_ts::guarded("TCollection_AsciiString.IsGreater", [&]() -> bool {
+    return self.IsGreater(a0.c_str());
+  }, false);
+}
+static bool TCollection_AsciiString_StartsWith_o33v0_wrap(const TCollection_AsciiString& self, const TCollection_AsciiString& a0) {
+  return occ_ts::guarded("TCollection_AsciiString.StartsWith", [&]() -> bool {
+    return self.StartsWith(a0);
+  }, false);
+}
+static bool TCollection_AsciiString_EndsWith_o34v0_wrap(const TCollection_AsciiString& self, const TCollection_AsciiString& a0) {
+  return occ_ts::guarded("TCollection_AsciiString.EndsWith", [&]() -> bool {
+    return self.EndsWith(a0);
+  }, false);
+}
+static int TCollection_AsciiString_IntegerValue_o35v0_wrap(const TCollection_AsciiString& self) {
+  return occ_ts::guarded("TCollection_AsciiString.IntegerValue", [&]() -> int {
+    return self.IntegerValue();
+  }, 0);
+}
+static bool TCollection_AsciiString_IsIntegerValue_o36v0_wrap(const TCollection_AsciiString& self) {
+  return occ_ts::guarded("TCollection_AsciiString.IsIntegerValue", [&]() -> bool {
+    return self.IsIntegerValue();
+  }, false);
+}
+static bool TCollection_AsciiString_IsRealValue_o37v0_wrap(const TCollection_AsciiString& self, bool a0) {
+  return occ_ts::guarded("TCollection_AsciiString.IsRealValue", [&]() -> bool {
+    return self.IsRealValue(a0);
+  }, false);
+}
+static bool TCollection_AsciiString_IsRealValue_o37v1_wrap(const TCollection_AsciiString& self) {
+  return occ_ts::guarded("TCollection_AsciiString.IsRealValue", [&]() -> bool {
+    return self.IsRealValue();
+  }, false);
+}
+static bool TCollection_AsciiString_IsAscii_o38v0_wrap(const TCollection_AsciiString& self) {
+  return occ_ts::guarded("TCollection_AsciiString.IsAscii", [&]() -> bool {
+    return self.IsAscii();
+  }, false);
+}
+static void TCollection_AsciiString_LeftAdjust_o39v0_wrap(TCollection_AsciiString& self) {
+  occ_ts::guarded("TCollection_AsciiString.LeftAdjust", [&]() -> int {
+    self.LeftAdjust();
+    return 0;
+  }, 0);
+}
+static void TCollection_AsciiString_LeftJustify_o40v0_wrap(TCollection_AsciiString& self, int a0, int a1) {
+  occ_ts::guarded("TCollection_AsciiString.LeftJustify", [&]() -> int {
+    self.LeftJustify(a0, a1);
+    return 0;
+  }, 0);
+}
+static int TCollection_AsciiString_Length_o41v0_wrap(const TCollection_AsciiString& self) {
+  return occ_ts::guarded("TCollection_AsciiString.Length", [&]() -> int {
+    return self.Length();
+  }, 0);
+}
+static int TCollection_AsciiString_Location_o42v0_wrap(const TCollection_AsciiString& self, const TCollection_AsciiString& a0, int a1, int a2) {
+  return occ_ts::guarded("TCollection_AsciiString.Location", [&]() -> int {
+    return self.Location(a0, a1, a2);
+  }, 0);
+}
+static int TCollection_AsciiString_Location_o43v0_wrap(const TCollection_AsciiString& self, int a0, int a1, int a2, int a3) {
+  return occ_ts::guarded("TCollection_AsciiString.Location", [&]() -> int {
+    return self.Location(a0, a1, a2, a3);
+  }, 0);
+}
+static void TCollection_AsciiString_LowerCase_o44v0_wrap(TCollection_AsciiString& self) {
+  occ_ts::guarded("TCollection_AsciiString.LowerCase", [&]() -> int {
+    self.LowerCase();
+    return 0;
+  }, 0);
+}
+static void TCollection_AsciiString_Prepend_o45v0_wrap(TCollection_AsciiString& self, const TCollection_AsciiString& a0) {
+  occ_ts::guarded("TCollection_AsciiString.Prepend", [&]() -> int {
+    self.Prepend(a0);
+    return 0;
+  }, 0);
+}
+static double TCollection_AsciiString_RealValue_o46v0_wrap(const TCollection_AsciiString& self) {
+  return occ_ts::guarded("TCollection_AsciiString.RealValue", [&]() -> double {
+    return self.RealValue();
+  }, 0);
+}
+static void TCollection_AsciiString_RemoveAll_o47v0_wrap(TCollection_AsciiString& self, int a0, bool a1) {
+  occ_ts::guarded("TCollection_AsciiString.RemoveAll", [&]() -> int {
+    self.RemoveAll(a0, a1);
+    return 0;
+  }, 0);
+}
+static void TCollection_AsciiString_RemoveAll_o48v0_wrap(TCollection_AsciiString& self, int a0) {
+  occ_ts::guarded("TCollection_AsciiString.RemoveAll", [&]() -> int {
+    self.RemoveAll(a0);
+    return 0;
+  }, 0);
+}
+static void TCollection_AsciiString_Remove_o49v0_wrap(TCollection_AsciiString& self, int a0, int a1) {
+  occ_ts::guarded("TCollection_AsciiString.Remove", [&]() -> int {
+    self.Remove(a0, a1);
+    return 0;
+  }, 0);
+}
+static void TCollection_AsciiString_Remove_o49v1_wrap(TCollection_AsciiString& self, int a0) {
+  occ_ts::guarded("TCollection_AsciiString.Remove", [&]() -> int {
+    self.Remove(a0);
+    return 0;
+  }, 0);
+}
+static void TCollection_AsciiString_RightAdjust_o50v0_wrap(TCollection_AsciiString& self) {
+  occ_ts::guarded("TCollection_AsciiString.RightAdjust", [&]() -> int {
+    self.RightAdjust();
+    return 0;
+  }, 0);
+}
+static void TCollection_AsciiString_RightJustify_o51v0_wrap(TCollection_AsciiString& self, int a0, int a1) {
+  occ_ts::guarded("TCollection_AsciiString.RightJustify", [&]() -> int {
+    self.RightJustify(a0, a1);
+    return 0;
+  }, 0);
+}
+static int TCollection_AsciiString_Search_o52v0_wrap(const TCollection_AsciiString& self, std::string a0) {
+  return occ_ts::guarded("TCollection_AsciiString.Search", [&]() -> int {
+    return self.Search(a0.c_str());
+  }, 0);
+}
+static int TCollection_AsciiString_SearchFromEnd_o54v0_wrap(const TCollection_AsciiString& self, std::string a0) {
+  return occ_ts::guarded("TCollection_AsciiString.SearchFromEnd", [&]() -> int {
+    return self.SearchFromEnd(a0.c_str());
+  }, 0);
+}
+static void TCollection_AsciiString_SetValue_o56v0_wrap(TCollection_AsciiString& self, int a0, int a1) {
+  occ_ts::guarded("TCollection_AsciiString.SetValue", [&]() -> int {
+    self.SetValue(a0, a1);
+    return 0;
+  }, 0);
+}
+static TCollection_AsciiString TCollection_AsciiString_Split_o59v0_wrap(TCollection_AsciiString& self, int a0) {
+  return occ_ts::guarded("TCollection_AsciiString.Split", [&]() -> TCollection_AsciiString {
+    return self.Split(a0);
+  }, TCollection_AsciiString());
+}
+static TCollection_AsciiString TCollection_AsciiString_SubString_o60v0_wrap(const TCollection_AsciiString& self, int a0, int a1) {
+  return occ_ts::guarded("TCollection_AsciiString.SubString", [&]() -> TCollection_AsciiString {
+    return self.SubString(a0, a1);
+  }, TCollection_AsciiString());
+}
+static std::string TCollection_AsciiString_ToCString_o61v0_wrap(const TCollection_AsciiString& self) {
+  return occ_ts::guarded("TCollection_AsciiString.ToCString", [&]() -> std::string {
+    return self.ToCString();
+  }, std::string());
+}
+static TCollection_AsciiString TCollection_AsciiString_Token_o62v0_wrap(const TCollection_AsciiString& self, std::string a0, int a1) {
+  return occ_ts::guarded("TCollection_AsciiString.Token", [&]() -> TCollection_AsciiString {
+    return self.Token(a0.c_str(), a1);
+  }, TCollection_AsciiString());
+}
+static TCollection_AsciiString TCollection_AsciiString_Token_o62v1_wrap(const TCollection_AsciiString& self, std::string a0) {
+  return occ_ts::guarded("TCollection_AsciiString.Token", [&]() -> TCollection_AsciiString {
+    return self.Token(a0.c_str());
+  }, TCollection_AsciiString());
+}
+static TCollection_AsciiString TCollection_AsciiString_Token_o62v2_wrap(const TCollection_AsciiString& self) {
+  return occ_ts::guarded("TCollection_AsciiString.Token", [&]() -> TCollection_AsciiString {
+    return self.Token();
+  }, TCollection_AsciiString());
+}
+static void TCollection_AsciiString_Trunc_o63v0_wrap(TCollection_AsciiString& self, int a0) {
+  occ_ts::guarded("TCollection_AsciiString.Trunc", [&]() -> int {
+    self.Trunc(a0);
+    return 0;
+  }, 0);
+}
+static void TCollection_AsciiString_UpperCase_o64v0_wrap(TCollection_AsciiString& self) {
+  occ_ts::guarded("TCollection_AsciiString.UpperCase", [&]() -> int {
+    self.UpperCase();
+    return 0;
+  }, 0);
+}
+static int TCollection_AsciiString_UsefullLength_o65v0_wrap(const TCollection_AsciiString& self) {
+  return occ_ts::guarded("TCollection_AsciiString.UsefullLength", [&]() -> int {
+    return self.UsefullLength();
+  }, 0);
+}
+static int TCollection_AsciiString_Value_o66v0_wrap(const TCollection_AsciiString& self, int a0) {
+  return occ_ts::guarded("TCollection_AsciiString.Value", [&]() -> int {
+    return self.Value(a0);
+  }, 0);
+}
+static int TCollection_AsciiString_HashCode_o67v0_wrap(const TCollection_AsciiString& self) {
+  return occ_ts::guarded("TCollection_AsciiString.HashCode", [&]() -> int {
+    return self.HashCode();
+  }, 0);
+}
+static bool TCollection_AsciiString_IsEqual_o68v0_wrap(const TCollection_AsciiString& a0, const TCollection_AsciiString& a1) {
+  return occ_ts::guarded("TCollection_AsciiString.IsEqual", [&]() -> bool {
+    return TCollection_AsciiString::IsEqual(a0, a1);
+  }, false);
+}
+static bool TCollection_AsciiString_IsSameString_o70v0_wrap(const TCollection_AsciiString& a0, const TCollection_AsciiString& a1, bool a2) {
+  return occ_ts::guarded("TCollection_AsciiString.IsSameString", [&]() -> bool {
+    return TCollection_AsciiString::IsSameString(a0, a1, a2);
+  }, false);
+}
+static TCollection_HAsciiString* TCollection_HAsciiString_ctor_c0v0_wrap() {
+  return occ_ts::guarded("TCollection_HAsciiString::ctor", [&]() -> TCollection_HAsciiString* {
+    return new TCollection_HAsciiString();
+  }, (TCollection_HAsciiString*)nullptr);
+}
+static TCollection_HAsciiString* TCollection_HAsciiString_ctor_c1v0_wrap(std::string a0) {
+  return occ_ts::guarded("TCollection_HAsciiString::ctor", [&]() -> TCollection_HAsciiString* {
+    return new TCollection_HAsciiString(a0.c_str());
+  }, (TCollection_HAsciiString*)nullptr);
+}
+static TCollection_HAsciiString* TCollection_HAsciiString_ctor_c3v0_wrap(int a0, int a1) {
+  return occ_ts::guarded("TCollection_HAsciiString::ctor", [&]() -> TCollection_HAsciiString* {
+    return new TCollection_HAsciiString(a0, a1);
+  }, (TCollection_HAsciiString*)nullptr);
+}
+static bool TCollection_HAsciiString_IsInstance_wrap(const TCollection_HAsciiString& self, std::string a0) {
+  return occ_ts::guarded("TCollection_HAsciiString.IsInstance", [&]() -> bool {
+    return self.IsInstance(a0.c_str());
+  }, false);
+}
+static bool TCollection_HAsciiString_IsKind_o1v0_wrap(const TCollection_HAsciiString& self, std::string a0) {
+  return occ_ts::guarded("TCollection_HAsciiString.IsKind", [&]() -> bool {
+    return self.IsKind(a0.c_str());
+  }, false);
+}
+static int TCollection_HAsciiString_GetRefCount_o2v0_wrap(const TCollection_HAsciiString& self) {
+  return occ_ts::guarded("TCollection_HAsciiString.GetRefCount", [&]() -> int {
+    return self.GetRefCount();
+  }, 0);
+}
+static void TCollection_HAsciiString_IncrementRefCounter_o3v0_wrap(TCollection_HAsciiString& self) {
+  occ_ts::guarded("TCollection_HAsciiString.IncrementRefCounter", [&]() -> int {
+    self.IncrementRefCounter();
+    return 0;
+  }, 0);
+}
+static int TCollection_HAsciiString_DecrementRefCounter_o4v0_wrap(TCollection_HAsciiString& self) {
+  return occ_ts::guarded("TCollection_HAsciiString.DecrementRefCounter", [&]() -> int {
+    return self.DecrementRefCounter();
+  }, 0);
+}
+static void TCollection_HAsciiString_Delete_o5v0_wrap(const TCollection_HAsciiString& self) {
+  occ_ts::guarded("TCollection_HAsciiString.Delete", [&]() -> int {
+    self.Delete();
+    return 0;
+  }, 0);
+}
+static void TCollection_HAsciiString_AssignCat_o6v0_wrap(TCollection_HAsciiString& self, std::string a0) {
+  occ_ts::guarded("TCollection_HAsciiString.AssignCat", [&]() -> int {
+    self.AssignCat(a0.c_str());
+    return 0;
+  }, 0);
+}
+static void TCollection_HAsciiString_Capitalize_o8v0_wrap(TCollection_HAsciiString& self) {
+  occ_ts::guarded("TCollection_HAsciiString.Capitalize", [&]() -> int {
+    self.Capitalize();
+    return 0;
+  }, 0);
+}
+static opencascade::handle<TCollection_HAsciiString>* TCollection_HAsciiString_Cat_o9v0_wrap(const TCollection_HAsciiString& self, std::string a0) {
+  return occ_ts::guarded("TCollection_HAsciiString.Cat", [&]() -> opencascade::handle<TCollection_HAsciiString>* {
+    return new opencascade::handle<TCollection_HAsciiString>(self.Cat(a0.c_str()));
+  }, (opencascade::handle<TCollection_HAsciiString>*)nullptr);
+}
+static void TCollection_HAsciiString_Center_o11v0_wrap(TCollection_HAsciiString& self, int a0, int a1) {
+  occ_ts::guarded("TCollection_HAsciiString.Center", [&]() -> int {
+    self.Center(a0, a1);
+    return 0;
+  }, 0);
+}
+static void TCollection_HAsciiString_ChangeAll_o12v0_wrap(TCollection_HAsciiString& self, int a0, int a1, bool a2) {
+  occ_ts::guarded("TCollection_HAsciiString.ChangeAll", [&]() -> int {
+    self.ChangeAll(a0, a1, a2);
+    return 0;
+  }, 0);
+}
+static void TCollection_HAsciiString_ChangeAll_o12v1_wrap(TCollection_HAsciiString& self, int a0, int a1) {
+  occ_ts::guarded("TCollection_HAsciiString.ChangeAll", [&]() -> int {
+    self.ChangeAll(a0, a1);
+    return 0;
+  }, 0);
+}
+static void TCollection_HAsciiString_Clear_o13v0_wrap(TCollection_HAsciiString& self) {
+  occ_ts::guarded("TCollection_HAsciiString.Clear", [&]() -> int {
+    self.Clear();
+    return 0;
+  }, 0);
+}
+static int TCollection_HAsciiString_FirstLocationInSet_o14v0_wrap(const TCollection_HAsciiString& self, TCollection_HAsciiString* a0, int a1, int a2) {
+  return occ_ts::guarded("TCollection_HAsciiString.FirstLocationInSet", [&]() -> int {
+    return self.FirstLocationInSet((a0->IncrementRefCounter(), opencascade::handle<TCollection_HAsciiString>(a0)), a1, a2);
+  }, 0);
+}
+static int TCollection_HAsciiString_FirstLocationNotInSet_o15v0_wrap(const TCollection_HAsciiString& self, TCollection_HAsciiString* a0, int a1, int a2) {
+  return occ_ts::guarded("TCollection_HAsciiString.FirstLocationNotInSet", [&]() -> int {
+    return self.FirstLocationNotInSet((a0->IncrementRefCounter(), opencascade::handle<TCollection_HAsciiString>(a0)), a1, a2);
+  }, 0);
+}
+static void TCollection_HAsciiString_Insert_o16v0_wrap(TCollection_HAsciiString& self, int a0, int a1) {
+  occ_ts::guarded("TCollection_HAsciiString.Insert", [&]() -> int {
+    self.Insert(a0, a1);
+    return 0;
+  }, 0);
+}
+static void TCollection_HAsciiString_InsertAfter_o19v0_wrap(TCollection_HAsciiString& self, int a0, TCollection_HAsciiString* a1) {
+  occ_ts::guarded("TCollection_HAsciiString.InsertAfter", [&]() -> int {
+    self.InsertAfter(a0, (a1->IncrementRefCounter(), opencascade::handle<TCollection_HAsciiString>(a1)));
+    return 0;
+  }, 0);
+}
+static void TCollection_HAsciiString_InsertBefore_o20v0_wrap(TCollection_HAsciiString& self, int a0, TCollection_HAsciiString* a1) {
+  occ_ts::guarded("TCollection_HAsciiString.InsertBefore", [&]() -> int {
+    self.InsertBefore(a0, (a1->IncrementRefCounter(), opencascade::handle<TCollection_HAsciiString>(a1)));
+    return 0;
+  }, 0);
+}
+static bool TCollection_HAsciiString_IsEmpty_o21v0_wrap(const TCollection_HAsciiString& self) {
+  return occ_ts::guarded("TCollection_HAsciiString.IsEmpty", [&]() -> bool {
+    return self.IsEmpty();
+  }, false);
+}
+static bool TCollection_HAsciiString_IsLess_o22v0_wrap(const TCollection_HAsciiString& self, TCollection_HAsciiString* a0) {
+  return occ_ts::guarded("TCollection_HAsciiString.IsLess", [&]() -> bool {
+    return self.IsLess((a0->IncrementRefCounter(), opencascade::handle<TCollection_HAsciiString>(a0)));
+  }, false);
+}
+static bool TCollection_HAsciiString_IsGreater_o23v0_wrap(const TCollection_HAsciiString& self, TCollection_HAsciiString* a0) {
+  return occ_ts::guarded("TCollection_HAsciiString.IsGreater", [&]() -> bool {
+    return self.IsGreater((a0->IncrementRefCounter(), opencascade::handle<TCollection_HAsciiString>(a0)));
+  }, false);
+}
+static int TCollection_HAsciiString_IntegerValue_o24v0_wrap(const TCollection_HAsciiString& self) {
+  return occ_ts::guarded("TCollection_HAsciiString.IntegerValue", [&]() -> int {
+    return self.IntegerValue();
+  }, 0);
+}
+static bool TCollection_HAsciiString_IsIntegerValue_o25v0_wrap(const TCollection_HAsciiString& self) {
+  return occ_ts::guarded("TCollection_HAsciiString.IsIntegerValue", [&]() -> bool {
+    return self.IsIntegerValue();
+  }, false);
+}
+static bool TCollection_HAsciiString_IsRealValue_o26v0_wrap(const TCollection_HAsciiString& self) {
+  return occ_ts::guarded("TCollection_HAsciiString.IsRealValue", [&]() -> bool {
+    return self.IsRealValue();
+  }, false);
+}
+static bool TCollection_HAsciiString_IsAscii_o27v0_wrap(const TCollection_HAsciiString& self) {
+  return occ_ts::guarded("TCollection_HAsciiString.IsAscii", [&]() -> bool {
+    return self.IsAscii();
+  }, false);
+}
+static bool TCollection_HAsciiString_IsDifferent_o28v0_wrap(const TCollection_HAsciiString& self, TCollection_HAsciiString* a0) {
+  return occ_ts::guarded("TCollection_HAsciiString.IsDifferent", [&]() -> bool {
+    return self.IsDifferent((a0->IncrementRefCounter(), opencascade::handle<TCollection_HAsciiString>(a0)));
+  }, false);
+}
+static bool TCollection_HAsciiString_IsSameString_o29v0_wrap(const TCollection_HAsciiString& self, TCollection_HAsciiString* a0) {
+  return occ_ts::guarded("TCollection_HAsciiString.IsSameString", [&]() -> bool {
+    return self.IsSameString((a0->IncrementRefCounter(), opencascade::handle<TCollection_HAsciiString>(a0)));
+  }, false);
+}
+static bool TCollection_HAsciiString_IsSameString_o30v0_wrap(const TCollection_HAsciiString& self, TCollection_HAsciiString* a0, bool a1) {
+  return occ_ts::guarded("TCollection_HAsciiString.IsSameString", [&]() -> bool {
+    return self.IsSameString((a0->IncrementRefCounter(), opencascade::handle<TCollection_HAsciiString>(a0)), a1);
+  }, false);
+}
+static void TCollection_HAsciiString_LeftAdjust_o31v0_wrap(TCollection_HAsciiString& self) {
+  occ_ts::guarded("TCollection_HAsciiString.LeftAdjust", [&]() -> int {
+    self.LeftAdjust();
+    return 0;
+  }, 0);
+}
+static void TCollection_HAsciiString_LeftJustify_o32v0_wrap(TCollection_HAsciiString& self, int a0, int a1) {
+  occ_ts::guarded("TCollection_HAsciiString.LeftJustify", [&]() -> int {
+    self.LeftJustify(a0, a1);
+    return 0;
+  }, 0);
+}
+static int TCollection_HAsciiString_Length_o33v0_wrap(const TCollection_HAsciiString& self) {
+  return occ_ts::guarded("TCollection_HAsciiString.Length", [&]() -> int {
+    return self.Length();
+  }, 0);
+}
+static int TCollection_HAsciiString_Location_o34v0_wrap(const TCollection_HAsciiString& self, TCollection_HAsciiString* a0, int a1, int a2) {
+  return occ_ts::guarded("TCollection_HAsciiString.Location", [&]() -> int {
+    return self.Location((a0->IncrementRefCounter(), opencascade::handle<TCollection_HAsciiString>(a0)), a1, a2);
+  }, 0);
+}
+static int TCollection_HAsciiString_Location_o35v0_wrap(const TCollection_HAsciiString& self, int a0, int a1, int a2, int a3) {
+  return occ_ts::guarded("TCollection_HAsciiString.Location", [&]() -> int {
+    return self.Location(a0, a1, a2, a3);
+  }, 0);
+}
+static void TCollection_HAsciiString_LowerCase_o36v0_wrap(TCollection_HAsciiString& self) {
+  occ_ts::guarded("TCollection_HAsciiString.LowerCase", [&]() -> int {
+    self.LowerCase();
+    return 0;
+  }, 0);
+}
+static void TCollection_HAsciiString_Prepend_o37v0_wrap(TCollection_HAsciiString& self, TCollection_HAsciiString* a0) {
+  occ_ts::guarded("TCollection_HAsciiString.Prepend", [&]() -> int {
+    self.Prepend((a0->IncrementRefCounter(), opencascade::handle<TCollection_HAsciiString>(a0)));
+    return 0;
+  }, 0);
+}
+static double TCollection_HAsciiString_RealValue_o38v0_wrap(const TCollection_HAsciiString& self) {
+  return occ_ts::guarded("TCollection_HAsciiString.RealValue", [&]() -> double {
+    return self.RealValue();
+  }, 0);
+}
+static void TCollection_HAsciiString_RemoveAll_o39v0_wrap(TCollection_HAsciiString& self, int a0, bool a1) {
+  occ_ts::guarded("TCollection_HAsciiString.RemoveAll", [&]() -> int {
+    self.RemoveAll(a0, a1);
+    return 0;
+  }, 0);
+}
+static void TCollection_HAsciiString_RemoveAll_o40v0_wrap(TCollection_HAsciiString& self, int a0) {
+  occ_ts::guarded("TCollection_HAsciiString.RemoveAll", [&]() -> int {
+    self.RemoveAll(a0);
+    return 0;
+  }, 0);
+}
+static void TCollection_HAsciiString_Remove_o41v0_wrap(TCollection_HAsciiString& self, int a0, int a1) {
+  occ_ts::guarded("TCollection_HAsciiString.Remove", [&]() -> int {
+    self.Remove(a0, a1);
+    return 0;
+  }, 0);
+}
+static void TCollection_HAsciiString_Remove_o41v1_wrap(TCollection_HAsciiString& self, int a0) {
+  occ_ts::guarded("TCollection_HAsciiString.Remove", [&]() -> int {
+    self.Remove(a0);
+    return 0;
+  }, 0);
+}
+static void TCollection_HAsciiString_RightAdjust_o42v0_wrap(TCollection_HAsciiString& self) {
+  occ_ts::guarded("TCollection_HAsciiString.RightAdjust", [&]() -> int {
+    self.RightAdjust();
+    return 0;
+  }, 0);
+}
+static void TCollection_HAsciiString_RightJustify_o43v0_wrap(TCollection_HAsciiString& self, int a0, int a1) {
+  occ_ts::guarded("TCollection_HAsciiString.RightJustify", [&]() -> int {
+    self.RightJustify(a0, a1);
+    return 0;
+  }, 0);
+}
+static int TCollection_HAsciiString_Search_o44v0_wrap(const TCollection_HAsciiString& self, std::string a0) {
+  return occ_ts::guarded("TCollection_HAsciiString.Search", [&]() -> int {
+    return self.Search(a0.c_str());
+  }, 0);
+}
+static int TCollection_HAsciiString_SearchFromEnd_o46v0_wrap(const TCollection_HAsciiString& self, std::string a0) {
+  return occ_ts::guarded("TCollection_HAsciiString.SearchFromEnd", [&]() -> int {
+    return self.SearchFromEnd(a0.c_str());
+  }, 0);
+}
+static void TCollection_HAsciiString_SetValue_o48v0_wrap(TCollection_HAsciiString& self, int a0, int a1) {
+  occ_ts::guarded("TCollection_HAsciiString.SetValue", [&]() -> int {
+    self.SetValue(a0, a1);
+    return 0;
+  }, 0);
+}
+static opencascade::handle<TCollection_HAsciiString>* TCollection_HAsciiString_Split_o51v0_wrap(TCollection_HAsciiString& self, int a0) {
+  return occ_ts::guarded("TCollection_HAsciiString.Split", [&]() -> opencascade::handle<TCollection_HAsciiString>* {
+    return new opencascade::handle<TCollection_HAsciiString>(self.Split(a0));
+  }, (opencascade::handle<TCollection_HAsciiString>*)nullptr);
+}
+static opencascade::handle<TCollection_HAsciiString>* TCollection_HAsciiString_SubString_o52v0_wrap(const TCollection_HAsciiString& self, int a0, int a1) {
+  return occ_ts::guarded("TCollection_HAsciiString.SubString", [&]() -> opencascade::handle<TCollection_HAsciiString>* {
+    return new opencascade::handle<TCollection_HAsciiString>(self.SubString(a0, a1));
+  }, (opencascade::handle<TCollection_HAsciiString>*)nullptr);
+}
+static std::string TCollection_HAsciiString_ToCString_o53v0_wrap(const TCollection_HAsciiString& self) {
+  return occ_ts::guarded("TCollection_HAsciiString.ToCString", [&]() -> std::string {
+    return self.ToCString();
+  }, std::string());
+}
+static opencascade::handle<TCollection_HAsciiString>* TCollection_HAsciiString_Token_o54v0_wrap(const TCollection_HAsciiString& self, std::string a0, int a1) {
+  return occ_ts::guarded("TCollection_HAsciiString.Token", [&]() -> opencascade::handle<TCollection_HAsciiString>* {
+    return new opencascade::handle<TCollection_HAsciiString>(self.Token(a0.c_str(), a1));
+  }, (opencascade::handle<TCollection_HAsciiString>*)nullptr);
+}
+static opencascade::handle<TCollection_HAsciiString>* TCollection_HAsciiString_Token_o54v1_wrap(const TCollection_HAsciiString& self, std::string a0) {
+  return occ_ts::guarded("TCollection_HAsciiString.Token", [&]() -> opencascade::handle<TCollection_HAsciiString>* {
+    return new opencascade::handle<TCollection_HAsciiString>(self.Token(a0.c_str()));
+  }, (opencascade::handle<TCollection_HAsciiString>*)nullptr);
+}
+static opencascade::handle<TCollection_HAsciiString>* TCollection_HAsciiString_Token_o54v2_wrap(const TCollection_HAsciiString& self) {
+  return occ_ts::guarded("TCollection_HAsciiString.Token", [&]() -> opencascade::handle<TCollection_HAsciiString>* {
+    return new opencascade::handle<TCollection_HAsciiString>(self.Token());
+  }, (opencascade::handle<TCollection_HAsciiString>*)nullptr);
+}
+static void TCollection_HAsciiString_Trunc_o55v0_wrap(TCollection_HAsciiString& self, int a0) {
+  occ_ts::guarded("TCollection_HAsciiString.Trunc", [&]() -> int {
+    self.Trunc(a0);
+    return 0;
+  }, 0);
+}
+static void TCollection_HAsciiString_UpperCase_o56v0_wrap(TCollection_HAsciiString& self) {
+  occ_ts::guarded("TCollection_HAsciiString.UpperCase", [&]() -> int {
+    self.UpperCase();
+    return 0;
+  }, 0);
+}
+static int TCollection_HAsciiString_UsefullLength_o57v0_wrap(const TCollection_HAsciiString& self) {
+  return occ_ts::guarded("TCollection_HAsciiString.UsefullLength", [&]() -> int {
+    return self.UsefullLength();
+  }, 0);
+}
+static int TCollection_HAsciiString_Value_o58v0_wrap(const TCollection_HAsciiString& self, int a0) {
+  return occ_ts::guarded("TCollection_HAsciiString.Value", [&]() -> int {
+    return self.Value(a0);
+  }, 0);
+}
+static TCollection_AsciiString TCollection_HAsciiString_String_o59v0_wrap(const TCollection_HAsciiString& self) {
+  return occ_ts::guarded("TCollection_HAsciiString.String", [&]() -> TCollection_AsciiString {
+    return self.String();
+  }, TCollection_AsciiString());
+}
+static bool TCollection_HAsciiString_IsSameState_o60v0_wrap(const TCollection_HAsciiString& self, TCollection_HAsciiString* a0) {
+  return occ_ts::guarded("TCollection_HAsciiString.IsSameState", [&]() -> bool {
+    return self.IsSameState((a0->IncrementRefCounter(), opencascade::handle<TCollection_HAsciiString>(a0)));
+  }, false);
+}
+static std::string TCollection_HAsciiString_get_type_name_o61v0_wrap() {
+  return occ_ts::guarded("TCollection_HAsciiString.get_type_name", [&]() -> std::string {
+    return TCollection_HAsciiString::get_type_name();
+  }, std::string());
+}
+static STEPCAFControl_Reader* STEPCAFControl_Reader_ctor_c0v0_wrap() {
+  return occ_ts::guarded("STEPCAFControl_Reader::ctor", [&]() -> STEPCAFControl_Reader* {
+    return new STEPCAFControl_Reader();
+  }, (STEPCAFControl_Reader*)nullptr);
+}
+static int STEPCAFControl_Reader_ReadFile_wrap(STEPCAFControl_Reader& self, std::string a0) {
+  return occ_ts::guarded("STEPCAFControl_Reader.ReadFile", [&]() -> int {
+    return self.ReadFile(a0.c_str());
+  }, 0);
+}
+static int STEPCAFControl_Reader_ReadFile_o1v0_wrap(STEPCAFControl_Reader& self, std::string a0, const DESTEP_Parameters& a1) {
+  return occ_ts::guarded("STEPCAFControl_Reader.ReadFile", [&]() -> int {
+    return self.ReadFile(a0.c_str(), a1);
+  }, 0);
+}
+static int STEPCAFControl_Reader_NbRootsForTransfer_o2v0_wrap(STEPCAFControl_Reader& self) {
+  return occ_ts::guarded("STEPCAFControl_Reader.NbRootsForTransfer", [&]() -> int {
+    return self.NbRootsForTransfer();
+  }, 0);
+}
+static bool STEPCAFControl_Reader_TransferOneRoot_o3v0_wrap(STEPCAFControl_Reader& self, int a0, TDocStd_Document* a1, const Message_ProgressRange& a2) {
+  return occ_ts::guarded("STEPCAFControl_Reader.TransferOneRoot", [&]() -> bool {
+    return self.TransferOneRoot(a0, (a1->IncrementRefCounter(), opencascade::handle<TDocStd_Document>(a1)), a2);
+  }, false);
+}
+static bool STEPCAFControl_Reader_TransferOneRoot_o3v1_wrap(STEPCAFControl_Reader& self, int a0, TDocStd_Document* a1) {
+  return occ_ts::guarded("STEPCAFControl_Reader.TransferOneRoot", [&]() -> bool {
+    return self.TransferOneRoot(a0, (a1->IncrementRefCounter(), opencascade::handle<TDocStd_Document>(a1)));
+  }, false);
+}
+static bool STEPCAFControl_Reader_Transfer_o4v0_wrap(STEPCAFControl_Reader& self, TDocStd_Document* a0, const Message_ProgressRange& a1) {
+  return occ_ts::guarded("STEPCAFControl_Reader.Transfer", [&]() -> bool {
+    return self.Transfer((a0->IncrementRefCounter(), opencascade::handle<TDocStd_Document>(a0)), a1);
+  }, false);
+}
+static bool STEPCAFControl_Reader_Transfer_o4v1_wrap(STEPCAFControl_Reader& self, TDocStd_Document* a0) {
+  return occ_ts::guarded("STEPCAFControl_Reader.Transfer", [&]() -> bool {
+    return self.Transfer((a0->IncrementRefCounter(), opencascade::handle<TDocStd_Document>(a0)));
+  }, false);
+}
+static bool STEPCAFControl_Reader_Perform_o5v0_wrap(STEPCAFControl_Reader& self, const TCollection_AsciiString& a0, TDocStd_Document* a1, const Message_ProgressRange& a2) {
+  return occ_ts::guarded("STEPCAFControl_Reader.Perform", [&]() -> bool {
+    return self.Perform(a0, (a1->IncrementRefCounter(), opencascade::handle<TDocStd_Document>(a1)), a2);
+  }, false);
+}
+static bool STEPCAFControl_Reader_Perform_o5v1_wrap(STEPCAFControl_Reader& self, const TCollection_AsciiString& a0, TDocStd_Document* a1) {
+  return occ_ts::guarded("STEPCAFControl_Reader.Perform", [&]() -> bool {
+    return self.Perform(a0, (a1->IncrementRefCounter(), opencascade::handle<TDocStd_Document>(a1)));
+  }, false);
+}
+static bool STEPCAFControl_Reader_Perform_o6v0_wrap(STEPCAFControl_Reader& self, const TCollection_AsciiString& a0, TDocStd_Document* a1, const DESTEP_Parameters& a2, const Message_ProgressRange& a3) {
+  return occ_ts::guarded("STEPCAFControl_Reader.Perform", [&]() -> bool {
+    return self.Perform(a0, (a1->IncrementRefCounter(), opencascade::handle<TDocStd_Document>(a1)), a2, a3);
+  }, false);
+}
+static STEPControl_Reader STEPCAFControl_Reader_ChangeReader_o9v0_wrap(STEPCAFControl_Reader& self) {
+  return occ_ts::guarded("STEPCAFControl_Reader.ChangeReader", [&]() -> STEPControl_Reader {
+    return self.ChangeReader();
+  }, STEPControl_Reader());
+}
+static STEPControl_Reader STEPCAFControl_Reader_Reader_o10v0_wrap(const STEPCAFControl_Reader& self) {
+  return occ_ts::guarded("STEPCAFControl_Reader.Reader", [&]() -> STEPControl_Reader {
+    return self.Reader();
+  }, STEPControl_Reader());
+}
+static void STEPCAFControl_Reader_SetColorMode_o11v0_wrap(STEPCAFControl_Reader& self, bool a0) {
+  occ_ts::guarded("STEPCAFControl_Reader.SetColorMode", [&]() -> int {
+    self.SetColorMode(a0);
+    return 0;
+  }, 0);
+}
+static bool STEPCAFControl_Reader_GetColorMode_o12v0_wrap(const STEPCAFControl_Reader& self) {
+  return occ_ts::guarded("STEPCAFControl_Reader.GetColorMode", [&]() -> bool {
+    return self.GetColorMode();
+  }, false);
+}
+static void STEPCAFControl_Reader_SetNameMode_o13v0_wrap(STEPCAFControl_Reader& self, bool a0) {
+  occ_ts::guarded("STEPCAFControl_Reader.SetNameMode", [&]() -> int {
+    self.SetNameMode(a0);
+    return 0;
+  }, 0);
+}
+static bool STEPCAFControl_Reader_GetNameMode_o14v0_wrap(const STEPCAFControl_Reader& self) {
+  return occ_ts::guarded("STEPCAFControl_Reader.GetNameMode", [&]() -> bool {
+    return self.GetNameMode();
+  }, false);
+}
+static void STEPCAFControl_Reader_SetLayerMode_o15v0_wrap(STEPCAFControl_Reader& self, bool a0) {
+  occ_ts::guarded("STEPCAFControl_Reader.SetLayerMode", [&]() -> int {
+    self.SetLayerMode(a0);
+    return 0;
+  }, 0);
+}
+static bool STEPCAFControl_Reader_GetLayerMode_o16v0_wrap(const STEPCAFControl_Reader& self) {
+  return occ_ts::guarded("STEPCAFControl_Reader.GetLayerMode", [&]() -> bool {
+    return self.GetLayerMode();
+  }, false);
+}
+static void STEPCAFControl_Reader_SetPropsMode_o17v0_wrap(STEPCAFControl_Reader& self, bool a0) {
+  occ_ts::guarded("STEPCAFControl_Reader.SetPropsMode", [&]() -> int {
+    self.SetPropsMode(a0);
+    return 0;
+  }, 0);
+}
+static bool STEPCAFControl_Reader_GetPropsMode_o18v0_wrap(const STEPCAFControl_Reader& self) {
+  return occ_ts::guarded("STEPCAFControl_Reader.GetPropsMode", [&]() -> bool {
+    return self.GetPropsMode();
+  }, false);
+}
+static void STEPCAFControl_Reader_SetMetaMode_o19v0_wrap(STEPCAFControl_Reader& self, bool a0) {
+  occ_ts::guarded("STEPCAFControl_Reader.SetMetaMode", [&]() -> int {
+    self.SetMetaMode(a0);
+    return 0;
+  }, 0);
+}
+static bool STEPCAFControl_Reader_GetMetaMode_o20v0_wrap(const STEPCAFControl_Reader& self) {
+  return occ_ts::guarded("STEPCAFControl_Reader.GetMetaMode", [&]() -> bool {
+    return self.GetMetaMode();
+  }, false);
+}
+static void STEPCAFControl_Reader_SetProductMetaMode_o21v0_wrap(STEPCAFControl_Reader& self, bool a0) {
+  occ_ts::guarded("STEPCAFControl_Reader.SetProductMetaMode", [&]() -> int {
+    self.SetProductMetaMode(a0);
+    return 0;
+  }, 0);
+}
+static bool STEPCAFControl_Reader_GetProductMetaMode_o22v0_wrap(const STEPCAFControl_Reader& self) {
+  return occ_ts::guarded("STEPCAFControl_Reader.GetProductMetaMode", [&]() -> bool {
+    return self.GetProductMetaMode();
+  }, false);
+}
+static void STEPCAFControl_Reader_SetSHUOMode_o23v0_wrap(STEPCAFControl_Reader& self, bool a0) {
+  occ_ts::guarded("STEPCAFControl_Reader.SetSHUOMode", [&]() -> int {
+    self.SetSHUOMode(a0);
+    return 0;
+  }, 0);
+}
+static bool STEPCAFControl_Reader_GetSHUOMode_o24v0_wrap(const STEPCAFControl_Reader& self) {
+  return occ_ts::guarded("STEPCAFControl_Reader.GetSHUOMode", [&]() -> bool {
+    return self.GetSHUOMode();
+  }, false);
+}
+static void STEPCAFControl_Reader_SetGDTMode_o25v0_wrap(STEPCAFControl_Reader& self, bool a0) {
+  occ_ts::guarded("STEPCAFControl_Reader.SetGDTMode", [&]() -> int {
+    self.SetGDTMode(a0);
+    return 0;
+  }, 0);
+}
+static bool STEPCAFControl_Reader_GetGDTMode_o26v0_wrap(const STEPCAFControl_Reader& self) {
+  return occ_ts::guarded("STEPCAFControl_Reader.GetGDTMode", [&]() -> bool {
+    return self.GetGDTMode();
+  }, false);
+}
+static void STEPCAFControl_Reader_SetMatMode_o27v0_wrap(STEPCAFControl_Reader& self, bool a0) {
+  occ_ts::guarded("STEPCAFControl_Reader.SetMatMode", [&]() -> int {
+    self.SetMatMode(a0);
+    return 0;
+  }, 0);
+}
+static bool STEPCAFControl_Reader_GetMatMode_o28v0_wrap(const STEPCAFControl_Reader& self) {
+  return occ_ts::guarded("STEPCAFControl_Reader.GetMatMode", [&]() -> bool {
+    return self.GetMatMode();
+  }, false);
+}
+static void STEPCAFControl_Reader_SetViewMode_o29v0_wrap(STEPCAFControl_Reader& self, bool a0) {
+  occ_ts::guarded("STEPCAFControl_Reader.SetViewMode", [&]() -> int {
+    self.SetViewMode(a0);
+    return 0;
+  }, 0);
+}
+static bool STEPCAFControl_Reader_GetViewMode_o30v0_wrap(const STEPCAFControl_Reader& self) {
+  return occ_ts::guarded("STEPCAFControl_Reader.GetViewMode", [&]() -> bool {
+    return self.GetViewMode();
+  }, false);
+}
+static STEPCAFControl_Writer* STEPCAFControl_Writer_ctor_c0v0_wrap() {
+  return occ_ts::guarded("STEPCAFControl_Writer::ctor", [&]() -> STEPCAFControl_Writer* {
+    return new STEPCAFControl_Writer();
+  }, (STEPCAFControl_Writer*)nullptr);
+}
+static int STEPCAFControl_Writer_Write_wrap(STEPCAFControl_Writer& self, std::string a0) {
+  return occ_ts::guarded("STEPCAFControl_Writer.Write", [&]() -> int {
+    return self.Write(a0.c_str());
+  }, 0);
+}
+static bool STEPCAFControl_Writer_Transfer_o1v0_wrap(STEPCAFControl_Writer& self, TDocStd_Document* a0, int a1, std::string a2, const Message_ProgressRange& a3) {
+  return occ_ts::guarded("STEPCAFControl_Writer.Transfer", [&]() -> bool {
+    return self.Transfer((a0->IncrementRefCounter(), opencascade::handle<TDocStd_Document>(a0)), static_cast<STEPControl_StepModelType>(a1), a2.c_str(), a3);
+  }, false);
+}
+static bool STEPCAFControl_Writer_Transfer_o1v1_wrap(STEPCAFControl_Writer& self, TDocStd_Document* a0, int a1, std::string a2) {
+  return occ_ts::guarded("STEPCAFControl_Writer.Transfer", [&]() -> bool {
+    return self.Transfer((a0->IncrementRefCounter(), opencascade::handle<TDocStd_Document>(a0)), static_cast<STEPControl_StepModelType>(a1), a2.c_str());
+  }, false);
+}
+static bool STEPCAFControl_Writer_Transfer_o1v2_wrap(STEPCAFControl_Writer& self, TDocStd_Document* a0, int a1) {
+  return occ_ts::guarded("STEPCAFControl_Writer.Transfer", [&]() -> bool {
+    return self.Transfer((a0->IncrementRefCounter(), opencascade::handle<TDocStd_Document>(a0)), static_cast<STEPControl_StepModelType>(a1));
+  }, false);
+}
+static bool STEPCAFControl_Writer_Transfer_o1v3_wrap(STEPCAFControl_Writer& self, TDocStd_Document* a0) {
+  return occ_ts::guarded("STEPCAFControl_Writer.Transfer", [&]() -> bool {
+    return self.Transfer((a0->IncrementRefCounter(), opencascade::handle<TDocStd_Document>(a0)));
+  }, false);
+}
+static bool STEPCAFControl_Writer_Transfer_o2v0_wrap(STEPCAFControl_Writer& self, TDocStd_Document* a0, const DESTEP_Parameters& a1, int a2, std::string a3, const Message_ProgressRange& a4) {
+  return occ_ts::guarded("STEPCAFControl_Writer.Transfer", [&]() -> bool {
+    return self.Transfer((a0->IncrementRefCounter(), opencascade::handle<TDocStd_Document>(a0)), a1, static_cast<STEPControl_StepModelType>(a2), a3.c_str(), a4);
+  }, false);
+}
+static bool STEPCAFControl_Writer_Perform_o7v0_wrap(STEPCAFControl_Writer& self, TDocStd_Document* a0, const TCollection_AsciiString& a1, const Message_ProgressRange& a2) {
+  return occ_ts::guarded("STEPCAFControl_Writer.Perform", [&]() -> bool {
+    return self.Perform((a0->IncrementRefCounter(), opencascade::handle<TDocStd_Document>(a0)), a1, a2);
+  }, false);
+}
+static bool STEPCAFControl_Writer_Perform_o7v1_wrap(STEPCAFControl_Writer& self, TDocStd_Document* a0, const TCollection_AsciiString& a1) {
+  return occ_ts::guarded("STEPCAFControl_Writer.Perform", [&]() -> bool {
+    return self.Perform((a0->IncrementRefCounter(), opencascade::handle<TDocStd_Document>(a0)), a1);
+  }, false);
+}
+static bool STEPCAFControl_Writer_Perform_o9v0_wrap(STEPCAFControl_Writer& self, TDocStd_Document* a0, std::string a1, const DESTEP_Parameters& a2, const Message_ProgressRange& a3) {
+  return occ_ts::guarded("STEPCAFControl_Writer.Perform", [&]() -> bool {
+    return self.Perform((a0->IncrementRefCounter(), opencascade::handle<TDocStd_Document>(a0)), a1.c_str(), a2, a3);
+  }, false);
+}
+static STEPControl_Writer STEPCAFControl_Writer_ChangeWriter_o10v0_wrap(STEPCAFControl_Writer& self) {
+  return occ_ts::guarded("STEPCAFControl_Writer.ChangeWriter", [&]() -> STEPControl_Writer {
+    return self.ChangeWriter();
+  }, STEPControl_Writer());
+}
+static STEPControl_Writer STEPCAFControl_Writer_Writer_o11v0_wrap(const STEPCAFControl_Writer& self) {
+  return occ_ts::guarded("STEPCAFControl_Writer.Writer", [&]() -> STEPControl_Writer {
+    return self.Writer();
+  }, STEPControl_Writer());
+}
+static void STEPCAFControl_Writer_SetColorMode_o12v0_wrap(STEPCAFControl_Writer& self, bool a0) {
+  occ_ts::guarded("STEPCAFControl_Writer.SetColorMode", [&]() -> int {
+    self.SetColorMode(a0);
+    return 0;
+  }, 0);
+}
+static bool STEPCAFControl_Writer_GetColorMode_o13v0_wrap(const STEPCAFControl_Writer& self) {
+  return occ_ts::guarded("STEPCAFControl_Writer.GetColorMode", [&]() -> bool {
+    return self.GetColorMode();
+  }, false);
+}
+static void STEPCAFControl_Writer_SetNameMode_o14v0_wrap(STEPCAFControl_Writer& self, bool a0) {
+  occ_ts::guarded("STEPCAFControl_Writer.SetNameMode", [&]() -> int {
+    self.SetNameMode(a0);
+    return 0;
+  }, 0);
+}
+static bool STEPCAFControl_Writer_GetNameMode_o15v0_wrap(const STEPCAFControl_Writer& self) {
+  return occ_ts::guarded("STEPCAFControl_Writer.GetNameMode", [&]() -> bool {
+    return self.GetNameMode();
+  }, false);
+}
+static void STEPCAFControl_Writer_SetLayerMode_o16v0_wrap(STEPCAFControl_Writer& self, bool a0) {
+  occ_ts::guarded("STEPCAFControl_Writer.SetLayerMode", [&]() -> int {
+    self.SetLayerMode(a0);
+    return 0;
+  }, 0);
+}
+static bool STEPCAFControl_Writer_GetLayerMode_o17v0_wrap(const STEPCAFControl_Writer& self) {
+  return occ_ts::guarded("STEPCAFControl_Writer.GetLayerMode", [&]() -> bool {
+    return self.GetLayerMode();
+  }, false);
+}
+static void STEPCAFControl_Writer_SetPropsMode_o18v0_wrap(STEPCAFControl_Writer& self, bool a0) {
+  occ_ts::guarded("STEPCAFControl_Writer.SetPropsMode", [&]() -> int {
+    self.SetPropsMode(a0);
+    return 0;
+  }, 0);
+}
+static bool STEPCAFControl_Writer_GetPropsMode_o19v0_wrap(const STEPCAFControl_Writer& self) {
+  return occ_ts::guarded("STEPCAFControl_Writer.GetPropsMode", [&]() -> bool {
+    return self.GetPropsMode();
+  }, false);
+}
+static void STEPCAFControl_Writer_SetSHUOMode_o20v0_wrap(STEPCAFControl_Writer& self, bool a0) {
+  occ_ts::guarded("STEPCAFControl_Writer.SetSHUOMode", [&]() -> int {
+    self.SetSHUOMode(a0);
+    return 0;
+  }, 0);
+}
+static bool STEPCAFControl_Writer_GetSHUOMode_o21v0_wrap(const STEPCAFControl_Writer& self) {
+  return occ_ts::guarded("STEPCAFControl_Writer.GetSHUOMode", [&]() -> bool {
+    return self.GetSHUOMode();
+  }, false);
+}
+static void STEPCAFControl_Writer_SetDimTolMode_o22v0_wrap(STEPCAFControl_Writer& self, bool a0) {
+  occ_ts::guarded("STEPCAFControl_Writer.SetDimTolMode", [&]() -> int {
+    self.SetDimTolMode(a0);
+    return 0;
+  }, 0);
+}
+static bool STEPCAFControl_Writer_GetDimTolMode_o23v0_wrap(const STEPCAFControl_Writer& self) {
+  return occ_ts::guarded("STEPCAFControl_Writer.GetDimTolMode", [&]() -> bool {
+    return self.GetDimTolMode();
+  }, false);
+}
+static void STEPCAFControl_Writer_SetMaterialMode_o24v0_wrap(STEPCAFControl_Writer& self, bool a0) {
+  occ_ts::guarded("STEPCAFControl_Writer.SetMaterialMode", [&]() -> int {
+    self.SetMaterialMode(a0);
+    return 0;
+  }, 0);
+}
+static bool STEPCAFControl_Writer_GetMaterialMode_o25v0_wrap(const STEPCAFControl_Writer& self) {
+  return occ_ts::guarded("STEPCAFControl_Writer.GetMaterialMode", [&]() -> bool {
+    return self.GetMaterialMode();
+  }, false);
+}
+static TDocStd_Document* TDocStd_Document_ctor_c0v0_wrap(const TCollection_ExtendedString& a0) {
+  return occ_ts::guarded("TDocStd_Document::ctor", [&]() -> TDocStd_Document* {
+    return new TDocStd_Document(a0);
+  }, (TDocStd_Document*)nullptr);
+}
+static bool TDocStd_Document_IsInstance_wrap(const TDocStd_Document& self, std::string a0) {
+  return occ_ts::guarded("TDocStd_Document.IsInstance", [&]() -> bool {
+    return self.IsInstance(a0.c_str());
+  }, false);
+}
+static bool TDocStd_Document_IsKind_o1v0_wrap(const TDocStd_Document& self, std::string a0) {
+  return occ_ts::guarded("TDocStd_Document.IsKind", [&]() -> bool {
+    return self.IsKind(a0.c_str());
+  }, false);
+}
+static int TDocStd_Document_GetRefCount_o2v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.GetRefCount", [&]() -> int {
+    return self.GetRefCount();
+  }, 0);
+}
+static void TDocStd_Document_IncrementRefCounter_o3v0_wrap(TDocStd_Document& self) {
+  occ_ts::guarded("TDocStd_Document.IncrementRefCounter", [&]() -> int {
+    self.IncrementRefCounter();
+    return 0;
+  }, 0);
+}
+static int TDocStd_Document_DecrementRefCounter_o4v0_wrap(TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.DecrementRefCounter", [&]() -> int {
+    return self.DecrementRefCounter();
+  }, 0);
+}
+static void TDocStd_Document_Delete_o5v0_wrap(const TDocStd_Document& self) {
+  occ_ts::guarded("TDocStd_Document.Delete", [&]() -> int {
+    self.Delete();
+    return 0;
+  }, 0);
+}
+static TCollection_ExtendedString TDocStd_Document_StorageFormat_o6v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.StorageFormat", [&]() -> TCollection_ExtendedString {
+    return self.StorageFormat();
+  }, TCollection_ExtendedString());
+}
+static void TDocStd_Document_RemoveReference_o7v0_wrap(TDocStd_Document& self, int a0) {
+  occ_ts::guarded("TDocStd_Document.RemoveReference", [&]() -> int {
+    self.RemoveReference(a0);
+    return 0;
+  }, 0);
+}
+static void TDocStd_Document_RemoveAllReferences_o8v0_wrap(TDocStd_Document& self) {
+  occ_ts::guarded("TDocStd_Document.RemoveAllReferences", [&]() -> int {
+    self.RemoveAllReferences();
+    return 0;
+  }, 0);
+}
+static bool TDocStd_Document_IsInSession_o9v0_wrap(const TDocStd_Document& self, int a0) {
+  return occ_ts::guarded("TDocStd_Document.IsInSession", [&]() -> bool {
+    return self.IsInSession(a0);
+  }, false);
+}
+static bool TDocStd_Document_IsStored_o10v0_wrap(const TDocStd_Document& self, int a0) {
+  return occ_ts::guarded("TDocStd_Document.IsStored", [&]() -> bool {
+    return self.IsStored(a0);
+  }, false);
+}
+static TCollection_ExtendedString TDocStd_Document_Name_o11v0_wrap(const TDocStd_Document& self, int a0) {
+  return occ_ts::guarded("TDocStd_Document.Name", [&]() -> TCollection_ExtendedString {
+    return self.Name(a0);
+  }, TCollection_ExtendedString());
+}
+static int TDocStd_Document_ToReferencesNumber_o12v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.ToReferencesNumber", [&]() -> int {
+    return self.ToReferencesNumber();
+  }, 0);
+}
+static int TDocStd_Document_FromReferencesNumber_o13v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.FromReferencesNumber", [&]() -> int {
+    return self.FromReferencesNumber();
+  }, 0);
+}
+static bool TDocStd_Document_IsReadOnly_o14v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.IsReadOnly", [&]() -> bool {
+    return self.IsReadOnly();
+  }, false);
+}
+static void TDocStd_Document_SetIsReadOnly_o15v0_wrap(TDocStd_Document& self) {
+  occ_ts::guarded("TDocStd_Document.SetIsReadOnly", [&]() -> int {
+    self.SetIsReadOnly();
+    return 0;
+  }, 0);
+}
+static void TDocStd_Document_UnsetIsReadOnly_o16v0_wrap(TDocStd_Document& self) {
+  occ_ts::guarded("TDocStd_Document.UnsetIsReadOnly", [&]() -> int {
+    self.UnsetIsReadOnly();
+    return 0;
+  }, 0);
+}
+static void TDocStd_Document_Modify_o17v0_wrap(TDocStd_Document& self) {
+  occ_ts::guarded("TDocStd_Document.Modify", [&]() -> int {
+    self.Modify();
+    return 0;
+  }, 0);
+}
+static int TDocStd_Document_Modifications_o18v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.Modifications", [&]() -> int {
+    return self.Modifications();
+  }, 0);
+}
+static void TDocStd_Document_UnModify_o19v0_wrap(TDocStd_Document& self) {
+  occ_ts::guarded("TDocStd_Document.UnModify", [&]() -> int {
+    self.UnModify();
+    return 0;
+  }, 0);
+}
+static bool TDocStd_Document_IsUpToDate_o20v0_wrap(const TDocStd_Document& self, int a0) {
+  return occ_ts::guarded("TDocStd_Document.IsUpToDate", [&]() -> bool {
+    return self.IsUpToDate(a0);
+  }, false);
+}
+static void TDocStd_Document_SetIsUpToDate_o21v0_wrap(TDocStd_Document& self, int a0) {
+  occ_ts::guarded("TDocStd_Document.SetIsUpToDate", [&]() -> int {
+    self.SetIsUpToDate(a0);
+    return 0;
+  }, 0);
+}
+static void TDocStd_Document_SetComment_o22v0_wrap(TDocStd_Document& self, const TCollection_ExtendedString& a0) {
+  occ_ts::guarded("TDocStd_Document.SetComment", [&]() -> int {
+    self.SetComment(a0);
+    return 0;
+  }, 0);
+}
+static void TDocStd_Document_AddComment_o23v0_wrap(TDocStd_Document& self, const TCollection_ExtendedString& a0) {
+  occ_ts::guarded("TDocStd_Document.AddComment", [&]() -> int {
+    self.AddComment(a0);
+    return 0;
+  }, 0);
+}
+static int TDocStd_Document_StorageVersion_o24v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.StorageVersion", [&]() -> int {
+    return self.StorageVersion();
+  }, 0);
+}
+static void TDocStd_Document_UnsetIsStored_o25v0_wrap(TDocStd_Document& self) {
+  occ_ts::guarded("TDocStd_Document.UnsetIsStored", [&]() -> int {
+    self.UnsetIsStored();
+    return 0;
+  }, 0);
+}
+static TCollection_ExtendedString TDocStd_Document_Folder_o26v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.Folder", [&]() -> TCollection_ExtendedString {
+    return self.Folder();
+  }, TCollection_ExtendedString());
+}
+static void TDocStd_Document_SetRequestedFolder_o27v0_wrap(TDocStd_Document& self, const TCollection_ExtendedString& a0) {
+  occ_ts::guarded("TDocStd_Document.SetRequestedFolder", [&]() -> int {
+    self.SetRequestedFolder(a0);
+    return 0;
+  }, 0);
+}
+static TCollection_ExtendedString TDocStd_Document_RequestedFolder_o28v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.RequestedFolder", [&]() -> TCollection_ExtendedString {
+    return self.RequestedFolder();
+  }, TCollection_ExtendedString());
+}
+static bool TDocStd_Document_HasRequestedFolder_o29v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.HasRequestedFolder", [&]() -> bool {
+    return self.HasRequestedFolder();
+  }, false);
+}
+static void TDocStd_Document_SetRequestedName_o30v0_wrap(TDocStd_Document& self, const TCollection_ExtendedString& a0) {
+  occ_ts::guarded("TDocStd_Document.SetRequestedName", [&]() -> int {
+    self.SetRequestedName(a0);
+    return 0;
+  }, 0);
+}
+static TCollection_ExtendedString TDocStd_Document_RequestedName_o31v0_wrap(TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.RequestedName", [&]() -> TCollection_ExtendedString {
+    return self.RequestedName();
+  }, TCollection_ExtendedString());
+}
+static void TDocStd_Document_SetRequestedPreviousVersion_o32v0_wrap(TDocStd_Document& self, const TCollection_ExtendedString& a0) {
+  occ_ts::guarded("TDocStd_Document.SetRequestedPreviousVersion", [&]() -> int {
+    self.SetRequestedPreviousVersion(a0);
+    return 0;
+  }, 0);
+}
+static void TDocStd_Document_UnsetRequestedPreviousVersion_o33v0_wrap(TDocStd_Document& self) {
+  occ_ts::guarded("TDocStd_Document.UnsetRequestedPreviousVersion", [&]() -> int {
+    self.UnsetRequestedPreviousVersion();
+    return 0;
+  }, 0);
+}
+static bool TDocStd_Document_HasRequestedPreviousVersion_o34v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.HasRequestedPreviousVersion", [&]() -> bool {
+    return self.HasRequestedPreviousVersion();
+  }, false);
+}
+static TCollection_ExtendedString TDocStd_Document_RequestedPreviousVersion_o35v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.RequestedPreviousVersion", [&]() -> TCollection_ExtendedString {
+    return self.RequestedPreviousVersion();
+  }, TCollection_ExtendedString());
+}
+static void TDocStd_Document_SetRequestedComment_o36v0_wrap(TDocStd_Document& self, const TCollection_ExtendedString& a0) {
+  occ_ts::guarded("TDocStd_Document.SetRequestedComment", [&]() -> int {
+    self.SetRequestedComment(a0);
+    return 0;
+  }, 0);
+}
+static TCollection_ExtendedString TDocStd_Document_RequestedComment_o37v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.RequestedComment", [&]() -> TCollection_ExtendedString {
+    return self.RequestedComment();
+  }, TCollection_ExtendedString());
+}
+static void TDocStd_Document_LoadResources_o38v0_wrap(TDocStd_Document& self) {
+  occ_ts::guarded("TDocStd_Document.LoadResources", [&]() -> int {
+    self.LoadResources();
+    return 0;
+  }, 0);
+}
+static bool TDocStd_Document_FindFileExtension_o39v0_wrap(TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.FindFileExtension", [&]() -> bool {
+    return self.FindFileExtension();
+  }, false);
+}
+static TCollection_ExtendedString TDocStd_Document_FileExtension_o40v0_wrap(TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.FileExtension", [&]() -> TCollection_ExtendedString {
+    return self.FileExtension();
+  }, TCollection_ExtendedString());
+}
+static bool TDocStd_Document_FindDescription_o41v0_wrap(TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.FindDescription", [&]() -> bool {
+    return self.FindDescription();
+  }, false);
+}
+static TCollection_ExtendedString TDocStd_Document_Description_o42v0_wrap(TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.Description", [&]() -> TCollection_ExtendedString {
+    return self.Description();
+  }, TCollection_ExtendedString());
+}
+static bool TDocStd_Document_IsModified_o43v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.IsModified", [&]() -> bool {
+    return self.IsModified();
+  }, false);
+}
+static bool TDocStd_Document_IsOpened_o44v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.IsOpened", [&]() -> bool {
+    return self.IsOpened();
+  }, false);
+}
+static void TDocStd_Document_Close_o45v0_wrap(TDocStd_Document& self) {
+  occ_ts::guarded("TDocStd_Document.Close", [&]() -> int {
+    self.Close();
+    return 0;
+  }, 0);
+}
+static int TDocStd_Document_ReferenceCounter_o46v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.ReferenceCounter", [&]() -> int {
+    return self.ReferenceCounter();
+  }, 0);
+}
+static void TDocStd_Document_SetModifications_o47v0_wrap(TDocStd_Document& self, int a0) {
+  occ_ts::guarded("TDocStd_Document.SetModifications", [&]() -> int {
+    self.SetModifications(a0);
+    return 0;
+  }, 0);
+}
+static void TDocStd_Document_SetReferenceCounter_o48v0_wrap(TDocStd_Document& self, int a0) {
+  occ_ts::guarded("TDocStd_Document.SetReferenceCounter", [&]() -> int {
+    self.SetReferenceCounter(a0);
+    return 0;
+  }, 0);
+}
+static bool TDocStd_Document_IsSaved_o49v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.IsSaved", [&]() -> bool {
+    return self.IsSaved();
+  }, false);
+}
+static bool TDocStd_Document_IsChanged_o50v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.IsChanged", [&]() -> bool {
+    return self.IsChanged();
+  }, false);
+}
+static void TDocStd_Document_SetSaved_o51v0_wrap(TDocStd_Document& self) {
+  occ_ts::guarded("TDocStd_Document.SetSaved", [&]() -> int {
+    self.SetSaved();
+    return 0;
+  }, 0);
+}
+static void TDocStd_Document_SetSavedTime_o52v0_wrap(TDocStd_Document& self, int a0) {
+  occ_ts::guarded("TDocStd_Document.SetSavedTime", [&]() -> int {
+    self.SetSavedTime(a0);
+    return 0;
+  }, 0);
+}
+static int TDocStd_Document_GetSavedTime_o53v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.GetSavedTime", [&]() -> int {
+    return self.GetSavedTime();
+  }, 0);
+}
+static TCollection_ExtendedString TDocStd_Document_GetName_o54v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.GetName", [&]() -> TCollection_ExtendedString {
+    return self.GetName();
+  }, TCollection_ExtendedString());
+}
+static TCollection_ExtendedString TDocStd_Document_GetPath_o55v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.GetPath", [&]() -> TCollection_ExtendedString {
+    return self.GetPath();
+  }, TCollection_ExtendedString());
+}
+static TDF_Label TDocStd_Document_Main_o56v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.Main", [&]() -> TDF_Label {
+    return self.Main();
+  }, TDF_Label());
+}
+static bool TDocStd_Document_IsEmpty_o57v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.IsEmpty", [&]() -> bool {
+    return self.IsEmpty();
+  }, false);
+}
+static bool TDocStd_Document_IsValid_o58v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.IsValid", [&]() -> bool {
+    return self.IsValid();
+  }, false);
+}
+static void TDocStd_Document_SetModified_o59v0_wrap(TDocStd_Document& self, const TDF_Label& a0) {
+  occ_ts::guarded("TDocStd_Document.SetModified", [&]() -> int {
+    self.SetModified(a0);
+    return 0;
+  }, 0);
+}
+static void TDocStd_Document_PurgeModified_o60v0_wrap(TDocStd_Document& self) {
+  occ_ts::guarded("TDocStd_Document.PurgeModified", [&]() -> int {
+    self.PurgeModified();
+    return 0;
+  }, 0);
+}
+static void TDocStd_Document_NewCommand_o61v0_wrap(TDocStd_Document& self) {
+  occ_ts::guarded("TDocStd_Document.NewCommand", [&]() -> int {
+    self.NewCommand();
+    return 0;
+  }, 0);
+}
+static bool TDocStd_Document_HasOpenCommand_o62v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.HasOpenCommand", [&]() -> bool {
+    return self.HasOpenCommand();
+  }, false);
+}
+static void TDocStd_Document_OpenCommand_o63v0_wrap(TDocStd_Document& self) {
+  occ_ts::guarded("TDocStd_Document.OpenCommand", [&]() -> int {
+    self.OpenCommand();
+    return 0;
+  }, 0);
+}
+static bool TDocStd_Document_CommitCommand_o64v0_wrap(TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.CommitCommand", [&]() -> bool {
+    return self.CommitCommand();
+  }, false);
+}
+static void TDocStd_Document_AbortCommand_o65v0_wrap(TDocStd_Document& self) {
+  occ_ts::guarded("TDocStd_Document.AbortCommand", [&]() -> int {
+    self.AbortCommand();
+    return 0;
+  }, 0);
+}
+static int TDocStd_Document_GetUndoLimit_o66v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.GetUndoLimit", [&]() -> int {
+    return self.GetUndoLimit();
+  }, 0);
+}
+static void TDocStd_Document_SetUndoLimit_o67v0_wrap(TDocStd_Document& self, int a0) {
+  occ_ts::guarded("TDocStd_Document.SetUndoLimit", [&]() -> int {
+    self.SetUndoLimit(a0);
+    return 0;
+  }, 0);
+}
+static void TDocStd_Document_ClearUndos_o68v0_wrap(TDocStd_Document& self) {
+  occ_ts::guarded("TDocStd_Document.ClearUndos", [&]() -> int {
+    self.ClearUndos();
+    return 0;
+  }, 0);
+}
+static void TDocStd_Document_ClearRedos_o69v0_wrap(TDocStd_Document& self) {
+  occ_ts::guarded("TDocStd_Document.ClearRedos", [&]() -> int {
+    self.ClearRedos();
+    return 0;
+  }, 0);
+}
+static int TDocStd_Document_GetAvailableUndos_o70v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.GetAvailableUndos", [&]() -> int {
+    return self.GetAvailableUndos();
+  }, 0);
+}
+static bool TDocStd_Document_Undo_o71v0_wrap(TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.Undo", [&]() -> bool {
+    return self.Undo();
+  }, false);
+}
+static int TDocStd_Document_GetAvailableRedos_o72v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.GetAvailableRedos", [&]() -> int {
+    return self.GetAvailableRedos();
+  }, 0);
+}
+static bool TDocStd_Document_Redo_o73v0_wrap(TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.Redo", [&]() -> bool {
+    return self.Redo();
+  }, false);
+}
+static void TDocStd_Document_RemoveFirstUndo_o74v0_wrap(TDocStd_Document& self) {
+  occ_ts::guarded("TDocStd_Document.RemoveFirstUndo", [&]() -> int {
+    self.RemoveFirstUndo();
+    return 0;
+  }, 0);
+}
+static bool TDocStd_Document_InitDeltaCompaction_o75v0_wrap(TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.InitDeltaCompaction", [&]() -> bool {
+    return self.InitDeltaCompaction();
+  }, false);
+}
+static bool TDocStd_Document_PerformDeltaCompaction_o76v0_wrap(TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.PerformDeltaCompaction", [&]() -> bool {
+    return self.PerformDeltaCompaction();
+  }, false);
+}
+static void TDocStd_Document_UpdateReferences_o77v0_wrap(TDocStd_Document& self, const TCollection_AsciiString& a0) {
+  occ_ts::guarded("TDocStd_Document.UpdateReferences", [&]() -> int {
+    self.UpdateReferences(a0);
+    return 0;
+  }, 0);
+}
+static void TDocStd_Document_Recompute_o78v0_wrap(TDocStd_Document& self) {
+  occ_ts::guarded("TDocStd_Document.Recompute", [&]() -> int {
+    self.Recompute();
+    return 0;
+  }, 0);
+}
+static void TDocStd_Document_SetEmptyLabelsSavingMode_o80v0_wrap(TDocStd_Document& self, bool a0) {
+  occ_ts::guarded("TDocStd_Document.SetEmptyLabelsSavingMode", [&]() -> int {
+    self.SetEmptyLabelsSavingMode(a0);
+    return 0;
+  }, 0);
+}
+static bool TDocStd_Document_EmptyLabelsSavingMode_o81v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.EmptyLabelsSavingMode", [&]() -> bool {
+    return self.EmptyLabelsSavingMode();
+  }, false);
+}
+static void TDocStd_Document_ChangeStorageFormat_o82v0_wrap(TDocStd_Document& self, const TCollection_ExtendedString& a0) {
+  occ_ts::guarded("TDocStd_Document.ChangeStorageFormat", [&]() -> int {
+    self.ChangeStorageFormat(a0);
+    return 0;
+  }, 0);
+}
+static void TDocStd_Document_SetNestedTransactionMode_o83v0_wrap(TDocStd_Document& self, bool a0) {
+  occ_ts::guarded("TDocStd_Document.SetNestedTransactionMode", [&]() -> int {
+    self.SetNestedTransactionMode(a0);
+    return 0;
+  }, 0);
+}
+static void TDocStd_Document_SetNestedTransactionMode_o83v1_wrap(TDocStd_Document& self) {
+  occ_ts::guarded("TDocStd_Document.SetNestedTransactionMode", [&]() -> int {
+    self.SetNestedTransactionMode();
+    return 0;
+  }, 0);
+}
+static bool TDocStd_Document_IsNestedTransactionMode_o84v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.IsNestedTransactionMode", [&]() -> bool {
+    return self.IsNestedTransactionMode();
+  }, false);
+}
+static void TDocStd_Document_SetModificationMode_o85v0_wrap(TDocStd_Document& self, bool a0) {
+  occ_ts::guarded("TDocStd_Document.SetModificationMode", [&]() -> int {
+    self.SetModificationMode(a0);
+    return 0;
+  }, 0);
+}
+static bool TDocStd_Document_ModificationMode_o86v0_wrap(const TDocStd_Document& self) {
+  return occ_ts::guarded("TDocStd_Document.ModificationMode", [&]() -> bool {
+    return self.ModificationMode();
+  }, false);
+}
+static void TDocStd_Document_BeforeClose_o87v0_wrap(TDocStd_Document& self) {
+  occ_ts::guarded("TDocStd_Document.BeforeClose", [&]() -> int {
+    self.BeforeClose();
+    return 0;
+  }, 0);
+}
+static std::string TDocStd_Document_get_type_name_o88v0_wrap() {
+  return occ_ts::guarded("TDocStd_Document.get_type_name", [&]() -> std::string {
+    return TDocStd_Document::get_type_name();
+  }, std::string());
+}
+static opencascade::handle<TDocStd_Document>* TDocStd_Document_Get_o90v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("TDocStd_Document.Get", [&]() -> opencascade::handle<TDocStd_Document>* {
+    return new opencascade::handle<TDocStd_Document>(TDocStd_Document::Get(a0));
+  }, (opencascade::handle<TDocStd_Document>*)nullptr);
+}
+static TDataStd_Name* TDataStd_Name_ctor_c0v0_wrap() {
+  return occ_ts::guarded("TDataStd_Name::ctor", [&]() -> TDataStd_Name* {
+    return new TDataStd_Name();
+  }, (TDataStd_Name*)nullptr);
+}
+static bool TDataStd_Name_IsInstance_wrap(const TDataStd_Name& self, std::string a0) {
+  return occ_ts::guarded("TDataStd_Name.IsInstance", [&]() -> bool {
+    return self.IsInstance(a0.c_str());
+  }, false);
+}
+static bool TDataStd_Name_IsKind_o1v0_wrap(const TDataStd_Name& self, std::string a0) {
+  return occ_ts::guarded("TDataStd_Name.IsKind", [&]() -> bool {
+    return self.IsKind(a0.c_str());
+  }, false);
+}
+static int TDataStd_Name_GetRefCount_o2v0_wrap(const TDataStd_Name& self) {
+  return occ_ts::guarded("TDataStd_Name.GetRefCount", [&]() -> int {
+    return self.GetRefCount();
+  }, 0);
+}
+static void TDataStd_Name_IncrementRefCounter_o3v0_wrap(TDataStd_Name& self) {
+  occ_ts::guarded("TDataStd_Name.IncrementRefCounter", [&]() -> int {
+    self.IncrementRefCounter();
+    return 0;
+  }, 0);
+}
+static int TDataStd_Name_DecrementRefCounter_o4v0_wrap(TDataStd_Name& self) {
+  return occ_ts::guarded("TDataStd_Name.DecrementRefCounter", [&]() -> int {
+    return self.DecrementRefCounter();
+  }, 0);
+}
+static void TDataStd_Name_Delete_o5v0_wrap(const TDataStd_Name& self) {
+  occ_ts::guarded("TDataStd_Name.Delete", [&]() -> int {
+    self.Delete();
+    return 0;
+  }, 0);
+}
+static void TDataStd_Name_SetID_o6v0_wrap(TDataStd_Name& self) {
+  occ_ts::guarded("TDataStd_Name.SetID", [&]() -> int {
+    self.SetID();
+    return 0;
+  }, 0);
+}
+static TDF_Label TDataStd_Name_Label_o7v0_wrap(const TDataStd_Name& self) {
+  return occ_ts::guarded("TDataStd_Name.Label", [&]() -> TDF_Label {
+    return self.Label();
+  }, TDF_Label());
+}
+static int TDataStd_Name_Transaction_o8v0_wrap(const TDataStd_Name& self) {
+  return occ_ts::guarded("TDataStd_Name.Transaction", [&]() -> int {
+    return self.Transaction();
+  }, 0);
+}
+static int TDataStd_Name_UntilTransaction_o9v0_wrap(const TDataStd_Name& self) {
+  return occ_ts::guarded("TDataStd_Name.UntilTransaction", [&]() -> int {
+    return self.UntilTransaction();
+  }, 0);
+}
+static bool TDataStd_Name_IsValid_o10v0_wrap(const TDataStd_Name& self) {
+  return occ_ts::guarded("TDataStd_Name.IsValid", [&]() -> bool {
+    return self.IsValid();
+  }, false);
+}
+static bool TDataStd_Name_IsNew_o11v0_wrap(const TDataStd_Name& self) {
+  return occ_ts::guarded("TDataStd_Name.IsNew", [&]() -> bool {
+    return self.IsNew();
+  }, false);
+}
+static bool TDataStd_Name_IsForgotten_o12v0_wrap(const TDataStd_Name& self) {
+  return occ_ts::guarded("TDataStd_Name.IsForgotten", [&]() -> bool {
+    return self.IsForgotten();
+  }, false);
+}
+static void TDataStd_Name_ForgetAllAttributes_o13v0_wrap(const TDataStd_Name& self, bool a0) {
+  occ_ts::guarded("TDataStd_Name.ForgetAllAttributes", [&]() -> int {
+    self.ForgetAllAttributes(a0);
+    return 0;
+  }, 0);
+}
+static void TDataStd_Name_ForgetAllAttributes_o13v1_wrap(const TDataStd_Name& self) {
+  occ_ts::guarded("TDataStd_Name.ForgetAllAttributes", [&]() -> int {
+    self.ForgetAllAttributes();
+    return 0;
+  }, 0);
+}
+static void TDataStd_Name_AfterAddition_o14v0_wrap(TDataStd_Name& self) {
+  occ_ts::guarded("TDataStd_Name.AfterAddition", [&]() -> int {
+    self.AfterAddition();
+    return 0;
+  }, 0);
+}
+static void TDataStd_Name_BeforeRemoval_o15v0_wrap(TDataStd_Name& self) {
+  occ_ts::guarded("TDataStd_Name.BeforeRemoval", [&]() -> int {
+    self.BeforeRemoval();
+    return 0;
+  }, 0);
+}
+static void TDataStd_Name_BeforeForget_o16v0_wrap(TDataStd_Name& self) {
+  occ_ts::guarded("TDataStd_Name.BeforeForget", [&]() -> int {
+    self.BeforeForget();
+    return 0;
+  }, 0);
+}
+static void TDataStd_Name_AfterResume_o17v0_wrap(TDataStd_Name& self) {
+  occ_ts::guarded("TDataStd_Name.AfterResume", [&]() -> int {
+    self.AfterResume();
+    return 0;
+  }, 0);
+}
+static bool TDataStd_Name_AfterRetrieval_o18v0_wrap(TDataStd_Name& self, bool a0) {
+  return occ_ts::guarded("TDataStd_Name.AfterRetrieval", [&]() -> bool {
+    return self.AfterRetrieval(a0);
+  }, false);
+}
+static bool TDataStd_Name_AfterRetrieval_o18v1_wrap(TDataStd_Name& self) {
+  return occ_ts::guarded("TDataStd_Name.AfterRetrieval", [&]() -> bool {
+    return self.AfterRetrieval();
+  }, false);
+}
+static void TDataStd_Name_BeforeCommitTransaction_o19v0_wrap(TDataStd_Name& self) {
+  occ_ts::guarded("TDataStd_Name.BeforeCommitTransaction", [&]() -> int {
+    self.BeforeCommitTransaction();
+    return 0;
+  }, 0);
+}
+static void TDataStd_Name_Backup_o20v0_wrap(TDataStd_Name& self) {
+  occ_ts::guarded("TDataStd_Name.Backup", [&]() -> int {
+    self.Backup();
+    return 0;
+  }, 0);
+}
+static bool TDataStd_Name_IsBackuped_o21v0_wrap(const TDataStd_Name& self) {
+  return occ_ts::guarded("TDataStd_Name.IsBackuped", [&]() -> bool {
+    return self.IsBackuped();
+  }, false);
+}
+static void TDataStd_Name_Forget_o22v0_wrap(TDataStd_Name& self, int a0) {
+  occ_ts::guarded("TDataStd_Name.Forget", [&]() -> int {
+    self.Forget(a0);
+    return 0;
+  }, 0);
+}
+static void TDataStd_Name_Set_o23v0_wrap(TDataStd_Name& self, const TCollection_ExtendedString& a0) {
+  occ_ts::guarded("TDataStd_Name.Set", [&]() -> int {
+    self.Set(a0);
+    return 0;
+  }, 0);
+}
+static TCollection_ExtendedString TDataStd_Name_Get_o24v0_wrap(const TDataStd_Name& self) {
+  return occ_ts::guarded("TDataStd_Name.Get", [&]() -> TCollection_ExtendedString {
+    return self.Get();
+  }, TCollection_ExtendedString());
+}
+static std::string TDataStd_Name_get_type_name_o27v0_wrap() {
+  return occ_ts::guarded("TDataStd_Name.get_type_name", [&]() -> std::string {
+    return TDataStd_Name::get_type_name();
+  }, std::string());
+}
+static opencascade::handle<TDataStd_Name>* TDataStd_Name_Set_o30v0_wrap(const TDF_Label& a0, const TCollection_ExtendedString& a1) {
+  return occ_ts::guarded("TDataStd_Name.Set", [&]() -> opencascade::handle<TDataStd_Name>* {
+    return new opencascade::handle<TDataStd_Name>(TDataStd_Name::Set(a0, a1));
+  }, (opencascade::handle<TDataStd_Name>*)nullptr);
+}
+static TCollection_ExtendedString* TCollection_ExtendedString_ctor_c0v0_wrap() {
+  return occ_ts::guarded("TCollection_ExtendedString::ctor", [&]() -> TCollection_ExtendedString* {
+    return new TCollection_ExtendedString();
+  }, (TCollection_ExtendedString*)nullptr);
+}
+static TCollection_ExtendedString* TCollection_ExtendedString_ctor_c1v0_wrap(std::string a0, bool a1) {
+  return occ_ts::guarded("TCollection_ExtendedString::ctor", [&]() -> TCollection_ExtendedString* {
+    return new TCollection_ExtendedString(a0.c_str(), a1);
+  }, (TCollection_ExtendedString*)nullptr);
+}
+static TCollection_ExtendedString* TCollection_ExtendedString_ctor_c1v1_wrap(std::string a0) {
+  return occ_ts::guarded("TCollection_ExtendedString::ctor", [&]() -> TCollection_ExtendedString* {
+    return new TCollection_ExtendedString(a0.c_str());
+  }, (TCollection_ExtendedString*)nullptr);
+}
+static void TCollection_ExtendedString_AssignCat_wrap(TCollection_ExtendedString& self, const TCollection_ExtendedString& a0) {
+  occ_ts::guarded("TCollection_ExtendedString.AssignCat", [&]() -> int {
+    self.AssignCat(a0);
+    return 0;
+  }, 0);
+}
+static TCollection_ExtendedString TCollection_ExtendedString_Cat_o1v0_wrap(const TCollection_ExtendedString& self, const TCollection_ExtendedString& a0) {
+  return occ_ts::guarded("TCollection_ExtendedString.Cat", [&]() -> TCollection_ExtendedString {
+    return self.Cat(a0);
+  }, TCollection_ExtendedString());
+}
+static void TCollection_ExtendedString_Clear_o2v0_wrap(TCollection_ExtendedString& self) {
+  occ_ts::guarded("TCollection_ExtendedString.Clear", [&]() -> int {
+    self.Clear();
+    return 0;
+  }, 0);
+}
+static void TCollection_ExtendedString_Copy_o3v0_wrap(TCollection_ExtendedString& self, const TCollection_ExtendedString& a0) {
+  occ_ts::guarded("TCollection_ExtendedString.Copy", [&]() -> int {
+    self.Copy(a0);
+    return 0;
+  }, 0);
+}
+static void TCollection_ExtendedString_Swap_o4v0_wrap(TCollection_ExtendedString& self, TCollection_ExtendedString& a0) {
+  occ_ts::guarded("TCollection_ExtendedString.Swap", [&]() -> int {
+    self.Swap(a0);
+    return 0;
+  }, 0);
+}
+static void TCollection_ExtendedString_Insert_o5v0_wrap(TCollection_ExtendedString& self, int a0, const TCollection_ExtendedString& a1) {
+  occ_ts::guarded("TCollection_ExtendedString.Insert", [&]() -> int {
+    self.Insert(a0, a1);
+    return 0;
+  }, 0);
+}
+static bool TCollection_ExtendedString_IsEmpty_o6v0_wrap(const TCollection_ExtendedString& self) {
+  return occ_ts::guarded("TCollection_ExtendedString.IsEmpty", [&]() -> bool {
+    return self.IsEmpty();
+  }, false);
+}
+static bool TCollection_ExtendedString_IsEqual_o7v0_wrap(const TCollection_ExtendedString& self, const TCollection_ExtendedString& a0) {
+  return occ_ts::guarded("TCollection_ExtendedString.IsEqual", [&]() -> bool {
+    return self.IsEqual(a0);
+  }, false);
+}
+static bool TCollection_ExtendedString_IsDifferent_o8v0_wrap(const TCollection_ExtendedString& self, const TCollection_ExtendedString& a0) {
+  return occ_ts::guarded("TCollection_ExtendedString.IsDifferent", [&]() -> bool {
+    return self.IsDifferent(a0);
+  }, false);
+}
+static bool TCollection_ExtendedString_IsLess_o9v0_wrap(const TCollection_ExtendedString& self, const TCollection_ExtendedString& a0) {
+  return occ_ts::guarded("TCollection_ExtendedString.IsLess", [&]() -> bool {
+    return self.IsLess(a0);
+  }, false);
+}
+static bool TCollection_ExtendedString_IsGreater_o10v0_wrap(const TCollection_ExtendedString& self, const TCollection_ExtendedString& a0) {
+  return occ_ts::guarded("TCollection_ExtendedString.IsGreater", [&]() -> bool {
+    return self.IsGreater(a0);
+  }, false);
+}
+static bool TCollection_ExtendedString_StartsWith_o11v0_wrap(const TCollection_ExtendedString& self, const TCollection_ExtendedString& a0) {
+  return occ_ts::guarded("TCollection_ExtendedString.StartsWith", [&]() -> bool {
+    return self.StartsWith(a0);
+  }, false);
+}
+static bool TCollection_ExtendedString_EndsWith_o12v0_wrap(const TCollection_ExtendedString& self, const TCollection_ExtendedString& a0) {
+  return occ_ts::guarded("TCollection_ExtendedString.EndsWith", [&]() -> bool {
+    return self.EndsWith(a0);
+  }, false);
+}
+static bool TCollection_ExtendedString_IsAscii_o13v0_wrap(const TCollection_ExtendedString& self) {
+  return occ_ts::guarded("TCollection_ExtendedString.IsAscii", [&]() -> bool {
+    return self.IsAscii();
+  }, false);
+}
+static int TCollection_ExtendedString_Length_o14v0_wrap(const TCollection_ExtendedString& self) {
+  return occ_ts::guarded("TCollection_ExtendedString.Length", [&]() -> int {
+    return self.Length();
+  }, 0);
+}
+static void TCollection_ExtendedString_Remove_o15v0_wrap(TCollection_ExtendedString& self, int a0, int a1) {
+  occ_ts::guarded("TCollection_ExtendedString.Remove", [&]() -> int {
+    self.Remove(a0, a1);
+    return 0;
+  }, 0);
+}
+static void TCollection_ExtendedString_Remove_o15v1_wrap(TCollection_ExtendedString& self, int a0) {
+  occ_ts::guarded("TCollection_ExtendedString.Remove", [&]() -> int {
+    self.Remove(a0);
+    return 0;
+  }, 0);
+}
+static int TCollection_ExtendedString_Search_o16v0_wrap(const TCollection_ExtendedString& self, const TCollection_ExtendedString& a0) {
+  return occ_ts::guarded("TCollection_ExtendedString.Search", [&]() -> int {
+    return self.Search(a0);
+  }, 0);
+}
+static int TCollection_ExtendedString_SearchFromEnd_o17v0_wrap(const TCollection_ExtendedString& self, const TCollection_ExtendedString& a0) {
+  return occ_ts::guarded("TCollection_ExtendedString.SearchFromEnd", [&]() -> int {
+    return self.SearchFromEnd(a0);
+  }, 0);
+}
+static void TCollection_ExtendedString_SetValue_o18v0_wrap(TCollection_ExtendedString& self, int a0, const TCollection_ExtendedString& a1) {
+  occ_ts::guarded("TCollection_ExtendedString.SetValue", [&]() -> int {
+    self.SetValue(a0, a1);
+    return 0;
+  }, 0);
+}
+static TCollection_ExtendedString TCollection_ExtendedString_Split_o19v0_wrap(TCollection_ExtendedString& self, int a0) {
+  return occ_ts::guarded("TCollection_ExtendedString.Split", [&]() -> TCollection_ExtendedString {
+    return self.Split(a0);
+  }, TCollection_ExtendedString());
+}
+static void TCollection_ExtendedString_Trunc_o20v0_wrap(TCollection_ExtendedString& self, int a0) {
+  occ_ts::guarded("TCollection_ExtendedString.Trunc", [&]() -> int {
+    self.Trunc(a0);
+    return 0;
+  }, 0);
+}
+static int TCollection_ExtendedString_HashCode_o21v0_wrap(const TCollection_ExtendedString& self) {
+  return occ_ts::guarded("TCollection_ExtendedString.HashCode", [&]() -> int {
+    return self.HashCode();
+  }, 0);
+}
+static int TCollection_ExtendedString_LengthOfCString_o22v0_wrap(const TCollection_ExtendedString& self) {
+  return occ_ts::guarded("TCollection_ExtendedString.LengthOfCString", [&]() -> int {
+    return self.LengthOfCString();
+  }, 0);
+}
+static bool TCollection_ExtendedString_IsEqual_o23v0_wrap(const TCollection_ExtendedString& a0, const TCollection_ExtendedString& a1) {
+  return occ_ts::guarded("TCollection_ExtendedString.IsEqual", [&]() -> bool {
+    return TCollection_ExtendedString::IsEqual(a0, a1);
+  }, false);
+}
+static XCAFDoc_DocumentTool* XCAFDoc_DocumentTool_ctor_c0v0_wrap() {
+  return occ_ts::guarded("XCAFDoc_DocumentTool::ctor", [&]() -> XCAFDoc_DocumentTool* {
+    return new XCAFDoc_DocumentTool();
+  }, (XCAFDoc_DocumentTool*)nullptr);
+}
+static bool XCAFDoc_DocumentTool_IsInstance_wrap(const XCAFDoc_DocumentTool& self, std::string a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.IsInstance", [&]() -> bool {
+    return self.IsInstance(a0.c_str());
+  }, false);
+}
+static bool XCAFDoc_DocumentTool_IsKind_o1v0_wrap(const XCAFDoc_DocumentTool& self, std::string a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.IsKind", [&]() -> bool {
+    return self.IsKind(a0.c_str());
+  }, false);
+}
+static int XCAFDoc_DocumentTool_GetRefCount_o2v0_wrap(const XCAFDoc_DocumentTool& self) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.GetRefCount", [&]() -> int {
+    return self.GetRefCount();
+  }, 0);
+}
+static void XCAFDoc_DocumentTool_IncrementRefCounter_o3v0_wrap(XCAFDoc_DocumentTool& self) {
+  occ_ts::guarded("XCAFDoc_DocumentTool.IncrementRefCounter", [&]() -> int {
+    self.IncrementRefCounter();
+    return 0;
+  }, 0);
+}
+static int XCAFDoc_DocumentTool_DecrementRefCounter_o4v0_wrap(XCAFDoc_DocumentTool& self) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.DecrementRefCounter", [&]() -> int {
+    return self.DecrementRefCounter();
+  }, 0);
+}
+static void XCAFDoc_DocumentTool_Delete_o5v0_wrap(const XCAFDoc_DocumentTool& self) {
+  occ_ts::guarded("XCAFDoc_DocumentTool.Delete", [&]() -> int {
+    self.Delete();
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_DocumentTool_SetID_o6v0_wrap(XCAFDoc_DocumentTool& self) {
+  occ_ts::guarded("XCAFDoc_DocumentTool.SetID", [&]() -> int {
+    self.SetID();
+    return 0;
+  }, 0);
+}
+static TDF_Label XCAFDoc_DocumentTool_Label_o7v0_wrap(const XCAFDoc_DocumentTool& self) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.Label", [&]() -> TDF_Label {
+    return self.Label();
+  }, TDF_Label());
+}
+static int XCAFDoc_DocumentTool_Transaction_o8v0_wrap(const XCAFDoc_DocumentTool& self) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.Transaction", [&]() -> int {
+    return self.Transaction();
+  }, 0);
+}
+static int XCAFDoc_DocumentTool_UntilTransaction_o9v0_wrap(const XCAFDoc_DocumentTool& self) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.UntilTransaction", [&]() -> int {
+    return self.UntilTransaction();
+  }, 0);
+}
+static bool XCAFDoc_DocumentTool_IsValid_o10v0_wrap(const XCAFDoc_DocumentTool& self) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.IsValid", [&]() -> bool {
+    return self.IsValid();
+  }, false);
+}
+static bool XCAFDoc_DocumentTool_IsNew_o11v0_wrap(const XCAFDoc_DocumentTool& self) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.IsNew", [&]() -> bool {
+    return self.IsNew();
+  }, false);
+}
+static bool XCAFDoc_DocumentTool_IsForgotten_o12v0_wrap(const XCAFDoc_DocumentTool& self) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.IsForgotten", [&]() -> bool {
+    return self.IsForgotten();
+  }, false);
+}
+static void XCAFDoc_DocumentTool_ForgetAllAttributes_o13v0_wrap(const XCAFDoc_DocumentTool& self, bool a0) {
+  occ_ts::guarded("XCAFDoc_DocumentTool.ForgetAllAttributes", [&]() -> int {
+    self.ForgetAllAttributes(a0);
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_DocumentTool_ForgetAllAttributes_o13v1_wrap(const XCAFDoc_DocumentTool& self) {
+  occ_ts::guarded("XCAFDoc_DocumentTool.ForgetAllAttributes", [&]() -> int {
+    self.ForgetAllAttributes();
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_DocumentTool_AfterAddition_o14v0_wrap(XCAFDoc_DocumentTool& self) {
+  occ_ts::guarded("XCAFDoc_DocumentTool.AfterAddition", [&]() -> int {
+    self.AfterAddition();
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_DocumentTool_BeforeRemoval_o15v0_wrap(XCAFDoc_DocumentTool& self) {
+  occ_ts::guarded("XCAFDoc_DocumentTool.BeforeRemoval", [&]() -> int {
+    self.BeforeRemoval();
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_DocumentTool_BeforeForget_o16v0_wrap(XCAFDoc_DocumentTool& self) {
+  occ_ts::guarded("XCAFDoc_DocumentTool.BeforeForget", [&]() -> int {
+    self.BeforeForget();
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_DocumentTool_AfterResume_o17v0_wrap(XCAFDoc_DocumentTool& self) {
+  occ_ts::guarded("XCAFDoc_DocumentTool.AfterResume", [&]() -> int {
+    self.AfterResume();
+    return 0;
+  }, 0);
+}
+static bool XCAFDoc_DocumentTool_AfterRetrieval_o18v0_wrap(XCAFDoc_DocumentTool& self, bool a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.AfterRetrieval", [&]() -> bool {
+    return self.AfterRetrieval(a0);
+  }, false);
+}
+static bool XCAFDoc_DocumentTool_AfterRetrieval_o18v1_wrap(XCAFDoc_DocumentTool& self) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.AfterRetrieval", [&]() -> bool {
+    return self.AfterRetrieval();
+  }, false);
+}
+static void XCAFDoc_DocumentTool_BeforeCommitTransaction_o19v0_wrap(XCAFDoc_DocumentTool& self) {
+  occ_ts::guarded("XCAFDoc_DocumentTool.BeforeCommitTransaction", [&]() -> int {
+    self.BeforeCommitTransaction();
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_DocumentTool_Backup_o20v0_wrap(XCAFDoc_DocumentTool& self) {
+  occ_ts::guarded("XCAFDoc_DocumentTool.Backup", [&]() -> int {
+    self.Backup();
+    return 0;
+  }, 0);
+}
+static bool XCAFDoc_DocumentTool_IsBackuped_o21v0_wrap(const XCAFDoc_DocumentTool& self) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.IsBackuped", [&]() -> bool {
+    return self.IsBackuped();
+  }, false);
+}
+static void XCAFDoc_DocumentTool_Forget_o22v0_wrap(XCAFDoc_DocumentTool& self, int a0) {
+  occ_ts::guarded("XCAFDoc_DocumentTool.Forget", [&]() -> int {
+    self.Forget(a0);
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_DocumentTool_Init_o23v0_wrap(const XCAFDoc_DocumentTool& self) {
+  occ_ts::guarded("XCAFDoc_DocumentTool.Init", [&]() -> int {
+    self.Init();
+    return 0;
+  }, 0);
+}
+static std::string XCAFDoc_DocumentTool_get_type_name_o25v0_wrap() {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.get_type_name", [&]() -> std::string {
+    return XCAFDoc_DocumentTool::get_type_name();
+  }, std::string());
+}
+static opencascade::handle<XCAFDoc_DocumentTool>* XCAFDoc_DocumentTool_Set_o28v0_wrap(const TDF_Label& a0, bool a1) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.Set", [&]() -> opencascade::handle<XCAFDoc_DocumentTool>* {
+    return new opencascade::handle<XCAFDoc_DocumentTool>(XCAFDoc_DocumentTool::Set(a0, a1));
+  }, (opencascade::handle<XCAFDoc_DocumentTool>*)nullptr);
+}
+static opencascade::handle<XCAFDoc_DocumentTool>* XCAFDoc_DocumentTool_Set_o28v1_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.Set", [&]() -> opencascade::handle<XCAFDoc_DocumentTool>* {
+    return new opencascade::handle<XCAFDoc_DocumentTool>(XCAFDoc_DocumentTool::Set(a0));
+  }, (opencascade::handle<XCAFDoc_DocumentTool>*)nullptr);
+}
+static bool XCAFDoc_DocumentTool_IsXCAFDocument_o29v0_wrap(TDocStd_Document* a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.IsXCAFDocument", [&]() -> bool {
+    return XCAFDoc_DocumentTool::IsXCAFDocument((a0->IncrementRefCounter(), opencascade::handle<TDocStd_Document>(a0)));
+  }, false);
+}
+static TDF_Label XCAFDoc_DocumentTool_DocLabel_o30v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.DocLabel", [&]() -> TDF_Label {
+    return XCAFDoc_DocumentTool::DocLabel(a0);
+  }, TDF_Label());
+}
+static TDF_Label XCAFDoc_DocumentTool_ShapesLabel_o31v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.ShapesLabel", [&]() -> TDF_Label {
+    return XCAFDoc_DocumentTool::ShapesLabel(a0);
+  }, TDF_Label());
+}
+static TDF_Label XCAFDoc_DocumentTool_ColorsLabel_o32v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.ColorsLabel", [&]() -> TDF_Label {
+    return XCAFDoc_DocumentTool::ColorsLabel(a0);
+  }, TDF_Label());
+}
+static TDF_Label XCAFDoc_DocumentTool_LayersLabel_o33v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.LayersLabel", [&]() -> TDF_Label {
+    return XCAFDoc_DocumentTool::LayersLabel(a0);
+  }, TDF_Label());
+}
+static TDF_Label XCAFDoc_DocumentTool_DGTsLabel_o34v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.DGTsLabel", [&]() -> TDF_Label {
+    return XCAFDoc_DocumentTool::DGTsLabel(a0);
+  }, TDF_Label());
+}
+static TDF_Label XCAFDoc_DocumentTool_MaterialsLabel_o35v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.MaterialsLabel", [&]() -> TDF_Label {
+    return XCAFDoc_DocumentTool::MaterialsLabel(a0);
+  }, TDF_Label());
+}
+static TDF_Label XCAFDoc_DocumentTool_ViewsLabel_o36v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.ViewsLabel", [&]() -> TDF_Label {
+    return XCAFDoc_DocumentTool::ViewsLabel(a0);
+  }, TDF_Label());
+}
+static TDF_Label XCAFDoc_DocumentTool_ClippingPlanesLabel_o37v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.ClippingPlanesLabel", [&]() -> TDF_Label {
+    return XCAFDoc_DocumentTool::ClippingPlanesLabel(a0);
+  }, TDF_Label());
+}
+static TDF_Label XCAFDoc_DocumentTool_NotesLabel_o38v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.NotesLabel", [&]() -> TDF_Label {
+    return XCAFDoc_DocumentTool::NotesLabel(a0);
+  }, TDF_Label());
+}
+static TDF_Label XCAFDoc_DocumentTool_VisMaterialLabel_o39v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.VisMaterialLabel", [&]() -> TDF_Label {
+    return XCAFDoc_DocumentTool::VisMaterialLabel(a0);
+  }, TDF_Label());
+}
+static opencascade::handle<XCAFDoc_ShapeTool>* XCAFDoc_DocumentTool_ShapeTool_o40v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.ShapeTool", [&]() -> opencascade::handle<XCAFDoc_ShapeTool>* {
+    return new opencascade::handle<XCAFDoc_ShapeTool>(XCAFDoc_DocumentTool::ShapeTool(a0));
+  }, (opencascade::handle<XCAFDoc_ShapeTool>*)nullptr);
+}
+static bool XCAFDoc_DocumentTool_CheckShapeTool_o41v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.CheckShapeTool", [&]() -> bool {
+    return XCAFDoc_DocumentTool::CheckShapeTool(a0);
+  }, false);
+}
+static opencascade::handle<XCAFDoc_ColorTool>* XCAFDoc_DocumentTool_ColorTool_o42v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.ColorTool", [&]() -> opencascade::handle<XCAFDoc_ColorTool>* {
+    return new opencascade::handle<XCAFDoc_ColorTool>(XCAFDoc_DocumentTool::ColorTool(a0));
+  }, (opencascade::handle<XCAFDoc_ColorTool>*)nullptr);
+}
+static bool XCAFDoc_DocumentTool_CheckColorTool_o43v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.CheckColorTool", [&]() -> bool {
+    return XCAFDoc_DocumentTool::CheckColorTool(a0);
+  }, false);
+}
+static bool XCAFDoc_DocumentTool_CheckVisMaterialTool_o44v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.CheckVisMaterialTool", [&]() -> bool {
+    return XCAFDoc_DocumentTool::CheckVisMaterialTool(a0);
+  }, false);
+}
+static bool XCAFDoc_DocumentTool_CheckLayerTool_o45v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.CheckLayerTool", [&]() -> bool {
+    return XCAFDoc_DocumentTool::CheckLayerTool(a0);
+  }, false);
+}
+static bool XCAFDoc_DocumentTool_CheckDimTolTool_o46v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.CheckDimTolTool", [&]() -> bool {
+    return XCAFDoc_DocumentTool::CheckDimTolTool(a0);
+  }, false);
+}
+static bool XCAFDoc_DocumentTool_CheckMaterialTool_o47v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.CheckMaterialTool", [&]() -> bool {
+    return XCAFDoc_DocumentTool::CheckMaterialTool(a0);
+  }, false);
+}
+static bool XCAFDoc_DocumentTool_CheckViewTool_o48v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.CheckViewTool", [&]() -> bool {
+    return XCAFDoc_DocumentTool::CheckViewTool(a0);
+  }, false);
+}
+static bool XCAFDoc_DocumentTool_CheckClippingPlaneTool_o49v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.CheckClippingPlaneTool", [&]() -> bool {
+    return XCAFDoc_DocumentTool::CheckClippingPlaneTool(a0);
+  }, false);
+}
+static bool XCAFDoc_DocumentTool_CheckNotesTool_o50v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_DocumentTool.CheckNotesTool", [&]() -> bool {
+    return XCAFDoc_DocumentTool::CheckNotesTool(a0);
+  }, false);
+}
+static void XCAFDoc_DocumentTool_SetLengthUnit_o51v0_wrap(TDocStd_Document* a0, double a1) {
+  occ_ts::guarded("XCAFDoc_DocumentTool.SetLengthUnit", [&]() -> int {
+    XCAFDoc_DocumentTool::SetLengthUnit((a0->IncrementRefCounter(), opencascade::handle<TDocStd_Document>(a0)), a1);
+    return 0;
+  }, 0);
+}
+static XCAFDoc_ShapeTool* XCAFDoc_ShapeTool_ctor_c0v0_wrap() {
+  return occ_ts::guarded("XCAFDoc_ShapeTool::ctor", [&]() -> XCAFDoc_ShapeTool* {
+    return new XCAFDoc_ShapeTool();
+  }, (XCAFDoc_ShapeTool*)nullptr);
+}
+static bool XCAFDoc_ShapeTool_IsInstance_wrap(const XCAFDoc_ShapeTool& self, std::string a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.IsInstance", [&]() -> bool {
+    return self.IsInstance(a0.c_str());
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_IsKind_o1v0_wrap(const XCAFDoc_ShapeTool& self, std::string a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.IsKind", [&]() -> bool {
+    return self.IsKind(a0.c_str());
+  }, false);
+}
+static int XCAFDoc_ShapeTool_GetRefCount_o2v0_wrap(const XCAFDoc_ShapeTool& self) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.GetRefCount", [&]() -> int {
+    return self.GetRefCount();
+  }, 0);
+}
+static void XCAFDoc_ShapeTool_IncrementRefCounter_o3v0_wrap(XCAFDoc_ShapeTool& self) {
+  occ_ts::guarded("XCAFDoc_ShapeTool.IncrementRefCounter", [&]() -> int {
+    self.IncrementRefCounter();
+    return 0;
+  }, 0);
+}
+static int XCAFDoc_ShapeTool_DecrementRefCounter_o4v0_wrap(XCAFDoc_ShapeTool& self) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.DecrementRefCounter", [&]() -> int {
+    return self.DecrementRefCounter();
+  }, 0);
+}
+static void XCAFDoc_ShapeTool_Delete_o5v0_wrap(const XCAFDoc_ShapeTool& self) {
+  occ_ts::guarded("XCAFDoc_ShapeTool.Delete", [&]() -> int {
+    self.Delete();
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ShapeTool_SetID_o6v0_wrap(XCAFDoc_ShapeTool& self) {
+  occ_ts::guarded("XCAFDoc_ShapeTool.SetID", [&]() -> int {
+    self.SetID();
+    return 0;
+  }, 0);
+}
+static TDF_Label XCAFDoc_ShapeTool_Label_o7v0_wrap(const XCAFDoc_ShapeTool& self) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.Label", [&]() -> TDF_Label {
+    return self.Label();
+  }, TDF_Label());
+}
+static int XCAFDoc_ShapeTool_Transaction_o8v0_wrap(const XCAFDoc_ShapeTool& self) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.Transaction", [&]() -> int {
+    return self.Transaction();
+  }, 0);
+}
+static int XCAFDoc_ShapeTool_UntilTransaction_o9v0_wrap(const XCAFDoc_ShapeTool& self) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.UntilTransaction", [&]() -> int {
+    return self.UntilTransaction();
+  }, 0);
+}
+static bool XCAFDoc_ShapeTool_IsValid_o10v0_wrap(const XCAFDoc_ShapeTool& self) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.IsValid", [&]() -> bool {
+    return self.IsValid();
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_IsNew_o11v0_wrap(const XCAFDoc_ShapeTool& self) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.IsNew", [&]() -> bool {
+    return self.IsNew();
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_IsForgotten_o12v0_wrap(const XCAFDoc_ShapeTool& self) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.IsForgotten", [&]() -> bool {
+    return self.IsForgotten();
+  }, false);
+}
+static void XCAFDoc_ShapeTool_ForgetAllAttributes_o13v0_wrap(const XCAFDoc_ShapeTool& self, bool a0) {
+  occ_ts::guarded("XCAFDoc_ShapeTool.ForgetAllAttributes", [&]() -> int {
+    self.ForgetAllAttributes(a0);
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ShapeTool_ForgetAllAttributes_o13v1_wrap(const XCAFDoc_ShapeTool& self) {
+  occ_ts::guarded("XCAFDoc_ShapeTool.ForgetAllAttributes", [&]() -> int {
+    self.ForgetAllAttributes();
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ShapeTool_AfterAddition_o14v0_wrap(XCAFDoc_ShapeTool& self) {
+  occ_ts::guarded("XCAFDoc_ShapeTool.AfterAddition", [&]() -> int {
+    self.AfterAddition();
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ShapeTool_BeforeRemoval_o15v0_wrap(XCAFDoc_ShapeTool& self) {
+  occ_ts::guarded("XCAFDoc_ShapeTool.BeforeRemoval", [&]() -> int {
+    self.BeforeRemoval();
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ShapeTool_BeforeForget_o16v0_wrap(XCAFDoc_ShapeTool& self) {
+  occ_ts::guarded("XCAFDoc_ShapeTool.BeforeForget", [&]() -> int {
+    self.BeforeForget();
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ShapeTool_AfterResume_o17v0_wrap(XCAFDoc_ShapeTool& self) {
+  occ_ts::guarded("XCAFDoc_ShapeTool.AfterResume", [&]() -> int {
+    self.AfterResume();
+    return 0;
+  }, 0);
+}
+static bool XCAFDoc_ShapeTool_AfterRetrieval_o18v0_wrap(XCAFDoc_ShapeTool& self, bool a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.AfterRetrieval", [&]() -> bool {
+    return self.AfterRetrieval(a0);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_AfterRetrieval_o18v1_wrap(XCAFDoc_ShapeTool& self) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.AfterRetrieval", [&]() -> bool {
+    return self.AfterRetrieval();
+  }, false);
+}
+static void XCAFDoc_ShapeTool_BeforeCommitTransaction_o19v0_wrap(XCAFDoc_ShapeTool& self) {
+  occ_ts::guarded("XCAFDoc_ShapeTool.BeforeCommitTransaction", [&]() -> int {
+    self.BeforeCommitTransaction();
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ShapeTool_Backup_o20v0_wrap(XCAFDoc_ShapeTool& self) {
+  occ_ts::guarded("XCAFDoc_ShapeTool.Backup", [&]() -> int {
+    self.Backup();
+    return 0;
+  }, 0);
+}
+static bool XCAFDoc_ShapeTool_IsBackuped_o21v0_wrap(const XCAFDoc_ShapeTool& self) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.IsBackuped", [&]() -> bool {
+    return self.IsBackuped();
+  }, false);
+}
+static void XCAFDoc_ShapeTool_Forget_o22v0_wrap(XCAFDoc_ShapeTool& self, int a0) {
+  occ_ts::guarded("XCAFDoc_ShapeTool.Forget", [&]() -> int {
+    self.Forget(a0);
+    return 0;
+  }, 0);
+}
+static bool XCAFDoc_ShapeTool_IsTopLevel_o23v0_wrap(const XCAFDoc_ShapeTool& self, const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.IsTopLevel", [&]() -> bool {
+    return self.IsTopLevel(a0);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_IsSubShape_o24v0_wrap(const XCAFDoc_ShapeTool& self, const TDF_Label& a0, const TopoDS_Shape& a1) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.IsSubShape", [&]() -> bool {
+    return self.IsSubShape(a0, a1);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_SearchUsingMap_o25v0_wrap(const XCAFDoc_ShapeTool& self, const TopoDS_Shape& a0, TDF_Label& a1, bool a2, bool a3) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.SearchUsingMap", [&]() -> bool {
+    return self.SearchUsingMap(a0, a1, a2, a3);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_Search_o26v0_wrap(const XCAFDoc_ShapeTool& self, const TopoDS_Shape& a0, TDF_Label& a1, bool a2, bool a3, bool a4) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.Search", [&]() -> bool {
+    return self.Search(a0, a1, a2, a3, a4);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_Search_o26v1_wrap(const XCAFDoc_ShapeTool& self, const TopoDS_Shape& a0, TDF_Label& a1, bool a2, bool a3) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.Search", [&]() -> bool {
+    return self.Search(a0, a1, a2, a3);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_Search_o26v2_wrap(const XCAFDoc_ShapeTool& self, const TopoDS_Shape& a0, TDF_Label& a1, bool a2) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.Search", [&]() -> bool {
+    return self.Search(a0, a1, a2);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_Search_o26v3_wrap(const XCAFDoc_ShapeTool& self, const TopoDS_Shape& a0, TDF_Label& a1) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.Search", [&]() -> bool {
+    return self.Search(a0, a1);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_FindShape_o27v0_wrap(const XCAFDoc_ShapeTool& self, const TopoDS_Shape& a0, TDF_Label& a1, bool a2) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.FindShape", [&]() -> bool {
+    return self.FindShape(a0, a1, a2);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_FindShape_o27v1_wrap(const XCAFDoc_ShapeTool& self, const TopoDS_Shape& a0, TDF_Label& a1) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.FindShape", [&]() -> bool {
+    return self.FindShape(a0, a1);
+  }, false);
+}
+static TDF_Label XCAFDoc_ShapeTool_FindShape_o28v0_wrap(const XCAFDoc_ShapeTool& self, const TopoDS_Shape& a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.FindShape", [&]() -> TDF_Label {
+    return self.FindShape(a0);
+  }, TDF_Label());
+}
+static TopoDS_Shape XCAFDoc_ShapeTool_GetOneShape_o29v0_wrap(const XCAFDoc_ShapeTool& self) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.GetOneShape", [&]() -> TopoDS_Shape {
+    return self.GetOneShape();
+  }, TopoDS_Shape());
+}
+static TDF_Label XCAFDoc_ShapeTool_NewShape_o30v0_wrap(const XCAFDoc_ShapeTool& self) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.NewShape", [&]() -> TDF_Label {
+    return self.NewShape();
+  }, TDF_Label());
+}
+static void XCAFDoc_ShapeTool_SetShape_o31v0_wrap(XCAFDoc_ShapeTool& self, const TDF_Label& a0, const TopoDS_Shape& a1) {
+  occ_ts::guarded("XCAFDoc_ShapeTool.SetShape", [&]() -> int {
+    self.SetShape(a0, a1);
+    return 0;
+  }, 0);
+}
+static TDF_Label XCAFDoc_ShapeTool_AddShape_o32v0_wrap(XCAFDoc_ShapeTool& self, const TopoDS_Shape& a0, bool a1, bool a2) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.AddShape", [&]() -> TDF_Label {
+    return self.AddShape(a0, a1, a2);
+  }, TDF_Label());
+}
+static TDF_Label XCAFDoc_ShapeTool_AddShape_o32v1_wrap(XCAFDoc_ShapeTool& self, const TopoDS_Shape& a0, bool a1) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.AddShape", [&]() -> TDF_Label {
+    return self.AddShape(a0, a1);
+  }, TDF_Label());
+}
+static TDF_Label XCAFDoc_ShapeTool_AddShape_o32v2_wrap(XCAFDoc_ShapeTool& self, const TopoDS_Shape& a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.AddShape", [&]() -> TDF_Label {
+    return self.AddShape(a0);
+  }, TDF_Label());
+}
+static bool XCAFDoc_ShapeTool_RemoveShape_o33v0_wrap(const XCAFDoc_ShapeTool& self, const TDF_Label& a0, bool a1) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.RemoveShape", [&]() -> bool {
+    return self.RemoveShape(a0, a1);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_RemoveShape_o33v1_wrap(const XCAFDoc_ShapeTool& self, const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.RemoveShape", [&]() -> bool {
+    return self.RemoveShape(a0);
+  }, false);
+}
+static void XCAFDoc_ShapeTool_Init_o34v0_wrap(XCAFDoc_ShapeTool& self) {
+  occ_ts::guarded("XCAFDoc_ShapeTool.Init", [&]() -> int {
+    self.Init();
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ShapeTool_ComputeShapes_o35v0_wrap(XCAFDoc_ShapeTool& self, const TDF_Label& a0) {
+  occ_ts::guarded("XCAFDoc_ShapeTool.ComputeShapes", [&]() -> int {
+    self.ComputeShapes(a0);
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ShapeTool_ComputeSimpleShapes_o36v0_wrap(XCAFDoc_ShapeTool& self) {
+  occ_ts::guarded("XCAFDoc_ShapeTool.ComputeSimpleShapes", [&]() -> int {
+    self.ComputeSimpleShapes();
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ShapeTool_GetShapes_o37v0_wrap(const XCAFDoc_ShapeTool& self, TDF_LabelSequence& a0) {
+  occ_ts::guarded("XCAFDoc_ShapeTool.GetShapes", [&]() -> int {
+    self.GetShapes(a0);
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ShapeTool_GetFreeShapes_o38v0_wrap(const XCAFDoc_ShapeTool& self, TDF_LabelSequence& a0) {
+  occ_ts::guarded("XCAFDoc_ShapeTool.GetFreeShapes", [&]() -> int {
+    self.GetFreeShapes(a0);
+    return 0;
+  }, 0);
+}
+static TDF_Label XCAFDoc_ShapeTool_AddComponent_o39v0_wrap(XCAFDoc_ShapeTool& self, const TDF_Label& a0, const TDF_Label& a1, const TopLoc_Location& a2) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.AddComponent", [&]() -> TDF_Label {
+    return self.AddComponent(a0, a1, a2);
+  }, TDF_Label());
+}
+static TDF_Label XCAFDoc_ShapeTool_AddComponent_o40v0_wrap(XCAFDoc_ShapeTool& self, const TDF_Label& a0, const TopoDS_Shape& a1) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.AddComponent", [&]() -> TDF_Label {
+    return self.AddComponent(a0, a1);
+  }, TDF_Label());
+}
+static void XCAFDoc_ShapeTool_RemoveComponent_o41v0_wrap(const XCAFDoc_ShapeTool& self, const TDF_Label& a0) {
+  occ_ts::guarded("XCAFDoc_ShapeTool.RemoveComponent", [&]() -> int {
+    self.RemoveComponent(a0);
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ShapeTool_UpdateAssemblies_o42v0_wrap(XCAFDoc_ShapeTool& self) {
+  occ_ts::guarded("XCAFDoc_ShapeTool.UpdateAssemblies", [&]() -> int {
+    self.UpdateAssemblies();
+    return 0;
+  }, 0);
+}
+static bool XCAFDoc_ShapeTool_FindSubShape_o43v0_wrap(const XCAFDoc_ShapeTool& self, const TDF_Label& a0, const TopoDS_Shape& a1, TDF_Label& a2) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.FindSubShape", [&]() -> bool {
+    return self.FindSubShape(a0, a1, a2);
+  }, false);
+}
+static TDF_Label XCAFDoc_ShapeTool_AddSubShape_o44v0_wrap(const XCAFDoc_ShapeTool& self, const TDF_Label& a0, const TopoDS_Shape& a1) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.AddSubShape", [&]() -> TDF_Label {
+    return self.AddSubShape(a0, a1);
+  }, TDF_Label());
+}
+static bool XCAFDoc_ShapeTool_AddSubShape_o45v0_wrap(const XCAFDoc_ShapeTool& self, const TDF_Label& a0, const TopoDS_Shape& a1, TDF_Label& a2) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.AddSubShape", [&]() -> bool {
+    return self.AddSubShape(a0, a1, a2);
+  }, false);
+}
+static TDF_Label XCAFDoc_ShapeTool_FindMainShapeUsingMap_o46v0_wrap(const XCAFDoc_ShapeTool& self, const TopoDS_Shape& a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.FindMainShapeUsingMap", [&]() -> TDF_Label {
+    return self.FindMainShapeUsingMap(a0);
+  }, TDF_Label());
+}
+static TDF_Label XCAFDoc_ShapeTool_FindMainShape_o47v0_wrap(const XCAFDoc_ShapeTool& self, const TopoDS_Shape& a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.FindMainShape", [&]() -> TDF_Label {
+    return self.FindMainShape(a0);
+  }, TDF_Label());
+}
+static TDF_Label XCAFDoc_ShapeTool_BaseLabel_o48v0_wrap(const XCAFDoc_ShapeTool& self) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.BaseLabel", [&]() -> TDF_Label {
+    return self.BaseLabel();
+  }, TDF_Label());
+}
+static bool XCAFDoc_ShapeTool_RemoveSHUO_o49v0_wrap(const XCAFDoc_ShapeTool& self, const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.RemoveSHUO", [&]() -> bool {
+    return self.RemoveSHUO(a0);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_FindComponent_o50v0_wrap(const XCAFDoc_ShapeTool& self, const TopoDS_Shape& a0, TDF_LabelSequence& a1) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.FindComponent", [&]() -> bool {
+    return self.FindComponent(a0, a1);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_SetLocation_o51v0_wrap(XCAFDoc_ShapeTool& self, const TDF_Label& a0, const TopLoc_Location& a1, TDF_Label& a2) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.SetLocation", [&]() -> bool {
+    return self.SetLocation(a0, a1, a2);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_Expand_o52v0_wrap(XCAFDoc_ShapeTool& self, const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.Expand", [&]() -> bool {
+    return self.Expand(a0);
+  }, false);
+}
+static std::string XCAFDoc_ShapeTool_get_type_name_o53v0_wrap() {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.get_type_name", [&]() -> std::string {
+    return XCAFDoc_ShapeTool::get_type_name();
+  }, std::string());
+}
+static opencascade::handle<XCAFDoc_ShapeTool>* XCAFDoc_ShapeTool_Set_o56v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.Set", [&]() -> opencascade::handle<XCAFDoc_ShapeTool>* {
+    return new opencascade::handle<XCAFDoc_ShapeTool>(XCAFDoc_ShapeTool::Set(a0));
+  }, (opencascade::handle<XCAFDoc_ShapeTool>*)nullptr);
+}
+static bool XCAFDoc_ShapeTool_IsFree_o57v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.IsFree", [&]() -> bool {
+    return XCAFDoc_ShapeTool::IsFree(a0);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_IsShape_o58v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.IsShape", [&]() -> bool {
+    return XCAFDoc_ShapeTool::IsShape(a0);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_IsSimpleShape_o59v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.IsSimpleShape", [&]() -> bool {
+    return XCAFDoc_ShapeTool::IsSimpleShape(a0);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_IsReference_o60v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.IsReference", [&]() -> bool {
+    return XCAFDoc_ShapeTool::IsReference(a0);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_IsAssembly_o61v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.IsAssembly", [&]() -> bool {
+    return XCAFDoc_ShapeTool::IsAssembly(a0);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_IsComponent_o62v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.IsComponent", [&]() -> bool {
+    return XCAFDoc_ShapeTool::IsComponent(a0);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_IsCompound_o63v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.IsCompound", [&]() -> bool {
+    return XCAFDoc_ShapeTool::IsCompound(a0);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_IsSubShape_o64v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.IsSubShape", [&]() -> bool {
+    return XCAFDoc_ShapeTool::IsSubShape(a0);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_GetShape_o65v0_wrap(const TDF_Label& a0, TopoDS_Shape& a1) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.GetShape", [&]() -> bool {
+    return XCAFDoc_ShapeTool::GetShape(a0, a1);
+  }, false);
+}
+static TopoDS_Shape XCAFDoc_ShapeTool_GetShape_o66v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.GetShape", [&]() -> TopoDS_Shape {
+    return XCAFDoc_ShapeTool::GetShape(a0);
+  }, TopoDS_Shape());
+}
+static TopoDS_Shape XCAFDoc_ShapeTool_GetOneShape_o67v0_wrap(const TDF_LabelSequence& a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.GetOneShape", [&]() -> TopoDS_Shape {
+    return XCAFDoc_ShapeTool::GetOneShape(a0);
+  }, TopoDS_Shape());
+}
+static void XCAFDoc_ShapeTool_SetAutoNaming_o68v0_wrap(bool a0) {
+  occ_ts::guarded("XCAFDoc_ShapeTool.SetAutoNaming", [&]() -> int {
+    XCAFDoc_ShapeTool::SetAutoNaming(a0);
+    return 0;
+  }, 0);
+}
+static bool XCAFDoc_ShapeTool_AutoNaming_o69v0_wrap() {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.AutoNaming", [&]() -> bool {
+    return XCAFDoc_ShapeTool::AutoNaming();
+  }, false);
+}
+static int XCAFDoc_ShapeTool_GetUsers_o70v0_wrap(const TDF_Label& a0, TDF_LabelSequence& a1, bool a2) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.GetUsers", [&]() -> int {
+    return XCAFDoc_ShapeTool::GetUsers(a0, a1, a2);
+  }, 0);
+}
+static int XCAFDoc_ShapeTool_GetUsers_o70v1_wrap(const TDF_Label& a0, TDF_LabelSequence& a1) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.GetUsers", [&]() -> int {
+    return XCAFDoc_ShapeTool::GetUsers(a0, a1);
+  }, 0);
+}
+static TopLoc_Location XCAFDoc_ShapeTool_GetLocation_o71v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.GetLocation", [&]() -> TopLoc_Location {
+    return XCAFDoc_ShapeTool::GetLocation(a0);
+  }, TopLoc_Location());
+}
+static bool XCAFDoc_ShapeTool_GetReferredShape_o72v0_wrap(const TDF_Label& a0, TDF_Label& a1) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.GetReferredShape", [&]() -> bool {
+    return XCAFDoc_ShapeTool::GetReferredShape(a0, a1);
+  }, false);
+}
+static int XCAFDoc_ShapeTool_NbComponents_o73v0_wrap(const TDF_Label& a0, bool a1) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.NbComponents", [&]() -> int {
+    return XCAFDoc_ShapeTool::NbComponents(a0, a1);
+  }, 0);
+}
+static int XCAFDoc_ShapeTool_NbComponents_o73v1_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.NbComponents", [&]() -> int {
+    return XCAFDoc_ShapeTool::NbComponents(a0);
+  }, 0);
+}
+static bool XCAFDoc_ShapeTool_GetComponents_o74v0_wrap(const TDF_Label& a0, TDF_LabelSequence& a1, bool a2) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.GetComponents", [&]() -> bool {
+    return XCAFDoc_ShapeTool::GetComponents(a0, a1, a2);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_GetComponents_o74v1_wrap(const TDF_Label& a0, TDF_LabelSequence& a1) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.GetComponents", [&]() -> bool {
+    return XCAFDoc_ShapeTool::GetComponents(a0, a1);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_GetSubShapes_o75v0_wrap(const TDF_Label& a0, TDF_LabelSequence& a1) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.GetSubShapes", [&]() -> bool {
+    return XCAFDoc_ShapeTool::GetSubShapes(a0, a1);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_IsExternRef_o76v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.IsExternRef", [&]() -> bool {
+    return XCAFDoc_ShapeTool::IsExternRef(a0);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_GetSHUOUpperUsage_o77v0_wrap(const TDF_Label& a0, TDF_LabelSequence& a1) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.GetSHUOUpperUsage", [&]() -> bool {
+    return XCAFDoc_ShapeTool::GetSHUOUpperUsage(a0, a1);
+  }, false);
+}
+static bool XCAFDoc_ShapeTool_GetSHUONextUsage_o78v0_wrap(const TDF_Label& a0, TDF_LabelSequence& a1) {
+  return occ_ts::guarded("XCAFDoc_ShapeTool.GetSHUONextUsage", [&]() -> bool {
+    return XCAFDoc_ShapeTool::GetSHUONextUsage(a0, a1);
+  }, false);
+}
+static XCAFDoc_ColorTool* XCAFDoc_ColorTool_ctor_c0v0_wrap() {
+  return occ_ts::guarded("XCAFDoc_ColorTool::ctor", [&]() -> XCAFDoc_ColorTool* {
+    return new XCAFDoc_ColorTool();
+  }, (XCAFDoc_ColorTool*)nullptr);
+}
+static bool XCAFDoc_ColorTool_IsInstance_wrap(const XCAFDoc_ColorTool& self, std::string a0) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.IsInstance", [&]() -> bool {
+    return self.IsInstance(a0.c_str());
+  }, false);
+}
+static bool XCAFDoc_ColorTool_IsKind_o1v0_wrap(const XCAFDoc_ColorTool& self, std::string a0) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.IsKind", [&]() -> bool {
+    return self.IsKind(a0.c_str());
+  }, false);
+}
+static int XCAFDoc_ColorTool_GetRefCount_o2v0_wrap(const XCAFDoc_ColorTool& self) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.GetRefCount", [&]() -> int {
+    return self.GetRefCount();
+  }, 0);
+}
+static void XCAFDoc_ColorTool_IncrementRefCounter_o3v0_wrap(XCAFDoc_ColorTool& self) {
+  occ_ts::guarded("XCAFDoc_ColorTool.IncrementRefCounter", [&]() -> int {
+    self.IncrementRefCounter();
+    return 0;
+  }, 0);
+}
+static int XCAFDoc_ColorTool_DecrementRefCounter_o4v0_wrap(XCAFDoc_ColorTool& self) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.DecrementRefCounter", [&]() -> int {
+    return self.DecrementRefCounter();
+  }, 0);
+}
+static void XCAFDoc_ColorTool_Delete_o5v0_wrap(const XCAFDoc_ColorTool& self) {
+  occ_ts::guarded("XCAFDoc_ColorTool.Delete", [&]() -> int {
+    self.Delete();
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ColorTool_SetID_o6v0_wrap(XCAFDoc_ColorTool& self) {
+  occ_ts::guarded("XCAFDoc_ColorTool.SetID", [&]() -> int {
+    self.SetID();
+    return 0;
+  }, 0);
+}
+static TDF_Label XCAFDoc_ColorTool_Label_o7v0_wrap(const XCAFDoc_ColorTool& self) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.Label", [&]() -> TDF_Label {
+    return self.Label();
+  }, TDF_Label());
+}
+static int XCAFDoc_ColorTool_Transaction_o8v0_wrap(const XCAFDoc_ColorTool& self) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.Transaction", [&]() -> int {
+    return self.Transaction();
+  }, 0);
+}
+static int XCAFDoc_ColorTool_UntilTransaction_o9v0_wrap(const XCAFDoc_ColorTool& self) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.UntilTransaction", [&]() -> int {
+    return self.UntilTransaction();
+  }, 0);
+}
+static bool XCAFDoc_ColorTool_IsValid_o10v0_wrap(const XCAFDoc_ColorTool& self) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.IsValid", [&]() -> bool {
+    return self.IsValid();
+  }, false);
+}
+static bool XCAFDoc_ColorTool_IsNew_o11v0_wrap(const XCAFDoc_ColorTool& self) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.IsNew", [&]() -> bool {
+    return self.IsNew();
+  }, false);
+}
+static bool XCAFDoc_ColorTool_IsForgotten_o12v0_wrap(const XCAFDoc_ColorTool& self) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.IsForgotten", [&]() -> bool {
+    return self.IsForgotten();
+  }, false);
+}
+static void XCAFDoc_ColorTool_ForgetAllAttributes_o13v0_wrap(const XCAFDoc_ColorTool& self, bool a0) {
+  occ_ts::guarded("XCAFDoc_ColorTool.ForgetAllAttributes", [&]() -> int {
+    self.ForgetAllAttributes(a0);
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ColorTool_ForgetAllAttributes_o13v1_wrap(const XCAFDoc_ColorTool& self) {
+  occ_ts::guarded("XCAFDoc_ColorTool.ForgetAllAttributes", [&]() -> int {
+    self.ForgetAllAttributes();
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ColorTool_AfterAddition_o14v0_wrap(XCAFDoc_ColorTool& self) {
+  occ_ts::guarded("XCAFDoc_ColorTool.AfterAddition", [&]() -> int {
+    self.AfterAddition();
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ColorTool_BeforeRemoval_o15v0_wrap(XCAFDoc_ColorTool& self) {
+  occ_ts::guarded("XCAFDoc_ColorTool.BeforeRemoval", [&]() -> int {
+    self.BeforeRemoval();
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ColorTool_BeforeForget_o16v0_wrap(XCAFDoc_ColorTool& self) {
+  occ_ts::guarded("XCAFDoc_ColorTool.BeforeForget", [&]() -> int {
+    self.BeforeForget();
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ColorTool_AfterResume_o17v0_wrap(XCAFDoc_ColorTool& self) {
+  occ_ts::guarded("XCAFDoc_ColorTool.AfterResume", [&]() -> int {
+    self.AfterResume();
+    return 0;
+  }, 0);
+}
+static bool XCAFDoc_ColorTool_AfterRetrieval_o18v0_wrap(XCAFDoc_ColorTool& self, bool a0) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.AfterRetrieval", [&]() -> bool {
+    return self.AfterRetrieval(a0);
+  }, false);
+}
+static bool XCAFDoc_ColorTool_AfterRetrieval_o18v1_wrap(XCAFDoc_ColorTool& self) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.AfterRetrieval", [&]() -> bool {
+    return self.AfterRetrieval();
+  }, false);
+}
+static void XCAFDoc_ColorTool_BeforeCommitTransaction_o19v0_wrap(XCAFDoc_ColorTool& self) {
+  occ_ts::guarded("XCAFDoc_ColorTool.BeforeCommitTransaction", [&]() -> int {
+    self.BeforeCommitTransaction();
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ColorTool_Backup_o20v0_wrap(XCAFDoc_ColorTool& self) {
+  occ_ts::guarded("XCAFDoc_ColorTool.Backup", [&]() -> int {
+    self.Backup();
+    return 0;
+  }, 0);
+}
+static bool XCAFDoc_ColorTool_IsBackuped_o21v0_wrap(const XCAFDoc_ColorTool& self) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.IsBackuped", [&]() -> bool {
+    return self.IsBackuped();
+  }, false);
+}
+static void XCAFDoc_ColorTool_Forget_o22v0_wrap(XCAFDoc_ColorTool& self, int a0) {
+  occ_ts::guarded("XCAFDoc_ColorTool.Forget", [&]() -> int {
+    self.Forget(a0);
+    return 0;
+  }, 0);
+}
+static TDF_Label XCAFDoc_ColorTool_BaseLabel_o23v0_wrap(const XCAFDoc_ColorTool& self) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.BaseLabel", [&]() -> TDF_Label {
+    return self.BaseLabel();
+  }, TDF_Label());
+}
+static opencascade::handle<XCAFDoc_ShapeTool>* XCAFDoc_ColorTool_ShapeTool_o24v0_wrap(XCAFDoc_ColorTool& self) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.ShapeTool", [&]() -> opencascade::handle<XCAFDoc_ShapeTool>* {
+    return new opencascade::handle<XCAFDoc_ShapeTool>(self.ShapeTool());
+  }, (opencascade::handle<XCAFDoc_ShapeTool>*)nullptr);
+}
+static bool XCAFDoc_ColorTool_IsColor_o25v0_wrap(const XCAFDoc_ColorTool& self, const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.IsColor", [&]() -> bool {
+    return self.IsColor(a0);
+  }, false);
+}
+static bool XCAFDoc_ColorTool_FindColor_o26v0_wrap(const XCAFDoc_ColorTool& self, const Quantity_Color& a0, TDF_Label& a1) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.FindColor", [&]() -> bool {
+    return self.FindColor(a0, a1);
+  }, false);
+}
+static TDF_Label XCAFDoc_ColorTool_FindColor_o27v0_wrap(const XCAFDoc_ColorTool& self, const Quantity_Color& a0) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.FindColor", [&]() -> TDF_Label {
+    return self.FindColor(a0);
+  }, TDF_Label());
+}
+static TDF_Label XCAFDoc_ColorTool_AddColor_o28v0_wrap(const XCAFDoc_ColorTool& self, const Quantity_Color& a0) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.AddColor", [&]() -> TDF_Label {
+    return self.AddColor(a0);
+  }, TDF_Label());
+}
+static void XCAFDoc_ColorTool_RemoveColor_o29v0_wrap(const XCAFDoc_ColorTool& self, const TDF_Label& a0) {
+  occ_ts::guarded("XCAFDoc_ColorTool.RemoveColor", [&]() -> int {
+    self.RemoveColor(a0);
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ColorTool_GetColors_o30v0_wrap(const XCAFDoc_ColorTool& self, TDF_LabelSequence& a0) {
+  occ_ts::guarded("XCAFDoc_ColorTool.GetColors", [&]() -> int {
+    self.GetColors(a0);
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ColorTool_SetColor_o31v0_wrap(const XCAFDoc_ColorTool& self, const TDF_Label& a0, const TDF_Label& a1, int a2) {
+  occ_ts::guarded("XCAFDoc_ColorTool.SetColor", [&]() -> int {
+    self.SetColor(a0, a1, static_cast<XCAFDoc_ColorType>(a2));
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ColorTool_UnSetColor_o33v0_wrap(const XCAFDoc_ColorTool& self, const TDF_Label& a0, int a1) {
+  occ_ts::guarded("XCAFDoc_ColorTool.UnSetColor", [&]() -> int {
+    self.UnSetColor(a0, static_cast<XCAFDoc_ColorType>(a1));
+    return 0;
+  }, 0);
+}
+static bool XCAFDoc_ColorTool_IsSet_o34v0_wrap(const XCAFDoc_ColorTool& self, const TDF_Label& a0, int a1) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.IsSet", [&]() -> bool {
+    return self.IsSet(a0, static_cast<XCAFDoc_ColorType>(a1));
+  }, false);
+}
+static bool XCAFDoc_ColorTool_GetColor_o39v0_wrap(XCAFDoc_ColorTool& self, const TopoDS_Shape& a0, int a1, TDF_Label& a2) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.GetColor", [&]() -> bool {
+    return self.GetColor(a0, static_cast<XCAFDoc_ColorType>(a1), a2);
+  }, false);
+}
+static void XCAFDoc_ColorTool_SetVisibility_o41v0_wrap(XCAFDoc_ColorTool& self, const TDF_Label& a0, bool a1) {
+  occ_ts::guarded("XCAFDoc_ColorTool.SetVisibility", [&]() -> int {
+    self.SetVisibility(a0, a1);
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ColorTool_SetVisibility_o41v1_wrap(XCAFDoc_ColorTool& self, const TDF_Label& a0) {
+  occ_ts::guarded("XCAFDoc_ColorTool.SetVisibility", [&]() -> int {
+    self.SetVisibility(a0);
+    return 0;
+  }, 0);
+}
+static bool XCAFDoc_ColorTool_IsColorByLayer_o42v0_wrap(const XCAFDoc_ColorTool& self, const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.IsColorByLayer", [&]() -> bool {
+    return self.IsColorByLayer(a0);
+  }, false);
+}
+static void XCAFDoc_ColorTool_SetColorByLayer_o43v0_wrap(XCAFDoc_ColorTool& self, const TDF_Label& a0, bool a1) {
+  occ_ts::guarded("XCAFDoc_ColorTool.SetColorByLayer", [&]() -> int {
+    self.SetColorByLayer(a0, a1);
+    return 0;
+  }, 0);
+}
+static void XCAFDoc_ColorTool_SetColorByLayer_o43v1_wrap(XCAFDoc_ColorTool& self, const TDF_Label& a0) {
+  occ_ts::guarded("XCAFDoc_ColorTool.SetColorByLayer", [&]() -> int {
+    self.SetColorByLayer(a0);
+    return 0;
+  }, 0);
+}
+static bool XCAFDoc_ColorTool_SetInstanceColor_o44v0_wrap(XCAFDoc_ColorTool& self, const TopoDS_Shape& a0, int a1, const Quantity_Color& a2, bool a3) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.SetInstanceColor", [&]() -> bool {
+    return self.SetInstanceColor(a0, static_cast<XCAFDoc_ColorType>(a1), a2, a3);
+  }, false);
+}
+static bool XCAFDoc_ColorTool_SetInstanceColor_o44v1_wrap(XCAFDoc_ColorTool& self, const TopoDS_Shape& a0, int a1, const Quantity_Color& a2) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.SetInstanceColor", [&]() -> bool {
+    return self.SetInstanceColor(a0, static_cast<XCAFDoc_ColorType>(a1), a2);
+  }, false);
+}
+static bool XCAFDoc_ColorTool_GetInstanceColor_o45v0_wrap(XCAFDoc_ColorTool& self, const TopoDS_Shape& a0, int a1, Quantity_Color& a2) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.GetInstanceColor", [&]() -> bool {
+    return self.GetInstanceColor(a0, static_cast<XCAFDoc_ColorType>(a1), a2);
+  }, false);
+}
+static bool XCAFDoc_ColorTool_IsInstanceVisible_o46v0_wrap(XCAFDoc_ColorTool& self, const TopoDS_Shape& a0) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.IsInstanceVisible", [&]() -> bool {
+    return self.IsInstanceVisible(a0);
+  }, false);
+}
+static bool XCAFDoc_ColorTool_ReverseChainsOfTreeNodes_o47v0_wrap(XCAFDoc_ColorTool& self) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.ReverseChainsOfTreeNodes", [&]() -> bool {
+    return self.ReverseChainsOfTreeNodes();
+  }, false);
+}
+static std::string XCAFDoc_ColorTool_get_type_name_o48v0_wrap() {
+  return occ_ts::guarded("XCAFDoc_ColorTool.get_type_name", [&]() -> std::string {
+    return XCAFDoc_ColorTool::get_type_name();
+  }, std::string());
+}
+static bool XCAFDoc_ColorTool_AutoNaming_o51v0_wrap() {
+  return occ_ts::guarded("XCAFDoc_ColorTool.AutoNaming", [&]() -> bool {
+    return XCAFDoc_ColorTool::AutoNaming();
+  }, false);
+}
+static void XCAFDoc_ColorTool_SetAutoNaming_o52v0_wrap(bool a0) {
+  occ_ts::guarded("XCAFDoc_ColorTool.SetAutoNaming", [&]() -> int {
+    XCAFDoc_ColorTool::SetAutoNaming(a0);
+    return 0;
+  }, 0);
+}
+static opencascade::handle<XCAFDoc_ColorTool>* XCAFDoc_ColorTool_Set_o53v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.Set", [&]() -> opencascade::handle<XCAFDoc_ColorTool>* {
+    return new opencascade::handle<XCAFDoc_ColorTool>(XCAFDoc_ColorTool::Set(a0));
+  }, (opencascade::handle<XCAFDoc_ColorTool>*)nullptr);
+}
+static bool XCAFDoc_ColorTool_GetColor_o54v0_wrap(const TDF_Label& a0, Quantity_Color& a1) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.GetColor", [&]() -> bool {
+    return XCAFDoc_ColorTool::GetColor(a0, a1);
+  }, false);
+}
+static bool XCAFDoc_ColorTool_IsVisible_o57v0_wrap(const TDF_Label& a0) {
+  return occ_ts::guarded("XCAFDoc_ColorTool.IsVisible", [&]() -> bool {
+    return XCAFDoc_ColorTool::IsVisible(a0);
+  }, false);
+}
+static Quantity_Color* Quantity_Color_ctor_c0v0_wrap() {
+  return occ_ts::guarded("Quantity_Color::ctor", [&]() -> Quantity_Color* {
+    return new Quantity_Color();
+  }, (Quantity_Color*)nullptr);
+}
+static Quantity_Color* Quantity_Color_ctor_c1v0_wrap(double a0, double a1, double a2, int a3) {
+  return occ_ts::guarded("Quantity_Color::ctor", [&]() -> Quantity_Color* {
+    return new Quantity_Color(a0, a1, a2, static_cast<Quantity_TypeOfColor>(a3));
+  }, (Quantity_Color*)nullptr);
+}
+static void Quantity_Color_SetValues_wrap(Quantity_Color& self, double a0, double a1, double a2, int a3) {
+  occ_ts::guarded("Quantity_Color.SetValues", [&]() -> int {
+    self.SetValues(a0, a1, a2, static_cast<Quantity_TypeOfColor>(a3));
+    return 0;
+  }, 0);
+}
+static double Quantity_Color_Red_o1v0_wrap(const Quantity_Color& self) {
+  return occ_ts::guarded("Quantity_Color.Red", [&]() -> double {
+    return self.Red();
+  }, 0);
+}
+static double Quantity_Color_Green_o2v0_wrap(const Quantity_Color& self) {
+  return occ_ts::guarded("Quantity_Color.Green", [&]() -> double {
+    return self.Green();
+  }, 0);
+}
+static double Quantity_Color_Blue_o3v0_wrap(const Quantity_Color& self) {
+  return occ_ts::guarded("Quantity_Color.Blue", [&]() -> double {
+    return self.Blue();
+  }, 0);
+}
+static double Quantity_Color_Hue_o4v0_wrap(const Quantity_Color& self) {
+  return occ_ts::guarded("Quantity_Color.Hue", [&]() -> double {
+    return self.Hue();
+  }, 0);
+}
+static double Quantity_Color_Light_o5v0_wrap(const Quantity_Color& self) {
+  return occ_ts::guarded("Quantity_Color.Light", [&]() -> double {
+    return self.Light();
+  }, 0);
+}
+static void Quantity_Color_ChangeIntensity_o6v0_wrap(Quantity_Color& self, double a0) {
+  occ_ts::guarded("Quantity_Color.ChangeIntensity", [&]() -> int {
+    self.ChangeIntensity(a0);
+    return 0;
+  }, 0);
+}
+static double Quantity_Color_Saturation_o7v0_wrap(const Quantity_Color& self) {
+  return occ_ts::guarded("Quantity_Color.Saturation", [&]() -> double {
+    return self.Saturation();
+  }, 0);
+}
+static void Quantity_Color_ChangeContrast_o8v0_wrap(Quantity_Color& self, double a0) {
+  occ_ts::guarded("Quantity_Color.ChangeContrast", [&]() -> int {
+    self.ChangeContrast(a0);
+    return 0;
+  }, 0);
+}
+static bool Quantity_Color_IsDifferent_o9v0_wrap(const Quantity_Color& self, const Quantity_Color& a0) {
+  return occ_ts::guarded("Quantity_Color.IsDifferent", [&]() -> bool {
+    return self.IsDifferent(a0);
+  }, false);
+}
+static bool Quantity_Color_IsEqual_o10v0_wrap(const Quantity_Color& self, const Quantity_Color& a0) {
+  return occ_ts::guarded("Quantity_Color.IsEqual", [&]() -> bool {
+    return self.IsEqual(a0);
+  }, false);
+}
+static double Quantity_Color_Distance_o11v0_wrap(const Quantity_Color& self, const Quantity_Color& a0) {
+  return occ_ts::guarded("Quantity_Color.Distance", [&]() -> double {
+    return self.Distance(a0);
+  }, 0);
+}
+static double Quantity_Color_SquareDistance_o12v0_wrap(const Quantity_Color& self, const Quantity_Color& a0) {
+  return occ_ts::guarded("Quantity_Color.SquareDistance", [&]() -> double {
+    return self.SquareDistance(a0);
+  }, 0);
+}
+static double Quantity_Color_DeltaE2000_o13v0_wrap(const Quantity_Color& self, const Quantity_Color& a0) {
+  return occ_ts::guarded("Quantity_Color.DeltaE2000", [&]() -> double {
+    return self.DeltaE2000(a0);
+  }, 0);
+}
+static bool Quantity_Color_ColorFromName_o14v0_wrap(std::string a0, Quantity_Color& a1) {
+  return occ_ts::guarded("Quantity_Color.ColorFromName", [&]() -> bool {
+    return Quantity_Color::ColorFromName(a0.c_str(), a1);
+  }, false);
+}
+static bool Quantity_Color_ColorFromHex_o15v0_wrap(std::string a0, Quantity_Color& a1) {
+  return occ_ts::guarded("Quantity_Color.ColorFromHex", [&]() -> bool {
+    return Quantity_Color::ColorFromHex(a0.c_str(), a1);
+  }, false);
+}
+static TCollection_AsciiString Quantity_Color_ColorToHex_o16v0_wrap(const Quantity_Color& a0, bool a1) {
+  return occ_ts::guarded("Quantity_Color.ColorToHex", [&]() -> TCollection_AsciiString {
+    return Quantity_Color::ColorToHex(a0, a1);
+  }, TCollection_AsciiString());
+}
+static TCollection_AsciiString Quantity_Color_ColorToHex_o16v1_wrap(const Quantity_Color& a0) {
+  return occ_ts::guarded("Quantity_Color.ColorToHex", [&]() -> TCollection_AsciiString {
+    return Quantity_Color::ColorToHex(a0);
+  }, TCollection_AsciiString());
+}
+static void Quantity_Color_Argb2color_o17v0_wrap(int a0, Quantity_Color& a1) {
+  occ_ts::guarded("Quantity_Color.Argb2color", [&]() -> int {
+    Quantity_Color::Argb2color(a0, a1);
+    return 0;
+  }, 0);
+}
+static double Quantity_Color_Convert_LinearRGB_To_sRGB_o18v0_wrap(double a0) {
+  return occ_ts::guarded("Quantity_Color.Convert_LinearRGB_To_sRGB", [&]() -> double {
+    return Quantity_Color::Convert_LinearRGB_To_sRGB(a0);
+  }, 0);
+}
+static double Quantity_Color_Convert_sRGB_To_LinearRGB_o20v0_wrap(double a0) {
+  return occ_ts::guarded("Quantity_Color.Convert_sRGB_To_LinearRGB", [&]() -> double {
+    return Quantity_Color::Convert_sRGB_To_LinearRGB(a0);
+  }, 0);
+}
+static double Quantity_Color_Convert_LinearRGB_To_sRGB_approx22_o22v0_wrap(double a0) {
+  return occ_ts::guarded("Quantity_Color.Convert_LinearRGB_To_sRGB_approx22", [&]() -> double {
+    return Quantity_Color::Convert_LinearRGB_To_sRGB_approx22(a0);
+  }, 0);
+}
+static double Quantity_Color_Convert_sRGB_To_LinearRGB_approx22_o23v0_wrap(double a0) {
+  return occ_ts::guarded("Quantity_Color.Convert_sRGB_To_LinearRGB_approx22", [&]() -> double {
+    return Quantity_Color::Convert_sRGB_To_LinearRGB_approx22(a0);
+  }, 0);
+}
+static double Quantity_Color_Epsilon_o24v0_wrap() {
+  return occ_ts::guarded("Quantity_Color.Epsilon", [&]() -> double {
+    return Quantity_Color::Epsilon();
+  }, 0);
+}
+static void Quantity_Color_SetEpsilon_o25v0_wrap(double a0) {
+  occ_ts::guarded("Quantity_Color.SetEpsilon", [&]() -> int {
+    Quantity_Color::SetEpsilon(a0);
+    return 0;
+  }, 0);
+}
 static Adaptor3d_Curve* Handle_Adaptor3d_Curve_Get_wrap(const opencascade::handle<Adaptor3d_Curve>& self) {
   return occ_ts::guarded("Handle_Adaptor3d_Curve.Get", [&]() -> Adaptor3d_Curve* {
     return const_cast<Adaptor3d_Curve*>(self.get());
@@ -26295,6 +28857,106 @@ static opencascade::handle<TCollection_HAsciiString>* Handle_TCollection_HAsciiS
   }, (opencascade::handle<TCollection_HAsciiString>*)nullptr);
 }
 
+static TDataStd_Name* Handle_TDataStd_Name_Get_wrap(const opencascade::handle<TDataStd_Name>& self) {
+  return occ_ts::guarded("Handle_TDataStd_Name.Get", [&]() -> TDataStd_Name* {
+    return const_cast<TDataStd_Name*>(self.get());
+  }, (TDataStd_Name*)nullptr);
+}
+
+static bool Handle_TDataStd_Name_IsNull_wrap(const opencascade::handle<TDataStd_Name>& self) {
+  return occ_ts::guarded("Handle_TDataStd_Name.IsNull", [&]() -> bool {
+    return self.IsNull();
+  }, true);
+}
+
+// embind has no raw-pointer constructors — adopting a pointee into a
+// handle goes through this factory instead.
+static opencascade::handle<TDataStd_Name>* Handle_TDataStd_Name_adopt(TDataStd_Name* pointee) {
+  return occ_ts::guarded("Handle_TDataStd_Name.adopt", [&]() -> opencascade::handle<TDataStd_Name>* {
+    return new opencascade::handle<TDataStd_Name>(pointee);
+  }, (opencascade::handle<TDataStd_Name>*)nullptr);
+}
+
+static TDocStd_Document* Handle_TDocStd_Document_Get_wrap(const opencascade::handle<TDocStd_Document>& self) {
+  return occ_ts::guarded("Handle_TDocStd_Document.Get", [&]() -> TDocStd_Document* {
+    return const_cast<TDocStd_Document*>(self.get());
+  }, (TDocStd_Document*)nullptr);
+}
+
+static bool Handle_TDocStd_Document_IsNull_wrap(const opencascade::handle<TDocStd_Document>& self) {
+  return occ_ts::guarded("Handle_TDocStd_Document.IsNull", [&]() -> bool {
+    return self.IsNull();
+  }, true);
+}
+
+// embind has no raw-pointer constructors — adopting a pointee into a
+// handle goes through this factory instead.
+static opencascade::handle<TDocStd_Document>* Handle_TDocStd_Document_adopt(TDocStd_Document* pointee) {
+  return occ_ts::guarded("Handle_TDocStd_Document.adopt", [&]() -> opencascade::handle<TDocStd_Document>* {
+    return new opencascade::handle<TDocStd_Document>(pointee);
+  }, (opencascade::handle<TDocStd_Document>*)nullptr);
+}
+
+static XCAFDoc_ColorTool* Handle_XCAFDoc_ColorTool_Get_wrap(const opencascade::handle<XCAFDoc_ColorTool>& self) {
+  return occ_ts::guarded("Handle_XCAFDoc_ColorTool.Get", [&]() -> XCAFDoc_ColorTool* {
+    return const_cast<XCAFDoc_ColorTool*>(self.get());
+  }, (XCAFDoc_ColorTool*)nullptr);
+}
+
+static bool Handle_XCAFDoc_ColorTool_IsNull_wrap(const opencascade::handle<XCAFDoc_ColorTool>& self) {
+  return occ_ts::guarded("Handle_XCAFDoc_ColorTool.IsNull", [&]() -> bool {
+    return self.IsNull();
+  }, true);
+}
+
+// embind has no raw-pointer constructors — adopting a pointee into a
+// handle goes through this factory instead.
+static opencascade::handle<XCAFDoc_ColorTool>* Handle_XCAFDoc_ColorTool_adopt(XCAFDoc_ColorTool* pointee) {
+  return occ_ts::guarded("Handle_XCAFDoc_ColorTool.adopt", [&]() -> opencascade::handle<XCAFDoc_ColorTool>* {
+    return new opencascade::handle<XCAFDoc_ColorTool>(pointee);
+  }, (opencascade::handle<XCAFDoc_ColorTool>*)nullptr);
+}
+
+static XCAFDoc_DocumentTool* Handle_XCAFDoc_DocumentTool_Get_wrap(const opencascade::handle<XCAFDoc_DocumentTool>& self) {
+  return occ_ts::guarded("Handle_XCAFDoc_DocumentTool.Get", [&]() -> XCAFDoc_DocumentTool* {
+    return const_cast<XCAFDoc_DocumentTool*>(self.get());
+  }, (XCAFDoc_DocumentTool*)nullptr);
+}
+
+static bool Handle_XCAFDoc_DocumentTool_IsNull_wrap(const opencascade::handle<XCAFDoc_DocumentTool>& self) {
+  return occ_ts::guarded("Handle_XCAFDoc_DocumentTool.IsNull", [&]() -> bool {
+    return self.IsNull();
+  }, true);
+}
+
+// embind has no raw-pointer constructors — adopting a pointee into a
+// handle goes through this factory instead.
+static opencascade::handle<XCAFDoc_DocumentTool>* Handle_XCAFDoc_DocumentTool_adopt(XCAFDoc_DocumentTool* pointee) {
+  return occ_ts::guarded("Handle_XCAFDoc_DocumentTool.adopt", [&]() -> opencascade::handle<XCAFDoc_DocumentTool>* {
+    return new opencascade::handle<XCAFDoc_DocumentTool>(pointee);
+  }, (opencascade::handle<XCAFDoc_DocumentTool>*)nullptr);
+}
+
+static XCAFDoc_ShapeTool* Handle_XCAFDoc_ShapeTool_Get_wrap(const opencascade::handle<XCAFDoc_ShapeTool>& self) {
+  return occ_ts::guarded("Handle_XCAFDoc_ShapeTool.Get", [&]() -> XCAFDoc_ShapeTool* {
+    return const_cast<XCAFDoc_ShapeTool*>(self.get());
+  }, (XCAFDoc_ShapeTool*)nullptr);
+}
+
+static bool Handle_XCAFDoc_ShapeTool_IsNull_wrap(const opencascade::handle<XCAFDoc_ShapeTool>& self) {
+  return occ_ts::guarded("Handle_XCAFDoc_ShapeTool.IsNull", [&]() -> bool {
+    return self.IsNull();
+  }, true);
+}
+
+// embind has no raw-pointer constructors — adopting a pointee into a
+// handle goes through this factory instead.
+static opencascade::handle<XCAFDoc_ShapeTool>* Handle_XCAFDoc_ShapeTool_adopt(XCAFDoc_ShapeTool* pointee) {
+  return occ_ts::guarded("Handle_XCAFDoc_ShapeTool.adopt", [&]() -> opencascade::handle<XCAFDoc_ShapeTool>* {
+    return new opencascade::handle<XCAFDoc_ShapeTool>(pointee);
+  }, (opencascade::handle<XCAFDoc_ShapeTool>*)nullptr);
+}
+
 static TopoDS_Vertex TopoDS_Vertex_wrap(const TopoDS_Shape& a0) {
   return occ_ts::guarded("TopoDS.Vertex", [&]() -> TopoDS_Vertex {
     return TopoDS::Vertex(a0);
@@ -26631,281 +29293,58 @@ EMSCRIPTEN_BINDINGS(occt_ts_raw) {
       .function("Reset", &DESTEP_Parameters_Reset_o1v0_wrap)
   ;
 
-  class_<TCollection_AsciiString>("TCollection_AsciiString")
-      .constructor(&TCollection_AsciiString_ctor_c0v0_wrap)
-      .constructor(&TCollection_AsciiString_ctor_c1v0_wrap)
-      .constructor(&TCollection_AsciiString_ctor_c2v0_wrap)
-      .function("AssignCat", &TCollection_AsciiString_AssignCat_wrap)
-      .function("Capitalize", &TCollection_AsciiString_Capitalize_o5v0_wrap)
-      .function("Cat", &TCollection_AsciiString_Cat_o6v0_wrap)
-      .function("Center", &TCollection_AsciiString_Center_o11v0_wrap)
-      .function("ChangeAll", &TCollection_AsciiString_ChangeAll_o12v0_wrap)
-      .function("ChangeAll", &TCollection_AsciiString_ChangeAll_o12v1_wrap)
-      .function("Clear", &TCollection_AsciiString_Clear_o13v0_wrap)
-      .function("Copy", &TCollection_AsciiString_Copy_o14v0_wrap)
-      .function("Swap", &TCollection_AsciiString_Swap_o16v0_wrap)
-      .function("FirstLocationInSet", &TCollection_AsciiString_FirstLocationInSet_o17v0_wrap)
-      .function("FirstLocationNotInSet", &TCollection_AsciiString_FirstLocationNotInSet_o18v0_wrap)
-      .function("Insert", &TCollection_AsciiString_Insert_o19v0_wrap)
-      .function("InsertAfter", &TCollection_AsciiString_InsertAfter_o22v0_wrap)
-      .function("InsertBefore", &TCollection_AsciiString_InsertBefore_o23v0_wrap)
-      .function("IsEmpty", &TCollection_AsciiString_IsEmpty_o24v0_wrap)
-      .function("IsEqual", &TCollection_AsciiString_IsEqual_o25v0_wrap)
-      .function("IsDifferent", &TCollection_AsciiString_IsDifferent_o27v0_wrap)
-      .function("IsLess", &TCollection_AsciiString_IsLess_o29v0_wrap)
-      .function("IsGreater", &TCollection_AsciiString_IsGreater_o31v0_wrap)
-      .function("StartsWith", &TCollection_AsciiString_StartsWith_o33v0_wrap)
-      .function("EndsWith", &TCollection_AsciiString_EndsWith_o34v0_wrap)
-      .function("IntegerValue", &TCollection_AsciiString_IntegerValue_o35v0_wrap)
-      .function("IsIntegerValue", &TCollection_AsciiString_IsIntegerValue_o36v0_wrap)
-      .function("IsRealValue", &TCollection_AsciiString_IsRealValue_o37v0_wrap)
-      .function("IsRealValue", &TCollection_AsciiString_IsRealValue_o37v1_wrap)
-      .function("IsAscii", &TCollection_AsciiString_IsAscii_o38v0_wrap)
-      .function("LeftAdjust", &TCollection_AsciiString_LeftAdjust_o39v0_wrap)
-      .function("LeftJustify", &TCollection_AsciiString_LeftJustify_o40v0_wrap)
-      .function("Length", &TCollection_AsciiString_Length_o41v0_wrap)
-      .function("Location", &TCollection_AsciiString_Location_o42v0_wrap)
-      .function("Location", &TCollection_AsciiString_Location_o43v0_wrap)
-      .function("LowerCase", &TCollection_AsciiString_LowerCase_o44v0_wrap)
-      .function("Prepend", &TCollection_AsciiString_Prepend_o45v0_wrap)
-      .function("RealValue", &TCollection_AsciiString_RealValue_o46v0_wrap)
-      .function("RemoveAll", &TCollection_AsciiString_RemoveAll_o47v0_wrap)
-      .function("RemoveAll", &TCollection_AsciiString_RemoveAll_o48v0_wrap)
-      .function("Remove", &TCollection_AsciiString_Remove_o49v0_wrap)
-      .function("Remove", &TCollection_AsciiString_Remove_o49v1_wrap)
-      .function("RightAdjust", &TCollection_AsciiString_RightAdjust_o50v0_wrap)
-      .function("RightJustify", &TCollection_AsciiString_RightJustify_o51v0_wrap)
-      .function("Search", &TCollection_AsciiString_Search_o52v0_wrap)
-      .function("SearchFromEnd", &TCollection_AsciiString_SearchFromEnd_o54v0_wrap)
-      .function("SetValue", &TCollection_AsciiString_SetValue_o56v0_wrap)
-      .function("Split", &TCollection_AsciiString_Split_o59v0_wrap)
-      .function("SubString", &TCollection_AsciiString_SubString_o60v0_wrap)
-      .function("ToCString", &TCollection_AsciiString_ToCString_o61v0_wrap)
-      .function("Token", &TCollection_AsciiString_Token_o62v0_wrap)
-      .function("Token", &TCollection_AsciiString_Token_o62v1_wrap)
-      .function("Token", &TCollection_AsciiString_Token_o62v2_wrap)
-      .function("Trunc", &TCollection_AsciiString_Trunc_o63v0_wrap)
-      .function("UpperCase", &TCollection_AsciiString_UpperCase_o64v0_wrap)
-      .function("UsefullLength", &TCollection_AsciiString_UsefullLength_o65v0_wrap)
-      .function("Value", &TCollection_AsciiString_Value_o66v0_wrap)
-      .function("HashCode", &TCollection_AsciiString_HashCode_o67v0_wrap)
-      .class_function("IsEqual", &TCollection_AsciiString_IsEqual_o68v0_wrap)
-      .class_function("IsSameString", &TCollection_AsciiString_IsSameString_o70v0_wrap)
+  class_<TDF_Label>("TDF_Label")
+      .constructor(&TDF_Label_ctor_c0v0_wrap)
+      .function("Nullify", &TDF_Label_Nullify_wrap)
+      .function("Tag", &TDF_Label_Tag_o1v0_wrap)
+      .function("Father", &TDF_Label_Father_o2v0_wrap)
+      .function("IsNull", &TDF_Label_IsNull_o3v0_wrap)
+      .function("Imported", &TDF_Label_Imported_o4v0_wrap)
+      .function("IsImported", &TDF_Label_IsImported_o5v0_wrap)
+      .function("IsEqual", &TDF_Label_IsEqual_o6v0_wrap)
+      .function("IsDifferent", &TDF_Label_IsDifferent_o7v0_wrap)
+      .function("IsRoot", &TDF_Label_IsRoot_o8v0_wrap)
+      .function("ForgetAllAttributes", &TDF_Label_ForgetAllAttributes_o9v0_wrap)
+      .function("ForgetAllAttributes", &TDF_Label_ForgetAllAttributes_o9v1_wrap)
+      .function("MayBeModified", &TDF_Label_MayBeModified_o10v0_wrap)
+      .function("AttributesModified", &TDF_Label_AttributesModified_o11v0_wrap)
+      .function("HasAttribute", &TDF_Label_HasAttribute_o12v0_wrap)
+      .function("NbAttributes", &TDF_Label_NbAttributes_o13v0_wrap)
+      .function("Depth", &TDF_Label_Depth_o14v0_wrap)
+      .function("IsDescendant", &TDF_Label_IsDescendant_o15v0_wrap)
+      .function("Root", &TDF_Label_Root_o16v0_wrap)
+      .function("HasChild", &TDF_Label_HasChild_o17v0_wrap)
+      .function("NbChildren", &TDF_Label_NbChildren_o18v0_wrap)
+      .function("FindChild", &TDF_Label_FindChild_o19v0_wrap)
+      .function("FindChild", &TDF_Label_FindChild_o19v1_wrap)
+      .function("NewChild", &TDF_Label_NewChild_o20v0_wrap)
+      .function("Transaction", &TDF_Label_Transaction_o21v0_wrap)
+      .function("HasLowerNode", &TDF_Label_HasLowerNode_o22v0_wrap)
+      .function("HasGreaterNode", &TDF_Label_HasGreaterNode_o23v0_wrap)
   ;
 
-  class_<TCollection_HAsciiString>("TCollection_HAsciiString")
-      .constructor(&TCollection_HAsciiString_ctor_c0v0_wrap)
-      .constructor(&TCollection_HAsciiString_ctor_c1v0_wrap)
-      .constructor(&TCollection_HAsciiString_ctor_c3v0_wrap)
-      .function("IsInstance", &TCollection_HAsciiString_IsInstance_wrap)
-      .function("IsKind", &TCollection_HAsciiString_IsKind_o1v0_wrap)
-      .function("GetRefCount", &TCollection_HAsciiString_GetRefCount_o2v0_wrap)
-      .function("IncrementRefCounter", &TCollection_HAsciiString_IncrementRefCounter_o3v0_wrap)
-      .function("DecrementRefCounter", &TCollection_HAsciiString_DecrementRefCounter_o4v0_wrap)
-      .function("Delete", &TCollection_HAsciiString_Delete_o5v0_wrap)
-      .function("AssignCat", &TCollection_HAsciiString_AssignCat_o6v0_wrap)
-      .function("Capitalize", &TCollection_HAsciiString_Capitalize_o8v0_wrap)
-      .function("Cat", &TCollection_HAsciiString_Cat_o9v0_wrap, allow_raw_pointers())
-      .function("Center", &TCollection_HAsciiString_Center_o11v0_wrap)
-      .function("ChangeAll", &TCollection_HAsciiString_ChangeAll_o12v0_wrap)
-      .function("ChangeAll", &TCollection_HAsciiString_ChangeAll_o12v1_wrap)
-      .function("Clear", &TCollection_HAsciiString_Clear_o13v0_wrap)
-      .function("FirstLocationInSet", &TCollection_HAsciiString_FirstLocationInSet_o14v0_wrap, allow_raw_pointers())
-      .function("FirstLocationNotInSet", &TCollection_HAsciiString_FirstLocationNotInSet_o15v0_wrap, allow_raw_pointers())
-      .function("Insert", &TCollection_HAsciiString_Insert_o16v0_wrap)
-      .function("InsertAfter", &TCollection_HAsciiString_InsertAfter_o19v0_wrap, allow_raw_pointers())
-      .function("InsertBefore", &TCollection_HAsciiString_InsertBefore_o20v0_wrap, allow_raw_pointers())
-      .function("IsEmpty", &TCollection_HAsciiString_IsEmpty_o21v0_wrap)
-      .function("IsLess", &TCollection_HAsciiString_IsLess_o22v0_wrap, allow_raw_pointers())
-      .function("IsGreater", &TCollection_HAsciiString_IsGreater_o23v0_wrap, allow_raw_pointers())
-      .function("IntegerValue", &TCollection_HAsciiString_IntegerValue_o24v0_wrap)
-      .function("IsIntegerValue", &TCollection_HAsciiString_IsIntegerValue_o25v0_wrap)
-      .function("IsRealValue", &TCollection_HAsciiString_IsRealValue_o26v0_wrap)
-      .function("IsAscii", &TCollection_HAsciiString_IsAscii_o27v0_wrap)
-      .function("IsDifferent", &TCollection_HAsciiString_IsDifferent_o28v0_wrap, allow_raw_pointers())
-      .function("IsSameString", &TCollection_HAsciiString_IsSameString_o29v0_wrap, allow_raw_pointers())
-      .function("IsSameString", &TCollection_HAsciiString_IsSameString_o30v0_wrap, allow_raw_pointers())
-      .function("LeftAdjust", &TCollection_HAsciiString_LeftAdjust_o31v0_wrap)
-      .function("LeftJustify", &TCollection_HAsciiString_LeftJustify_o32v0_wrap)
-      .function("Length", &TCollection_HAsciiString_Length_o33v0_wrap)
-      .function("Location", &TCollection_HAsciiString_Location_o34v0_wrap, allow_raw_pointers())
-      .function("Location", &TCollection_HAsciiString_Location_o35v0_wrap)
-      .function("LowerCase", &TCollection_HAsciiString_LowerCase_o36v0_wrap)
-      .function("Prepend", &TCollection_HAsciiString_Prepend_o37v0_wrap, allow_raw_pointers())
-      .function("RealValue", &TCollection_HAsciiString_RealValue_o38v0_wrap)
-      .function("RemoveAll", &TCollection_HAsciiString_RemoveAll_o39v0_wrap)
-      .function("RemoveAll", &TCollection_HAsciiString_RemoveAll_o40v0_wrap)
-      .function("Remove", &TCollection_HAsciiString_Remove_o41v0_wrap)
-      .function("Remove", &TCollection_HAsciiString_Remove_o41v1_wrap)
-      .function("RightAdjust", &TCollection_HAsciiString_RightAdjust_o42v0_wrap)
-      .function("RightJustify", &TCollection_HAsciiString_RightJustify_o43v0_wrap)
-      .function("Search", &TCollection_HAsciiString_Search_o44v0_wrap)
-      .function("SearchFromEnd", &TCollection_HAsciiString_SearchFromEnd_o46v0_wrap)
-      .function("SetValue", &TCollection_HAsciiString_SetValue_o48v0_wrap)
-      .function("Split", &TCollection_HAsciiString_Split_o51v0_wrap, allow_raw_pointers())
-      .function("SubString", &TCollection_HAsciiString_SubString_o52v0_wrap, allow_raw_pointers())
-      .function("ToCString", &TCollection_HAsciiString_ToCString_o53v0_wrap)
-      .function("Token", &TCollection_HAsciiString_Token_o54v0_wrap, allow_raw_pointers())
-      .function("Token", &TCollection_HAsciiString_Token_o54v1_wrap, allow_raw_pointers())
-      .function("Token", &TCollection_HAsciiString_Token_o54v2_wrap, allow_raw_pointers())
-      .function("Trunc", &TCollection_HAsciiString_Trunc_o55v0_wrap)
-      .function("UpperCase", &TCollection_HAsciiString_UpperCase_o56v0_wrap)
-      .function("UsefullLength", &TCollection_HAsciiString_UsefullLength_o57v0_wrap)
-      .function("Value", &TCollection_HAsciiString_Value_o58v0_wrap)
-      .function("String", &TCollection_HAsciiString_String_o59v0_wrap)
-      .function("IsSameState", &TCollection_HAsciiString_IsSameState_o60v0_wrap, allow_raw_pointers())
-      .class_function("get_type_name", &TCollection_HAsciiString_get_type_name_o61v0_wrap)
-  ;
-
-  class_<MoniTool_TypedValue>("MoniTool_TypedValue")
-      .constructor(&MoniTool_TypedValue_ctor_c0v0_wrap)
-      .constructor(&MoniTool_TypedValue_ctor_c0v1_wrap)
-      .constructor(&MoniTool_TypedValue_ctor_c0v2_wrap)
-      .function("IsInstance", &MoniTool_TypedValue_IsInstance_wrap)
-      .function("IsKind", &MoniTool_TypedValue_IsKind_o1v0_wrap)
-      .function("GetRefCount", &MoniTool_TypedValue_GetRefCount_o2v0_wrap)
-      .function("IncrementRefCounter", &MoniTool_TypedValue_IncrementRefCounter_o3v0_wrap)
-      .function("DecrementRefCounter", &MoniTool_TypedValue_DecrementRefCounter_o4v0_wrap)
-      .function("Delete", &MoniTool_TypedValue_Delete_o5v0_wrap)
-      .function("Name", &MoniTool_TypedValue_Name_o6v0_wrap)
-      .function("ValueType", &MoniTool_TypedValue_ValueType_o7v0_wrap)
-      .function("Definition", &MoniTool_TypedValue_Definition_o8v0_wrap)
-      .function("SetDefinition", &MoniTool_TypedValue_SetDefinition_o9v0_wrap)
-      .function("AddDef", &MoniTool_TypedValue_AddDef_o10v0_wrap)
-      .function("SetLabel", &MoniTool_TypedValue_SetLabel_o11v0_wrap)
-      .function("Label", &MoniTool_TypedValue_Label_o12v0_wrap)
-      .function("SetMaxLength", &MoniTool_TypedValue_SetMaxLength_o13v0_wrap)
-      .function("MaxLength", &MoniTool_TypedValue_MaxLength_o14v0_wrap)
-      .function("SetIntegerLimit", &MoniTool_TypedValue_SetIntegerLimit_o15v0_wrap)
-      .function("SetRealLimit", &MoniTool_TypedValue_SetRealLimit_o16v0_wrap)
-      .function("SetUnitDef", &MoniTool_TypedValue_SetUnitDef_o17v0_wrap)
-      .function("UnitDef", &MoniTool_TypedValue_UnitDef_o18v0_wrap)
-      .function("StartEnum", &MoniTool_TypedValue_StartEnum_o19v0_wrap)
-      .function("StartEnum", &MoniTool_TypedValue_StartEnum_o19v1_wrap)
-      .function("StartEnum", &MoniTool_TypedValue_StartEnum_o19v2_wrap)
-      .function("AddEnum", &MoniTool_TypedValue_AddEnum_o20v0_wrap)
-      .function("AddEnum", &MoniTool_TypedValue_AddEnum_o20v1_wrap)
-      .function("AddEnum", &MoniTool_TypedValue_AddEnum_o20v2_wrap)
-      .function("AddEnum", &MoniTool_TypedValue_AddEnum_o20v3_wrap)
-      .function("AddEnum", &MoniTool_TypedValue_AddEnum_o20v4_wrap)
-      .function("AddEnum", &MoniTool_TypedValue_AddEnum_o20v5_wrap)
-      .function("AddEnum", &MoniTool_TypedValue_AddEnum_o20v6_wrap)
-      .function("AddEnum", &MoniTool_TypedValue_AddEnum_o20v7_wrap)
-      .function("AddEnum", &MoniTool_TypedValue_AddEnum_o20v8_wrap)
-      .function("AddEnum", &MoniTool_TypedValue_AddEnum_o20v9_wrap)
-      .function("AddEnum", &MoniTool_TypedValue_AddEnum_o20v10_wrap)
-      .function("AddEnumValue", &MoniTool_TypedValue_AddEnumValue_o21v0_wrap)
-      .function("EnumVal", &MoniTool_TypedValue_EnumVal_o22v0_wrap)
-      .function("EnumCase", &MoniTool_TypedValue_EnumCase_o23v0_wrap)
-      .function("HasInterpret", &MoniTool_TypedValue_HasInterpret_o24v0_wrap)
-      .function("SatisfiesName", &MoniTool_TypedValue_SatisfiesName_o25v0_wrap)
-      .function("IsSetValue", &MoniTool_TypedValue_IsSetValue_o26v0_wrap)
-      .function("CStringValue", &MoniTool_TypedValue_CStringValue_o27v0_wrap)
-      .function("HStringValue", &MoniTool_TypedValue_HStringValue_o28v0_wrap, allow_raw_pointers())
-      .function("Interpret", &MoniTool_TypedValue_Interpret_o29v0_wrap, allow_raw_pointers())
-      .function("Satisfies", &MoniTool_TypedValue_Satisfies_o30v0_wrap, allow_raw_pointers())
-      .function("ClearValue", &MoniTool_TypedValue_ClearValue_o31v0_wrap)
-      .function("SetCStringValue", &MoniTool_TypedValue_SetCStringValue_o32v0_wrap)
-      .function("SetHStringValue", &MoniTool_TypedValue_SetHStringValue_o33v0_wrap, allow_raw_pointers())
-      .function("IntegerValue", &MoniTool_TypedValue_IntegerValue_o34v0_wrap)
-      .function("SetIntegerValue", &MoniTool_TypedValue_SetIntegerValue_o35v0_wrap)
-      .function("RealValue", &MoniTool_TypedValue_RealValue_o36v0_wrap)
-      .function("SetRealValue", &MoniTool_TypedValue_SetRealValue_o37v0_wrap)
-      .function("ObjectTypeName", &MoniTool_TypedValue_ObjectTypeName_o38v0_wrap)
-      .class_function("get_type_name", &MoniTool_TypedValue_get_type_name_o39v0_wrap)
-      .class_function("AddLib", &MoniTool_TypedValue_AddLib_o40v0_wrap, allow_raw_pointers())
-      .class_function("AddLib", &MoniTool_TypedValue_AddLib_o40v1_wrap, allow_raw_pointers())
-      .class_function("Lib", &MoniTool_TypedValue_Lib_o41v0_wrap, allow_raw_pointers())
-      .class_function("FromLib", &MoniTool_TypedValue_FromLib_o42v0_wrap, allow_raw_pointers())
-      .class_function("StaticValue", &MoniTool_TypedValue_StaticValue_o43v0_wrap, allow_raw_pointers())
-  ;
-
-  class_<Interface_Static>("Interface_Static")
-      .constructor(&Interface_Static_ctor_c0v0_wrap)
-      .constructor(&Interface_Static_ctor_c0v1_wrap)
-      .constructor(&Interface_Static_ctor_c0v2_wrap)
-      .function("IsInstance", &Interface_Static_IsInstance_wrap)
-      .function("IsKind", &Interface_Static_IsKind_o1v0_wrap)
-      .function("GetRefCount", &Interface_Static_GetRefCount_o2v0_wrap)
-      .function("IncrementRefCounter", &Interface_Static_IncrementRefCounter_o3v0_wrap)
-      .function("DecrementRefCounter", &Interface_Static_DecrementRefCounter_o4v0_wrap)
-      .function("Delete", &Interface_Static_Delete_o5v0_wrap)
-      .function("Name", &Interface_Static_Name_o6v0_wrap)
-      .function("ValueType", &Interface_Static_ValueType_o7v0_wrap)
-      .function("Definition", &Interface_Static_Definition_o8v0_wrap)
-      .function("SetDefinition", &Interface_Static_SetDefinition_o9v0_wrap)
-      .function("AddDef", &Interface_Static_AddDef_o10v0_wrap)
-      .function("SetLabel", &Interface_Static_SetLabel_o11v0_wrap)
-      .function("Label", &Interface_Static_Label_o12v0_wrap)
-      .function("SetMaxLength", &Interface_Static_SetMaxLength_o13v0_wrap)
-      .function("MaxLength", &Interface_Static_MaxLength_o14v0_wrap)
-      .function("SetIntegerLimit", &Interface_Static_SetIntegerLimit_o15v0_wrap)
-      .function("SetRealLimit", &Interface_Static_SetRealLimit_o16v0_wrap)
-      .function("SetUnitDef", &Interface_Static_SetUnitDef_o17v0_wrap)
-      .function("UnitDef", &Interface_Static_UnitDef_o18v0_wrap)
-      .function("StartEnum", &Interface_Static_StartEnum_o19v0_wrap)
-      .function("StartEnum", &Interface_Static_StartEnum_o19v1_wrap)
-      .function("StartEnum", &Interface_Static_StartEnum_o19v2_wrap)
-      .function("AddEnum", &Interface_Static_AddEnum_o20v0_wrap)
-      .function("AddEnum", &Interface_Static_AddEnum_o20v1_wrap)
-      .function("AddEnum", &Interface_Static_AddEnum_o20v2_wrap)
-      .function("AddEnum", &Interface_Static_AddEnum_o20v3_wrap)
-      .function("AddEnum", &Interface_Static_AddEnum_o20v4_wrap)
-      .function("AddEnum", &Interface_Static_AddEnum_o20v5_wrap)
-      .function("AddEnum", &Interface_Static_AddEnum_o20v6_wrap)
-      .function("AddEnum", &Interface_Static_AddEnum_o20v7_wrap)
-      .function("AddEnum", &Interface_Static_AddEnum_o20v8_wrap)
-      .function("AddEnum", &Interface_Static_AddEnum_o20v9_wrap)
-      .function("AddEnum", &Interface_Static_AddEnum_o20v10_wrap)
-      .function("AddEnumValue", &Interface_Static_AddEnumValue_o21v0_wrap)
-      .function("EnumVal", &Interface_Static_EnumVal_o22v0_wrap)
-      .function("EnumCase", &Interface_Static_EnumCase_o23v0_wrap)
-      .function("HasInterpret", &Interface_Static_HasInterpret_o24v0_wrap)
-      .function("SatisfiesName", &Interface_Static_SatisfiesName_o25v0_wrap)
-      .function("IsSetValue", &Interface_Static_IsSetValue_o26v0_wrap)
-      .function("CStringValue", &Interface_Static_CStringValue_o27v0_wrap)
-      .function("HStringValue", &Interface_Static_HStringValue_o28v0_wrap, allow_raw_pointers())
-      .function("Interpret", &Interface_Static_Interpret_o29v0_wrap, allow_raw_pointers())
-      .function("Satisfies", &Interface_Static_Satisfies_o30v0_wrap, allow_raw_pointers())
-      .function("ClearValue", &Interface_Static_ClearValue_o31v0_wrap)
-      .function("SetCStringValue", &Interface_Static_SetCStringValue_o32v0_wrap)
-      .function("SetHStringValue", &Interface_Static_SetHStringValue_o33v0_wrap, allow_raw_pointers())
-      .function("IntegerValue", &Interface_Static_IntegerValue_o34v0_wrap)
-      .function("SetIntegerValue", &Interface_Static_SetIntegerValue_o35v0_wrap)
-      .function("RealValue", &Interface_Static_RealValue_o36v0_wrap)
-      .function("SetRealValue", &Interface_Static_SetRealValue_o37v0_wrap)
-      .function("ObjectTypeName", &Interface_Static_ObjectTypeName_o38v0_wrap)
-      .function("Type", &Interface_Static_Type_o39v0_wrap)
-      .function("Family", &Interface_Static_Family_o40v0_wrap)
-      .function("SetWild", &Interface_Static_SetWild_o41v0_wrap, allow_raw_pointers())
-      .function("Wild", &Interface_Static_Wild_o42v0_wrap, allow_raw_pointers())
-      .function("SetUptodate", &Interface_Static_SetUptodate_o43v0_wrap)
-      .function("UpdatedStatus", &Interface_Static_UpdatedStatus_o44v0_wrap)
-      .class_function("get_type_name", &Interface_Static_get_type_name_o45v0_wrap)
-      .class_function("AddLib", &Interface_Static_AddLib_o46v0_wrap, allow_raw_pointers())
-      .class_function("AddLib", &Interface_Static_AddLib_o46v1_wrap, allow_raw_pointers())
-      .class_function("Lib", &Interface_Static_Lib_o47v0_wrap, allow_raw_pointers())
-      .class_function("FromLib", &Interface_Static_FromLib_o48v0_wrap, allow_raw_pointers())
-      .class_function("StaticValue", &Interface_Static_StaticValue_o49v0_wrap, allow_raw_pointers())
-      .class_function("ParamTypeToValueType", &Interface_Static_ParamTypeToValueType_o51v0_wrap)
-      .class_function("ValueTypeToParamType", &Interface_Static_ValueTypeToParamType_o52v0_wrap)
-      .class_function("Init", &Interface_Static_Init_o54v0_wrap)
-      .class_function("Init", &Interface_Static_Init_o54v1_wrap)
-      .class_function("Static", &Interface_Static_Static_o56v0_wrap, allow_raw_pointers())
-      .class_function("IsPresent", &Interface_Static_IsPresent_o57v0_wrap)
-      .class_function("CDef", &Interface_Static_CDef_o58v0_wrap)
-      .class_function("IDef", &Interface_Static_IDef_o59v0_wrap)
-      .class_function("IsSet", &Interface_Static_IsSet_o60v0_wrap)
-      .class_function("IsSet", &Interface_Static_IsSet_o60v1_wrap)
-      .class_function("CVal", &Interface_Static_CVal_o61v0_wrap)
-      .class_function("IVal", &Interface_Static_IVal_o62v0_wrap)
-      .class_function("RVal", &Interface_Static_RVal_o63v0_wrap)
-      .class_function("SetCVal", &Interface_Static_SetCVal_o64v0_wrap)
-      .class_function("SetIVal", &Interface_Static_SetIVal_o65v0_wrap)
-      .class_function("SetRVal", &Interface_Static_SetRVal_o66v0_wrap)
-      .class_function("Update", &Interface_Static_Update_o67v0_wrap)
-      .class_function("IsUpdated", &Interface_Static_IsUpdated_o68v0_wrap)
-      .class_function("Standards", &Interface_Static_Standards_o69v0_wrap)
+  class_<TDF_LabelSequence>("TDF_LabelSequence")
+      .constructor(&TDF_LabelSequence_ctor_c0v0_wrap)
+      .constructor(&TDF_LabelSequence_ctor_c1v0_wrap)
+      .function("Size", &TDF_LabelSequence_Size_wrap)
+      .function("Length", &TDF_LabelSequence_Length_o1v0_wrap)
+      .function("Lower", &TDF_LabelSequence_Lower_o2v0_wrap)
+      .function("Upper", &TDF_LabelSequence_Upper_o3v0_wrap)
+      .function("IsEmpty", &TDF_LabelSequence_IsEmpty_o4v0_wrap)
+      .function("Reverse", &TDF_LabelSequence_Reverse_o5v0_wrap)
+      .function("Exchange", &TDF_LabelSequence_Exchange_o6v0_wrap)
+      .function("Assign", &TDF_LabelSequence_Assign_o7v0_wrap)
+      .function("Append", &TDF_LabelSequence_Append_o8v0_wrap)
+      .function("Prepend", &TDF_LabelSequence_Prepend_o9v0_wrap)
+      .function("InsertBefore", &TDF_LabelSequence_InsertBefore_o10v0_wrap)
+      .function("Split", &TDF_LabelSequence_Split_o11v0_wrap)
+      .function("First", &TDF_LabelSequence_First_o12v0_wrap)
+      .function("ChangeFirst", &TDF_LabelSequence_ChangeFirst_o13v0_wrap)
+      .function("Last", &TDF_LabelSequence_Last_o14v0_wrap)
+      .function("ChangeLast", &TDF_LabelSequence_ChangeLast_o15v0_wrap)
+      .function("Value", &TDF_LabelSequence_Value_o16v0_wrap)
+      .function("ChangeValue", &TDF_LabelSequence_ChangeValue_o17v0_wrap)
+      .function("SetValue", &TDF_LabelSequence_SetValue_o18v0_wrap)
   ;
 
   class_<gp_Pnt>("gp_Pnt")
@@ -31254,6 +33693,69 @@ EMSCRIPTEN_BINDINGS(occt_ts_raw) {
       .function("IsDeleted", &BRepOffset_MakeOffset_IsDeleted_o15v0_wrap)
   ;
 
+  class_<MoniTool_TypedValue>("MoniTool_TypedValue")
+      .constructor(&MoniTool_TypedValue_ctor_c0v0_wrap)
+      .constructor(&MoniTool_TypedValue_ctor_c0v1_wrap)
+      .constructor(&MoniTool_TypedValue_ctor_c0v2_wrap)
+      .function("IsInstance", &MoniTool_TypedValue_IsInstance_wrap)
+      .function("IsKind", &MoniTool_TypedValue_IsKind_o1v0_wrap)
+      .function("GetRefCount", &MoniTool_TypedValue_GetRefCount_o2v0_wrap)
+      .function("IncrementRefCounter", &MoniTool_TypedValue_IncrementRefCounter_o3v0_wrap)
+      .function("DecrementRefCounter", &MoniTool_TypedValue_DecrementRefCounter_o4v0_wrap)
+      .function("Delete", &MoniTool_TypedValue_Delete_o5v0_wrap)
+      .function("Name", &MoniTool_TypedValue_Name_o6v0_wrap)
+      .function("ValueType", &MoniTool_TypedValue_ValueType_o7v0_wrap)
+      .function("Definition", &MoniTool_TypedValue_Definition_o8v0_wrap)
+      .function("SetDefinition", &MoniTool_TypedValue_SetDefinition_o9v0_wrap)
+      .function("AddDef", &MoniTool_TypedValue_AddDef_o10v0_wrap)
+      .function("SetLabel", &MoniTool_TypedValue_SetLabel_o11v0_wrap)
+      .function("Label", &MoniTool_TypedValue_Label_o12v0_wrap)
+      .function("SetMaxLength", &MoniTool_TypedValue_SetMaxLength_o13v0_wrap)
+      .function("MaxLength", &MoniTool_TypedValue_MaxLength_o14v0_wrap)
+      .function("SetIntegerLimit", &MoniTool_TypedValue_SetIntegerLimit_o15v0_wrap)
+      .function("SetRealLimit", &MoniTool_TypedValue_SetRealLimit_o16v0_wrap)
+      .function("SetUnitDef", &MoniTool_TypedValue_SetUnitDef_o17v0_wrap)
+      .function("UnitDef", &MoniTool_TypedValue_UnitDef_o18v0_wrap)
+      .function("StartEnum", &MoniTool_TypedValue_StartEnum_o19v0_wrap)
+      .function("StartEnum", &MoniTool_TypedValue_StartEnum_o19v1_wrap)
+      .function("StartEnum", &MoniTool_TypedValue_StartEnum_o19v2_wrap)
+      .function("AddEnum", &MoniTool_TypedValue_AddEnum_o20v0_wrap)
+      .function("AddEnum", &MoniTool_TypedValue_AddEnum_o20v1_wrap)
+      .function("AddEnum", &MoniTool_TypedValue_AddEnum_o20v2_wrap)
+      .function("AddEnum", &MoniTool_TypedValue_AddEnum_o20v3_wrap)
+      .function("AddEnum", &MoniTool_TypedValue_AddEnum_o20v4_wrap)
+      .function("AddEnum", &MoniTool_TypedValue_AddEnum_o20v5_wrap)
+      .function("AddEnum", &MoniTool_TypedValue_AddEnum_o20v6_wrap)
+      .function("AddEnum", &MoniTool_TypedValue_AddEnum_o20v7_wrap)
+      .function("AddEnum", &MoniTool_TypedValue_AddEnum_o20v8_wrap)
+      .function("AddEnum", &MoniTool_TypedValue_AddEnum_o20v9_wrap)
+      .function("AddEnum", &MoniTool_TypedValue_AddEnum_o20v10_wrap)
+      .function("AddEnumValue", &MoniTool_TypedValue_AddEnumValue_o21v0_wrap)
+      .function("EnumVal", &MoniTool_TypedValue_EnumVal_o22v0_wrap)
+      .function("EnumCase", &MoniTool_TypedValue_EnumCase_o23v0_wrap)
+      .function("HasInterpret", &MoniTool_TypedValue_HasInterpret_o24v0_wrap)
+      .function("SatisfiesName", &MoniTool_TypedValue_SatisfiesName_o25v0_wrap)
+      .function("IsSetValue", &MoniTool_TypedValue_IsSetValue_o26v0_wrap)
+      .function("CStringValue", &MoniTool_TypedValue_CStringValue_o27v0_wrap)
+      .function("HStringValue", &MoniTool_TypedValue_HStringValue_o28v0_wrap, allow_raw_pointers())
+      .function("Interpret", &MoniTool_TypedValue_Interpret_o29v0_wrap, allow_raw_pointers())
+      .function("Satisfies", &MoniTool_TypedValue_Satisfies_o30v0_wrap, allow_raw_pointers())
+      .function("ClearValue", &MoniTool_TypedValue_ClearValue_o31v0_wrap)
+      .function("SetCStringValue", &MoniTool_TypedValue_SetCStringValue_o32v0_wrap)
+      .function("SetHStringValue", &MoniTool_TypedValue_SetHStringValue_o33v0_wrap, allow_raw_pointers())
+      .function("IntegerValue", &MoniTool_TypedValue_IntegerValue_o34v0_wrap)
+      .function("SetIntegerValue", &MoniTool_TypedValue_SetIntegerValue_o35v0_wrap)
+      .function("RealValue", &MoniTool_TypedValue_RealValue_o36v0_wrap)
+      .function("SetRealValue", &MoniTool_TypedValue_SetRealValue_o37v0_wrap)
+      .function("ObjectTypeName", &MoniTool_TypedValue_ObjectTypeName_o38v0_wrap)
+      .class_function("get_type_name", &MoniTool_TypedValue_get_type_name_o39v0_wrap)
+      .class_function("AddLib", &MoniTool_TypedValue_AddLib_o40v0_wrap, allow_raw_pointers())
+      .class_function("AddLib", &MoniTool_TypedValue_AddLib_o40v1_wrap, allow_raw_pointers())
+      .class_function("Lib", &MoniTool_TypedValue_Lib_o41v0_wrap, allow_raw_pointers())
+      .class_function("FromLib", &MoniTool_TypedValue_FromLib_o42v0_wrap, allow_raw_pointers())
+      .class_function("StaticValue", &MoniTool_TypedValue_StaticValue_o43v0_wrap, allow_raw_pointers())
+  ;
+
   class_<GeomAPI_Interpolate>("GeomAPI_Interpolate")
       .constructor(&GeomAPI_Interpolate_ctor_c0v0_wrap, allow_raw_pointers())
       .constructor(&GeomAPI_Interpolate_ctor_c1v0_wrap, allow_raw_pointers())
@@ -31659,6 +34161,679 @@ EMSCRIPTEN_BINDINGS(occt_ts_raw) {
       .function("PrintStatsTransfer", &STEPControl_Writer_PrintStatsTransfer_o5v1_wrap)
   ;
 
+  class_<Interface_Static>("Interface_Static")
+      .constructor(&Interface_Static_ctor_c0v0_wrap)
+      .constructor(&Interface_Static_ctor_c0v1_wrap)
+      .constructor(&Interface_Static_ctor_c0v2_wrap)
+      .function("IsInstance", &Interface_Static_IsInstance_wrap)
+      .function("IsKind", &Interface_Static_IsKind_o1v0_wrap)
+      .function("GetRefCount", &Interface_Static_GetRefCount_o2v0_wrap)
+      .function("IncrementRefCounter", &Interface_Static_IncrementRefCounter_o3v0_wrap)
+      .function("DecrementRefCounter", &Interface_Static_DecrementRefCounter_o4v0_wrap)
+      .function("Delete", &Interface_Static_Delete_o5v0_wrap)
+      .function("Name", &Interface_Static_Name_o6v0_wrap)
+      .function("ValueType", &Interface_Static_ValueType_o7v0_wrap)
+      .function("Definition", &Interface_Static_Definition_o8v0_wrap)
+      .function("SetDefinition", &Interface_Static_SetDefinition_o9v0_wrap)
+      .function("AddDef", &Interface_Static_AddDef_o10v0_wrap)
+      .function("SetLabel", &Interface_Static_SetLabel_o11v0_wrap)
+      .function("Label", &Interface_Static_Label_o12v0_wrap)
+      .function("SetMaxLength", &Interface_Static_SetMaxLength_o13v0_wrap)
+      .function("MaxLength", &Interface_Static_MaxLength_o14v0_wrap)
+      .function("SetIntegerLimit", &Interface_Static_SetIntegerLimit_o15v0_wrap)
+      .function("SetRealLimit", &Interface_Static_SetRealLimit_o16v0_wrap)
+      .function("SetUnitDef", &Interface_Static_SetUnitDef_o17v0_wrap)
+      .function("UnitDef", &Interface_Static_UnitDef_o18v0_wrap)
+      .function("StartEnum", &Interface_Static_StartEnum_o19v0_wrap)
+      .function("StartEnum", &Interface_Static_StartEnum_o19v1_wrap)
+      .function("StartEnum", &Interface_Static_StartEnum_o19v2_wrap)
+      .function("AddEnum", &Interface_Static_AddEnum_o20v0_wrap)
+      .function("AddEnum", &Interface_Static_AddEnum_o20v1_wrap)
+      .function("AddEnum", &Interface_Static_AddEnum_o20v2_wrap)
+      .function("AddEnum", &Interface_Static_AddEnum_o20v3_wrap)
+      .function("AddEnum", &Interface_Static_AddEnum_o20v4_wrap)
+      .function("AddEnum", &Interface_Static_AddEnum_o20v5_wrap)
+      .function("AddEnum", &Interface_Static_AddEnum_o20v6_wrap)
+      .function("AddEnum", &Interface_Static_AddEnum_o20v7_wrap)
+      .function("AddEnum", &Interface_Static_AddEnum_o20v8_wrap)
+      .function("AddEnum", &Interface_Static_AddEnum_o20v9_wrap)
+      .function("AddEnum", &Interface_Static_AddEnum_o20v10_wrap)
+      .function("AddEnumValue", &Interface_Static_AddEnumValue_o21v0_wrap)
+      .function("EnumVal", &Interface_Static_EnumVal_o22v0_wrap)
+      .function("EnumCase", &Interface_Static_EnumCase_o23v0_wrap)
+      .function("HasInterpret", &Interface_Static_HasInterpret_o24v0_wrap)
+      .function("SatisfiesName", &Interface_Static_SatisfiesName_o25v0_wrap)
+      .function("IsSetValue", &Interface_Static_IsSetValue_o26v0_wrap)
+      .function("CStringValue", &Interface_Static_CStringValue_o27v0_wrap)
+      .function("HStringValue", &Interface_Static_HStringValue_o28v0_wrap, allow_raw_pointers())
+      .function("Interpret", &Interface_Static_Interpret_o29v0_wrap, allow_raw_pointers())
+      .function("Satisfies", &Interface_Static_Satisfies_o30v0_wrap, allow_raw_pointers())
+      .function("ClearValue", &Interface_Static_ClearValue_o31v0_wrap)
+      .function("SetCStringValue", &Interface_Static_SetCStringValue_o32v0_wrap)
+      .function("SetHStringValue", &Interface_Static_SetHStringValue_o33v0_wrap, allow_raw_pointers())
+      .function("IntegerValue", &Interface_Static_IntegerValue_o34v0_wrap)
+      .function("SetIntegerValue", &Interface_Static_SetIntegerValue_o35v0_wrap)
+      .function("RealValue", &Interface_Static_RealValue_o36v0_wrap)
+      .function("SetRealValue", &Interface_Static_SetRealValue_o37v0_wrap)
+      .function("ObjectTypeName", &Interface_Static_ObjectTypeName_o38v0_wrap)
+      .function("Type", &Interface_Static_Type_o39v0_wrap)
+      .function("Family", &Interface_Static_Family_o40v0_wrap)
+      .function("SetWild", &Interface_Static_SetWild_o41v0_wrap, allow_raw_pointers())
+      .function("Wild", &Interface_Static_Wild_o42v0_wrap, allow_raw_pointers())
+      .function("SetUptodate", &Interface_Static_SetUptodate_o43v0_wrap)
+      .function("UpdatedStatus", &Interface_Static_UpdatedStatus_o44v0_wrap)
+      .class_function("get_type_name", &Interface_Static_get_type_name_o45v0_wrap)
+      .class_function("AddLib", &Interface_Static_AddLib_o46v0_wrap, allow_raw_pointers())
+      .class_function("AddLib", &Interface_Static_AddLib_o46v1_wrap, allow_raw_pointers())
+      .class_function("Lib", &Interface_Static_Lib_o47v0_wrap, allow_raw_pointers())
+      .class_function("FromLib", &Interface_Static_FromLib_o48v0_wrap, allow_raw_pointers())
+      .class_function("StaticValue", &Interface_Static_StaticValue_o49v0_wrap, allow_raw_pointers())
+      .class_function("ParamTypeToValueType", &Interface_Static_ParamTypeToValueType_o51v0_wrap)
+      .class_function("ValueTypeToParamType", &Interface_Static_ValueTypeToParamType_o52v0_wrap)
+      .class_function("Init", &Interface_Static_Init_o54v0_wrap)
+      .class_function("Init", &Interface_Static_Init_o54v1_wrap)
+      .class_function("Static", &Interface_Static_Static_o56v0_wrap, allow_raw_pointers())
+      .class_function("IsPresent", &Interface_Static_IsPresent_o57v0_wrap)
+      .class_function("CDef", &Interface_Static_CDef_o58v0_wrap)
+      .class_function("IDef", &Interface_Static_IDef_o59v0_wrap)
+      .class_function("IsSet", &Interface_Static_IsSet_o60v0_wrap)
+      .class_function("IsSet", &Interface_Static_IsSet_o60v1_wrap)
+      .class_function("CVal", &Interface_Static_CVal_o61v0_wrap)
+      .class_function("IVal", &Interface_Static_IVal_o62v0_wrap)
+      .class_function("RVal", &Interface_Static_RVal_o63v0_wrap)
+      .class_function("SetCVal", &Interface_Static_SetCVal_o64v0_wrap)
+      .class_function("SetIVal", &Interface_Static_SetIVal_o65v0_wrap)
+      .class_function("SetRVal", &Interface_Static_SetRVal_o66v0_wrap)
+      .class_function("Update", &Interface_Static_Update_o67v0_wrap)
+      .class_function("IsUpdated", &Interface_Static_IsUpdated_o68v0_wrap)
+      .class_function("Standards", &Interface_Static_Standards_o69v0_wrap)
+  ;
+
+  class_<TCollection_AsciiString>("TCollection_AsciiString")
+      .constructor(&TCollection_AsciiString_ctor_c0v0_wrap)
+      .constructor(&TCollection_AsciiString_ctor_c1v0_wrap)
+      .constructor(&TCollection_AsciiString_ctor_c2v0_wrap)
+      .function("AssignCat", &TCollection_AsciiString_AssignCat_wrap)
+      .function("Capitalize", &TCollection_AsciiString_Capitalize_o5v0_wrap)
+      .function("Cat", &TCollection_AsciiString_Cat_o6v0_wrap)
+      .function("Center", &TCollection_AsciiString_Center_o11v0_wrap)
+      .function("ChangeAll", &TCollection_AsciiString_ChangeAll_o12v0_wrap)
+      .function("ChangeAll", &TCollection_AsciiString_ChangeAll_o12v1_wrap)
+      .function("Clear", &TCollection_AsciiString_Clear_o13v0_wrap)
+      .function("Copy", &TCollection_AsciiString_Copy_o14v0_wrap)
+      .function("Swap", &TCollection_AsciiString_Swap_o16v0_wrap)
+      .function("FirstLocationInSet", &TCollection_AsciiString_FirstLocationInSet_o17v0_wrap)
+      .function("FirstLocationNotInSet", &TCollection_AsciiString_FirstLocationNotInSet_o18v0_wrap)
+      .function("Insert", &TCollection_AsciiString_Insert_o19v0_wrap)
+      .function("InsertAfter", &TCollection_AsciiString_InsertAfter_o22v0_wrap)
+      .function("InsertBefore", &TCollection_AsciiString_InsertBefore_o23v0_wrap)
+      .function("IsEmpty", &TCollection_AsciiString_IsEmpty_o24v0_wrap)
+      .function("IsEqual", &TCollection_AsciiString_IsEqual_o25v0_wrap)
+      .function("IsDifferent", &TCollection_AsciiString_IsDifferent_o27v0_wrap)
+      .function("IsLess", &TCollection_AsciiString_IsLess_o29v0_wrap)
+      .function("IsGreater", &TCollection_AsciiString_IsGreater_o31v0_wrap)
+      .function("StartsWith", &TCollection_AsciiString_StartsWith_o33v0_wrap)
+      .function("EndsWith", &TCollection_AsciiString_EndsWith_o34v0_wrap)
+      .function("IntegerValue", &TCollection_AsciiString_IntegerValue_o35v0_wrap)
+      .function("IsIntegerValue", &TCollection_AsciiString_IsIntegerValue_o36v0_wrap)
+      .function("IsRealValue", &TCollection_AsciiString_IsRealValue_o37v0_wrap)
+      .function("IsRealValue", &TCollection_AsciiString_IsRealValue_o37v1_wrap)
+      .function("IsAscii", &TCollection_AsciiString_IsAscii_o38v0_wrap)
+      .function("LeftAdjust", &TCollection_AsciiString_LeftAdjust_o39v0_wrap)
+      .function("LeftJustify", &TCollection_AsciiString_LeftJustify_o40v0_wrap)
+      .function("Length", &TCollection_AsciiString_Length_o41v0_wrap)
+      .function("Location", &TCollection_AsciiString_Location_o42v0_wrap)
+      .function("Location", &TCollection_AsciiString_Location_o43v0_wrap)
+      .function("LowerCase", &TCollection_AsciiString_LowerCase_o44v0_wrap)
+      .function("Prepend", &TCollection_AsciiString_Prepend_o45v0_wrap)
+      .function("RealValue", &TCollection_AsciiString_RealValue_o46v0_wrap)
+      .function("RemoveAll", &TCollection_AsciiString_RemoveAll_o47v0_wrap)
+      .function("RemoveAll", &TCollection_AsciiString_RemoveAll_o48v0_wrap)
+      .function("Remove", &TCollection_AsciiString_Remove_o49v0_wrap)
+      .function("Remove", &TCollection_AsciiString_Remove_o49v1_wrap)
+      .function("RightAdjust", &TCollection_AsciiString_RightAdjust_o50v0_wrap)
+      .function("RightJustify", &TCollection_AsciiString_RightJustify_o51v0_wrap)
+      .function("Search", &TCollection_AsciiString_Search_o52v0_wrap)
+      .function("SearchFromEnd", &TCollection_AsciiString_SearchFromEnd_o54v0_wrap)
+      .function("SetValue", &TCollection_AsciiString_SetValue_o56v0_wrap)
+      .function("Split", &TCollection_AsciiString_Split_o59v0_wrap)
+      .function("SubString", &TCollection_AsciiString_SubString_o60v0_wrap)
+      .function("ToCString", &TCollection_AsciiString_ToCString_o61v0_wrap)
+      .function("Token", &TCollection_AsciiString_Token_o62v0_wrap)
+      .function("Token", &TCollection_AsciiString_Token_o62v1_wrap)
+      .function("Token", &TCollection_AsciiString_Token_o62v2_wrap)
+      .function("Trunc", &TCollection_AsciiString_Trunc_o63v0_wrap)
+      .function("UpperCase", &TCollection_AsciiString_UpperCase_o64v0_wrap)
+      .function("UsefullLength", &TCollection_AsciiString_UsefullLength_o65v0_wrap)
+      .function("Value", &TCollection_AsciiString_Value_o66v0_wrap)
+      .function("HashCode", &TCollection_AsciiString_HashCode_o67v0_wrap)
+      .class_function("IsEqual", &TCollection_AsciiString_IsEqual_o68v0_wrap)
+      .class_function("IsSameString", &TCollection_AsciiString_IsSameString_o70v0_wrap)
+  ;
+
+  class_<TCollection_HAsciiString>("TCollection_HAsciiString")
+      .constructor(&TCollection_HAsciiString_ctor_c0v0_wrap)
+      .constructor(&TCollection_HAsciiString_ctor_c1v0_wrap)
+      .constructor(&TCollection_HAsciiString_ctor_c3v0_wrap)
+      .function("IsInstance", &TCollection_HAsciiString_IsInstance_wrap)
+      .function("IsKind", &TCollection_HAsciiString_IsKind_o1v0_wrap)
+      .function("GetRefCount", &TCollection_HAsciiString_GetRefCount_o2v0_wrap)
+      .function("IncrementRefCounter", &TCollection_HAsciiString_IncrementRefCounter_o3v0_wrap)
+      .function("DecrementRefCounter", &TCollection_HAsciiString_DecrementRefCounter_o4v0_wrap)
+      .function("Delete", &TCollection_HAsciiString_Delete_o5v0_wrap)
+      .function("AssignCat", &TCollection_HAsciiString_AssignCat_o6v0_wrap)
+      .function("Capitalize", &TCollection_HAsciiString_Capitalize_o8v0_wrap)
+      .function("Cat", &TCollection_HAsciiString_Cat_o9v0_wrap, allow_raw_pointers())
+      .function("Center", &TCollection_HAsciiString_Center_o11v0_wrap)
+      .function("ChangeAll", &TCollection_HAsciiString_ChangeAll_o12v0_wrap)
+      .function("ChangeAll", &TCollection_HAsciiString_ChangeAll_o12v1_wrap)
+      .function("Clear", &TCollection_HAsciiString_Clear_o13v0_wrap)
+      .function("FirstLocationInSet", &TCollection_HAsciiString_FirstLocationInSet_o14v0_wrap, allow_raw_pointers())
+      .function("FirstLocationNotInSet", &TCollection_HAsciiString_FirstLocationNotInSet_o15v0_wrap, allow_raw_pointers())
+      .function("Insert", &TCollection_HAsciiString_Insert_o16v0_wrap)
+      .function("InsertAfter", &TCollection_HAsciiString_InsertAfter_o19v0_wrap, allow_raw_pointers())
+      .function("InsertBefore", &TCollection_HAsciiString_InsertBefore_o20v0_wrap, allow_raw_pointers())
+      .function("IsEmpty", &TCollection_HAsciiString_IsEmpty_o21v0_wrap)
+      .function("IsLess", &TCollection_HAsciiString_IsLess_o22v0_wrap, allow_raw_pointers())
+      .function("IsGreater", &TCollection_HAsciiString_IsGreater_o23v0_wrap, allow_raw_pointers())
+      .function("IntegerValue", &TCollection_HAsciiString_IntegerValue_o24v0_wrap)
+      .function("IsIntegerValue", &TCollection_HAsciiString_IsIntegerValue_o25v0_wrap)
+      .function("IsRealValue", &TCollection_HAsciiString_IsRealValue_o26v0_wrap)
+      .function("IsAscii", &TCollection_HAsciiString_IsAscii_o27v0_wrap)
+      .function("IsDifferent", &TCollection_HAsciiString_IsDifferent_o28v0_wrap, allow_raw_pointers())
+      .function("IsSameString", &TCollection_HAsciiString_IsSameString_o29v0_wrap, allow_raw_pointers())
+      .function("IsSameString", &TCollection_HAsciiString_IsSameString_o30v0_wrap, allow_raw_pointers())
+      .function("LeftAdjust", &TCollection_HAsciiString_LeftAdjust_o31v0_wrap)
+      .function("LeftJustify", &TCollection_HAsciiString_LeftJustify_o32v0_wrap)
+      .function("Length", &TCollection_HAsciiString_Length_o33v0_wrap)
+      .function("Location", &TCollection_HAsciiString_Location_o34v0_wrap, allow_raw_pointers())
+      .function("Location", &TCollection_HAsciiString_Location_o35v0_wrap)
+      .function("LowerCase", &TCollection_HAsciiString_LowerCase_o36v0_wrap)
+      .function("Prepend", &TCollection_HAsciiString_Prepend_o37v0_wrap, allow_raw_pointers())
+      .function("RealValue", &TCollection_HAsciiString_RealValue_o38v0_wrap)
+      .function("RemoveAll", &TCollection_HAsciiString_RemoveAll_o39v0_wrap)
+      .function("RemoveAll", &TCollection_HAsciiString_RemoveAll_o40v0_wrap)
+      .function("Remove", &TCollection_HAsciiString_Remove_o41v0_wrap)
+      .function("Remove", &TCollection_HAsciiString_Remove_o41v1_wrap)
+      .function("RightAdjust", &TCollection_HAsciiString_RightAdjust_o42v0_wrap)
+      .function("RightJustify", &TCollection_HAsciiString_RightJustify_o43v0_wrap)
+      .function("Search", &TCollection_HAsciiString_Search_o44v0_wrap)
+      .function("SearchFromEnd", &TCollection_HAsciiString_SearchFromEnd_o46v0_wrap)
+      .function("SetValue", &TCollection_HAsciiString_SetValue_o48v0_wrap)
+      .function("Split", &TCollection_HAsciiString_Split_o51v0_wrap, allow_raw_pointers())
+      .function("SubString", &TCollection_HAsciiString_SubString_o52v0_wrap, allow_raw_pointers())
+      .function("ToCString", &TCollection_HAsciiString_ToCString_o53v0_wrap)
+      .function("Token", &TCollection_HAsciiString_Token_o54v0_wrap, allow_raw_pointers())
+      .function("Token", &TCollection_HAsciiString_Token_o54v1_wrap, allow_raw_pointers())
+      .function("Token", &TCollection_HAsciiString_Token_o54v2_wrap, allow_raw_pointers())
+      .function("Trunc", &TCollection_HAsciiString_Trunc_o55v0_wrap)
+      .function("UpperCase", &TCollection_HAsciiString_UpperCase_o56v0_wrap)
+      .function("UsefullLength", &TCollection_HAsciiString_UsefullLength_o57v0_wrap)
+      .function("Value", &TCollection_HAsciiString_Value_o58v0_wrap)
+      .function("String", &TCollection_HAsciiString_String_o59v0_wrap)
+      .function("IsSameState", &TCollection_HAsciiString_IsSameState_o60v0_wrap, allow_raw_pointers())
+      .class_function("get_type_name", &TCollection_HAsciiString_get_type_name_o61v0_wrap)
+  ;
+
+  class_<STEPCAFControl_Reader>("STEPCAFControl_Reader")
+      .constructor(&STEPCAFControl_Reader_ctor_c0v0_wrap)
+      .function("ReadFile", &STEPCAFControl_Reader_ReadFile_wrap)
+      .function("ReadFile", &STEPCAFControl_Reader_ReadFile_o1v0_wrap)
+      .function("NbRootsForTransfer", &STEPCAFControl_Reader_NbRootsForTransfer_o2v0_wrap)
+      .function("TransferOneRoot", &STEPCAFControl_Reader_TransferOneRoot_o3v0_wrap, allow_raw_pointers())
+      .function("TransferOneRoot", &STEPCAFControl_Reader_TransferOneRoot_o3v1_wrap, allow_raw_pointers())
+      .function("Transfer", &STEPCAFControl_Reader_Transfer_o4v0_wrap, allow_raw_pointers())
+      .function("Transfer", &STEPCAFControl_Reader_Transfer_o4v1_wrap, allow_raw_pointers())
+      .function("Perform", &STEPCAFControl_Reader_Perform_o5v0_wrap, allow_raw_pointers())
+      .function("Perform", &STEPCAFControl_Reader_Perform_o5v1_wrap, allow_raw_pointers())
+      .function("Perform", &STEPCAFControl_Reader_Perform_o6v0_wrap, allow_raw_pointers())
+      .function("ChangeReader", &STEPCAFControl_Reader_ChangeReader_o9v0_wrap)
+      .function("Reader", &STEPCAFControl_Reader_Reader_o10v0_wrap)
+      .function("SetColorMode", &STEPCAFControl_Reader_SetColorMode_o11v0_wrap)
+      .function("GetColorMode", &STEPCAFControl_Reader_GetColorMode_o12v0_wrap)
+      .function("SetNameMode", &STEPCAFControl_Reader_SetNameMode_o13v0_wrap)
+      .function("GetNameMode", &STEPCAFControl_Reader_GetNameMode_o14v0_wrap)
+      .function("SetLayerMode", &STEPCAFControl_Reader_SetLayerMode_o15v0_wrap)
+      .function("GetLayerMode", &STEPCAFControl_Reader_GetLayerMode_o16v0_wrap)
+      .function("SetPropsMode", &STEPCAFControl_Reader_SetPropsMode_o17v0_wrap)
+      .function("GetPropsMode", &STEPCAFControl_Reader_GetPropsMode_o18v0_wrap)
+      .function("SetMetaMode", &STEPCAFControl_Reader_SetMetaMode_o19v0_wrap)
+      .function("GetMetaMode", &STEPCAFControl_Reader_GetMetaMode_o20v0_wrap)
+      .function("SetProductMetaMode", &STEPCAFControl_Reader_SetProductMetaMode_o21v0_wrap)
+      .function("GetProductMetaMode", &STEPCAFControl_Reader_GetProductMetaMode_o22v0_wrap)
+      .function("SetSHUOMode", &STEPCAFControl_Reader_SetSHUOMode_o23v0_wrap)
+      .function("GetSHUOMode", &STEPCAFControl_Reader_GetSHUOMode_o24v0_wrap)
+      .function("SetGDTMode", &STEPCAFControl_Reader_SetGDTMode_o25v0_wrap)
+      .function("GetGDTMode", &STEPCAFControl_Reader_GetGDTMode_o26v0_wrap)
+      .function("SetMatMode", &STEPCAFControl_Reader_SetMatMode_o27v0_wrap)
+      .function("GetMatMode", &STEPCAFControl_Reader_GetMatMode_o28v0_wrap)
+      .function("SetViewMode", &STEPCAFControl_Reader_SetViewMode_o29v0_wrap)
+      .function("GetViewMode", &STEPCAFControl_Reader_GetViewMode_o30v0_wrap)
+  ;
+
+  class_<STEPCAFControl_Writer>("STEPCAFControl_Writer")
+      .constructor(&STEPCAFControl_Writer_ctor_c0v0_wrap)
+      .function("Write", &STEPCAFControl_Writer_Write_wrap)
+      .function("Transfer", &STEPCAFControl_Writer_Transfer_o1v0_wrap, allow_raw_pointers())
+      .function("Transfer", &STEPCAFControl_Writer_Transfer_o1v1_wrap, allow_raw_pointers())
+      .function("Transfer", &STEPCAFControl_Writer_Transfer_o1v2_wrap, allow_raw_pointers())
+      .function("Transfer", &STEPCAFControl_Writer_Transfer_o1v3_wrap, allow_raw_pointers())
+      .function("Transfer", &STEPCAFControl_Writer_Transfer_o2v0_wrap, allow_raw_pointers())
+      .function("Perform", &STEPCAFControl_Writer_Perform_o7v0_wrap, allow_raw_pointers())
+      .function("Perform", &STEPCAFControl_Writer_Perform_o7v1_wrap, allow_raw_pointers())
+      .function("Perform", &STEPCAFControl_Writer_Perform_o9v0_wrap, allow_raw_pointers())
+      .function("ChangeWriter", &STEPCAFControl_Writer_ChangeWriter_o10v0_wrap)
+      .function("Writer", &STEPCAFControl_Writer_Writer_o11v0_wrap)
+      .function("SetColorMode", &STEPCAFControl_Writer_SetColorMode_o12v0_wrap)
+      .function("GetColorMode", &STEPCAFControl_Writer_GetColorMode_o13v0_wrap)
+      .function("SetNameMode", &STEPCAFControl_Writer_SetNameMode_o14v0_wrap)
+      .function("GetNameMode", &STEPCAFControl_Writer_GetNameMode_o15v0_wrap)
+      .function("SetLayerMode", &STEPCAFControl_Writer_SetLayerMode_o16v0_wrap)
+      .function("GetLayerMode", &STEPCAFControl_Writer_GetLayerMode_o17v0_wrap)
+      .function("SetPropsMode", &STEPCAFControl_Writer_SetPropsMode_o18v0_wrap)
+      .function("GetPropsMode", &STEPCAFControl_Writer_GetPropsMode_o19v0_wrap)
+      .function("SetSHUOMode", &STEPCAFControl_Writer_SetSHUOMode_o20v0_wrap)
+      .function("GetSHUOMode", &STEPCAFControl_Writer_GetSHUOMode_o21v0_wrap)
+      .function("SetDimTolMode", &STEPCAFControl_Writer_SetDimTolMode_o22v0_wrap)
+      .function("GetDimTolMode", &STEPCAFControl_Writer_GetDimTolMode_o23v0_wrap)
+      .function("SetMaterialMode", &STEPCAFControl_Writer_SetMaterialMode_o24v0_wrap)
+      .function("GetMaterialMode", &STEPCAFControl_Writer_GetMaterialMode_o25v0_wrap)
+  ;
+
+  class_<TDocStd_Document>("TDocStd_Document")
+      .constructor(&TDocStd_Document_ctor_c0v0_wrap)
+      .function("IsInstance", &TDocStd_Document_IsInstance_wrap)
+      .function("IsKind", &TDocStd_Document_IsKind_o1v0_wrap)
+      .function("GetRefCount", &TDocStd_Document_GetRefCount_o2v0_wrap)
+      .function("IncrementRefCounter", &TDocStd_Document_IncrementRefCounter_o3v0_wrap)
+      .function("DecrementRefCounter", &TDocStd_Document_DecrementRefCounter_o4v0_wrap)
+      .function("Delete", &TDocStd_Document_Delete_o5v0_wrap)
+      .function("StorageFormat", &TDocStd_Document_StorageFormat_o6v0_wrap)
+      .function("RemoveReference", &TDocStd_Document_RemoveReference_o7v0_wrap)
+      .function("RemoveAllReferences", &TDocStd_Document_RemoveAllReferences_o8v0_wrap)
+      .function("IsInSession", &TDocStd_Document_IsInSession_o9v0_wrap)
+      .function("IsStored", &TDocStd_Document_IsStored_o10v0_wrap)
+      .function("Name", &TDocStd_Document_Name_o11v0_wrap)
+      .function("ToReferencesNumber", &TDocStd_Document_ToReferencesNumber_o12v0_wrap)
+      .function("FromReferencesNumber", &TDocStd_Document_FromReferencesNumber_o13v0_wrap)
+      .function("IsReadOnly", &TDocStd_Document_IsReadOnly_o14v0_wrap)
+      .function("SetIsReadOnly", &TDocStd_Document_SetIsReadOnly_o15v0_wrap)
+      .function("UnsetIsReadOnly", &TDocStd_Document_UnsetIsReadOnly_o16v0_wrap)
+      .function("Modify", &TDocStd_Document_Modify_o17v0_wrap)
+      .function("Modifications", &TDocStd_Document_Modifications_o18v0_wrap)
+      .function("UnModify", &TDocStd_Document_UnModify_o19v0_wrap)
+      .function("IsUpToDate", &TDocStd_Document_IsUpToDate_o20v0_wrap)
+      .function("SetIsUpToDate", &TDocStd_Document_SetIsUpToDate_o21v0_wrap)
+      .function("SetComment", &TDocStd_Document_SetComment_o22v0_wrap)
+      .function("AddComment", &TDocStd_Document_AddComment_o23v0_wrap)
+      .function("StorageVersion", &TDocStd_Document_StorageVersion_o24v0_wrap)
+      .function("UnsetIsStored", &TDocStd_Document_UnsetIsStored_o25v0_wrap)
+      .function("Folder", &TDocStd_Document_Folder_o26v0_wrap)
+      .function("SetRequestedFolder", &TDocStd_Document_SetRequestedFolder_o27v0_wrap)
+      .function("RequestedFolder", &TDocStd_Document_RequestedFolder_o28v0_wrap)
+      .function("HasRequestedFolder", &TDocStd_Document_HasRequestedFolder_o29v0_wrap)
+      .function("SetRequestedName", &TDocStd_Document_SetRequestedName_o30v0_wrap)
+      .function("RequestedName", &TDocStd_Document_RequestedName_o31v0_wrap)
+      .function("SetRequestedPreviousVersion", &TDocStd_Document_SetRequestedPreviousVersion_o32v0_wrap)
+      .function("UnsetRequestedPreviousVersion", &TDocStd_Document_UnsetRequestedPreviousVersion_o33v0_wrap)
+      .function("HasRequestedPreviousVersion", &TDocStd_Document_HasRequestedPreviousVersion_o34v0_wrap)
+      .function("RequestedPreviousVersion", &TDocStd_Document_RequestedPreviousVersion_o35v0_wrap)
+      .function("SetRequestedComment", &TDocStd_Document_SetRequestedComment_o36v0_wrap)
+      .function("RequestedComment", &TDocStd_Document_RequestedComment_o37v0_wrap)
+      .function("LoadResources", &TDocStd_Document_LoadResources_o38v0_wrap)
+      .function("FindFileExtension", &TDocStd_Document_FindFileExtension_o39v0_wrap)
+      .function("FileExtension", &TDocStd_Document_FileExtension_o40v0_wrap)
+      .function("FindDescription", &TDocStd_Document_FindDescription_o41v0_wrap)
+      .function("Description", &TDocStd_Document_Description_o42v0_wrap)
+      .function("IsModified", &TDocStd_Document_IsModified_o43v0_wrap)
+      .function("IsOpened", &TDocStd_Document_IsOpened_o44v0_wrap)
+      .function("Close", &TDocStd_Document_Close_o45v0_wrap)
+      .function("ReferenceCounter", &TDocStd_Document_ReferenceCounter_o46v0_wrap)
+      .function("SetModifications", &TDocStd_Document_SetModifications_o47v0_wrap)
+      .function("SetReferenceCounter", &TDocStd_Document_SetReferenceCounter_o48v0_wrap)
+      .function("IsSaved", &TDocStd_Document_IsSaved_o49v0_wrap)
+      .function("IsChanged", &TDocStd_Document_IsChanged_o50v0_wrap)
+      .function("SetSaved", &TDocStd_Document_SetSaved_o51v0_wrap)
+      .function("SetSavedTime", &TDocStd_Document_SetSavedTime_o52v0_wrap)
+      .function("GetSavedTime", &TDocStd_Document_GetSavedTime_o53v0_wrap)
+      .function("GetName", &TDocStd_Document_GetName_o54v0_wrap)
+      .function("GetPath", &TDocStd_Document_GetPath_o55v0_wrap)
+      .function("Main", &TDocStd_Document_Main_o56v0_wrap)
+      .function("IsEmpty", &TDocStd_Document_IsEmpty_o57v0_wrap)
+      .function("IsValid", &TDocStd_Document_IsValid_o58v0_wrap)
+      .function("SetModified", &TDocStd_Document_SetModified_o59v0_wrap)
+      .function("PurgeModified", &TDocStd_Document_PurgeModified_o60v0_wrap)
+      .function("NewCommand", &TDocStd_Document_NewCommand_o61v0_wrap)
+      .function("HasOpenCommand", &TDocStd_Document_HasOpenCommand_o62v0_wrap)
+      .function("OpenCommand", &TDocStd_Document_OpenCommand_o63v0_wrap)
+      .function("CommitCommand", &TDocStd_Document_CommitCommand_o64v0_wrap)
+      .function("AbortCommand", &TDocStd_Document_AbortCommand_o65v0_wrap)
+      .function("GetUndoLimit", &TDocStd_Document_GetUndoLimit_o66v0_wrap)
+      .function("SetUndoLimit", &TDocStd_Document_SetUndoLimit_o67v0_wrap)
+      .function("ClearUndos", &TDocStd_Document_ClearUndos_o68v0_wrap)
+      .function("ClearRedos", &TDocStd_Document_ClearRedos_o69v0_wrap)
+      .function("GetAvailableUndos", &TDocStd_Document_GetAvailableUndos_o70v0_wrap)
+      .function("Undo", &TDocStd_Document_Undo_o71v0_wrap)
+      .function("GetAvailableRedos", &TDocStd_Document_GetAvailableRedos_o72v0_wrap)
+      .function("Redo", &TDocStd_Document_Redo_o73v0_wrap)
+      .function("RemoveFirstUndo", &TDocStd_Document_RemoveFirstUndo_o74v0_wrap)
+      .function("InitDeltaCompaction", &TDocStd_Document_InitDeltaCompaction_o75v0_wrap)
+      .function("PerformDeltaCompaction", &TDocStd_Document_PerformDeltaCompaction_o76v0_wrap)
+      .function("UpdateReferences", &TDocStd_Document_UpdateReferences_o77v0_wrap)
+      .function("Recompute", &TDocStd_Document_Recompute_o78v0_wrap)
+      .function("SetEmptyLabelsSavingMode", &TDocStd_Document_SetEmptyLabelsSavingMode_o80v0_wrap)
+      .function("EmptyLabelsSavingMode", &TDocStd_Document_EmptyLabelsSavingMode_o81v0_wrap)
+      .function("ChangeStorageFormat", &TDocStd_Document_ChangeStorageFormat_o82v0_wrap)
+      .function("SetNestedTransactionMode", &TDocStd_Document_SetNestedTransactionMode_o83v0_wrap)
+      .function("SetNestedTransactionMode", &TDocStd_Document_SetNestedTransactionMode_o83v1_wrap)
+      .function("IsNestedTransactionMode", &TDocStd_Document_IsNestedTransactionMode_o84v0_wrap)
+      .function("SetModificationMode", &TDocStd_Document_SetModificationMode_o85v0_wrap)
+      .function("ModificationMode", &TDocStd_Document_ModificationMode_o86v0_wrap)
+      .function("BeforeClose", &TDocStd_Document_BeforeClose_o87v0_wrap)
+      .class_function("get_type_name", &TDocStd_Document_get_type_name_o88v0_wrap)
+      .class_function("Get", &TDocStd_Document_Get_o90v0_wrap, allow_raw_pointers())
+  ;
+
+  class_<TDataStd_Name>("TDataStd_Name")
+      .constructor(&TDataStd_Name_ctor_c0v0_wrap)
+      .function("IsInstance", &TDataStd_Name_IsInstance_wrap)
+      .function("IsKind", &TDataStd_Name_IsKind_o1v0_wrap)
+      .function("GetRefCount", &TDataStd_Name_GetRefCount_o2v0_wrap)
+      .function("IncrementRefCounter", &TDataStd_Name_IncrementRefCounter_o3v0_wrap)
+      .function("DecrementRefCounter", &TDataStd_Name_DecrementRefCounter_o4v0_wrap)
+      .function("Delete", &TDataStd_Name_Delete_o5v0_wrap)
+      .function("SetID", &TDataStd_Name_SetID_o6v0_wrap)
+      .function("Label", &TDataStd_Name_Label_o7v0_wrap)
+      .function("Transaction", &TDataStd_Name_Transaction_o8v0_wrap)
+      .function("UntilTransaction", &TDataStd_Name_UntilTransaction_o9v0_wrap)
+      .function("IsValid", &TDataStd_Name_IsValid_o10v0_wrap)
+      .function("IsNew", &TDataStd_Name_IsNew_o11v0_wrap)
+      .function("IsForgotten", &TDataStd_Name_IsForgotten_o12v0_wrap)
+      .function("ForgetAllAttributes", &TDataStd_Name_ForgetAllAttributes_o13v0_wrap)
+      .function("ForgetAllAttributes", &TDataStd_Name_ForgetAllAttributes_o13v1_wrap)
+      .function("AfterAddition", &TDataStd_Name_AfterAddition_o14v0_wrap)
+      .function("BeforeRemoval", &TDataStd_Name_BeforeRemoval_o15v0_wrap)
+      .function("BeforeForget", &TDataStd_Name_BeforeForget_o16v0_wrap)
+      .function("AfterResume", &TDataStd_Name_AfterResume_o17v0_wrap)
+      .function("AfterRetrieval", &TDataStd_Name_AfterRetrieval_o18v0_wrap)
+      .function("AfterRetrieval", &TDataStd_Name_AfterRetrieval_o18v1_wrap)
+      .function("BeforeCommitTransaction", &TDataStd_Name_BeforeCommitTransaction_o19v0_wrap)
+      .function("Backup", &TDataStd_Name_Backup_o20v0_wrap)
+      .function("IsBackuped", &TDataStd_Name_IsBackuped_o21v0_wrap)
+      .function("Forget", &TDataStd_Name_Forget_o22v0_wrap)
+      .function("Set", &TDataStd_Name_Set_o23v0_wrap)
+      .function("Get", &TDataStd_Name_Get_o24v0_wrap)
+      .class_function("get_type_name", &TDataStd_Name_get_type_name_o27v0_wrap)
+      .class_function("Set", &TDataStd_Name_Set_o30v0_wrap, allow_raw_pointers())
+  ;
+
+  class_<TCollection_ExtendedString>("TCollection_ExtendedString")
+      .constructor(&TCollection_ExtendedString_ctor_c0v0_wrap)
+      .constructor(&TCollection_ExtendedString_ctor_c1v0_wrap)
+      .constructor(&TCollection_ExtendedString_ctor_c1v1_wrap)
+      .function("AssignCat", &TCollection_ExtendedString_AssignCat_wrap)
+      .function("Cat", &TCollection_ExtendedString_Cat_o1v0_wrap)
+      .function("Clear", &TCollection_ExtendedString_Clear_o2v0_wrap)
+      .function("Copy", &TCollection_ExtendedString_Copy_o3v0_wrap)
+      .function("Swap", &TCollection_ExtendedString_Swap_o4v0_wrap)
+      .function("Insert", &TCollection_ExtendedString_Insert_o5v0_wrap)
+      .function("IsEmpty", &TCollection_ExtendedString_IsEmpty_o6v0_wrap)
+      .function("IsEqual", &TCollection_ExtendedString_IsEqual_o7v0_wrap)
+      .function("IsDifferent", &TCollection_ExtendedString_IsDifferent_o8v0_wrap)
+      .function("IsLess", &TCollection_ExtendedString_IsLess_o9v0_wrap)
+      .function("IsGreater", &TCollection_ExtendedString_IsGreater_o10v0_wrap)
+      .function("StartsWith", &TCollection_ExtendedString_StartsWith_o11v0_wrap)
+      .function("EndsWith", &TCollection_ExtendedString_EndsWith_o12v0_wrap)
+      .function("IsAscii", &TCollection_ExtendedString_IsAscii_o13v0_wrap)
+      .function("Length", &TCollection_ExtendedString_Length_o14v0_wrap)
+      .function("Remove", &TCollection_ExtendedString_Remove_o15v0_wrap)
+      .function("Remove", &TCollection_ExtendedString_Remove_o15v1_wrap)
+      .function("Search", &TCollection_ExtendedString_Search_o16v0_wrap)
+      .function("SearchFromEnd", &TCollection_ExtendedString_SearchFromEnd_o17v0_wrap)
+      .function("SetValue", &TCollection_ExtendedString_SetValue_o18v0_wrap)
+      .function("Split", &TCollection_ExtendedString_Split_o19v0_wrap)
+      .function("Trunc", &TCollection_ExtendedString_Trunc_o20v0_wrap)
+      .function("HashCode", &TCollection_ExtendedString_HashCode_o21v0_wrap)
+      .function("LengthOfCString", &TCollection_ExtendedString_LengthOfCString_o22v0_wrap)
+      .class_function("IsEqual", &TCollection_ExtendedString_IsEqual_o23v0_wrap)
+  ;
+
+  class_<XCAFDoc_DocumentTool>("XCAFDoc_DocumentTool")
+      .constructor(&XCAFDoc_DocumentTool_ctor_c0v0_wrap)
+      .function("IsInstance", &XCAFDoc_DocumentTool_IsInstance_wrap)
+      .function("IsKind", &XCAFDoc_DocumentTool_IsKind_o1v0_wrap)
+      .function("GetRefCount", &XCAFDoc_DocumentTool_GetRefCount_o2v0_wrap)
+      .function("IncrementRefCounter", &XCAFDoc_DocumentTool_IncrementRefCounter_o3v0_wrap)
+      .function("DecrementRefCounter", &XCAFDoc_DocumentTool_DecrementRefCounter_o4v0_wrap)
+      .function("Delete", &XCAFDoc_DocumentTool_Delete_o5v0_wrap)
+      .function("SetID", &XCAFDoc_DocumentTool_SetID_o6v0_wrap)
+      .function("Label", &XCAFDoc_DocumentTool_Label_o7v0_wrap)
+      .function("Transaction", &XCAFDoc_DocumentTool_Transaction_o8v0_wrap)
+      .function("UntilTransaction", &XCAFDoc_DocumentTool_UntilTransaction_o9v0_wrap)
+      .function("IsValid", &XCAFDoc_DocumentTool_IsValid_o10v0_wrap)
+      .function("IsNew", &XCAFDoc_DocumentTool_IsNew_o11v0_wrap)
+      .function("IsForgotten", &XCAFDoc_DocumentTool_IsForgotten_o12v0_wrap)
+      .function("ForgetAllAttributes", &XCAFDoc_DocumentTool_ForgetAllAttributes_o13v0_wrap)
+      .function("ForgetAllAttributes", &XCAFDoc_DocumentTool_ForgetAllAttributes_o13v1_wrap)
+      .function("AfterAddition", &XCAFDoc_DocumentTool_AfterAddition_o14v0_wrap)
+      .function("BeforeRemoval", &XCAFDoc_DocumentTool_BeforeRemoval_o15v0_wrap)
+      .function("BeforeForget", &XCAFDoc_DocumentTool_BeforeForget_o16v0_wrap)
+      .function("AfterResume", &XCAFDoc_DocumentTool_AfterResume_o17v0_wrap)
+      .function("AfterRetrieval", &XCAFDoc_DocumentTool_AfterRetrieval_o18v0_wrap)
+      .function("AfterRetrieval", &XCAFDoc_DocumentTool_AfterRetrieval_o18v1_wrap)
+      .function("BeforeCommitTransaction", &XCAFDoc_DocumentTool_BeforeCommitTransaction_o19v0_wrap)
+      .function("Backup", &XCAFDoc_DocumentTool_Backup_o20v0_wrap)
+      .function("IsBackuped", &XCAFDoc_DocumentTool_IsBackuped_o21v0_wrap)
+      .function("Forget", &XCAFDoc_DocumentTool_Forget_o22v0_wrap)
+      .function("Init", &XCAFDoc_DocumentTool_Init_o23v0_wrap)
+      .class_function("get_type_name", &XCAFDoc_DocumentTool_get_type_name_o25v0_wrap)
+      .class_function("Set", &XCAFDoc_DocumentTool_Set_o28v0_wrap, allow_raw_pointers())
+      .class_function("Set", &XCAFDoc_DocumentTool_Set_o28v1_wrap, allow_raw_pointers())
+      .class_function("IsXCAFDocument", &XCAFDoc_DocumentTool_IsXCAFDocument_o29v0_wrap, allow_raw_pointers())
+      .class_function("DocLabel", &XCAFDoc_DocumentTool_DocLabel_o30v0_wrap)
+      .class_function("ShapesLabel", &XCAFDoc_DocumentTool_ShapesLabel_o31v0_wrap)
+      .class_function("ColorsLabel", &XCAFDoc_DocumentTool_ColorsLabel_o32v0_wrap)
+      .class_function("LayersLabel", &XCAFDoc_DocumentTool_LayersLabel_o33v0_wrap)
+      .class_function("DGTsLabel", &XCAFDoc_DocumentTool_DGTsLabel_o34v0_wrap)
+      .class_function("MaterialsLabel", &XCAFDoc_DocumentTool_MaterialsLabel_o35v0_wrap)
+      .class_function("ViewsLabel", &XCAFDoc_DocumentTool_ViewsLabel_o36v0_wrap)
+      .class_function("ClippingPlanesLabel", &XCAFDoc_DocumentTool_ClippingPlanesLabel_o37v0_wrap)
+      .class_function("NotesLabel", &XCAFDoc_DocumentTool_NotesLabel_o38v0_wrap)
+      .class_function("VisMaterialLabel", &XCAFDoc_DocumentTool_VisMaterialLabel_o39v0_wrap)
+      .class_function("ShapeTool", &XCAFDoc_DocumentTool_ShapeTool_o40v0_wrap, allow_raw_pointers())
+      .class_function("CheckShapeTool", &XCAFDoc_DocumentTool_CheckShapeTool_o41v0_wrap)
+      .class_function("ColorTool", &XCAFDoc_DocumentTool_ColorTool_o42v0_wrap, allow_raw_pointers())
+      .class_function("CheckColorTool", &XCAFDoc_DocumentTool_CheckColorTool_o43v0_wrap)
+      .class_function("CheckVisMaterialTool", &XCAFDoc_DocumentTool_CheckVisMaterialTool_o44v0_wrap)
+      .class_function("CheckLayerTool", &XCAFDoc_DocumentTool_CheckLayerTool_o45v0_wrap)
+      .class_function("CheckDimTolTool", &XCAFDoc_DocumentTool_CheckDimTolTool_o46v0_wrap)
+      .class_function("CheckMaterialTool", &XCAFDoc_DocumentTool_CheckMaterialTool_o47v0_wrap)
+      .class_function("CheckViewTool", &XCAFDoc_DocumentTool_CheckViewTool_o48v0_wrap)
+      .class_function("CheckClippingPlaneTool", &XCAFDoc_DocumentTool_CheckClippingPlaneTool_o49v0_wrap)
+      .class_function("CheckNotesTool", &XCAFDoc_DocumentTool_CheckNotesTool_o50v0_wrap)
+      .class_function("SetLengthUnit", &XCAFDoc_DocumentTool_SetLengthUnit_o51v0_wrap, allow_raw_pointers())
+  ;
+
+  class_<XCAFDoc_ShapeTool>("XCAFDoc_ShapeTool")
+      .constructor(&XCAFDoc_ShapeTool_ctor_c0v0_wrap)
+      .function("IsInstance", &XCAFDoc_ShapeTool_IsInstance_wrap)
+      .function("IsKind", &XCAFDoc_ShapeTool_IsKind_o1v0_wrap)
+      .function("GetRefCount", &XCAFDoc_ShapeTool_GetRefCount_o2v0_wrap)
+      .function("IncrementRefCounter", &XCAFDoc_ShapeTool_IncrementRefCounter_o3v0_wrap)
+      .function("DecrementRefCounter", &XCAFDoc_ShapeTool_DecrementRefCounter_o4v0_wrap)
+      .function("Delete", &XCAFDoc_ShapeTool_Delete_o5v0_wrap)
+      .function("SetID", &XCAFDoc_ShapeTool_SetID_o6v0_wrap)
+      .function("Label", &XCAFDoc_ShapeTool_Label_o7v0_wrap)
+      .function("Transaction", &XCAFDoc_ShapeTool_Transaction_o8v0_wrap)
+      .function("UntilTransaction", &XCAFDoc_ShapeTool_UntilTransaction_o9v0_wrap)
+      .function("IsValid", &XCAFDoc_ShapeTool_IsValid_o10v0_wrap)
+      .function("IsNew", &XCAFDoc_ShapeTool_IsNew_o11v0_wrap)
+      .function("IsForgotten", &XCAFDoc_ShapeTool_IsForgotten_o12v0_wrap)
+      .function("ForgetAllAttributes", &XCAFDoc_ShapeTool_ForgetAllAttributes_o13v0_wrap)
+      .function("ForgetAllAttributes", &XCAFDoc_ShapeTool_ForgetAllAttributes_o13v1_wrap)
+      .function("AfterAddition", &XCAFDoc_ShapeTool_AfterAddition_o14v0_wrap)
+      .function("BeforeRemoval", &XCAFDoc_ShapeTool_BeforeRemoval_o15v0_wrap)
+      .function("BeforeForget", &XCAFDoc_ShapeTool_BeforeForget_o16v0_wrap)
+      .function("AfterResume", &XCAFDoc_ShapeTool_AfterResume_o17v0_wrap)
+      .function("AfterRetrieval", &XCAFDoc_ShapeTool_AfterRetrieval_o18v0_wrap)
+      .function("AfterRetrieval", &XCAFDoc_ShapeTool_AfterRetrieval_o18v1_wrap)
+      .function("BeforeCommitTransaction", &XCAFDoc_ShapeTool_BeforeCommitTransaction_o19v0_wrap)
+      .function("Backup", &XCAFDoc_ShapeTool_Backup_o20v0_wrap)
+      .function("IsBackuped", &XCAFDoc_ShapeTool_IsBackuped_o21v0_wrap)
+      .function("Forget", &XCAFDoc_ShapeTool_Forget_o22v0_wrap)
+      .function("IsTopLevel", &XCAFDoc_ShapeTool_IsTopLevel_o23v0_wrap)
+      .function("IsSubShape", &XCAFDoc_ShapeTool_IsSubShape_o24v0_wrap)
+      .function("SearchUsingMap", &XCAFDoc_ShapeTool_SearchUsingMap_o25v0_wrap)
+      .function("Search", &XCAFDoc_ShapeTool_Search_o26v0_wrap)
+      .function("Search", &XCAFDoc_ShapeTool_Search_o26v1_wrap)
+      .function("Search", &XCAFDoc_ShapeTool_Search_o26v2_wrap)
+      .function("Search", &XCAFDoc_ShapeTool_Search_o26v3_wrap)
+      .function("FindShape", &XCAFDoc_ShapeTool_FindShape_o27v0_wrap)
+      .function("FindShape", &XCAFDoc_ShapeTool_FindShape_o27v1_wrap)
+      .function("FindShape", &XCAFDoc_ShapeTool_FindShape_o28v0_wrap)
+      .function("GetOneShape", &XCAFDoc_ShapeTool_GetOneShape_o29v0_wrap)
+      .function("NewShape", &XCAFDoc_ShapeTool_NewShape_o30v0_wrap)
+      .function("SetShape", &XCAFDoc_ShapeTool_SetShape_o31v0_wrap)
+      .function("AddShape", &XCAFDoc_ShapeTool_AddShape_o32v0_wrap)
+      .function("AddShape", &XCAFDoc_ShapeTool_AddShape_o32v1_wrap)
+      .function("AddShape", &XCAFDoc_ShapeTool_AddShape_o32v2_wrap)
+      .function("RemoveShape", &XCAFDoc_ShapeTool_RemoveShape_o33v0_wrap)
+      .function("RemoveShape", &XCAFDoc_ShapeTool_RemoveShape_o33v1_wrap)
+      .function("Init", &XCAFDoc_ShapeTool_Init_o34v0_wrap)
+      .function("ComputeShapes", &XCAFDoc_ShapeTool_ComputeShapes_o35v0_wrap)
+      .function("ComputeSimpleShapes", &XCAFDoc_ShapeTool_ComputeSimpleShapes_o36v0_wrap)
+      .function("GetShapes", &XCAFDoc_ShapeTool_GetShapes_o37v0_wrap)
+      .function("GetFreeShapes", &XCAFDoc_ShapeTool_GetFreeShapes_o38v0_wrap)
+      .function("AddComponent", &XCAFDoc_ShapeTool_AddComponent_o39v0_wrap)
+      .function("AddComponent", &XCAFDoc_ShapeTool_AddComponent_o40v0_wrap)
+      .function("RemoveComponent", &XCAFDoc_ShapeTool_RemoveComponent_o41v0_wrap)
+      .function("UpdateAssemblies", &XCAFDoc_ShapeTool_UpdateAssemblies_o42v0_wrap)
+      .function("FindSubShape", &XCAFDoc_ShapeTool_FindSubShape_o43v0_wrap)
+      .function("AddSubShape", &XCAFDoc_ShapeTool_AddSubShape_o44v0_wrap)
+      .function("AddSubShape", &XCAFDoc_ShapeTool_AddSubShape_o45v0_wrap)
+      .function("FindMainShapeUsingMap", &XCAFDoc_ShapeTool_FindMainShapeUsingMap_o46v0_wrap)
+      .function("FindMainShape", &XCAFDoc_ShapeTool_FindMainShape_o47v0_wrap)
+      .function("BaseLabel", &XCAFDoc_ShapeTool_BaseLabel_o48v0_wrap)
+      .function("RemoveSHUO", &XCAFDoc_ShapeTool_RemoveSHUO_o49v0_wrap)
+      .function("FindComponent", &XCAFDoc_ShapeTool_FindComponent_o50v0_wrap)
+      .function("SetLocation", &XCAFDoc_ShapeTool_SetLocation_o51v0_wrap)
+      .function("Expand", &XCAFDoc_ShapeTool_Expand_o52v0_wrap)
+      .class_function("get_type_name", &XCAFDoc_ShapeTool_get_type_name_o53v0_wrap)
+      .class_function("Set", &XCAFDoc_ShapeTool_Set_o56v0_wrap, allow_raw_pointers())
+      .class_function("IsFree", &XCAFDoc_ShapeTool_IsFree_o57v0_wrap)
+      .class_function("IsShape", &XCAFDoc_ShapeTool_IsShape_o58v0_wrap)
+      .class_function("IsSimpleShape", &XCAFDoc_ShapeTool_IsSimpleShape_o59v0_wrap)
+      .class_function("IsReference", &XCAFDoc_ShapeTool_IsReference_o60v0_wrap)
+      .class_function("IsAssembly", &XCAFDoc_ShapeTool_IsAssembly_o61v0_wrap)
+      .class_function("IsComponent", &XCAFDoc_ShapeTool_IsComponent_o62v0_wrap)
+      .class_function("IsCompound", &XCAFDoc_ShapeTool_IsCompound_o63v0_wrap)
+      .class_function("IsSubShape", &XCAFDoc_ShapeTool_IsSubShape_o64v0_wrap)
+      .class_function("GetShape", &XCAFDoc_ShapeTool_GetShape_o65v0_wrap)
+      .class_function("GetShape", &XCAFDoc_ShapeTool_GetShape_o66v0_wrap)
+      .class_function("GetOneShape", &XCAFDoc_ShapeTool_GetOneShape_o67v0_wrap)
+      .class_function("SetAutoNaming", &XCAFDoc_ShapeTool_SetAutoNaming_o68v0_wrap)
+      .class_function("AutoNaming", &XCAFDoc_ShapeTool_AutoNaming_o69v0_wrap)
+      .class_function("GetUsers", &XCAFDoc_ShapeTool_GetUsers_o70v0_wrap)
+      .class_function("GetUsers", &XCAFDoc_ShapeTool_GetUsers_o70v1_wrap)
+      .class_function("GetLocation", &XCAFDoc_ShapeTool_GetLocation_o71v0_wrap)
+      .class_function("GetReferredShape", &XCAFDoc_ShapeTool_GetReferredShape_o72v0_wrap)
+      .class_function("NbComponents", &XCAFDoc_ShapeTool_NbComponents_o73v0_wrap)
+      .class_function("NbComponents", &XCAFDoc_ShapeTool_NbComponents_o73v1_wrap)
+      .class_function("GetComponents", &XCAFDoc_ShapeTool_GetComponents_o74v0_wrap)
+      .class_function("GetComponents", &XCAFDoc_ShapeTool_GetComponents_o74v1_wrap)
+      .class_function("GetSubShapes", &XCAFDoc_ShapeTool_GetSubShapes_o75v0_wrap)
+      .class_function("IsExternRef", &XCAFDoc_ShapeTool_IsExternRef_o76v0_wrap)
+      .class_function("GetSHUOUpperUsage", &XCAFDoc_ShapeTool_GetSHUOUpperUsage_o77v0_wrap)
+      .class_function("GetSHUONextUsage", &XCAFDoc_ShapeTool_GetSHUONextUsage_o78v0_wrap)
+  ;
+
+  class_<XCAFDoc_ColorTool>("XCAFDoc_ColorTool")
+      .constructor(&XCAFDoc_ColorTool_ctor_c0v0_wrap)
+      .function("IsInstance", &XCAFDoc_ColorTool_IsInstance_wrap)
+      .function("IsKind", &XCAFDoc_ColorTool_IsKind_o1v0_wrap)
+      .function("GetRefCount", &XCAFDoc_ColorTool_GetRefCount_o2v0_wrap)
+      .function("IncrementRefCounter", &XCAFDoc_ColorTool_IncrementRefCounter_o3v0_wrap)
+      .function("DecrementRefCounter", &XCAFDoc_ColorTool_DecrementRefCounter_o4v0_wrap)
+      .function("Delete", &XCAFDoc_ColorTool_Delete_o5v0_wrap)
+      .function("SetID", &XCAFDoc_ColorTool_SetID_o6v0_wrap)
+      .function("Label", &XCAFDoc_ColorTool_Label_o7v0_wrap)
+      .function("Transaction", &XCAFDoc_ColorTool_Transaction_o8v0_wrap)
+      .function("UntilTransaction", &XCAFDoc_ColorTool_UntilTransaction_o9v0_wrap)
+      .function("IsValid", &XCAFDoc_ColorTool_IsValid_o10v0_wrap)
+      .function("IsNew", &XCAFDoc_ColorTool_IsNew_o11v0_wrap)
+      .function("IsForgotten", &XCAFDoc_ColorTool_IsForgotten_o12v0_wrap)
+      .function("ForgetAllAttributes", &XCAFDoc_ColorTool_ForgetAllAttributes_o13v0_wrap)
+      .function("ForgetAllAttributes", &XCAFDoc_ColorTool_ForgetAllAttributes_o13v1_wrap)
+      .function("AfterAddition", &XCAFDoc_ColorTool_AfterAddition_o14v0_wrap)
+      .function("BeforeRemoval", &XCAFDoc_ColorTool_BeforeRemoval_o15v0_wrap)
+      .function("BeforeForget", &XCAFDoc_ColorTool_BeforeForget_o16v0_wrap)
+      .function("AfterResume", &XCAFDoc_ColorTool_AfterResume_o17v0_wrap)
+      .function("AfterRetrieval", &XCAFDoc_ColorTool_AfterRetrieval_o18v0_wrap)
+      .function("AfterRetrieval", &XCAFDoc_ColorTool_AfterRetrieval_o18v1_wrap)
+      .function("BeforeCommitTransaction", &XCAFDoc_ColorTool_BeforeCommitTransaction_o19v0_wrap)
+      .function("Backup", &XCAFDoc_ColorTool_Backup_o20v0_wrap)
+      .function("IsBackuped", &XCAFDoc_ColorTool_IsBackuped_o21v0_wrap)
+      .function("Forget", &XCAFDoc_ColorTool_Forget_o22v0_wrap)
+      .function("BaseLabel", &XCAFDoc_ColorTool_BaseLabel_o23v0_wrap)
+      .function("ShapeTool", &XCAFDoc_ColorTool_ShapeTool_o24v0_wrap, allow_raw_pointers())
+      .function("IsColor", &XCAFDoc_ColorTool_IsColor_o25v0_wrap)
+      .function("FindColor", &XCAFDoc_ColorTool_FindColor_o26v0_wrap)
+      .function("FindColor", &XCAFDoc_ColorTool_FindColor_o27v0_wrap)
+      .function("AddColor", &XCAFDoc_ColorTool_AddColor_o28v0_wrap)
+      .function("RemoveColor", &XCAFDoc_ColorTool_RemoveColor_o29v0_wrap)
+      .function("GetColors", &XCAFDoc_ColorTool_GetColors_o30v0_wrap)
+      .function("SetColor", &XCAFDoc_ColorTool_SetColor_o31v0_wrap)
+      .function("UnSetColor", &XCAFDoc_ColorTool_UnSetColor_o33v0_wrap)
+      .function("IsSet", &XCAFDoc_ColorTool_IsSet_o34v0_wrap)
+      .function("GetColor", &XCAFDoc_ColorTool_GetColor_o39v0_wrap)
+      .function("SetVisibility", &XCAFDoc_ColorTool_SetVisibility_o41v0_wrap)
+      .function("SetVisibility", &XCAFDoc_ColorTool_SetVisibility_o41v1_wrap)
+      .function("IsColorByLayer", &XCAFDoc_ColorTool_IsColorByLayer_o42v0_wrap)
+      .function("SetColorByLayer", &XCAFDoc_ColorTool_SetColorByLayer_o43v0_wrap)
+      .function("SetColorByLayer", &XCAFDoc_ColorTool_SetColorByLayer_o43v1_wrap)
+      .function("SetInstanceColor", &XCAFDoc_ColorTool_SetInstanceColor_o44v0_wrap)
+      .function("SetInstanceColor", &XCAFDoc_ColorTool_SetInstanceColor_o44v1_wrap)
+      .function("GetInstanceColor", &XCAFDoc_ColorTool_GetInstanceColor_o45v0_wrap)
+      .function("IsInstanceVisible", &XCAFDoc_ColorTool_IsInstanceVisible_o46v0_wrap)
+      .function("ReverseChainsOfTreeNodes", &XCAFDoc_ColorTool_ReverseChainsOfTreeNodes_o47v0_wrap)
+      .class_function("get_type_name", &XCAFDoc_ColorTool_get_type_name_o48v0_wrap)
+      .class_function("AutoNaming", &XCAFDoc_ColorTool_AutoNaming_o51v0_wrap)
+      .class_function("SetAutoNaming", &XCAFDoc_ColorTool_SetAutoNaming_o52v0_wrap)
+      .class_function("Set", &XCAFDoc_ColorTool_Set_o53v0_wrap, allow_raw_pointers())
+      .class_function("GetColor", &XCAFDoc_ColorTool_GetColor_o54v0_wrap)
+      .class_function("IsVisible", &XCAFDoc_ColorTool_IsVisible_o57v0_wrap)
+  ;
+
+  class_<Quantity_Color>("Quantity_Color")
+      .constructor(&Quantity_Color_ctor_c0v0_wrap)
+      .constructor(&Quantity_Color_ctor_c1v0_wrap)
+      .function("SetValues", &Quantity_Color_SetValues_wrap)
+      .function("Red", &Quantity_Color_Red_o1v0_wrap)
+      .function("Green", &Quantity_Color_Green_o2v0_wrap)
+      .function("Blue", &Quantity_Color_Blue_o3v0_wrap)
+      .function("Hue", &Quantity_Color_Hue_o4v0_wrap)
+      .function("Light", &Quantity_Color_Light_o5v0_wrap)
+      .function("ChangeIntensity", &Quantity_Color_ChangeIntensity_o6v0_wrap)
+      .function("Saturation", &Quantity_Color_Saturation_o7v0_wrap)
+      .function("ChangeContrast", &Quantity_Color_ChangeContrast_o8v0_wrap)
+      .function("IsDifferent", &Quantity_Color_IsDifferent_o9v0_wrap)
+      .function("IsEqual", &Quantity_Color_IsEqual_o10v0_wrap)
+      .function("Distance", &Quantity_Color_Distance_o11v0_wrap)
+      .function("SquareDistance", &Quantity_Color_SquareDistance_o12v0_wrap)
+      .function("DeltaE2000", &Quantity_Color_DeltaE2000_o13v0_wrap)
+      .class_function("ColorFromName", &Quantity_Color_ColorFromName_o14v0_wrap)
+      .class_function("ColorFromHex", &Quantity_Color_ColorFromHex_o15v0_wrap)
+      .class_function("ColorToHex", &Quantity_Color_ColorToHex_o16v0_wrap)
+      .class_function("ColorToHex", &Quantity_Color_ColorToHex_o16v1_wrap)
+      .class_function("Argb2color", &Quantity_Color_Argb2color_o17v0_wrap)
+      .class_function("Convert_LinearRGB_To_sRGB", &Quantity_Color_Convert_LinearRGB_To_sRGB_o18v0_wrap)
+      .class_function("Convert_sRGB_To_LinearRGB", &Quantity_Color_Convert_sRGB_To_LinearRGB_o20v0_wrap)
+      .class_function("Convert_LinearRGB_To_sRGB_approx22", &Quantity_Color_Convert_LinearRGB_To_sRGB_approx22_o22v0_wrap)
+      .class_function("Convert_sRGB_To_LinearRGB_approx22", &Quantity_Color_Convert_sRGB_To_LinearRGB_approx22_o23v0_wrap)
+      .class_function("Epsilon", &Quantity_Color_Epsilon_o24v0_wrap)
+      .class_function("SetEpsilon", &Quantity_Color_SetEpsilon_o25v0_wrap)
+  ;
+
   class_<opencascade::handle<Adaptor3d_Curve>>("Handle_Adaptor3d_Curve")
       .constructor<>()
       .function("Get", &Handle_Adaptor3d_Curve_Get_wrap, allow_raw_pointers())
@@ -31812,6 +34987,41 @@ EMSCRIPTEN_BINDINGS(occt_ts_raw) {
       .function("IsNull", &Handle_TCollection_HAsciiString_IsNull_wrap)
   ;
   function("Handle_TCollection_HAsciiString_adopt", &Handle_TCollection_HAsciiString_adopt, allow_raw_pointers());
+
+  class_<opencascade::handle<TDataStd_Name>>("Handle_TDataStd_Name")
+      .constructor<>()
+      .function("Get", &Handle_TDataStd_Name_Get_wrap, allow_raw_pointers())
+      .function("IsNull", &Handle_TDataStd_Name_IsNull_wrap)
+  ;
+  function("Handle_TDataStd_Name_adopt", &Handle_TDataStd_Name_adopt, allow_raw_pointers());
+
+  class_<opencascade::handle<TDocStd_Document>>("Handle_TDocStd_Document")
+      .constructor<>()
+      .function("Get", &Handle_TDocStd_Document_Get_wrap, allow_raw_pointers())
+      .function("IsNull", &Handle_TDocStd_Document_IsNull_wrap)
+  ;
+  function("Handle_TDocStd_Document_adopt", &Handle_TDocStd_Document_adopt, allow_raw_pointers());
+
+  class_<opencascade::handle<XCAFDoc_ColorTool>>("Handle_XCAFDoc_ColorTool")
+      .constructor<>()
+      .function("Get", &Handle_XCAFDoc_ColorTool_Get_wrap, allow_raw_pointers())
+      .function("IsNull", &Handle_XCAFDoc_ColorTool_IsNull_wrap)
+  ;
+  function("Handle_XCAFDoc_ColorTool_adopt", &Handle_XCAFDoc_ColorTool_adopt, allow_raw_pointers());
+
+  class_<opencascade::handle<XCAFDoc_DocumentTool>>("Handle_XCAFDoc_DocumentTool")
+      .constructor<>()
+      .function("Get", &Handle_XCAFDoc_DocumentTool_Get_wrap, allow_raw_pointers())
+      .function("IsNull", &Handle_XCAFDoc_DocumentTool_IsNull_wrap)
+  ;
+  function("Handle_XCAFDoc_DocumentTool_adopt", &Handle_XCAFDoc_DocumentTool_adopt, allow_raw_pointers());
+
+  class_<opencascade::handle<XCAFDoc_ShapeTool>>("Handle_XCAFDoc_ShapeTool")
+      .constructor<>()
+      .function("Get", &Handle_XCAFDoc_ShapeTool_Get_wrap, allow_raw_pointers())
+      .function("IsNull", &Handle_XCAFDoc_ShapeTool_IsNull_wrap)
+  ;
+  function("Handle_XCAFDoc_ShapeTool_adopt", &Handle_XCAFDoc_ShapeTool_adopt, allow_raw_pointers());
 
   constant("gp_Identity", (int)gp_TrsfForm::gp_Identity);
   constant("gp_Rotation", (int)gp_TrsfForm::gp_Rotation);
@@ -31971,6 +35181,14 @@ EMSCRIPTEN_BINDINGS(occt_ts_raw) {
   constant("MoniTool_ValueSub", (int)MoniTool_ValueType::MoniTool_ValueSub);
   constant("MoniTool_ValueHexa", (int)MoniTool_ValueType::MoniTool_ValueHexa);
   constant("MoniTool_ValueBinary", (int)MoniTool_ValueType::MoniTool_ValueBinary);
+  constant("XCAFDoc_ColorGen", (int)XCAFDoc_ColorType::XCAFDoc_ColorGen);
+  constant("XCAFDoc_ColorSurf", (int)XCAFDoc_ColorType::XCAFDoc_ColorSurf);
+  constant("XCAFDoc_ColorCurv", (int)XCAFDoc_ColorType::XCAFDoc_ColorCurv);
+  constant("Quantity_TOC_RGB", (int)Quantity_TypeOfColor::Quantity_TOC_RGB);
+  constant("Quantity_TOC_sRGB", (int)Quantity_TypeOfColor::Quantity_TOC_sRGB);
+  constant("Quantity_TOC_HLS", (int)Quantity_TypeOfColor::Quantity_TOC_HLS);
+  constant("Quantity_TOC_CIELab", (int)Quantity_TypeOfColor::Quantity_TOC_CIELab);
+  constant("Quantity_TOC_CIELch", (int)Quantity_TypeOfColor::Quantity_TOC_CIELch);
   function("TopoDS_Vertex_s", &TopoDS_Vertex_wrap);
   function("TopoDS_Edge_s", &TopoDS_Edge_o2v0_wrap);
   function("TopoDS_Wire_s", &TopoDS_Wire_o4v0_wrap);

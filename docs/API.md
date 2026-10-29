@@ -212,7 +212,20 @@ const bytes = occ.writeStepDocument([
 
 - A node carries either a `shape` or `children`; `transform` matches
   `readStepDocument`'s output format.
-- Colors travel as sRGB `"#RRGGBB"` — the STEP convention.
+- A node's `transform` places it in its **parent's frame** (top-level nodes:
+  the world frame) — at every depth, including top-level nodes. It composes
+  under any location the shape itself carries:
+  `world = parent chain ∘ transform ∘ shape's own TopLoc`, so a shape from
+  `documentShape` (world-located) writes out at its world position without
+  spawning extra tree levels.
+- `read(write(tree))` preserves the tree: names, colors, structure and
+  parent-relative transforms all round-trip. (The ORDER of multiple top-level
+  nodes is the file's, not the input's.)
+- Colors apply to shape (leaf) nodes only — STEP styles attach to geometry, so
+  a color on an assembly node is rejected with an error instead of being
+  silently dropped. Colors travel as sRGB `"#RRGGBB"` — the STEP convention.
+- An assembly wrapping a single unnamed, uncolored shape is read back as one
+  node carrying a transform (placement wrappers collapse).
 
 ## Sketch → solid — extrude / revolve / loft / sweep / pipe-shell
 
@@ -355,8 +368,10 @@ quadrics (circle/ellipse edges, sphere/torus faces) are exposed as
 `axisPoint` — for arcs and trimmed faces, `center ≠ axisPoint` by design.
 
 The XCAF document tree (`readStepDocument`) nodes are `{name, color, transform,
-shape?, children?}`; `transform` holds 12 row-major numbers (3×4) when an instance
-is not at identity.
+shape?, children?}`; `transform` is the node's own placement in its **parent's**
+frame (top-level: world frame) — 12 row-major numbers (3×4) when not at identity.
+`documentShape(index)` leaves are world-positioned (the full ancestor chain
+applied).
 
 ## Hidden-line removal — `HiddenLineResult`
 
@@ -373,7 +388,11 @@ Both line arrays use the same segment-pair convention as `MeshData.edges`.
 ## Raw OCCT bindings — the generated escape hatch
 
 The curated `OccSession` API covers the common path; the raw layer beneath it
-exposes **152 OCCT classes verbatim** (OCP-style naming) for everything else.
+exposes **166 OCCT classes verbatim** (OCP-style naming) for everything else —
+including the full XCAF document machinery (`STEPCAFControl_Reader/Writer`,
+`XCAFDoc_ShapeTool`/`ColorTool`, `TDF_Label`, `TDocStd_Document`) for assembly
+trees the curated API does not model. Stage and read files for the raw
+path-based readers with `occ.memWriteFile(path, bytes)` / `occ.memReadFile(path)`.
 It is **generated** from a whitelist (`tools/codegen/classes.json`) by parsing
 the OCCT headers with libclang — `npm run codegen` regenerates, the outputs are
 checked in and diff-reviewable, and every member that could not be mapped is
@@ -400,6 +419,23 @@ raw.TopExp.MapShapes(rawBox, raw.TopAbs_FACE, faces);  // faces.Extent() === 6
 const face = raw.TopoDS_Face_s(faces.FindKey(1));      // OCP-style cast
 const surf = raw.BRep_Tool.Surface(face);              // Handle_Geom_Surface
 raw.DownCast_Geom_Plane(surf).Get();                   // the Geom_Plane pointee
+```
+
+**Documents, raw** — when the curated tree is not enough (layers, validation
+properties, custom structures), drive XCAF directly. Handle results cross as
+JS-owned `Handle_C` wrappers (`delete()` drops the refcount, `Get()` lends the
+pointee); statics like `XCAFDoc_ShapeTool.IsAssembly` live on the class object:
+
+```ts
+occ.memWriteFile("/mem/in.step", bytes);               // stage bytes for path-based APIs
+const reader = new raw.STEPCAFControl_Reader();
+reader.SetNameMode(1);
+reader.ReadFile("/mem/in.step");                       // === raw.IFSelect_RetDone
+const doc = new raw.TDocStd_Document(new raw.TCollection_ExtendedString("MDTV-XCAF", 1));
+reader.Transfer(doc, new raw.Message_ProgressRange());
+const tool = raw.XCAFDoc_DocumentTool.ShapeTool(doc.Main()).Get();
+const roots = new raw.TDF_LabelSequence();
+tool.GetFreeShapes(roots);                             // the tree readStepDocument walks
 ```
 
 Conventions: enums cross as **int** with their enumerators as module-level

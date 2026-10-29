@@ -11,6 +11,11 @@ function expectVec3Close(actual: readonly number[], expected: readonly number[])
   }
 }
 
+/** Translation-only placement as 12 row-major 3×4 numbers. */
+function TRS(tx: number, ty: number, tz: number): number[] {
+  return [1, 0, 0, tx, 0, 1, 0, ty, 0, 0, 1, tz];
+}
+
 describeWasm("opencascade-ts kernel (wasm integration)", () => {
   let occ: OccSession;
   // Emscripten binds console.log while the factory initializes the module,
@@ -878,6 +883,152 @@ describeWasm("opencascade-ts kernel (wasm integration)", () => {
     expectVec3Close(placed.bounds().max, [7, 7, 10]);
   });
 
+  it("round-trips a top-level node transform — no silent drop", () => {
+    const document = occ.readStepDocument(occ.writeStepDocument([
+      { name: "moved", shape: occ.makeBox(1, 1, 1), transform: TRS(10, 20, 30) },
+    ]));
+    const root = document.tree[0]!;
+    expect(root.name).toBe("moved");
+    expect(root.children).toBeUndefined();
+    expect(root.transform?.[3]).toBeCloseTo(10, 4);
+    expect(root.transform?.[7]).toBeCloseTo(20, 4);
+    expect(root.transform?.[11]).toBeCloseTo(30, 4);
+    expectVec3Close(occ.documentShape(root.shape!).bounds().min, [10, 20, 30]);
+    expectVec3Close(occ.documentShape(root.shape!).bounds().max, [11, 21, 31]);
+  });
+
+  it("reports child transforms parent-relative (read/write symmetry)", () => {
+    const document = occ.readStepDocument(occ.writeStepDocument([
+      {
+        name: "asm",
+        transform: TRS(100, 0, 0),
+        children: [{ name: "part", shape: occ.makeBox(1, 1, 1), transform: TRS(10, 0, 0) }],
+      },
+    ]));
+    const root = document.tree[0]!;
+    expect(root.transform?.[3]).toBeCloseTo(100, 4);
+    const child = root.children![0]!;
+    // parent-relative (tx=10), not the root-relative composition (tx=110)
+    expect(child.transform?.[3]).toBeCloseTo(10, 4);
+    // …while documentShape stays world-positioned: 100 + 10
+    expectVec3Close(occ.documentShape(child.shape!).bounds().min, [110, 0, 0]);
+  });
+
+  it("writes a TopLoc-carrying shape as one node — no phantom SOLID child", () => {
+    // documentShape hands out world-located shapes: the solid carries a TopLoc.
+    const first = occ.readStepDocument(occ.writeStepDocument([
+      { name: "asm", children: [{ name: "post", shape: occ.makeBox(1, 1, 1), transform: TRS(5, 0, 0) }] },
+    ]));
+    const located = occ.documentShape(first.tree[0]!.children![0]!.shape!);
+    expectVec3Close(located.bounds().min, [5, 0, 0]);
+
+    const document = occ.readStepDocument(occ.writeStepDocument([{ name: "placed", shape: located }]));
+    const root = document.tree[0]!;
+    expect(root.name).toBe("placed");
+    expect(root.children).toBeUndefined();
+    expect(root.transform?.[3]).toBeCloseTo(5, 4); // the TopLoc became an explicit node transform
+    expectVec3Close(occ.documentShape(root.shape!).bounds().min, [5, 0, 0]);
+  });
+
+  it("satisfies read(write(tree)) === tree for a mixed document", () => {
+    const round = occ.readStepDocument(occ.writeStepDocument([
+      {
+        name: "assembly",
+        transform: TRS(100, 0, 0),
+        children: [
+          { name: "a", shape: occ.makeBox(1, 1, 1), transform: TRS(10, 0, 0) },
+          { name: "b", color: "#ff8800", shape: occ.makeSphere(1), transform: TRS(0, 10, 0) },
+        ],
+      },
+      { name: "loose", shape: occ.makeCylinder(1, 2), transform: TRS(0, 0, 50) },
+      { name: "plain", shape: occ.makeBox(1, 1, 1) },
+    ]));
+    expect(round.tree).toHaveLength(3);
+    // root ORDER is not part of the contract (it follows label creation in
+    // the kernel, not the input order) — look nodes up by name.
+    const byName = (name: string) => round.tree.find((node) => node.name === name)!;
+    const assembly = byName("assembly");
+    const loose = byName("loose");
+    const plain = byName("plain");
+
+    expect(assembly.transform?.[3]).toBeCloseTo(100, 4);
+    expect(assembly.children).toHaveLength(2);
+    const [a, b] = assembly.children!;
+    expect(a.name).toBe("a");
+    expect(a!.transform?.[3]).toBeCloseTo(10, 4);
+    expect(occ.documentShape(a!.shape!).volume()).toBeCloseTo(1, 3);
+    expect(b!.name).toBe("b");
+    expect(b!.color).toBe("#FF8800");
+    expect(b!.transform?.[7]).toBeCloseTo(10, 4);
+    // world = assembly(100,0,0) ∘ b(0,10,0): sphere centered at (100, 10, 0)
+    expectVec3Close(occ.documentShape(b!.shape!).bounds().min, [99, 9, -1]);
+    expect(loose!.name).toBe("loose");
+    expect(loose!.transform?.[11]).toBeCloseTo(50, 4);
+    expect(loose!.children).toBeUndefined();
+    expect(plain!.name).toBe("plain");
+    expect(plain!.transform).toBeUndefined();
+    expect(plain!.children).toBeUndefined();
+    expectVec3Close(occ.documentShape(plain!.shape!).bounds().min, [0, 0, 0]);
+  });
+
+  it("keeps genuine single-child assemblies (a named child is not a placement wrapper)", () => {
+    const document = occ.readStepDocument(occ.writeStepDocument([
+      { name: "hinge", children: [{ name: "leaf", shape: occ.makeBox(2, 1, 0.2) }] },
+    ]));
+    const root = document.tree[0]!;
+    expect(root.name).toBe("hinge");
+    expect(root.children).toHaveLength(1);
+    expect(root.children![0]!.name).toBe("leaf");
+    expect(occ.documentShape(root.children![0]!.shape!).volume()).toBeCloseTo(0.4, 3);
+  });
+
+  it("raw XCAF layer walks the same document the curated API serves", () => {
+    // The document escape hatch: stage a STEP file on the MEMFS, read it with
+    // STEPCAFControl classes, walk it with XCAFDoc_ShapeTool — the same
+    // machinery readStepDocument/writeStepDocument are built on.
+    occ.memWriteFile("/mem/raw-in.step", occ.writeStepDocument([
+      { name: "asm", children: [{ name: "rawbox", shape: occ.makeBox(2, 3, 4) }] },
+    ]));
+
+    const raw = occ.module;
+    const reader = new raw.STEPCAFControl_Reader();
+    const format = new raw.TCollection_ExtendedString("MDTV-XCAF", 1);
+    const doc = new raw.TDocStd_Document(format);
+    const labels = new raw.TDF_LabelSequence();
+    const progress = new raw.Message_ProgressRange();
+    // handle results cross as JS-owned Handle_C wrappers; Get() lends the
+    // pointee (kept alive by the document that owns it — don't delete it).
+    let shapeTool: ReturnType<typeof raw.XCAFDoc_DocumentTool.ShapeTool> | null = null;
+    try {
+      reader.SetNameMode(1);
+      expect(reader.ReadFile("/mem/raw-in.step")).toBe(raw.IFSelect_RetDone);
+      expect(reader.Transfer(doc, progress)).toBeTruthy();
+      shapeTool = raw.XCAFDoc_DocumentTool.ShapeTool(doc.Main());
+      const tool = shapeTool.Get();
+      tool.GetFreeShapes(labels);
+      expect(labels.Length()).toBe(1);
+      // XCAFDoc_ShapeTool's queries are static in OCCT — call on the class
+      expect(raw.XCAFDoc_ShapeTool.IsAssembly(labels.Value(1))).toBeTruthy();
+      const shape = raw.XCAFDoc_ShapeTool.GetShape(labels.Value(1));
+      try {
+        // bridge back into the curated API for the analytic expectation
+        expect(occ.fromRaw(shape).volume()).toBeCloseTo(24, 2);
+      } finally {
+        shape.delete();
+      }
+      // and the file bridge reads back what raw writers would leave behind
+      expect(occ.memReadFile("/mem/raw-in.step").length).toBeGreaterThan(100);
+      expect(() => occ.memReadFile("/mem/does-not-exist.step")).toThrow(/memReadFile/);
+    } finally {
+      shapeTool?.delete();
+      progress.delete();
+      labels.delete();
+      doc.delete();
+      format.delete();
+      reader.delete();
+    }
+  });
+
   it("rejects bad document trees with useful errors", () => {
     expect(() => occ.writeStepDocument([])).toThrow(/tree is empty/);
     expect(() =>
@@ -886,6 +1037,9 @@ describeWasm("opencascade-ts kernel (wasm integration)", () => {
     expect(() =>
       occ.writeStepDocument([{ name: "x", color: "red", shape: occ.makeBox(1, 1, 1) }]),
     ).toThrow(/#RRGGBB/);
+    expect(() =>
+      occ.writeStepDocument([{ name: "x", color: "#ff0000", children: [{ shape: occ.makeBox(1, 1, 1) }] }]),
+    ).toThrow(/not assemblies/);
     expect(() =>
       occ.writeStepDocument([{ name: "x", shape: occ.makeBox(1, 1, 1), transform: [1, 2, 3] }]),
     ).toThrow(/12 finite numbers/);

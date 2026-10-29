@@ -471,6 +471,14 @@ std::string writeStepWrap(const OccShape& shape, const std::string& unit) {
   return guarded("writeStep", [&] { return writeStep(shape, unit); }, std::string());
 }
 
+void memWriteFileWrap(const std::string& path, unsigned int ptr, int length) {
+  guarded("memWriteFile", [&] { memWriteFileBytes(path, ptr, length); return 0; }, 0);
+}
+
+std::string memReadFileWrap(const std::string& path) {
+  return guarded("memReadFile", [&] { return memReadFileBytes(path); }, std::string());
+}
+
 std::string writeStepDocumentWrap(const std::vector<OccShape>& shapes,
                                   unsigned int parentsPtr, unsigned int shapeIdxPtr, int nodeCount,
                                   const std::vector<std::string>& names,
@@ -629,6 +637,8 @@ EMSCRIPTEN_BINDINGS(opencascade_ts) {
   function("writeStepDocument", &writeStepDocumentWrap);
   function("writeBrep", &writeBrepWrap);
   function("writeIges", &writeIgesWrap);
+  function("memWriteFile", &memWriteFileWrap);
+  function("memReadFile", &memReadFileWrap);
 
   function("describe", &describeWrap);
   function("distance", &distanceWrap);

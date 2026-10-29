@@ -609,6 +609,49 @@ Poly_Triangulation.This — unmappable return type Standard_Transient *
 Poly_Triangulation.Triangles — unmappable return type const Poly_Array1OfTriangle &
 Poly_Triangulation.get_type_descriptor — unmappable return type const opencascade::handle<Standard_Type> &
 Poly_Triangulation::ctor — unmappable constructor parameter
+Quantity_Color.Color2argb — unmappable parameter type
+Quantity_Color.ColorFromName — unmappable parameter type
+Quantity_Color.Convert_HLS_To_LinearRGB — unmappable return type NCollection_Vec3<float>
+Quantity_Color.Convert_HLS_To_sRGB — unmappable return type NCollection_Vec3<float>
+Quantity_Color.Convert_Lab_To_Lch — unmappable return type NCollection_Vec3<float>
+Quantity_Color.Convert_Lab_To_LinearRGB — unmappable return type NCollection_Vec3<float>
+Quantity_Color.Convert_Lch_To_Lab — unmappable return type NCollection_Vec3<float>
+Quantity_Color.Convert_LinearRGB_To_HLS — unmappable return type NCollection_Vec3<float>
+Quantity_Color.Convert_LinearRGB_To_Lab — unmappable return type NCollection_Vec3<float>
+Quantity_Color.Convert_LinearRGB_To_sRGB_approx22 — unmappable return type NCollection_Vec3<float>
+Quantity_Color.Convert_sRGB_To_HLS — unmappable return type NCollection_Vec3<float>
+Quantity_Color.Convert_sRGB_To_LinearRGB_approx22 — unmappable return type NCollection_Vec3<float>
+Quantity_Color.Delta — unmappable parameter type
+Quantity_Color.DumpJson — unmappable parameter type
+Quantity_Color.HlsRgb — unmappable parameter type
+Quantity_Color.InitFromJson — unmappable parameter type
+Quantity_Color.Name — unmappable return type Quantity_NameOfColor
+Quantity_Color.Rgb — unmappable return type const NCollection_Vec3<float> &
+Quantity_Color.RgbHls — unmappable parameter type
+Quantity_Color.SetValues — unmappable parameter type
+Quantity_Color.StringName — unmappable parameter type
+Quantity_Color.Values — unmappable parameter type
+Quantity_Color::ctor — unmappable constructor parameter
+STEPCAFControl_Reader.ExternFile — unmappable parameter type
+STEPCAFControl_Reader.ExternFiles — unmappable return type const NCollection_DataMap<TCollection_AsciiString, opencascade::handle<STEPCAFControl_ExternFile>> &
+STEPCAFControl_Reader.FindInstance — unmappable parameter type
+STEPCAFControl_Reader.GetShapeFixParameters — unmappable return type const XSAlgo_ShapeProcessor::ParameterMap &
+STEPCAFControl_Reader.GetShapeLabelMap — unmappable return type const XCAFDoc_DataMapOfShapeLabel &
+STEPCAFControl_Reader.GetShapeProcessFlags — unmappable return type const XSAlgo_ShapeProcessor::ProcessingFlags &
+STEPCAFControl_Reader.Init — unmappable parameter type
+STEPCAFControl_Reader.ReadStream — unmappable parameter type
+STEPCAFControl_Reader.SetShapeFixParameters — unmappable parameter type
+STEPCAFControl_Reader.SetShapeProcessFlags — unmappable parameter type
+STEPCAFControl_Reader::ctor — unmappable constructor parameter
+STEPCAFControl_Writer.ExternFile — unmappable parameter type
+STEPCAFControl_Writer.ExternFiles — unmappable return type const NCollection_DataMap<TCollection_AsciiString, opencascade::handle<STEPCAFControl_ExternFile>> &
+STEPCAFControl_Writer.GetShapeFixParameters — unmappable return type const XSAlgo_ShapeProcessor::ParameterMap &
+STEPCAFControl_Writer.GetShapeProcessFlags — unmappable return type const XSAlgo_ShapeProcessor::ProcessingFlags &
+STEPCAFControl_Writer.Init — unmappable parameter type
+STEPCAFControl_Writer.SetShapeFixParameters — unmappable parameter type
+STEPCAFControl_Writer.SetShapeProcessFlags — unmappable parameter type
+STEPCAFControl_Writer.WriteStream — unmappable parameter type
+STEPCAFControl_Writer::ctor — unmappable constructor parameter
 STEPControl_Reader.FileUnits — unmappable parameter type
 STEPControl_Reader.GetShapeFixParameters — unmappable return type const XSAlgo_ShapeProcessor::ParameterMap &
 STEPControl_Reader.GetShapeProcessFlags — unmappable return type const XSAlgo_ShapeProcessor::ProcessingFlags &
@@ -708,8 +751,29 @@ TCollection_AsciiString::ctor — unmappable constructor parameter
 TCollection_AsciiString::ctor(aChar) — a constructor with this parameter count is already bound (embind picks by count)
 TCollection_AsciiString::ctor(astring) — a constructor with this parameter count is already bound (embind picks by count)
 TCollection_AsciiString::ctor(astring, message) — a constructor with this parameter count is already bound (embind picks by count)
+TCollection_AsciiString::ctor(astring, replaceNonAscii) — a constructor with this parameter count is already bound (embind picks by count)
 TCollection_AsciiString::ctor(length, filler) — a constructor with this parameter count is already bound (embind picks by count)
 TCollection_AsciiString::ctor(value) — a constructor with this parameter count is already bound (embind picks by count)
+TCollection_ExtendedString.AssignCat — unmappable parameter type
+TCollection_ExtendedString.ChangeAll — unmappable parameter type
+TCollection_ExtendedString.Insert — unmappable parameter type
+TCollection_ExtendedString.IsDifferent — unmappable parameter type
+TCollection_ExtendedString.IsEqual — unmappable parameter type
+TCollection_ExtendedString.IsGreater — unmappable parameter type
+TCollection_ExtendedString.IsLess — unmappable parameter type
+TCollection_ExtendedString.Move — unmappable parameter type
+TCollection_ExtendedString.Print — unmappable parameter type
+TCollection_ExtendedString.RemoveAll — unmappable parameter type
+TCollection_ExtendedString.SetValue — unmappable parameter type
+TCollection_ExtendedString.ToExtString — unmappable return type Standard_ExtString
+TCollection_ExtendedString.ToUTF8CString — unmappable parameter type
+TCollection_ExtendedString.Token — unmappable parameter type
+TCollection_ExtendedString.Value — unmappable return type Standard_ExtCharacter
+TCollection_ExtendedString::ctor — unmappable constructor parameter
+TCollection_ExtendedString::ctor(aChar) — a constructor with this parameter count is already bound (embind picks by count)
+TCollection_ExtendedString::ctor(astring) — a constructor with this parameter count is already bound (embind picks by count)
+TCollection_ExtendedString::ctor(astring, isMultiByte) — a constructor with this parameter count is already bound (embind picks by count)
+TCollection_ExtendedString::ctor(value) — a constructor with this parameter count is already bound (embind picks by count)
 TCollection_HAsciiString.DynamicType — unmappable return type const opencascade::handle<Standard_Type> &
 TCollection_HAsciiString.IsInstance — unmappable parameter type
 TCollection_HAsciiString.IsKind — unmappable parameter type
@@ -720,6 +784,90 @@ TCollection_HAsciiString::ctor — unmappable constructor parameter
 TCollection_HAsciiString::ctor(aChar) — a constructor with this parameter count is already bound (embind picks by count)
 TCollection_HAsciiString::ctor(aString) — a constructor with this parameter count is already bound (embind picks by count)
 TCollection_HAsciiString::ctor(value) — a constructor with this parameter count is already bound (embind picks by count)
+TDF_Label.AddAttribute — unmappable parameter type
+TDF_Label.Data — unmappable return type opencascade::handle<TDF_Data>
+TDF_Label.Dump — unmappable return type Standard_OStream &
+TDF_Label.EntryDump — unmappable parameter type
+TDF_Label.ExtendedDump — unmappable parameter type
+TDF_Label.FindAttribute — unmappable parameter type
+TDF_Label.ForgetAttribute — unmappable parameter type
+TDF_Label.IsAttribute — unmappable parameter type
+TDF_Label.ResumeAttribute — unmappable parameter type
+TDF_LabelSequence.Allocator — container member unmappable
+TDF_LabelSequence.Clear — container member unmappable
+TDF_LabelSequence.InsertAfter — container member unmappable
+TDF_LabelSequence.Remove — container member unmappable
+TDF_LabelSequence.begin — container member unmappable
+TDF_LabelSequence.cbegin — container member unmappable
+TDF_LabelSequence.cend — container member unmappable
+TDF_LabelSequence.delNode — container member unmappable
+TDF_LabelSequence.end — container member unmappable
+TDataStd_Name.AddAttribute — unmappable parameter type
+TDataStd_Name.AfterUndo — unmappable parameter type
+TDataStd_Name.BackupCopy — unmappable return type opencascade::handle<TDF_Attribute>
+TDataStd_Name.BeforeUndo — unmappable parameter type
+TDataStd_Name.DeltaOnAddition — unmappable return type opencascade::handle<TDF_DeltaOnAddition>
+TDataStd_Name.DeltaOnForget — unmappable return type opencascade::handle<TDF_DeltaOnForget>
+TDataStd_Name.DeltaOnModification — unmappable parameter type
+TDataStd_Name.DeltaOnModification — unmappable return type opencascade::handle<TDF_DeltaOnModification>
+TDataStd_Name.DeltaOnRemoval — unmappable return type opencascade::handle<TDF_DeltaOnRemoval>
+TDataStd_Name.DeltaOnResume — unmappable return type opencascade::handle<TDF_DeltaOnResume>
+TDataStd_Name.Dump — unmappable return type Standard_OStream &
+TDataStd_Name.DumpJson — unmappable parameter type
+TDataStd_Name.DynamicType — unmappable return type const opencascade::handle<Standard_Type> &
+TDataStd_Name.ExtendedDump — unmappable parameter type
+TDataStd_Name.FindAttribute — unmappable parameter type
+TDataStd_Name.ForgetAttribute — unmappable parameter type
+TDataStd_Name.GetID — unmappable return type const Standard_GUID &
+TDataStd_Name.ID — unmappable return type const Standard_GUID &
+TDataStd_Name.IsAttribute — unmappable parameter type
+TDataStd_Name.IsInstance — unmappable parameter type
+TDataStd_Name.IsKind — unmappable parameter type
+TDataStd_Name.NewEmpty — unmappable return type opencascade::handle<TDF_Attribute>
+TDataStd_Name.Paste — unmappable parameter type
+TDataStd_Name.References — unmappable parameter type
+TDataStd_Name.Restore — unmappable parameter type
+TDataStd_Name.Set — unmappable parameter type
+TDataStd_Name.SetID — unmappable parameter type
+TDataStd_Name.This — unmappable return type Standard_Transient *
+TDataStd_Name.get_type_descriptor — unmappable return type const opencascade::handle<Standard_Type> &
+TDataStd_Name::ctor — unmappable constructor parameter
+TDocStd_Document.Application — unmappable return type const opencascade::handle<CDM_Application> &
+TDocStd_Document.CanClose — unmappable return type CDM_CanCloseStatus
+TDocStd_Document.CanCloseReference — unmappable parameter type
+TDocStd_Document.ChangeStorageFormatVersion — unmappable parameter type
+TDocStd_Document.CloseReference — unmappable parameter type
+TDocStd_Document.Comment — unmappable return type Standard_ExtString
+TDocStd_Document.Comments — unmappable parameter type
+TDocStd_Document.CopyReference — unmappable parameter type
+TDocStd_Document.CreateReference — unmappable parameter type
+TDocStd_Document.CurrentStorageFormatVersion — unmappable return type TDocStd_FormatVersion
+TDocStd_Document.DeepReferences — unmappable parameter type
+TDocStd_Document.Document — unmappable return type opencascade::handle<CDM_Document>
+TDocStd_Document.DumpJson — unmappable parameter type
+TDocStd_Document.DynamicType — unmappable return type const opencascade::handle<Standard_Type> &
+TDocStd_Document.Extensions — unmappable parameter type
+TDocStd_Document.GetAlternativeDocument — unmappable parameter type
+TDocStd_Document.GetData — unmappable return type opencascade::handle<TDF_Data>
+TDocStd_Document.GetModified — unmappable return type const TDF_LabelMap &
+TDocStd_Document.GetRedos — unmappable return type const TDF_DeltaList &
+TDocStd_Document.GetUndos — unmappable return type const TDF_DeltaList &
+TDocStd_Document.IsInstance — unmappable parameter type
+TDocStd_Document.IsKind — unmappable parameter type
+TDocStd_Document.MetaData — unmappable return type opencascade::handle<CDM_MetaData>
+TDocStd_Document.Open — unmappable parameter type
+TDocStd_Document.Print — unmappable return type Standard_OStream &
+TDocStd_Document.Reference — unmappable return type opencascade::handle<CDM_Reference>
+TDocStd_Document.SetComments — unmappable parameter type
+TDocStd_Document.SetData — unmappable parameter type
+TDocStd_Document.SetMetaData — unmappable parameter type
+TDocStd_Document.ShallowReferences — unmappable parameter type
+TDocStd_Document.StorageFormatVersion — unmappable return type TDocStd_FormatVersion
+TDocStd_Document.This — unmappable return type Standard_Transient *
+TDocStd_Document.Update — excluded via classes.json (not defined in the libs)
+TDocStd_Document.UpdateFromDocuments — unmappable parameter type
+TDocStd_Document.get_type_descriptor — unmappable return type const opencascade::handle<Standard_Type> &
+TDocStd_Document::ctor — unmappable constructor parameter
 TopExp.MapShapesAndAncestors — unmappable parameter type
 TopExp.MapShapesAndUniqueAncestors — unmappable parameter type
 TopLoc_Location.DumpJson — unmappable parameter type
@@ -772,6 +920,119 @@ TopoDS_Vertex.TShape — unmappable return type const opencascade::handle<TopoDS
 TopoDS_Wire.DumpJson — unmappable parameter type
 TopoDS_Wire.TShape — unmappable parameter type
 TopoDS_Wire.TShape — unmappable return type const opencascade::handle<TopoDS_TShape> &
+XCAFDoc_ColorTool.AddAttribute — unmappable parameter type
+XCAFDoc_ColorTool.AddColor — unmappable parameter type
+XCAFDoc_ColorTool.AfterUndo — unmappable parameter type
+XCAFDoc_ColorTool.BackupCopy — unmappable return type opencascade::handle<TDF_Attribute>
+XCAFDoc_ColorTool.BeforeUndo — unmappable parameter type
+XCAFDoc_ColorTool.DeltaOnAddition — unmappable return type opencascade::handle<TDF_DeltaOnAddition>
+XCAFDoc_ColorTool.DeltaOnForget — unmappable return type opencascade::handle<TDF_DeltaOnForget>
+XCAFDoc_ColorTool.DeltaOnModification — unmappable parameter type
+XCAFDoc_ColorTool.DeltaOnModification — unmappable return type opencascade::handle<TDF_DeltaOnModification>
+XCAFDoc_ColorTool.DeltaOnRemoval — unmappable return type opencascade::handle<TDF_DeltaOnRemoval>
+XCAFDoc_ColorTool.DeltaOnResume — unmappable return type opencascade::handle<TDF_DeltaOnResume>
+XCAFDoc_ColorTool.Dump — unmappable return type Standard_OStream &
+XCAFDoc_ColorTool.DumpJson — unmappable parameter type
+XCAFDoc_ColorTool.DynamicType — unmappable return type const opencascade::handle<Standard_Type> &
+XCAFDoc_ColorTool.ExtendedDump — unmappable parameter type
+XCAFDoc_ColorTool.FindAttribute — unmappable parameter type
+XCAFDoc_ColorTool.FindColor — unmappable parameter type
+XCAFDoc_ColorTool.ForgetAttribute — unmappable parameter type
+XCAFDoc_ColorTool.GetColor — unmappable parameter type
+XCAFDoc_ColorTool.GetID — unmappable return type const Standard_GUID &
+XCAFDoc_ColorTool.GetInstanceColor — unmappable parameter type
+XCAFDoc_ColorTool.ID — unmappable return type const Standard_GUID &
+XCAFDoc_ColorTool.IsAttribute — unmappable parameter type
+XCAFDoc_ColorTool.IsInstance — unmappable parameter type
+XCAFDoc_ColorTool.IsKind — unmappable parameter type
+XCAFDoc_ColorTool.NewEmpty — unmappable return type opencascade::handle<TDF_Attribute>
+XCAFDoc_ColorTool.Paste — unmappable parameter type
+XCAFDoc_ColorTool.References — unmappable parameter type
+XCAFDoc_ColorTool.Restore — unmappable parameter type
+XCAFDoc_ColorTool.SetColor — unmappable parameter type
+XCAFDoc_ColorTool.SetID — unmappable parameter type
+XCAFDoc_ColorTool.SetInstanceColor — unmappable parameter type
+XCAFDoc_ColorTool.This — unmappable return type Standard_Transient *
+XCAFDoc_ColorTool.get_type_descriptor — unmappable return type const opencascade::handle<Standard_Type> &
+XCAFDoc_ColorTool::ctor — unmappable constructor parameter
+XCAFDoc_DocumentTool.AddAttribute — unmappable parameter type
+XCAFDoc_DocumentTool.AfterUndo — unmappable parameter type
+XCAFDoc_DocumentTool.BackupCopy — unmappable return type opencascade::handle<TDF_Attribute>
+XCAFDoc_DocumentTool.BeforeUndo — unmappable parameter type
+XCAFDoc_DocumentTool.ClippingPlaneTool — unmappable return type opencascade::handle<XCAFDoc_ClippingPlaneTool>
+XCAFDoc_DocumentTool.DeltaOnAddition — unmappable return type opencascade::handle<TDF_DeltaOnAddition>
+XCAFDoc_DocumentTool.DeltaOnForget — unmappable return type opencascade::handle<TDF_DeltaOnForget>
+XCAFDoc_DocumentTool.DeltaOnModification — unmappable parameter type
+XCAFDoc_DocumentTool.DeltaOnModification — unmappable return type opencascade::handle<TDF_DeltaOnModification>
+XCAFDoc_DocumentTool.DeltaOnRemoval — unmappable return type opencascade::handle<TDF_DeltaOnRemoval>
+XCAFDoc_DocumentTool.DeltaOnResume — unmappable return type opencascade::handle<TDF_DeltaOnResume>
+XCAFDoc_DocumentTool.DimTolTool — unmappable return type opencascade::handle<XCAFDoc_DimTolTool>
+XCAFDoc_DocumentTool.Dump — unmappable return type Standard_OStream &
+XCAFDoc_DocumentTool.DumpJson — unmappable parameter type
+XCAFDoc_DocumentTool.DynamicType — unmappable return type const opencascade::handle<Standard_Type> &
+XCAFDoc_DocumentTool.ExtendedDump — unmappable parameter type
+XCAFDoc_DocumentTool.FindAttribute — unmappable parameter type
+XCAFDoc_DocumentTool.ForgetAttribute — unmappable parameter type
+XCAFDoc_DocumentTool.GetID — unmappable return type const Standard_GUID &
+XCAFDoc_DocumentTool.GetLengthUnit — unmappable parameter type
+XCAFDoc_DocumentTool.ID — unmappable return type const Standard_GUID &
+XCAFDoc_DocumentTool.IsAttribute — unmappable parameter type
+XCAFDoc_DocumentTool.IsInstance — unmappable parameter type
+XCAFDoc_DocumentTool.IsKind — unmappable parameter type
+XCAFDoc_DocumentTool.LayerTool — unmappable return type opencascade::handle<XCAFDoc_LayerTool>
+XCAFDoc_DocumentTool.MaterialTool — unmappable return type opencascade::handle<XCAFDoc_MaterialTool>
+XCAFDoc_DocumentTool.NewEmpty — unmappable return type opencascade::handle<TDF_Attribute>
+XCAFDoc_DocumentTool.NotesTool — unmappable return type opencascade::handle<XCAFDoc_NotesTool>
+XCAFDoc_DocumentTool.Paste — unmappable parameter type
+XCAFDoc_DocumentTool.References — unmappable parameter type
+XCAFDoc_DocumentTool.Restore — unmappable parameter type
+XCAFDoc_DocumentTool.SetID — unmappable parameter type
+XCAFDoc_DocumentTool.SetLengthUnit — unmappable parameter type
+XCAFDoc_DocumentTool.This — unmappable return type Standard_Transient *
+XCAFDoc_DocumentTool.ViewTool — unmappable return type opencascade::handle<XCAFDoc_ViewTool>
+XCAFDoc_DocumentTool.VisMaterialTool — unmappable return type opencascade::handle<XCAFDoc_VisMaterialTool>
+XCAFDoc_DocumentTool.get_type_descriptor — unmappable return type const opencascade::handle<Standard_Type> &
+XCAFDoc_DocumentTool::ctor — unmappable constructor parameter
+XCAFDoc_ShapeTool.AddAttribute — unmappable parameter type
+XCAFDoc_ShapeTool.AfterUndo — unmappable parameter type
+XCAFDoc_ShapeTool.BackupCopy — unmappable return type opencascade::handle<TDF_Attribute>
+XCAFDoc_ShapeTool.BeforeUndo — unmappable parameter type
+XCAFDoc_ShapeTool.DeltaOnAddition — unmappable return type opencascade::handle<TDF_DeltaOnAddition>
+XCAFDoc_ShapeTool.DeltaOnForget — unmappable return type opencascade::handle<TDF_DeltaOnForget>
+XCAFDoc_ShapeTool.DeltaOnModification — unmappable parameter type
+XCAFDoc_ShapeTool.DeltaOnModification — unmappable return type opencascade::handle<TDF_DeltaOnModification>
+XCAFDoc_ShapeTool.DeltaOnRemoval — unmappable return type opencascade::handle<TDF_DeltaOnRemoval>
+XCAFDoc_ShapeTool.DeltaOnResume — unmappable return type opencascade::handle<TDF_DeltaOnResume>
+XCAFDoc_ShapeTool.Dump — unmappable return type Standard_OStream &
+XCAFDoc_ShapeTool.DumpJson — unmappable parameter type
+XCAFDoc_ShapeTool.DumpShape — unmappable parameter type
+XCAFDoc_ShapeTool.DynamicType — unmappable return type const opencascade::handle<Standard_Type> &
+XCAFDoc_ShapeTool.ExtendedDump — unmappable parameter type
+XCAFDoc_ShapeTool.FindAttribute — unmappable parameter type
+XCAFDoc_ShapeTool.FindSHUO — unmappable parameter type
+XCAFDoc_ShapeTool.ForgetAttribute — unmappable parameter type
+XCAFDoc_ShapeTool.GetAllComponentSHUO — unmappable parameter type
+XCAFDoc_ShapeTool.GetAllSHUOInstances — unmappable parameter type
+XCAFDoc_ShapeTool.GetExternRefs — unmappable parameter type
+XCAFDoc_ShapeTool.GetID — unmappable return type const Standard_GUID &
+XCAFDoc_ShapeTool.GetNamedProperties — unmappable return type opencascade::handle<TDataStd_NamedData>
+XCAFDoc_ShapeTool.GetSHUO — unmappable parameter type
+XCAFDoc_ShapeTool.GetSHUOInstance — unmappable parameter type
+XCAFDoc_ShapeTool.ID — unmappable return type const Standard_GUID &
+XCAFDoc_ShapeTool.IsAttribute — unmappable parameter type
+XCAFDoc_ShapeTool.IsInstance — unmappable parameter type
+XCAFDoc_ShapeTool.IsKind — unmappable parameter type
+XCAFDoc_ShapeTool.NewEmpty — unmappable return type opencascade::handle<TDF_Attribute>
+XCAFDoc_ShapeTool.Paste — unmappable parameter type
+XCAFDoc_ShapeTool.References — unmappable parameter type
+XCAFDoc_ShapeTool.Restore — unmappable parameter type
+XCAFDoc_ShapeTool.SetExternRefs — unmappable parameter type
+XCAFDoc_ShapeTool.SetID — unmappable parameter type
+XCAFDoc_ShapeTool.SetInstanceSHUO — unmappable return type opencascade::handle<XCAFDoc_GraphNode>
+XCAFDoc_ShapeTool.SetSHUO — unmappable parameter type
+XCAFDoc_ShapeTool.This — unmappable return type Standard_Transient *
+XCAFDoc_ShapeTool.get_type_descriptor — unmappable return type const opencascade::handle<Standard_Type> &
+XCAFDoc_ShapeTool::ctor — unmappable constructor parameter
 gp_Ax1.DumpJson — unmappable parameter type
 gp_Ax1.InitFromJson — unmappable parameter type
 gp_Ax2.DumpJson — unmappable parameter type

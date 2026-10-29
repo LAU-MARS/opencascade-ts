@@ -131,19 +131,100 @@ std::string labelColor(const Handle(XCAFDoc_ColorTool)& colorTool, const TDF_Lab
   return "";
 }
 
+// STEP product names OCCT synthesizes from shape types when a label carries no
+// name of its own ("SOLID" for a wrapped solid). They carry no user intent, so
+// the placement-wrapper collapse below treats them as absent.
+bool isAutoShapeName(const std::string& name) {
+  static const char* const names[] = {
+      "", "SOLID", "COMPOUND", "SHELL", "OPEN_SHELL", "CLOSED_SHELL",
+      "WIRE", "EDGE", "FACE", "VERTEX",
+  };
+  for (const char* candidate : names) {
+    if (name == candidate) return true;
+  }
+  return false;
+}
+
+// Emits one tree node. `chain` is the composed placement of the node's
+// ancestors, EXCLUDING the node itself; the node's own placement (reference
+// locations, plus any location stored on the shape itself — the reader keeps
+// located roots directly on the label's shape) is resolved here and reported
+// parent-relative, mirroring writeStepDocument's input.
 void walkLabel(std::ostringstream& out,
                const Handle(XCAFDoc_ShapeTool)& shapeTool,
                const Handle(XCAFDoc_ColorTool)& colorTool,
                const TDF_Label& label,
-               const gp_Trsf& parent,
+               const gp_Trsf& chain,
                int depth) {
   if (depth > 32) {
     out << "{\"name\":null}";
     return;
   }
 
-  std::string name = labelName(label);
-  std::string color = labelColor(colorTool, label);
+  // Resolve the reference chain into the node's own placement.
+  gp_Trsf own;
+  TDF_Label content = label;
+  while (shapeTool->IsReference(content)) {
+    const TopLoc_Location location = shapeTool->GetLocation(content);
+    if (!location.IsIdentity()) {
+      own = own.Multiplied(location.Transformation());
+    }
+    TDF_Label referred;
+    if (!shapeTool->GetReferredShape(content, referred)) {
+      break;
+    }
+    content = referred;
+  }
+  if (!shapeTool->IsReference(content)) {
+    const TopoDS_Shape stored = shapeTool->GetShape(content);
+    if (!stored.IsNull() && !stored.Location().IsIdentity()) {
+      own = own.Multiplied(stored.Location().Transformation());
+    }
+  }
+
+  std::string name = labelName(content);
+  if (name.empty()) name = labelName(label);
+  std::string color = labelColor(colorTool, content);
+  if (color.empty()) color = labelColor(colorTool, label);
+
+  // A single component over an unnamed, uncolored shape is a placement
+  // wrapper (writeStepDocument emits one for every located root; other CAD
+  // systems do the same for placed products). Collapse it so the tree shows
+  // one node carrying a transform instead of a phantom layer.
+  gp_Trsf placement = own;
+  TDF_Label childrenOf;
+  TDF_Label leafContent;
+  if (shapeTool->IsAssembly(content)) {
+    TDF_LabelSequence components;
+    shapeTool->GetComponents(content, components);
+    bool collapsed = false;
+    if (components.Length() == 1) {
+      const TDF_Label component = components.Value(1);
+      TDF_Label referred;
+      if (shapeTool->GetReferredShape(component, referred) &&
+          isAutoShapeName(labelName(referred))) {
+        const TopLoc_Location componentLoc = shapeTool->GetLocation(component);
+        if (!componentLoc.IsIdentity()) {
+          placement = placement.Multiplied(componentLoc.Transformation());
+        }
+        const TopoDS_Shape stored = shapeTool->GetShape(referred);
+        if (!stored.IsNull() && !stored.Location().IsIdentity()) {
+          placement = placement.Multiplied(stored.Location().Transformation());
+        }
+        if (shapeTool->IsAssembly(referred)) {
+          childrenOf = referred;
+        } else {
+          leafContent = referred;
+        }
+        if (color.empty()) color = labelColor(colorTool, referred);
+        if (color.empty()) color = labelColor(colorTool, component);
+        collapsed = true;
+      }
+    }
+    if (!collapsed) childrenOf = content;
+  } else {
+    leafContent = content;
+  }
 
   out << "{\"name\":";
   if (name.empty()) {
@@ -156,45 +237,40 @@ void walkLabel(std::ostringstream& out,
     out << ",\"color\":\"" << color << '"';
   }
 
-  if (parent.Form() != gp_Identity) {
+  if (placement.Form() != gp_Identity) {
     out << ",\"transform\":[";
     for (int row = 1; row <= 3; ++row) {
       for (int col = 1; col <= 4; ++col) {
         if (row > 1 || col > 1) out << ',';
-        out << jsonNumber(parent.Value(row, col));
+        out << jsonNumber(placement.Value(row, col));
       }
     }
     out << ']';
   }
 
-  if (shapeTool->IsAssembly(label)) {
-    out << ",\"children\":[";
-    TDF_LabelSequence components;
-    shapeTool->GetComponents(label, components);
-    for (int i = 1; i <= components.Length(); ++i) {
-      const TDF_Label component = components.Value(i);
-      gp_Trsf composed = parent;
-      const TopLoc_Location location = shapeTool->GetLocation(component);
-      if (!location.IsIdentity()) {
-        composed = composed.Multiplied(location.Transformation());
-      }
-      TDF_Label referred;
-      if (!shapeTool->GetReferredShape(component, referred)) {
-        continue;
-      }
-      if (i > 1) out << ',';
-      walkLabel(out, shapeTool, colorTool, referred, composed, depth + 1);
-    }
-    out << ']';
-  } else {
-    TopoDS_Shape shp = shapeTool->GetShape(label);
+  if (!leafContent.IsNull()) {
+    TopoDS_Shape shp = shapeTool->GetShape(leafContent);
     if (!shp.IsNull()) {
-      if (parent.Form() != gp_Identity) {
-        shp.Move(TopLoc_Location(parent));
+      // `placement` already carries the shape's own location — strip it, then
+      // attach the full world chain once (documentShape stays world-positioned).
+      shp.Location(TopLoc_Location());
+      const gp_Trsf world = chain.Multiplied(placement);
+      if (world.Form() != gp_Identity) {
+        shp.Move(TopLoc_Location(world));
       }
       out << ",\"shape\":" << (int)g_documentShapes.size();
       g_documentShapes.push_back(shp);
     }
+  } else {
+    out << ",\"children\":[";
+    const gp_Trsf childChain = chain.Multiplied(placement);
+    TDF_LabelSequence components;
+    shapeTool->GetComponents(childrenOf, components);
+    for (int i = 1; i <= components.Length(); ++i) {
+      if (i > 1) out << ',';
+      walkLabel(out, shapeTool, colorTool, components.Value(i), childChain, depth + 1);
+    }
+    out << ']';
   }
   out << '}';
 }
@@ -337,6 +413,18 @@ int documentShapeCount() {
   return (int)g_documentShapes.size();
 }
 
+// --- MEMFS bridge ----------------------------------------------------------------
+
+void memWriteFileBytes(const std::string& path, unsigned int ptr, int length) {
+  ensureMemFs();
+  writeTemp(path.c_str(), (const char*)(uintptr_t)ptr, length);
+}
+
+std::string memReadFileBytes(const std::string& path) {
+  ensureMemFs();
+  return readTemp(path.c_str());
+}
+
 // --- XCAF document writing ------------------------------------------------------
 
 namespace {
@@ -383,24 +471,48 @@ std::string writeStepDocument(const std::vector<OccShape>& shapes,
   Handle(XCAFDoc_ShapeTool) shapeTool = XCAFDoc_DocumentTool::ShapeTool(doc->Main());
   Handle(XCAFDoc_ColorTool) colorTool = XCAFDoc_DocumentTool::ColorTool(doc->Main());
 
-  // Pass 1 (pre-order): labels for leaf shapes. Parents precede children, so
-  // anything needed later is already available.
+  auto nodeTrsf = [&](int i) {
+    gp_Trsf trsf;
+    const double* values = &transforms[12 * (size_t)i];
+    if (!std::isnan(values[0])) {
+      // Row-major 3×4, the same 12 numbers readStepDocument emits.
+      trsf.SetValues(values[0], values[1], values[2], values[3],
+                     values[4], values[5], values[6], values[7],
+                     values[8], values[9], values[10], values[11]);
+    }
+    return trsf;
+  };
+
+  // Pass 1 (pre-order): content labels for leaves, stored with their location
+  // stripped. XCAFDoc_ShapeTool::AddShape splits ANY located shape into a base
+  // label plus reference — that reference is what leaks a phantom "SOLID"
+  // child into the written tree. The stripped location composes under the
+  // node transform instead: world = parent chain ∘ node transform ∘ own
+  // TopLoc. Parents precede children, so anything needed later exists.
   std::vector<TDF_Label> labels(nodeCount);
   std::vector<bool> assemblyNodes(nodeCount, false);
   std::vector<TopoDS_Shape> assembled(nodeCount);
+  std::vector<gp_Trsf> total(nodeCount);
   for (int i = 0; i < nodeCount; ++i) {
     if (parents[i] < -1 || parents[i] >= i) {
       throw std::runtime_error("document tree nodes must list parents before children");
     }
+    gp_Trsf placement = nodeTrsf(i);
     if (shapeIndices[i] >= 0) {
       if (shapeIndices[i] >= (int)shapes.size()) {
         throw std::runtime_error("document tree shape index out of range");
       }
-      labels[i] = shapeTool->AddShape(shapes[shapeIndices[i]].get(), false);
-      assembled[i] = shapes[shapeIndices[i]].get();
+      TopoDS_Shape shape = shapes[shapeIndices[i]].get();
+      if (!shape.Location().IsIdentity()) {
+        placement = placement.Multiplied(shape.Location().Transformation());
+        shape.Location(TopLoc_Location());
+      }
+      labels[i] = shapeTool->AddShape(shape, false);
+      assembled[i] = shape;
     } else {
       assemblyNodes[i] = true;
     }
+    total[i] = placement;
   }
 
   // Pass 2 (post-order): give every assembly node a real compound of its
@@ -414,29 +526,45 @@ std::string writeStepDocument(const std::vector<OccShape>& shapes,
     for (int j = i + 1; j < nodeCount; ++j) {
       if (parents[j] != i) continue;
       TopoDS_Shape child = assembled[j];
-      const double* values = &transforms[12 * (size_t)j];
-      if (!std::isnan(values[0])) {
-        gp_Trsf location;
-        // Row-major 3×4, the same 12 numbers readStepDocument emits.
-        location.SetValues(values[0], values[1], values[2], values[3],
-                           values[4], values[5], values[6], values[7],
-                           values[8], values[9], values[10], values[11]);
-        child = child.Moved(TopLoc_Location(location));
+      if (total[j].Form() != gp_Identity) {
+        child = child.Moved(TopLoc_Location(total[j]));
       }
       builder.Add(compound, child);
     }
     assembled[i] = compound;
   }
 
-  // Pass 3 (pre-order): labels for assemblies, then names, colors, components.
+  // Pass 3: labels for assemblies, then placement wrappers for located roots.
+  // XCAF locations exist only on references, so a root whose total placement
+  // is not identity becomes: free wrapper label (assembly) → single component
+  // carrying the placement → the node's content label. readStepDocument
+  // collapses that wrapper back into one node with a transform, keeping
+  // read(write(x)) the identity on the tree.
   for (int i = 0; i < nodeCount; ++i) {
     if (!assemblyNodes[i]) continue;
     labels[i] = shapeTool->AddShape(assembled[i], false);
     TDataStd_UAttribute::Set(labels[i], XCAFDoc::AssemblyGUID());
   }
+  std::vector<TDF_Label> rootLabels(labels);
+  for (int i = 0; i < nodeCount; ++i) {
+    if (parents[i] >= 0 || total[i].Form() == gp_Identity) continue;
+    TopoDS_Compound wrapper;
+    builder.MakeCompound(wrapper);
+    builder.Add(wrapper, assembled[i].Moved(TopLoc_Location(total[i])));
+    const TDF_Label wrapperLabel = shapeTool->AddShape(wrapper, false);
+    TDataStd_UAttribute::Set(wrapperLabel, XCAFDoc::AssemblyGUID());
+    shapeTool->AddComponent(wrapperLabel, labels[i], TopLoc_Location(total[i]));
+    rootLabels[i] = wrapperLabel;
+  }
+
+  // Pass 4: names on the node's primary label (the wrapper for placed roots),
+  // colors on the CONTENT label — STEPCAFControl_Writer only turns colors on
+  // geometry-bearing labels into STEP styles (assembly-level colors are
+  // rejected on the TS side instead of being silently dropped), then the
+  // instance components.
   for (int i = 0; i < nodeCount; ++i) {
     if (!names[i].empty()) {
-      TDataStd_Name::Set(labels[i], names[i].c_str());
+      TDataStd_Name::Set(rootLabels[i], names[i].c_str());
     }
     if (!colors[i].empty()) {
       colorTool->SetColor(labels[i], parseColor(colors[i]), XCAFDoc_ColorSurf);
@@ -444,14 +572,7 @@ std::string writeStepDocument(const std::vector<OccShape>& shapes,
   }
   for (int i = 0; i < nodeCount; ++i) {
     if (parents[i] < 0) continue;
-    gp_Trsf location;
-    const double* values = &transforms[12 * (size_t)i];
-    if (!std::isnan(values[0])) {
-      location.SetValues(values[0], values[1], values[2], values[3],
-                         values[4], values[5], values[6], values[7],
-                         values[8], values[9], values[10], values[11]);
-    }
-    shapeTool->AddComponent(labels[parents[i]], labels[i], TopLoc_Location(location));
+    shapeTool->AddComponent(labels[parents[i]], labels[i], TopLoc_Location(total[i]));
   }
 
   // Static parameters are snapshotted when the writer is constructed — set

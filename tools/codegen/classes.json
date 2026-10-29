@@ -8,7 +8,12 @@
   ],
   "exclude": {
     "$comment": "members that are declared but not defined in the OCCT static libs (the linker refuses), or deliberately unwanted",
-    "GeomAPI_Interpolate": ["ClearTangents"]
+    "GeomAPI_Interpolate": [
+      "ClearTangents"
+    ],
+    "TDocStd_Document": [
+      "Update"
+    ]
   },
   "classes": [
     "gp_Pnt",
@@ -192,6 +197,19 @@
     "Interface_ParamType",
     "MoniTool_ValueType",
     "TCollection_AsciiString",
-    "TCollection_HAsciiString"
+    "TCollection_HAsciiString",
+    "STEPCAFControl_Reader",
+    "STEPCAFControl_Writer",
+    "TDF_Label",
+    "TDF_LabelSequence",
+    "TDocStd_Document",
+    "TDataStd_Name",
+    "TCollection_ExtendedString",
+    "XCAFDoc_DocumentTool",
+    "XCAFDoc_ShapeTool",
+    "XCAFDoc_ColorTool",
+    "XCAFDoc_ColorType",
+    "Quantity_Color",
+    "Quantity_TypeOfColor"
   ]
 }
